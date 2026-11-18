@@ -11,6 +11,9 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import 'package:dio/dio.dart';
 
+import '../../../../shared/stickers/sticker_providers.dart';
+import '../../../../shared/stickers/sticker_sheet.dart';
+import '../../../../shared/stickers/sticker_view.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/utils/thread_reply_draft.dart';
@@ -33,6 +36,7 @@ import '../widgets/record_discussion_reply_sheet.dart';
 import '../../../comment/presentation/providers/mention_suggest_providers.dart';
 import '../../../comment/presentation/widgets/mention_suggest_overlay.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/toast.dart';
 
 /// Detail diskusi + thread balasan.
 class DiscussionDetailPage extends ConsumerStatefulWidget {
@@ -50,6 +54,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
   final _composerFocus = FocusNode();
   ThreadReplyDraft? _replyDraft;
   String? _replyChipHandle;
+  String? _stagingStickerId;
 
   @override
   void initState() {
@@ -218,17 +223,104 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
     );
   }
 
+  void _clearStagingSticker() {
+    setState(() => _stagingStickerId = null);
+  }
+
+  Future<void> _pickReplySticker() async {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    final stickerId = await showCatalogStickerSheet(context);
+    if (!mounted || stickerId == null) return;
+    setState(() => _stagingStickerId = stickerId);
+  }
+
+  Widget? _buildStickerPreview(BuildContext context) {
+    final stickerId = _stagingStickerId;
+    if (stickerId == null) return null;
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final sticker =
+        ref.watch(stickerLookupProvider(stickerId)).asData?.value;
+    return Row(
+      children: [
+        StickerIdView(
+          stickerId: stickerId,
+          sticker: sticker,
+          size: 56,
+        ),
+        const Gap(8),
+        Expanded(
+          child: Text(
+            l10n.commentAddSticker,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+        ),
+        FButton(
+          variant: FButtonVariant.ghost,
+          onPress: _clearStagingSticker,
+          child: Text(l10n.commentRemoveSticker),
+        ),
+      ],
+    );
+  }
+
+  Widget? _replyMedia(DiscussionReply reply) {
+    if (!reply.isPublished) return null;
+    final parts = <Widget>[];
+    if (reply.hasAudio) {
+      parts.add(
+        DiscussionReplyAudioPlayer(
+          url: reply.audioUrl!,
+          durationMs: reply.audioDurationMs,
+        ),
+      );
+    }
+    if (reply.hasSticker) {
+      final sticker = ref
+          .watch(stickerLookupProvider(reply.stickerId!))
+          .asData
+          ?.value;
+      parts.add(
+        Align(
+          alignment: Alignment.centerLeft,
+          child: StickerIdView(
+            stickerId: reply.stickerId!,
+            sticker: sticker,
+            size: 96,
+          ),
+        ),
+      );
+    }
+    if (parts.isEmpty) return null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < parts.length; i++) ...[
+          if (i > 0) const Gap(6),
+          parts[i],
+        ],
+      ],
+    );
+  }
+
   Future<void> _sendReply() async {
     if (!_isAuth()) {
       _promptLogin();
       return;
     }
+    final stickerId = _stagingStickerId;
     final failure = await ref
         .read(discussionDetailProvider(widget.id).notifier)
-        .createReply(_replyCtrl.text);
+        .createReply(_replyCtrl.text, stickerId: stickerId);
     if (!mounted) return;
     if (failure == null) {
       _replyCtrl.clear();
+      _clearStagingSticker();
       _dismissReply(clearComposerPrefix: false);
       showFToast(
         context: context,
@@ -249,6 +341,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
       _promptLogin();
       return;
     }
+    _clearStagingSticker();
     final caption = _replyCtrl.text.trim();
     await showRecordDiscussionReplySheet(
       context,
@@ -934,12 +1027,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                           ],
                             isRedacted: !reply.isPublished,
                             highlighted: reply.isPinned && reply.isPublished,
-                            media: reply.isPublished && reply.hasAudio
-                                ? DiscussionReplyAudioPlayer(
-                                    url: reply.audioUrl!,
-                                    durationMs: reply.audioDurationMs,
-                                  )
-                                : null,
+                            media: _replyMedia(reply),
                             isEdited: reply.isEdited,
                             editedLabel: l10n.commentEdited,
                             onShowEditHistory: reply.isEdited
@@ -1019,6 +1107,8 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                             isSubmitting: state.isSubmittingReply,
                             onSubmit: _sendReply,
                             onRecordAudio: _recordAudioReply,
+                            onPickSticker: _pickReplySticker,
+                            attachmentPreview: _buildStickerPreview(context),
                             hint: l10n.discussionReplyHint,
                             replyBanner: _replyDraft == null
                                 ? null

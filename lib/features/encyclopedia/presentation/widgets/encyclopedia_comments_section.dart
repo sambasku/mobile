@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -23,10 +23,12 @@ Future<void> showEncyclopediaCommentsSheet(
   BuildContext context,
   String articleId,
 ) {
+  final bg = context.theme.colors.background;
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
+    backgroundColor: bg,
     builder: (sheetContext) {
       final media = MediaQuery.of(sheetContext);
       final height = (media.size.height - media.viewInsets.bottom) * 0.88;
@@ -329,7 +331,11 @@ class _EncyclopediaCommentsSectionState
     final listState = async.value;
     final count = listState?.items.length ?? 0;
 
-    return Column(
+    // Material + background Forui: sheet tidak putih di dark mode (dulu
+    // import flutter/material → ThemeData SDK terang).
+    return Material(
+      color: theme.colors.background,
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Center(
@@ -357,7 +363,7 @@ class _EncyclopediaCommentsSectionState
               ),
               IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.close),
+                icon: Icon(Icons.close, color: theme.colors.foreground),
               ),
             ],
           ),
@@ -475,6 +481,7 @@ class _EncyclopediaCommentsSectionState
                 ),
         ),
       ],
+      ),
     );
   }
 }

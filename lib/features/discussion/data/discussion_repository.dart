@@ -176,11 +176,17 @@ class DiscussionRepository {
   Future<Either<DiscussionFailure, DiscussionReply>> createReply({
     required String discussionId,
     required String body,
+    String? stickerId,
   }) async {
     try {
+      final payload = <String, dynamic>{'body': body.trim()};
+      final sid = stickerId?.trim();
+      if (sid != null && sid.isNotEmpty) {
+        payload['sticker_id'] = sid;
+      }
       final res = await _dio.post<Map<String, dynamic>>(
         '$_base/$discussionId/replies',
-        data: {'body': body.trim()},
+        data: payload,
       );
       final data = res.data?['data'];
       if (data is! Map) {

@@ -453,19 +453,26 @@ class DiscussionDetailController
     );
   }
 
-  Future<DiscussionFailure?> createReply(String body) async {
+  Future<DiscussionFailure?> createReply(
+    String body, {
+    String? stickerId,
+  }) async {
     final current = state.value;
     if (current == null) {
       return DiscussionFailure(l10n.discussionNotReady);
     }
     final trimmed = body.trim();
-    if (trimmed.isEmpty) {
+    final sid = stickerId?.trim();
+    final hasSticker = sid != null && sid.isNotEmpty;
+    if (trimmed.isEmpty && !hasSticker) {
       return DiscussionFailure(l10n.discussionReplyMinLength);
     }
     state = AsyncData(current.copyWith(isSubmittingReply: true));
-    final result = await ref
-        .read(discussionRepositoryProvider)
-        .createReply(discussionId: discussionId, body: trimmed);
+    final result = await ref.read(discussionRepositoryProvider).createReply(
+          discussionId: discussionId,
+          body: trimmed,
+          stickerId: hasSticker ? sid : null,
+        );
     if (!ref.mounted) return null;
     return result.match(
       (failure) {

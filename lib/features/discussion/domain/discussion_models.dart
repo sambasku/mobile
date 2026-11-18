@@ -117,6 +117,7 @@ class DiscussionReply {
     this.displayName,
     this.avatarUrl,
     required this.body,
+    this.stickerId,
     this.audioUrl,
     this.audioMimeType,
     this.audioDurationMs,
@@ -137,6 +138,7 @@ class DiscussionReply {
   final String? displayName;
   final String? avatarUrl;
   final String? body;
+  final String? stickerId;
   final String? audioUrl;
   final String? audioMimeType;
   final int? audioDurationMs;
@@ -158,6 +160,9 @@ class DiscussionReply {
   bool get hasAudio =>
       audioUrl != null && audioUrl!.trim().isNotEmpty;
 
+  bool get hasSticker =>
+      stickerId != null && stickerId!.trim().isNotEmpty;
+
   bool isOwner(String? userId) =>
       userId != null && userId.isNotEmpty && userId == this.userId;
 
@@ -169,6 +174,7 @@ class DiscussionReply {
       displayName: json['display_name']?.toString(),
       avatarUrl: json['avatar_url']?.toString(),
       body: json['body']?.toString(),
+      stickerId: json['sticker_id']?.toString(),
       audioUrl: json['audio_url']?.toString(),
       audioMimeType: json['audio_mime_type']?.toString(),
       audioDurationMs: (json['audio_duration_ms'] as num?)?.toInt(),
@@ -198,6 +204,7 @@ class DiscussionReply {
       displayName: displayName,
       avatarUrl: avatarUrl,
       body: identical(body, _unset) ? this.body : body as String?,
+      stickerId: stickerId,
       audioUrl: audioUrl,
       audioMimeType: audioMimeType,
       audioDurationMs: audioDurationMs,
