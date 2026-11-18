@@ -11,7 +11,6 @@ import '../../../../shared/models/content_related_link.dart';
 import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/content_related_nav.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
-import '../../../../shared/utils/toast.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/content_related_picker_sheet.dart';
 import '../../../../shared/widgets/image_crop_page.dart';
@@ -660,7 +659,7 @@ class _EncyclopediaContributionPageState
               ),
             const Gap(6),
             FButton(
-              style: FButtonStyle.outline,
+              variant: FButtonVariant.outline,
               onPress: _submitting || _related.length >= 12
                   ? null
                   : _addRelated,
