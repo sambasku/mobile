@@ -43,12 +43,12 @@ class ChatBubble extends StatelessWidget {
       alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.sizeOf(context).width * 0.82,
+          maxWidth: MediaQuery.sizeOf(context).width * 0.78,
         ),
         child: GestureDetector(
           onLongPress: () => _showActions(context),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
             child: Column(
               crossAxisAlignment: align,
               children: [
@@ -73,12 +73,12 @@ class ChatBubble extends StatelessWidget {
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: bubbleColor,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+                      horizontal: 10,
+                      vertical: 6,
                     ),
                     child: _BubbleBody(message: message, mine: mine),
                   ),
@@ -216,7 +216,7 @@ class _BubbleBody extends StatelessWidget {
     if (message.isDeleted) {
       return Text(
         l10n.chatTombstone,
-        style: theme.typography.body.sm.copyWith(
+        style: theme.typography.body.xs.copyWith(
           fontStyle: FontStyle.italic,
           color: theme.colors.mutedForeground,
         ),
@@ -227,14 +227,14 @@ class _BubbleBody extends StatelessWidget {
       case ChatMessageKind.sticker:
         return ChatStickerView(
           stickerId: message.stickerId ?? '',
-          size: 96,
+          size: 72,
         );
       case ChatMessageKind.voiceNote:
         final url = message.audioUrl?.trim() ?? '';
         if (url.isEmpty) {
           return Text(
             l10n.chatSending,
-            style: theme.typography.body.sm.copyWith(
+            style: theme.typography.body.xs.copyWith(
               color: theme.colors.mutedForeground,
               fontStyle: FontStyle.italic,
             ),
@@ -244,11 +244,12 @@ class _BubbleBody extends StatelessWidget {
           url: url,
           audioId: 'chat-${message.id}',
           durationMs: message.durationMs,
+          compact: true,
         );
       case ChatMessageKind.text:
         return Text(
           message.body ?? '',
-          style: theme.typography.body.md.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.foreground,
           ),
         );

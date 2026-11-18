@@ -53,18 +53,18 @@ class ChatComposer extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (replyTarget != null) ...[
                 ChatReplyBar(target: replyTarget!, onClear: onClearReply),
-                const Gap(8),
+                const Gap(6),
               ],
               Wrap(
-                spacing: 8,
-                runSpacing: 8,
+                spacing: 6,
+                runSpacing: 6,
                 children: [
                   _ComposerChip(
                     icon: FLucideIcons.smile,
@@ -80,7 +80,7 @@ class ChatComposer extends StatelessWidget {
                   ),
                 ],
               ),
-              const Gap(8),
+              const Gap(6),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -110,8 +110,8 @@ class ChatComposer extends StatelessWidget {
                         customBorder: const CircleBorder(),
                         onTap: sending ? null : () => _guarded(onSendText),
                         child: SizedBox(
-                          width: 36,
-                          height: 36,
+                          width: 32,
+                          height: 32,
                           child: Center(
                             child: sending
                                 ? const FCircularProgress(size: .xs)

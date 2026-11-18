@@ -19,6 +19,7 @@ class ThreadAudioPlayer extends ConsumerWidget {
     required this.url,
     this.audioId,
     this.durationMs,
+    this.compact = false,
   });
 
   final String url;
@@ -26,6 +27,9 @@ class ThreadAudioPlayer extends ConsumerWidget {
   /// Kunci exclusive-play. Default [url].
   final String? audioId;
   final int? durationMs;
+
+  /// Chat bubble: ikon/padding lebih kecil, tanpa label status.
+  final bool compact;
 
   String get _id => (audioId ?? url).trim();
 
@@ -72,19 +76,26 @@ class ThreadAudioPlayer extends ConsumerWidget {
       durationMs: durationMs,
     );
 
+    final iconBox = compact ? 32.0 : 44.0;
+    final iconSize = compact ? 16.0 : 22.0;
+    final pad = compact
+        ? const EdgeInsets.fromLTRB(8, 8, 10, 8)
+        : const EdgeInsets.fromLTRB(12, 12, 14, 12);
+    final radius = compact ? 10.0 : 12.0;
+
     return Semantics(
       button: true,
       label: semanticsLabel,
       child: Material(
         color: theme.colors.secondary.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(radius),
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(radius),
           onTap: () {
             unawaitedToggle(ref, seed);
           },
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 14, 12),
+            padding: pad,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
@@ -92,8 +103,8 @@ class ThreadAudioPlayer extends ConsumerWidget {
                 Row(
                   children: [
                     SizedBox(
-                      width: 44,
-                      height: 44,
+                      width: iconBox,
+                      height: iconBox,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: theme.colors.primary.withValues(alpha: 0.12),
@@ -102,10 +113,10 @@ class ThreadAudioPlayer extends ConsumerWidget {
                         child: Center(
                           child: loading
                               ? SizedBox(
-                                  width: 20,
-                                  height: 20,
+                                  width: compact ? 14 : 20,
+                                  height: compact ? 14 : 20,
                                   child: CircularProgressIndicator(
-                                    strokeWidth: 2.2,
+                                    strokeWidth: compact ? 1.8 : 2.2,
                                     color: theme.colors.primary,
                                   ),
                                 )
@@ -115,38 +126,48 @@ class ThreadAudioPlayer extends ConsumerWidget {
                                       : playing
                                       ? FLucideIcons.pause
                                       : FLucideIcons.play,
-                                  size: 22,
+                                  size: iconSize,
                                   color: iconColor,
                                 ),
                         ),
                       ),
                     ),
-                    const Gap(12),
+                    Gap(compact ? 8 : 12),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            statusText,
-                            style: theme.typography.body.sm.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const Gap(2),
-                          Text(
-                            timeLabel,
-                            style: theme.typography.body.xs.copyWith(
-                              color: theme.colors.mutedForeground,
-                              fontFeatures: const [
-                                FontFeature.tabularFigures(),
+                      child: compact
+                          ? Text(
+                              timeLabel.isEmpty ? statusText : timeLabel,
+                              style: theme.typography.body.xs.copyWith(
+                                color: theme.colors.mutedForeground,
+                                fontFeatures: const [
+                                  FontFeature.tabularFigures(),
+                                ],
+                              ),
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  statusText,
+                                  style: theme.typography.body.sm.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const Gap(2),
+                                Text(
+                                  timeLabel,
+                                  style: theme.typography.body.xs.copyWith(
+                                    color: theme.colors.mutedForeground,
+                                    fontFeatures: const [
+                                      FontFeature.tabularFigures(),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
                     ),
                     if (playing || loading) ...[
-                      const Gap(8),
+                      Gap(compact ? 6 : 8),
                       _PlayingBars(
                         active: playing,
                         color: theme.colors.primary,
@@ -154,7 +175,7 @@ class ThreadAudioPlayer extends ConsumerWidget {
                     ],
                   ],
                 ),
-                const Gap(10),
+                Gap(compact ? 6 : 10),
                 _ThreadProgressBar(
                   progress: progress,
                   color: theme.colors.primary,

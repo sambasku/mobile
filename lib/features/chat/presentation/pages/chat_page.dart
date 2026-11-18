@@ -319,27 +319,40 @@ class ChatPage extends HookConsumerWidget {
       await scrollToBottom();
     }
 
-    // Composer di body (bukan FScaffold.footer): pola sama komentar lemma /
-    // diskusi detail. Footer Forui menaruh anak di bottom absolut sehingga
-    // field tertutup keyboard meski resizeToAvoidBottomInset true.
+    final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+
+    // Keyboard: padding manual di Column (list + composer naik bareng).
+    // resizeToAvoidBottomInset false - Forui footer/body quirk memotong list
+    // tanpa menggeser konten chat.
+    useEffect(() {
+      if (keyboardInset <= 0) return null;
+      if (!pinnedBottom.value) return null;
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        scrollToBottom(animate: false);
+      });
+      return null;
+    }, [keyboardInset]);
+
     return FScaffold(
       childPad: true,
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       header: FHeader.nested(
         title: Text(l10n.discussionHubTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
-      child: Column(
-        children: [
-          DiscussionHubSegment(
-            index: 1,
-            onChanged: (i) {
-              if (i == 0) onSelectRoomsTab();
-            },
-          ),
-          Expanded(
-            child: Stack(
-              children: [
+      child: Padding(
+        padding: EdgeInsets.only(bottom: keyboardInset),
+        child: Column(
+          children: [
+            DiscussionHubSegment(
+              index: 1,
+              onChanged: (i) {
+                if (i == 0) onSelectRoomsTab();
+              },
+            ),
+            Expanded(
+              child: Stack(
+                children: [
                 async.when(
                   loading: () =>
                       const Center(child: FCircularProgress(size: .md)),
@@ -471,18 +484,19 @@ class ChatPage extends HookConsumerWidget {
               ],
             ),
           ),
-          ChatComposer(
-            controller: textController,
-            enabled: isAuth,
-            sending: sending.value,
-            replyTarget: replyTarget.value,
-            onClearReply: () => replyTarget.value = null,
-            onSendText: sendText,
-            onOpenStickers: sendSticker,
-            onRecordVoice: recordVoice,
-            onLoginPrompt: promptLogin,
-          ),
-        ],
+            ChatComposer(
+              controller: textController,
+              enabled: isAuth,
+              sending: sending.value,
+              replyTarget: replyTarget.value,
+              onClearReply: () => replyTarget.value = null,
+              onSendText: sendText,
+              onOpenStickers: sendSticker,
+              onRecordVoice: recordVoice,
+              onLoginPrompt: promptLogin,
+            ),
+          ],
+        ),
       ),
     );
   }
