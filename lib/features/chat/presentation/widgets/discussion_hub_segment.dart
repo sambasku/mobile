@@ -24,32 +24,32 @@ class DiscussionHubSegment extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: FTabs(
-        expands: false,
-        control: .lifted(index: index, onChange: onChanged),
-        children: [
-          FTabEntry.entry(
-            label: _HubTabLabel(
-              icon: FLucideIcons.messagesSquare,
-              text: l10n.discussionTabRooms,
-              selected: index == 0,
-              theme: theme,
-            ),
-            child: const SizedBox.shrink(),
+    return FTabs(
+      expands: false,
+      // Hub hanya pakai chrome tab; konten di parent - hilangkan jarak
+      // default 10px antara tab bar dan child shrink.
+      style: .delta(spacing: 0),
+      control: .lifted(index: index, onChange: onChanged),
+      children: [
+        FTabEntry.entry(
+          label: _HubTabLabel(
+            icon: FLucideIcons.messagesSquare,
+            text: l10n.discussionTabRooms,
+            selected: index == 0,
+            theme: theme,
           ),
-          FTabEntry.entry(
-            label: _HubTabLabel(
-              icon: FLucideIcons.messageCircle,
-              text: l10n.discussionTabChat,
-              selected: index == 1,
-              theme: theme,
-            ),
-            child: const SizedBox.shrink(),
+          child: const SizedBox.shrink(),
+        ),
+        FTabEntry.entry(
+          label: _HubTabLabel(
+            icon: FLucideIcons.messageCircle,
+            text: l10n.discussionTabChat,
+            selected: index == 1,
+            theme: theme,
           ),
-        ],
-      ),
+          child: const SizedBox.shrink(),
+        ),
+      ],
     );
   }
 }

@@ -140,10 +140,10 @@ class _DiscussionRoomsBody extends HookConsumerWidget {
                     if (state.items.isEmpty) {
                       return ListView(
                         physics: const AlwaysScrollableScrollPhysics(),
-                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
+                        padding: const EdgeInsets.fromLTRB(0, 4, 0, 32),
                         children: [
                           const _NewThreadComposer(),
-                          const Gap(16),
+                          const Gap(12),
                           _SortChips(
                             sort: sortState.sort,
                             order: sortState.order,
@@ -190,7 +190,7 @@ class _DiscussionRoomsBody extends HookConsumerWidget {
                     return ListView.separated(
                       controller: scroll,
                       physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
+                      padding: const EdgeInsets.fromLTRB(0, 4, 0, 32),
                       itemCount:
                           state.items.length +
                           2 +
@@ -206,7 +206,7 @@ class _DiscussionRoomsBody extends HookConsumerWidget {
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           return const Padding(
-                            padding: EdgeInsets.only(bottom: 8),
+                            padding: EdgeInsets.only(bottom: 6),
                             child: _NewThreadComposer(),
                           );
                         }
@@ -631,7 +631,7 @@ class _FeedSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Skeletonizer(
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
+        padding: const EdgeInsets.fromLTRB(0, 4, 0, 32),
         itemCount: 6,
         itemBuilder: (_, _) => const Padding(
           padding: EdgeInsets.symmetric(vertical: 12),
