@@ -319,22 +319,15 @@ class ChatPage extends HookConsumerWidget {
       await scrollToBottom();
     }
 
+    // Composer di body (bukan FScaffold.footer): pola sama komentar lemma /
+    // diskusi detail. Footer Forui menaruh anak di bottom absolut sehingga
+    // field tertutup keyboard meski resizeToAvoidBottomInset true.
     return FScaffold(
       childPad: true,
+      resizeToAvoidBottomInset: true,
       header: FHeader.nested(
         title: Text(l10n.discussionHubTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
-      ),
-      footer: ChatComposer(
-        controller: textController,
-        enabled: isAuth,
-        sending: sending.value,
-        replyTarget: replyTarget.value,
-        onClearReply: () => replyTarget.value = null,
-        onSendText: sendText,
-        onOpenStickers: sendSticker,
-        onRecordVoice: recordVoice,
-        onLoginPrompt: promptLogin,
       ),
       child: Column(
         children: [
@@ -477,6 +470,17 @@ class ChatPage extends HookConsumerWidget {
                   ),
               ],
             ),
+          ),
+          ChatComposer(
+            controller: textController,
+            enabled: isAuth,
+            sending: sending.value,
+            replyTarget: replyTarget.value,
+            onClearReply: () => replyTarget.value = null,
+            onSendText: sendText,
+            onOpenStickers: sendSticker,
+            onRecordVoice: recordVoice,
+            onLoginPrompt: promptLogin,
           ),
         ],
       ),

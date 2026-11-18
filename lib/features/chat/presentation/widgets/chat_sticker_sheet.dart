@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/chat_models.dart';
+import 'chat_sticker_view.dart';
 
 Future<String?> showChatStickerSheet(BuildContext context) {
   final l10n = AppLocalizations.of(context);
@@ -35,14 +36,26 @@ Future<String?> showChatStickerSheet(BuildContext context) {
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
               child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
+                spacing: 10,
+                runSpacing: 10,
                 children: [
-                  for (final id in kChatStickerIds)
-                    FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: () => Navigator.pop(sheetContext, id),
-                      child: Text(id, style: const TextStyle(fontSize: 28)),
+                  for (final sticker in kChatStickers)
+                    InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () => Navigator.pop(sheetContext, sticker.id),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: theme.colors.secondary.withValues(alpha: 0.55),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: ChatStickerView(
+                            stickerId: sticker.id,
+                            size: 64,
+                          ),
+                        ),
+                      ),
                     ),
                 ],
               ),

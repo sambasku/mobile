@@ -162,17 +162,52 @@ class ChatCapabilities {
   }
 }
 
-/// Pack stiker v1 - id = emoji (selaras CHAT_PUBLIK_PREVIEW.html).
-const kChatStickerIds = <String>[
-  '😄',
-  '🙌',
-  '🔥',
-  '❤️',
-  '😂',
-  '👍',
-  '🎉',
-  '🙏',
+/// Pack stiker v1: gambar statis + GIF play-sekali (hemat CPU).
+class ChatSticker {
+  const ChatSticker({
+    required this.id,
+    required this.asset,
+    this.playOnce = false,
+  });
+
+  final String id;
+  final String asset;
+
+  /// true = GIF diputar sekali lalu diam (bukan loop).
+  final bool playOnce;
+}
+
+const kChatStickers = <ChatSticker>[
+  ChatSticker(id: 'cheer', asset: 'assets/stickers/cheer.png'),
+  ChatSticker(id: 'fire', asset: 'assets/stickers/fire.png'),
+  ChatSticker(id: 'heart', asset: 'assets/stickers/heart.png'),
+  ChatSticker(id: 'ok', asset: 'assets/stickers/ok.png'),
+  ChatSticker(id: 'party', asset: 'assets/stickers/party.png'),
+  ChatSticker(id: 'pray', asset: 'assets/stickers/pray.png'),
+  ChatSticker(
+    id: 'wave',
+    asset: 'assets/stickers/wave.gif',
+    playOnce: true,
+  ),
 ];
+
+const kChatStickerIds = <String>[
+  'cheer',
+  'fire',
+  'heart',
+  'ok',
+  'party',
+  'pray',
+  'wave',
+];
+
+ChatSticker? chatStickerById(String? id) {
+  if (id == null || id.isEmpty) return null;
+  for (final s in kChatStickers) {
+    if (s.id == id) return s;
+  }
+  return null;
+}
 
 class ChatFailure implements Exception {
   const ChatFailure(this.message, {this.errorCode});

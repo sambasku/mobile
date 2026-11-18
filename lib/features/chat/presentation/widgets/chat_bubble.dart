@@ -7,6 +7,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/thread_audio_player.dart';
 import '../../domain/chat_models.dart';
+import 'chat_sticker_view.dart';
 
 class ChatBubble extends StatelessWidget {
   const ChatBubble({
@@ -224,9 +225,9 @@ class _BubbleBody extends StatelessWidget {
 
     switch (message.kind) {
       case ChatMessageKind.sticker:
-        return Text(
-          message.stickerId ?? '?',
-          style: const TextStyle(fontSize: 40),
+        return ChatStickerView(
+          stickerId: message.stickerId ?? '',
+          size: 96,
         );
       case ChatMessageKind.voiceNote:
         final url = message.audioUrl?.trim() ?? '';
