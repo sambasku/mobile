@@ -7,6 +7,7 @@ import 'package:livekit_noise_filter/livekit_noise_filter.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/network/network_providers.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/providers/thread_audio_player_provider.dart';
 import '../../data/voice_repository.dart';
@@ -98,6 +99,7 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
   var _intentionalLeave = false;
   String? _msgDisconnected;
   String? _msgConnectTimeout;
+  String _roomName = 'sambasku-global';
 
   @override
   VoiceRoomState build() {
@@ -122,6 +124,10 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
       state = state.copyWith(
         phase: VoiceRoomPhase.error,
         errorMessage: l10n.voiceMicDenied,
+      );
+      _trackVoiceEvent(
+        VoiceRoomEventKind.joinFailed,
+        errorCode: 'MIC_DENIED',
       );
       return;
     }
@@ -150,18 +156,29 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
         phase: VoiceRoomPhase.error,
         errorMessage: failure?.message ?? l10n.voiceJoinFailed,
       );
+      _trackVoiceEvent(
+        VoiceRoomEventKind.joinFailed,
+        errorCode: failure?.errorCode ?? 'MINT_FAILED',
+        detail: failure?.message,
+      );
       return;
     }
 
     final url = token!.url.trim();
     final jwt = token!.token.trim();
+    final roomName = token!.room.trim();
     if (url.isEmpty || jwt.isEmpty) {
       state = state.copyWith(
         phase: VoiceRoomPhase.error,
         errorMessage: l10n.voiceJoinFailed,
       );
+      _trackVoiceEvent(
+        VoiceRoomEventKind.joinFailed,
+        errorCode: 'EMPTY_TOKEN',
+      );
       return;
     }
+    if (roomName.isNotEmpty) _roomName = roomName;
 
     try {
       await _ensureLiveKit();
@@ -234,6 +251,7 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
       _applySessionToken(jwt);
       _syncParticipants(forceConnected: true);
       _scheduleTokenRefresh(jwt);
+      _trackVoiceEvent(VoiceRoomEventKind.joined);
     } catch (e, st) {
       debugPrint('VoiceRoom join failed: $e\n$st');
       await _disconnectSilent();
@@ -242,6 +260,39 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
         phase: VoiceRoomPhase.error,
         errorMessage: _friendlyJoinError(l10n, e),
       );
+      _trackVoiceEvent(
+        VoiceRoomEventKind.joinFailed,
+        errorCode: e.runtimeType.toString(),
+        detail: e.toString(),
+      );
+    }
+  }
+
+  void _trackVoiceEvent(
+    VoiceRoomEventKind kind, {
+    String? errorCode,
+    String? detail,
+  }) {
+    final platform = defaultTargetPlatform.name;
+    unawaited(
+      ref.read(voiceRepositoryProvider).reportEvent(
+            kind: kind,
+            room: _roomName,
+            errorCode: errorCode,
+            detail: detail,
+            platform: platform,
+          ),
+    );
+    final analytics = AnalyticsService.instance;
+    switch (kind) {
+      case VoiceRoomEventKind.joined:
+        unawaited(analytics.logVoiceJoin(room: _roomName));
+      case VoiceRoomEventKind.left:
+        unawaited(analytics.logVoiceLeave(room: _roomName));
+      case VoiceRoomEventKind.disconnect:
+        unawaited(analytics.logVoiceDisconnect(room: _roomName));
+      case VoiceRoomEventKind.joinFailed:
+        unawaited(analytics.logVoiceJoinFail(errorCode: errorCode));
     }
   }
 
@@ -255,6 +306,7 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
 
   Future<void> _onUnexpectedDisconnect() async {
     if (_intentionalLeave) return;
+    _trackVoiceEvent(VoiceRoomEventKind.disconnect);
     await _disconnectSilent();
     if (!ref.mounted) return;
     state = VoiceRoomState(
@@ -357,6 +409,7 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
 
   Future<void> leave() async {
     _intentionalLeave = true;
+    _trackVoiceEvent(VoiceRoomEventKind.left);
     await _disconnectSilent();
     if (!ref.mounted) return;
     state = const VoiceRoomState();

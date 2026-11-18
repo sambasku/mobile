@@ -30,10 +30,41 @@ class VoiceFailure {
   final String? errorCode;
 }
 
+enum VoiceRoomEventKind { joined, left, disconnect, joinFailed }
+
 class VoiceRepository {
   VoiceRepository(this._dio);
 
   final Dio _dio;
+
+  /// Analitik internal (DB). Gagal diam - jangan ganggu sesi voice.
+  Future<void> reportEvent({
+    required VoiceRoomEventKind kind,
+    String? room,
+    String? errorCode,
+    String? detail,
+    String? platform,
+  }) async {
+    try {
+      await _dio.post<Map<String, dynamic>>(
+        '/api/v1/voice/events',
+        data: <String, dynamic>{
+          'kind': switch (kind) {
+            VoiceRoomEventKind.joined => 'joined',
+            VoiceRoomEventKind.left => 'left',
+            VoiceRoomEventKind.disconnect => 'disconnect',
+            VoiceRoomEventKind.joinFailed => 'join_failed',
+          },
+          if (room != null && room.isNotEmpty) 'room': room,
+          if (errorCode != null && errorCode.isNotEmpty) 'errorCode': errorCode,
+          if (detail != null && detail.isNotEmpty) 'detail': detail,
+          if (platform != null && platform.isNotEmpty) 'platform': platform,
+        },
+      );
+    } catch (_) {
+      // ponytail: analytics best-effort
+    }
+  }
 
   Future<Either<VoiceFailure, VoiceToken>> mintToken() async {
     try {
