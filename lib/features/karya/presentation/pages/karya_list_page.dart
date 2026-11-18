@@ -61,7 +61,51 @@ class _KaryaListPageState extends ConsumerState<KaryaListPage> {
       context.push('/login');
       return;
     }
-    context.push(KaryaRouter.contribute.path);
+    final l10n = AppLocalizations.of(context);
+    var handled = false;
+    final path = await showModalBottomSheet<String>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        void go(String value) {
+          if (handled) return;
+          handled = true;
+          Navigator.of(sheetContext).pop(value);
+        }
+
+        return Padding(
+          padding: MediaQuery.of(sheetContext).viewInsets,
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FTileGroup(
+                  children: [
+                    FTile(
+                      title: Text(l10n.karyaContributePickTitle),
+                      subtitle: Text(l10n.karyaContributePickSubtitle),
+                    ),
+                    FTile(
+                      title: Text(l10n.karyaContributeMusic),
+                      prefix: const Icon(FLucideIcons.music, size: 18),
+                      onPress: () => go('music'),
+                    ),
+                    FTile(
+                      title: Text(l10n.karyaContributeFilm),
+                      prefix: const Icon(FLucideIcons.clapperboard, size: 18),
+                      onPress: () => go('film'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (!mounted || path == null) return;
+    context.push(KaryaRouter.contributePath(kind: path));
   }
 
   Future<void> _reload() async {

@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -7149,6 +7150,49 @@ class AppLocalizationsId extends AppLocalizations {
   String get karyaContribute => 'Usulkan karya';
 
   @override
+  String get karyaContributeMusic => 'Usul lagu';
+
+  @override
+  String get karyaContributeFilm => 'Usul film';
+
+  @override
+  String get karyaContributePickTitle => 'Usulkan karya apa?';
+
+  @override
+  String get karyaContributePickSubtitle =>
+      'Pilih musik atau film. Tahun dan kaitan Sambas dilengkapi saat tinjauan.';
+
+  @override
+  String get karyaFormQuickHint =>
+      'Cukup judul dan nama orang. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.';
+
+  @override
+  String get karyaFormTitleHintMusic => 'Judul lagu';
+
+  @override
+  String get karyaFormTitleHintFilm => 'Judul film';
+
+  @override
+  String get karyaFormCreditNameMusic => 'Nama penyanyi';
+
+  @override
+  String get karyaFormCreditNameFilm => 'Nama sutradara';
+
+  @override
+  String get karyaFormCreditNameHintMusic =>
+      'Ketik nama, atau pilih dari saran kreator';
+
+  @override
+  String get karyaFormCreditNameHintFilm =>
+      'Ketik nama, atau pilih dari saran kreator';
+
+  @override
+  String get karyaFormCreditNameRequired => 'Nama orang minimal 2 karakter';
+
+  @override
+  String get karyaFormKreatorSuggestPick => 'Pilih kreator ini';
+
+  @override
   String get karyaContributeSubmit => 'Kirim usulan';
 
   @override
@@ -7389,8 +7433,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get karyaLemmaLinkLoginFirst => 'Masuk dulu untuk menautkan lemma';
 
   @override
-  String get karyaFormInvalid =>
-      'Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi';
+  String get karyaFormInvalid => 'Judul dan nama orang wajib diisi';
 
   @override
   String get karyaFormKindRequired => 'Pilih jenis karya dulu';
@@ -19673,6 +19716,49 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get karyaContribute => 'Usulkan karya';
 
   @override
+  String get karyaContributeMusic => 'Usul lagu';
+
+  @override
+  String get karyaContributeFilm => 'Usul film';
+
+  @override
+  String get karyaContributePickTitle => 'Usulkan karya apa?';
+
+  @override
+  String get karyaContributePickSubtitle =>
+      'Pilih musik atau film. Tahun dan kaitan Sambas dilengkapi saat tinjauan.';
+
+  @override
+  String get karyaFormQuickHint =>
+      'Cukup judul dan nama orang. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.';
+
+  @override
+  String get karyaFormTitleHintMusic => 'Judul lagu';
+
+  @override
+  String get karyaFormTitleHintFilm => 'Judul film';
+
+  @override
+  String get karyaFormCreditNameMusic => 'Nama penyanyi';
+
+  @override
+  String get karyaFormCreditNameFilm => 'Nama sutradara';
+
+  @override
+  String get karyaFormCreditNameHintMusic =>
+      'Ketik nama, atau pilih dari saran kreator';
+
+  @override
+  String get karyaFormCreditNameHintFilm =>
+      'Ketik nama, atau pilih dari saran kreator';
+
+  @override
+  String get karyaFormCreditNameRequired => 'Nama orang minimal 2 karakter';
+
+  @override
+  String get karyaFormKreatorSuggestPick => 'Pilih kreator ini';
+
+  @override
   String get karyaContributeSubmit => 'Kirim usulan';
 
   @override
@@ -19913,8 +19999,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get karyaLemmaLinkLoginFirst => 'Masuk dulu untuk menautkan lemma';
 
   @override
-  String get karyaFormInvalid =>
-      'Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi';
+  String get karyaFormInvalid => 'Judul dan nama orang wajib diisi';
 
   @override
   String get karyaFormKindRequired => 'Pilih jenis karya dulu';

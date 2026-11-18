@@ -45,6 +45,19 @@ class KreatorProfile {
   final List<KreatorKaryaSummary> karyas;
 }
 
+/// Hasil suggest `GET /kreators?q=` untuk form usul.
+class KreatorSuggest {
+  const KreatorSuggest({
+    required this.id,
+    required this.slug,
+    required this.displayName,
+  });
+
+  final String id;
+  final String slug;
+  final String displayName;
+}
+
 class KreatorKaryaSummary {
   const KreatorKaryaSummary({
     required this.id,

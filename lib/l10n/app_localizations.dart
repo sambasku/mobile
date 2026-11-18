@@ -12789,6 +12789,84 @@ abstract class AppLocalizations {
   /// **'Usulkan karya'**
   String get karyaContribute;
 
+  /// CTA / judul form usul karya musik (cepat)
+  ///
+  /// In id, this message translates to:
+  /// **'Usul lagu'**
+  String get karyaContributeMusic;
+
+  /// CTA / judul form usul karya film (cepat)
+  ///
+  /// In id, this message translates to:
+  /// **'Usul film'**
+  String get karyaContributeFilm;
+
+  /// Judul sheet pilih jenis usulan karya
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan karya apa?'**
+  String get karyaContributePickTitle;
+
+  /// Subjudul sheet pilih jenis usulan karya
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih musik atau film. Tahun dan kaitan Sambas dilengkapi saat tinjauan.'**
+  String get karyaContributePickSubtitle;
+
+  /// Petunjuk form usul karya cepat (2 field)
+  ///
+  /// In id, this message translates to:
+  /// **'Cukup judul dan nama orang. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.'**
+  String get karyaFormQuickHint;
+
+  /// No description provided for @karyaFormTitleHintMusic.
+  ///
+  /// In id, this message translates to:
+  /// **'Judul lagu'**
+  String get karyaFormTitleHintMusic;
+
+  /// No description provided for @karyaFormTitleHintFilm.
+  ///
+  /// In id, this message translates to:
+  /// **'Judul film'**
+  String get karyaFormTitleHintFilm;
+
+  /// No description provided for @karyaFormCreditNameMusic.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama penyanyi'**
+  String get karyaFormCreditNameMusic;
+
+  /// No description provided for @karyaFormCreditNameFilm.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama sutradara'**
+  String get karyaFormCreditNameFilm;
+
+  /// No description provided for @karyaFormCreditNameHintMusic.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik nama, atau pilih dari saran kreator'**
+  String get karyaFormCreditNameHintMusic;
+
+  /// No description provided for @karyaFormCreditNameHintFilm.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik nama, atau pilih dari saran kreator'**
+  String get karyaFormCreditNameHintFilm;
+
+  /// No description provided for @karyaFormCreditNameRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama orang minimal 2 karakter'**
+  String get karyaFormCreditNameRequired;
+
+  /// Subtitle tile saran kreator di form usul
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kreator ini'**
+  String get karyaFormKreatorSuggestPick;
+
   /// No description provided for @karyaContributeSubmit.
   ///
   /// In id, this message translates to:
@@ -13254,7 +13332,7 @@ abstract class AppLocalizations {
   /// No description provided for @karyaFormInvalid.
   ///
   /// In id, this message translates to:
-  /// **'Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi'**
+  /// **'Judul dan nama orang wajib diisi'**
   String get karyaFormInvalid;
 
   /// No description provided for @karyaFormKindRequired.

@@ -230,6 +230,33 @@ class KaryaApi {
     );
   }
 
+  /// Suggest kreator untuk form usul (debounce di UI). Gagal = list kosong.
+  Future<List<KreatorSuggest>> searchKreators(String q) async {
+    final query = q.trim();
+    if (query.length < 2) return const [];
+    try {
+      final res = await _dio.get<dynamic>(
+        '/api/v1/kreators',
+        queryParameters: {'q': query},
+      );
+      final items = _map(res.data)['items'];
+      if (items is! List) return const [];
+      return items
+          .whereType<Map>()
+          .map(
+            (row) => KreatorSuggest(
+              id: '${row['id']}',
+              slug: '${row['slug']}',
+              displayName: '${row['display_name']}',
+            ),
+          )
+          .where((k) => k.id.isNotEmpty && k.displayName.isNotEmpty)
+          .toList();
+    } on DioException {
+      return const [];
+    }
+  }
+
   Future<void> createLemmaLink({
     required String excerptId,
     required int start,
@@ -322,29 +349,37 @@ String karyaErrorMessage(Object error) {
 }
 
 /// Payload wire untuk usulan baru / edit.
+/// Usulan `new` boleh tanpa `year` / sambas (dilengkapi saat approve).
 Map<String, dynamic> karyaPayloadWire({
   required String title,
-  required int year,
   required String kind,
-  required List<Map<String, String>> sambasConnections,
   required List<Map<String, String>> credits,
+  int? year,
+  List<Map<String, String>> sambasConnections = const [],
   List<Map<String, dynamic>> accessLinks = const [],
   String? description,
 }) {
   return {
     'title': title,
-    'year': year,
     'kind': kind,
+    'year': ?year,
     'sambas_connections': sambasConnections,
     'credits': credits
         .map(
-          (c) => {
-            'role': c['role'],
-            'name_text': c['name_text'],
+          (c) {
+            final kreatorId = c['kreator_id'];
+            return {
+              'role': c['role'],
+              'name_text': c['name_text'],
+              'kreator_id': ?(kreatorId != null && kreatorId.isNotEmpty
+                  ? kreatorId
+                  : null),
+            };
           },
         )
         .toList(),
-    if (description != null && description.isNotEmpty) 'description': description,
-    if (accessLinks.isNotEmpty) 'access_links': accessLinks,
+    'description':
+        ?(description != null && description.isNotEmpty ? description : null),
+    'access_links': ?(accessLinks.isNotEmpty ? accessLinks : null),
   };
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -20,6 +22,7 @@ class _CreditDraft {
 
   final TextEditingController name;
   String role;
+  String? kreatorId;
 
   void dispose() => name.dispose();
 }
@@ -83,6 +86,10 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
   var _busy = false;
   var _prefilled = false;
 
+  Timer? _kreatorDebounce;
+  var _kreatorLoading = false;
+  List<KreatorSuggest> _kreatorHints = const [];
+
   bool get _isEdit => widget.karyaId != null && widget.karyaId!.isNotEmpty;
 
   @override
@@ -96,6 +103,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
     if (prefillName.isNotEmpty) {
       credit.name.text = prefillName;
     }
+    credit.name.addListener(_onCreditNameChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       final authed = ref.read(authStatusProvider).value?.isAuth ?? false;
@@ -110,6 +118,10 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
 
   @override
   void dispose() {
+    _kreatorDebounce?.cancel();
+    if (_credits.isNotEmpty) {
+      _credits.first.name.removeListener(_onCreditNameChanged);
+    }
     _title.dispose();
     _year.dispose();
     _description.dispose();
@@ -123,6 +135,47 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
       row.dispose();
     }
     super.dispose();
+  }
+
+  void _onCreditNameChanged() {
+    if (_isEdit || !mounted) return;
+    final credit = _credits.first;
+    // Ketik ulang = lepas pick kreator.
+    if (credit.kreatorId != null) {
+      credit.kreatorId = null;
+    }
+    _kreatorDebounce?.cancel();
+    final q = credit.name.text.trim();
+    if (q.length < 2) {
+      setState(() {
+        _kreatorHints = const [];
+        _kreatorLoading = false;
+      });
+      return;
+    }
+    setState(() => _kreatorLoading = true);
+    _kreatorDebounce = Timer(const Duration(milliseconds: 300), () async {
+      final api = ref.read(karyaApiProvider);
+      final items = await api.searchKreators(q);
+      if (!mounted) return;
+      if (_credits.first.name.text.trim() != q) return;
+      setState(() {
+        _kreatorHints = items;
+        _kreatorLoading = false;
+      });
+    });
+  }
+
+  void _pickKreator(KreatorSuggest item) {
+    final credit = _credits.first;
+    credit.name.removeListener(_onCreditNameChanged);
+    credit.name.text = item.displayName;
+    credit.kreatorId = item.id;
+    credit.name.addListener(_onCreditNameChanged);
+    setState(() {
+      _kreatorHints = const [];
+      _kreatorLoading = false;
+    });
   }
 
   void _prefillFrom(KaryaEntry entry) {
@@ -140,14 +193,16 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
     for (final row in _sambas) {
       row.dispose();
     }
-  for (final row in _access) {
+    for (final row in _access) {
       row.dispose();
     }
     _credits
       ..clear()
       ..addAll(
         entry.credits.map((c) {
-          final d = _CreditDraft()..role = c.role;
+          final d = _CreditDraft()
+            ..role = c.role
+            ..kreatorId = c.kreatorId;
           d.name.text = c.nameText;
           return d;
         }),
@@ -186,7 +241,19 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
 
   void _addAccess() => setState(() => _access.add(_AccessDraft()));
 
-  String? _clientValidate({
+  String? _clientValidateNew({
+    required AppLocalizations l10n,
+    required String? kind,
+    required String title,
+    required String creditName,
+  }) {
+    if (kind == null) return l10n.karyaFormKindRequired;
+    if (title.length < 2) return l10n.karyaFormTitleRequired;
+    if (creditName.length < 2) return l10n.karyaFormCreditNameRequired;
+    return null;
+  }
+
+  String? _clientValidateEdit({
     required AppLocalizations l10n,
     required String? kind,
     required String title,
@@ -216,8 +283,56 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
     final kind = _kind;
-    final year = int.tryParse(_year.text.trim());
     final title = _title.text.trim();
+
+    if (!_isEdit) {
+      final credit = _credits.first;
+      final creditName = credit.name.text.trim();
+      final clientError = _clientValidateNew(
+        l10n: l10n,
+        kind: kind,
+        title: title,
+        creditName: creditName,
+      );
+      if (clientError != null) {
+        await showAppErrorSheet(context, message: clientError);
+        return;
+      }
+      final safeKind = kind!;
+      setState(() => _busy = true);
+      try {
+        final payload = karyaPayloadWire(
+          title: title,
+          kind: safeKind,
+          credits: [
+            {
+              'role': safeKind == 'film' ? 'director' : 'vocal',
+              'name_text': creditName,
+              if ((credit.kreatorId ?? '').isNotEmpty)
+                'kreator_id': credit.kreatorId!,
+            },
+          ],
+        );
+        await ref.read(karyaApiProvider).submit({
+          'kind': 'new',
+          'payload': payload,
+        });
+        if (!mounted) return;
+        context.pushReplacement(KaryaRouter.proposals.path);
+      } catch (error) {
+        if (!mounted) return;
+        final message = karyaErrorMessage(error);
+        await showAppErrorSheet(
+          context,
+          message: message.isEmpty ? l10n.karyaLoadFailed : message,
+        );
+      } finally {
+        if (mounted) setState(() => _busy = false);
+      }
+      return;
+    }
+
+    final year = int.tryParse(_year.text.trim());
     final sambasRows = <Map<String, String>>[];
     for (final row in _sambas) {
       final note = row.note.text.trim();
@@ -228,11 +343,14 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
     for (final row in _credits) {
       final name = row.name.text.trim();
       if (name.isEmpty) continue;
-      creditRows.add({'role': row.role, 'name_text': name});
+      creditRows.add({
+        'role': row.role,
+        'name_text': name,
+        if ((row.kreatorId ?? '').isNotEmpty) 'kreator_id': row.kreatorId!,
+      });
     }
     final accessRows = <Map<String, dynamic>>[];
-    for (var i = 0; i < _access.length; i++) {
-      final row = _access[i];
+    for (final row in _access) {
       final label = row.label.text.trim();
       final url = row.url.text.trim();
       if (label.isEmpty || url.isEmpty) continue;
@@ -243,7 +361,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
         if (accessRows.isEmpty) 'is_primary': true,
       });
     }
-    final clientError = _clientValidate(
+    final clientError = _clientValidateEdit(
       l10n: l10n,
       kind: kind,
       title: title,
@@ -269,17 +387,13 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
         description: _description.text.trim(),
       );
       await ref.read(karyaApiProvider).submit({
-        'kind': _isEdit ? 'edit' : 'new',
-        if (_isEdit) 'karya_id': widget.karyaId,
+        'kind': 'edit',
+        'karya_id': widget.karyaId,
         'payload': payload,
       });
       if (!mounted) return;
-      if (_isEdit) {
-        context.pop();
-        showFToast(context: context, title: Text(l10n.karyaProposeSuccess));
-      } else {
-        context.pushReplacement(KaryaRouter.proposals.path);
-      }
+      context.pop();
+      showFToast(context: context, title: Text(l10n.karyaProposeSuccess));
     } catch (error) {
       if (!mounted) return;
       final message = karyaErrorMessage(error);
@@ -291,11 +405,6 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
       if (mounted) setState(() => _busy = false);
     }
   }
-
-  List<OptionPickerItem<String>> _kindOptions(AppLocalizations l10n) => [
-        OptionPickerItem(value: 'music', label: l10n.karyaKindMusic),
-        OptionPickerItem(value: 'film', label: l10n.karyaKindFilm),
-      ];
 
   List<OptionPickerItem<String>> _creditRoles(AppLocalizations l10n) {
     if (_kind == 'film') {
@@ -389,10 +498,14 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
       });
     }
 
+    final headerTitle = _isEdit
+        ? l10n.karyaProposeEdit
+        : (_kind == 'film' ? l10n.karyaContributeFilm : l10n.karyaContributeMusic);
+
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: Text(_isEdit ? l10n.karyaProposeEdit : l10n.karyaContribute),
+        title: Text(headerTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       footer: SafeArea(
@@ -411,185 +524,217 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
       child: ListView(
         padding: const EdgeInsets.only(bottom: 40),
         children: [
-          if (!_isEdit)
-            FTileGroup(
-              children: [
-                FTile(
-                  title: Text(switch (_kind) {
-                    'film' => l10n.karyaKindFilm,
-                    'music' => l10n.karyaKindMusic,
-                    _ => l10n.karyaFormPickKind,
-                  }),
-                  subtitle: Text(l10n.karyaFormKind),
-                  onPress: () async {
-                    final picked = await showOptionPickerSheet<String>(
-                      context,
-                      title: l10n.karyaFormKind,
-                      items: _kindOptions(l10n),
-                    );
-                    if (picked == null || !mounted) return;
-                    setState(() {
-                      _kind = picked;
-                      for (final row in _credits) {
-                        row.role = picked == 'film' ? 'director' : 'vocal';
-                      }
-                    });
-                  },
-                ),
-              ],
-            ),
-          if (!_isEdit) const Gap(12),
-          FTextField(
-            control: FTextFieldControl.managed(controller: _title),
-            label: Text(l10n.karyaFormTitle),
-            description: Text(l10n.karyaFormTitleHint),
-          ),
-          const Gap(12),
-          FTextField(
-            control: FTextFieldControl.managed(controller: _year),
-            label: Text(l10n.karyaYear),
-            description: Text(l10n.karyaFormYearHint),
-            keyboardType: TextInputType.number,
-          ),
-          const Gap(12),
-          Text(
-            l10n.karyaSambasSection,
-            style: context.theme.typography.body.md.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const Gap(8),
-          FTileGroup(
-            children: [
-              for (var i = 0; i < _sambas.length; i++) ...[
-                FTile(
-                  title: Text(_sambasLabel(l10n, _sambas[i].type)),
-                  subtitle: Text(l10n.karyaSambasType),
-                  onPress: () async {
-                    final picked = await showOptionPickerSheet<String>(
-                      context,
-                      title: l10n.karyaSambasType,
-                      items: _sambasTypes(l10n),
-                    );
-                    if (picked == null || !mounted) return;
-                    setState(() => _sambas[i].type = picked);
-                  },
-                ),
-              ],
-              FTile(
-                title: Text(l10n.karyaFormAddSambas),
-                prefix: const Icon(FLucideIcons.plus, size: 18),
-                onPress: _addSambas,
-              ),
-            ],
-          ),
-          for (var i = 0; i < _sambas.length; i++) ...[
-            const Gap(8),
-            FTextField(
-              control: FTextFieldControl.managed(controller: _sambas[i].note),
-              label: Text(l10n.karyaSambasNote),
-              description: Text(l10n.karyaSambasNoteHint),
-              maxLines: 3,
-            ),
-          ],
-          const Gap(12),
-          Text(
-            l10n.karyaCredits,
-            style: context.theme.typography.body.md.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const Gap(4),
-          Text(
-            _kind == 'film'
-                ? l10n.karyaFormCreditHintFilm
-                : l10n.karyaFormCreditHintMusic,
-            style: context.theme.typography.body.sm.copyWith(
-              color: context.theme.colors.mutedForeground,
-            ),
-          ),
-          const Gap(8),
-          FTileGroup(
-            children: [
-              for (var i = 0; i < _credits.length; i++) ...[
-                FTile(
-                  title: Text(_roleLabel(l10n, _credits[i].role)),
-                  subtitle: Text(l10n.karyaFormCreditRole),
-                  onPress: () async {
-                    final picked = await showOptionPickerSheet<String>(
-                      context,
-                      title: l10n.karyaFormCreditRole,
-                      items: _creditRoles(l10n),
-                    );
-                    if (picked == null || !mounted) return;
-                    setState(() => _credits[i].role = picked);
-                  },
-                ),
-              ],
-              FTile(
-                title: Text(l10n.karyaFormAddCredit),
-                prefix: const Icon(FLucideIcons.plus, size: 18),
-                onPress: _addCredit,
-              ),
-            ],
-          ),
-          for (var i = 0; i < _credits.length; i++) ...[
-            const Gap(8),
-            FTextField(
-              control: FTextFieldControl.managed(controller: _credits[i].name),
-              label: Text(l10n.karyaFormCreditName),
-              description: Text(l10n.karyaFormCreditNameHint),
-            ),
-          ],
-          const Gap(12),
-          Text(
-            l10n.karyaAccess,
-            style: context.theme.typography.body.md.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const Gap(8),
-          FTileGroup(
-            children: [
-              for (var i = 0; i < _access.length; i++) ...[
-                FTile(
-                  title: Text(_accessLabel(l10n, _access[i].kind)),
-                  subtitle: Text(l10n.karyaFormAccessKind),
-                  onPress: () async {
-                    final picked = await showOptionPickerSheet<String>(
-                      context,
-                      title: l10n.karyaFormAccessKind,
-                      items: _accessKinds(l10n),
-                    );
-                    if (picked == null || !mounted) return;
-                    setState(() => _access[i].kind = picked);
-                  },
-                ),
-              ],
-              FTile(
-                title: Text(l10n.karyaFormAddAccess),
-                prefix: const Icon(FLucideIcons.plus, size: 18),
-                onPress: _addAccess,
-              ),
-            ],
-          ),
-          for (var i = 0; i < _access.length; i++) ...[
-            const Gap(8),
-            FTextField(
-              control: FTextFieldControl.managed(controller: _access[i].label),
-              label: Text(l10n.karyaFormAccessLabel),
-              description: Text(l10n.karyaFormAccessLabelHint),
-            ),
-            const Gap(8),
-            FTextField(
-              control: FTextFieldControl.managed(controller: _access[i].url),
-              label: Text(l10n.karyaFormAccessUrl),
-              description: Text(l10n.karyaFormAccessUrlHint),
-              keyboardType: TextInputType.url,
-            ),
-          ],
+          if (_isEdit) ..._editFields(l10n) else ..._quickFields(l10n),
         ],
       ),
     );
+  }
+
+  List<Widget> _quickFields(AppLocalizations l10n) {
+    final credit = _credits.first;
+    final personLabel = _kind == 'film'
+        ? l10n.karyaFormCreditNameFilm
+        : l10n.karyaFormCreditNameMusic;
+    final personHint = _kind == 'film'
+        ? l10n.karyaFormCreditNameHintFilm
+        : l10n.karyaFormCreditNameHintMusic;
+    return [
+      Text(
+        l10n.karyaFormQuickHint,
+        style: context.theme.typography.body.sm.copyWith(
+          color: context.theme.colors.mutedForeground,
+        ),
+      ),
+      const Gap(12),
+      FTextField(
+        control: FTextFieldControl.managed(controller: _title),
+        label: Text(l10n.karyaFormTitle),
+        description: Text(
+          _kind == 'film'
+              ? l10n.karyaFormTitleHintFilm
+              : l10n.karyaFormTitleHintMusic,
+        ),
+      ),
+      const Gap(12),
+      FTextField(
+        control: FTextFieldControl.managed(controller: credit.name),
+        label: Text(personLabel),
+        description: Text(personHint),
+      ),
+      if (_kreatorLoading) ...[
+        const Gap(8),
+        const Align(
+          alignment: Alignment.centerLeft,
+          child: FCircularProgress(size: .sm),
+        ),
+      ],
+      if (_kreatorHints.isNotEmpty) ...[
+        const Gap(8),
+        FTileGroup(
+          children: [
+            for (final item in _kreatorHints.take(8))
+              FTile(
+                title: Text(item.displayName),
+                subtitle: Text(l10n.karyaFormKreatorSuggestPick),
+                onPress: () => _pickKreator(item),
+              ),
+          ],
+        ),
+      ],
+    ];
+  }
+
+  List<Widget> _editFields(AppLocalizations l10n) {
+    return [
+      FTextField(
+        control: FTextFieldControl.managed(controller: _title),
+        label: Text(l10n.karyaFormTitle),
+        description: Text(l10n.karyaFormTitleHint),
+      ),
+      const Gap(12),
+      FTextField(
+        control: FTextFieldControl.managed(controller: _year),
+        label: Text(l10n.karyaYear),
+        description: Text(l10n.karyaFormYearHint),
+        keyboardType: TextInputType.number,
+      ),
+      const Gap(12),
+      Text(
+        l10n.karyaSambasSection,
+        style: context.theme.typography.body.md.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      const Gap(8),
+      FTileGroup(
+        children: [
+          for (var i = 0; i < _sambas.length; i++) ...[
+            FTile(
+              title: Text(_sambasLabel(l10n, _sambas[i].type)),
+              subtitle: Text(l10n.karyaSambasType),
+              onPress: () async {
+                final picked = await showOptionPickerSheet<String>(
+                  context,
+                  title: l10n.karyaSambasType,
+                  items: _sambasTypes(l10n),
+                );
+                if (picked == null || !mounted) return;
+                setState(() => _sambas[i].type = picked);
+              },
+            ),
+          ],
+          FTile(
+            title: Text(l10n.karyaFormAddSambas),
+            prefix: const Icon(FLucideIcons.plus, size: 18),
+            onPress: _addSambas,
+          ),
+        ],
+      ),
+      for (var i = 0; i < _sambas.length; i++) ...[
+        const Gap(8),
+        FTextField(
+          control: FTextFieldControl.managed(controller: _sambas[i].note),
+          label: Text(l10n.karyaSambasNote),
+          description: Text(l10n.karyaSambasNoteHint),
+          maxLines: 3,
+        ),
+      ],
+      const Gap(12),
+      Text(
+        l10n.karyaCredits,
+        style: context.theme.typography.body.md.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      const Gap(4),
+      Text(
+        _kind == 'film'
+            ? l10n.karyaFormCreditHintFilm
+            : l10n.karyaFormCreditHintMusic,
+        style: context.theme.typography.body.sm.copyWith(
+          color: context.theme.colors.mutedForeground,
+        ),
+      ),
+      const Gap(8),
+      FTileGroup(
+        children: [
+          for (var i = 0; i < _credits.length; i++) ...[
+            FTile(
+              title: Text(_roleLabel(l10n, _credits[i].role)),
+              subtitle: Text(l10n.karyaFormCreditRole),
+              onPress: () async {
+                final picked = await showOptionPickerSheet<String>(
+                  context,
+                  title: l10n.karyaFormCreditRole,
+                  items: _creditRoles(l10n),
+                );
+                if (picked == null || !mounted) return;
+                setState(() => _credits[i].role = picked);
+              },
+            ),
+          ],
+          FTile(
+            title: Text(l10n.karyaFormAddCredit),
+            prefix: const Icon(FLucideIcons.plus, size: 18),
+            onPress: _addCredit,
+          ),
+        ],
+      ),
+      for (var i = 0; i < _credits.length; i++) ...[
+        const Gap(8),
+        FTextField(
+          control: FTextFieldControl.managed(controller: _credits[i].name),
+          label: Text(l10n.karyaFormCreditName),
+          description: Text(l10n.karyaFormCreditNameHint),
+        ),
+      ],
+      const Gap(12),
+      Text(
+        l10n.karyaAccess,
+        style: context.theme.typography.body.md.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      const Gap(8),
+      FTileGroup(
+        children: [
+          for (var i = 0; i < _access.length; i++) ...[
+            FTile(
+              title: Text(_accessLabel(l10n, _access[i].kind)),
+              subtitle: Text(l10n.karyaFormAccessKind),
+              onPress: () async {
+                final picked = await showOptionPickerSheet<String>(
+                  context,
+                  title: l10n.karyaFormAccessKind,
+                  items: _accessKinds(l10n),
+                );
+                if (picked == null || !mounted) return;
+                setState(() => _access[i].kind = picked);
+              },
+            ),
+          ],
+          FTile(
+            title: Text(l10n.karyaFormAddAccess),
+            prefix: const Icon(FLucideIcons.plus, size: 18),
+            onPress: _addAccess,
+          ),
+        ],
+      ),
+      for (var i = 0; i < _access.length; i++) ...[
+        const Gap(8),
+        FTextField(
+          control: FTextFieldControl.managed(controller: _access[i].label),
+          label: Text(l10n.karyaFormAccessLabel),
+          description: Text(l10n.karyaFormAccessLabelHint),
+        ),
+        const Gap(8),
+        FTextField(
+          control: FTextFieldControl.managed(controller: _access[i].url),
+          label: Text(l10n.karyaFormAccessUrl),
+          description: Text(l10n.karyaFormAccessUrlHint),
+          keyboardType: TextInputType.url,
+        ),
+      ],
+    ];
   }
 }

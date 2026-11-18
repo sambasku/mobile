@@ -5211,6 +5211,37 @@
   "karyaAccessKindOfficial": "Situs resmi",
   "karyaAccessKindOther": "Lainnya",
   "karyaContribute": "Usulkan karya",
+  "karyaContributeMusic": "Usul lagu",
+  "@karyaContributeMusic": {
+    "description": "CTA / judul form usul karya musik (cepat)"
+  },
+  "karyaContributeFilm": "Usul film",
+  "@karyaContributeFilm": {
+    "description": "CTA / judul form usul karya film (cepat)"
+  },
+  "karyaContributePickTitle": "Usulkan karya apa?",
+  "@karyaContributePickTitle": {
+    "description": "Judul sheet pilih jenis usulan karya"
+  },
+  "karyaContributePickSubtitle": "Pilih musik atau film. Tahun dan kaitan Sambas dilengkapi saat tinjauan.",
+  "@karyaContributePickSubtitle": {
+    "description": "Subjudul sheet pilih jenis usulan karya"
+  },
+  "karyaFormQuickHint": "Cukup judul dan nama orang. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.",
+  "@karyaFormQuickHint": {
+    "description": "Petunjuk form usul karya cepat (2 field)"
+  },
+  "karyaFormTitleHintMusic": "Judul lagu",
+  "karyaFormTitleHintFilm": "Judul film",
+  "karyaFormCreditNameMusic": "Nama penyanyi",
+  "karyaFormCreditNameFilm": "Nama sutradara",
+  "karyaFormCreditNameHintMusic": "Ketik nama, atau pilih dari saran kreator",
+  "karyaFormCreditNameHintFilm": "Ketik nama, atau pilih dari saran kreator",
+  "karyaFormCreditNameRequired": "Nama orang minimal 2 karakter",
+  "karyaFormKreatorSuggestPick": "Pilih kreator ini",
+  "@karyaFormKreatorSuggestPick": {
+    "description": "Subtitle tile saran kreator di form usul"
+  },
   "karyaContributeSubmit": "Kirim usulan",
   "karyaContributeBusy": "Mengirim...",
   "karyaProposeSuccess": "Usulan karya kamu sudah dikirim",
@@ -5321,7 +5352,7 @@
   "@karyaLemmaLinkLoginFirst": {
     "description": "Sheet saat guest mengetuk taut lemma"
   },
-  "karyaFormInvalid": "Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi",
+  "karyaFormInvalid": "Judul dan nama orang wajib diisi",
   "karyaFormKindRequired": "Pilih jenis karya dulu",
   "karyaFormTitleRequired": "Judul karya minimal 2 karakter",
   "karyaFormYearInvalid": "Isi tahun rilis yang valid (1800-2100)",
