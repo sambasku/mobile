@@ -2865,6 +2865,10 @@
   "encyclopediaAuthorBy": "Oleh",
   "encyclopediaPublishedAt": "Diterbitkan",
   "encyclopediaReferencesTitle": "Referensi & Sumber",
+  "encyclopediaViewOriginalSource": "Lihat sumber asli",
+  "@encyclopediaViewOriginalSource": {
+    "description": "CTA buka source_url artikel ensiklopedia di browser eksternal"
+  },
   "contentRelatedSection": "Terkait",
   "@contentRelatedSection": {
     "description": "Judul section tautan lintas fitur (content_links)"
@@ -5775,5 +5779,64 @@
   "voiceJoinFailed": "Gagal masuk voice room",
   "voiceRoomDisabled": "Voice room sedang dimatikan.",
   "voiceUnavailable": "Voice room belum siap. Coba lagi nanti ya.",
-  "voiceMicDenied": "Izin mikrofon dibutuhkan untuk voice room."
+  "voiceMicDenied": "Izin mikrofon dibutuhkan untuk voice room.",
+  "voiceMiniBarOpenChat": "Ketuk untuk buka Chat",
+  "@voiceMiniBarOpenChat": {
+    "description": "Subtitle mini bar voice room di atas bottom nav"
+  },
+  "voiceParticipantsTitle": "Peserta voice ({count})",
+  "@voiceParticipantsTitle": {
+    "description": "Judul sheet daftar peserta voice room",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceParticipantsEmpty": "Belum ada peserta di room.",
+  "voiceParticipantYou": "{name} (kamu)",
+  "@voiceParticipantYou": {
+    "description": "Label peserta lokal di daftar voice",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceParticipantSpeaking": "Sedang bicara",
+  "voiceParticipantMuted": "Mikrofon dimatikan",
+  "voiceParticipantListening": "Mendengarkan",
+  "voiceShowParticipants": "Lihat peserta",
+  "@voiceShowParticipants": {
+    "description": "Aksi buka sheet daftar peserta voice"
+  },
+  "chatPresenceCount": "{count} orang di chat",
+  "@chatPresenceCount": {
+    "description": "Indikator jumlah orang yang sedang buka layar Chat",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatPresenceGuestName": "Tamu",
+  "@chatPresenceGuestName": {
+    "description": "Nama presence untuk pengunjung belum login di Chat"
+  },
+  "voiceRoomFull": "Voice room penuh (maks 15 orang). Coba lagi nanti ya.",
+  "@voiceRoomFull": {
+    "description": "Error saat room LiveKit sudah mencapai 15 peserta"
+  },
+  "voiceDisconnected": "Koneksi voice putus. Server lagi bermasalah - coba gabung lagi nanti ya.",
+  "@voiceDisconnected": {
+    "description": "Error setelah disconnect tak terduga (homelab mati / jaringan)"
+  },
+  "voiceReconnecting": "Menyambungkan ulang…",
+  "@voiceReconnecting": {
+    "description": "Status strip/mini bar saat LiveKit sedang reconnect"
+  },
+  "voiceConnectTimeout": "Gagal terhubung ke voice server. Coba lagi nanti ya.",
+  "@voiceConnectTimeout": {
+    "description": "Timeout 20s saat connect ke LiveKit"
+  }
 }

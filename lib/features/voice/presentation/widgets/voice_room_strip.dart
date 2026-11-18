@@ -11,11 +11,11 @@ import '../../../chat/data/chat_providers.dart';
 import '../../../settings/settings_router.dart';
 import '../providers/voice_opt_in_provider.dart';
 import '../providers/voice_room_provider.dart';
+import 'voice_participants_sheet.dart';
 
-/// Strip compact di atas stream chat.
+/// Strip compact di atas stream chat (bukan floating overlay).
 ///
 /// Gate: `voice_room_enabled` (API) ∧ opt-in SharedPreferences.
-/// Backend OFF → sembunyi. ON + belum opt-in → ajakan ke Pengaturan.
 class VoiceRoomStrip extends ConsumerWidget {
   const VoiceRoomStrip({super.key});
 
@@ -42,7 +42,7 @@ class VoiceRoomStrip extends ConsumerWidget {
     final colors = FTheme.of(context).colors;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.secondary,
@@ -50,9 +50,9 @@ class VoiceRoomStrip extends ConsumerWidget {
           border: Border.all(color: colors.border),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
           child: optIn
-              ? _ConnectedRow(
+              ? _ActiveStrip(
                   l10n: l10n,
                   room: room,
                   isAuth: isAuth,
@@ -61,6 +61,8 @@ class VoiceRoomStrip extends ConsumerWidget {
                   onLeave: () => ref.read(voiceRoomProvider.notifier).leave(),
                   onMute: () =>
                       ref.read(voiceRoomProvider.notifier).toggleMute(),
+                  onShowParticipants: () =>
+                      showVoiceParticipantsSheet(context),
                 )
               : _OptInHint(
                   l10n: l10n,
@@ -81,16 +83,22 @@ class _OptInHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Icon(FLucideIcons.audioLines, size: 16),
-        const Gap(8),
-        Expanded(
-          child: Text(
-            l10n.voiceStripOptInHint,
-            style: FTheme.of(context).typography.body.sm,
-          ),
+        Row(
+          children: [
+            const Icon(FLucideIcons.audioLines, size: 16),
+            const Gap(8),
+            Expanded(
+              child: Text(
+                l10n.voiceStripOptInHint,
+                style: FTheme.of(context).typography.body.xs,
+              ),
+            ),
+          ],
         ),
+        const Gap(8),
         FButton(
           variant: FButtonVariant.outline,
           onPress: onOpenSettings,
@@ -101,8 +109,8 @@ class _OptInHint extends StatelessWidget {
   }
 }
 
-class _ConnectedRow extends StatelessWidget {
-  const _ConnectedRow({
+class _ActiveStrip extends StatelessWidget {
+  const _ActiveStrip({
     required this.l10n,
     required this.room,
     required this.isAuth,
@@ -110,6 +118,7 @@ class _ConnectedRow extends StatelessWidget {
     required this.onJoin,
     required this.onLeave,
     required this.onMute,
+    required this.onShowParticipants,
   });
 
   final AppLocalizations l10n;
@@ -119,42 +128,91 @@ class _ConnectedRow extends StatelessWidget {
   final VoidCallback onJoin;
   final VoidCallback onLeave;
   final VoidCallback onMute;
+  final VoidCallback onShowParticipants;
 
   @override
   Widget build(BuildContext context) {
     final busy = room.phase == VoiceRoomPhase.connecting;
-    final connected = room.isConnected;
+    final inSession = room.isInSession;
+    final reconnecting = room.phase == VoiceRoomPhase.reconnecting;
+    final theme = FTheme.of(context);
 
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Icon(
-          connected ? FLucideIcons.radio : FLucideIcons.audioLines,
-          size: 16,
-        ),
-        const Gap(8),
-        Expanded(
-          child: Text(
-            connected
-                ? l10n.voiceStripInRoom(room.participantCount)
-                : l10n.voiceStripTitle,
-            style: FTheme.of(context).typography.body.sm,
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: inSession ? onShowParticipants : null,
+          child: Row(
+            children: [
+              Icon(
+                inSession ? FLucideIcons.radio : FLucideIcons.audioLines,
+                size: 16,
+              ),
+              const Gap(8),
+              Expanded(
+                child: Text(
+                  reconnecting
+                      ? l10n.voiceReconnecting
+                      : inSession
+                          ? l10n.voiceStripInRoom(room.participantCount)
+                          : l10n.voiceStripTitle,
+                  style: theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              if (inSession)
+                Icon(
+                  FLucideIcons.users,
+                  size: 14,
+                  color: theme.colors.mutedForeground,
+                ),
+            ],
           ),
         ),
-        if (connected) ...[
-          FButton(
-            variant: FButtonVariant.outline,
-            onPress: busy ? null : onMute,
-            child: Text(
-              room.muted ? l10n.voiceUnmute : l10n.voiceMute,
-            ),
-          ),
+        if (inSession && room.participants.isNotEmpty) ...[
           const Gap(6),
-          FButton(
-            variant: FButtonVariant.destructive,
-            onPress: busy ? null : onLeave,
-            child: Text(l10n.voiceLeave),
+          Text(
+            room.participants
+                .take(3)
+                .map((p) => p.isLocal ? l10n.voiceParticipantYou(p.name) : p.name)
+                .join(', '),
+            style: theme.typography.body.xs2.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-        ] else
+        ],
+        const Gap(8),
+        if (inSession)
+          Row(
+            children: [
+              Expanded(
+                child: FButton(
+                  variant: FButtonVariant.outline,
+                  onPress: busy || reconnecting ? null : onMute,
+                  prefix: Icon(
+                    room.muted ? FLucideIcons.micOff : FLucideIcons.mic,
+                    size: 14,
+                  ),
+                  child: Text(
+                    room.muted ? l10n.voiceUnmute : l10n.voiceMute,
+                  ),
+                ),
+              ),
+              const Gap(8),
+              Expanded(
+                child: FButton(
+                  variant: FButtonVariant.destructive,
+                  onPress: busy ? null : onLeave,
+                  child: Text(l10n.voiceLeave),
+                ),
+              ),
+            ],
+          )
+        else
           FButton(
             onPress: busy
                 ? null

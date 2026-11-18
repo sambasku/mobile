@@ -13707,6 +13707,12 @@ abstract class AppLocalizations {
   /// **'Referensi & Sumber'**
   String get encyclopediaReferencesTitle;
 
+  /// CTA buka source_url artikel ensiklopedia di browser eksternal
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat sumber asli'**
+  String get encyclopediaViewOriginalSource;
+
   /// Judul section tautan lintas fitur (content_links)
   ///
   /// In id, this message translates to:
@@ -21978,6 +21984,90 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Izin mikrofon dibutuhkan untuk voice room.'**
   String get voiceMicDenied;
+
+  /// Subtitle mini bar voice room di atas bottom nav
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk buka Chat'**
+  String get voiceMiniBarOpenChat;
+
+  /// Judul sheet daftar peserta voice room
+  ///
+  /// In id, this message translates to:
+  /// **'Peserta voice ({count})'**
+  String voiceParticipantsTitle(int count);
+
+  /// No description provided for @voiceParticipantsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada peserta di room.'**
+  String get voiceParticipantsEmpty;
+
+  /// Label peserta lokal di daftar voice
+  ///
+  /// In id, this message translates to:
+  /// **'{name} (kamu)'**
+  String voiceParticipantYou(String name);
+
+  /// No description provided for @voiceParticipantSpeaking.
+  ///
+  /// In id, this message translates to:
+  /// **'Sedang bicara'**
+  String get voiceParticipantSpeaking;
+
+  /// No description provided for @voiceParticipantMuted.
+  ///
+  /// In id, this message translates to:
+  /// **'Mikrofon dimatikan'**
+  String get voiceParticipantMuted;
+
+  /// No description provided for @voiceParticipantListening.
+  ///
+  /// In id, this message translates to:
+  /// **'Mendengarkan'**
+  String get voiceParticipantListening;
+
+  /// Aksi buka sheet daftar peserta voice
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat peserta'**
+  String get voiceShowParticipants;
+
+  /// Indikator jumlah orang yang sedang buka layar Chat
+  ///
+  /// In id, this message translates to:
+  /// **'{count} orang di chat'**
+  String chatPresenceCount(int count);
+
+  /// Nama presence untuk pengunjung belum login di Chat
+  ///
+  /// In id, this message translates to:
+  /// **'Tamu'**
+  String get chatPresenceGuestName;
+
+  /// Error saat room LiveKit sudah mencapai 15 peserta
+  ///
+  /// In id, this message translates to:
+  /// **'Voice room penuh (maks 15 orang). Coba lagi nanti ya.'**
+  String get voiceRoomFull;
+
+  /// Error setelah disconnect tak terduga (homelab mati / jaringan)
+  ///
+  /// In id, this message translates to:
+  /// **'Koneksi voice putus. Server lagi bermasalah - coba gabung lagi nanti ya.'**
+  String get voiceDisconnected;
+
+  /// Status strip/mini bar saat LiveKit sedang reconnect
+  ///
+  /// In id, this message translates to:
+  /// **'Menyambungkan ulang…'**
+  String get voiceReconnecting;
+
+  /// Timeout 20s saat connect ke LiveKit
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal terhubung ke voice server. Coba lagi nanti ya.'**
+  String get voiceConnectTimeout;
 }
 
 class _AppLocalizationsDelegate

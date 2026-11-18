@@ -1325,6 +1325,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.13.2"
+  livekit_noise_filter:
+    dependency: "direct main"
+    description:
+      name: livekit_noise_filter
+      sha256: cdad65f89f08ea7bf39688660fdef5e816dbd75fc2a35c2bdd36ea5bb1072839
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   logger:
     dependency: transitive
     description:

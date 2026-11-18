@@ -12,9 +12,11 @@ import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/chat_models.dart';
 import '../providers/chat_messages_provider.dart';
+import '../providers/chat_presence_provider.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/chat_composer.dart';
 import '../widgets/chat_new_messages_chip.dart';
+import '../widgets/chat_presence_badge.dart';
 import '../widgets/chat_sticker_sheet.dart';
 import '../widgets/discussion_hub_segment.dart';
 import '../../../voice/presentation/widgets/voice_room_strip.dart';
@@ -74,6 +76,29 @@ class ChatPage extends HookConsumerWidget {
       pinnedBottom.value = atBottom;
       if (atBottom) newCount.value = 0;
     }
+
+    final presenceKey = useMemoized(() {
+      final id = myUserId?.trim();
+      if (id != null && id.isNotEmpty) return id;
+      return 'guest-${DateTime.now().microsecondsSinceEpoch}';
+    }, [myUserId]);
+
+    useEffect(() {
+      final auth = ref.read(authStatusProvider).value;
+      final name = (auth?.displayName?.trim().isNotEmpty == true)
+          ? auth!.displayName!.trim()
+          : (auth?.username?.trim().isNotEmpty == true)
+              ? auth!.username!.trim()
+              : l10n.chatPresenceGuestName;
+      ref.read(chatPresenceCountProvider.notifier).enter(
+            presenceKey: presenceKey,
+            name: name,
+            userId: auth?.userId,
+          );
+      return () {
+        ref.read(chatPresenceCountProvider.notifier).leave();
+      };
+    }, [presenceKey]);
 
     useEffect(() {
       void listener() => updateNearBottom();
@@ -351,6 +376,7 @@ class ChatPage extends HookConsumerWidget {
                 if (i == 0) onSelectRoomsTab();
               },
             ),
+            const ChatPresenceBadge(),
             const VoiceRoomStrip(),
             Expanded(
               child: Stack(
@@ -455,14 +481,42 @@ class ChatPage extends HookConsumerWidget {
                             final itemIndex = state.isLoadingOlder
                                 ? index - 1
                                 : index;
-                            final message = state.items[itemIndex];
+                            final items = state.items;
+                            final message = items[itemIndex];
+                            final prev =
+                                itemIndex > 0 ? items[itemIndex - 1] : null;
+                            final next = itemIndex < items.length - 1
+                                ? items[itemIndex + 1]
+                                : null;
                             final mine =
                                 myUserId != null &&
                                 myUserId.isNotEmpty &&
                                 message.userId == myUserId;
+                            final sameAuthorAsPrev =
+                                prev != null &&
+                                prev.userId == message.userId;
+                            final sameAuthorAsNext =
+                                next != null &&
+                                next.userId == message.userId;
+                            final sameMinuteAsNext =
+                                next != null &&
+                                _sameLocalMinute(
+                                  message.createdAt,
+                                  next.createdAt,
+                                );
+                            // Jam hanya di akhir run: orang sama + menit sama.
+                            final showTime = message.pending ||
+                                !(sameAuthorAsNext && sameMinuteAsNext);
+                            final showName = !mine && !sameAuthorAsPrev;
+                            final clustered =
+                                sameAuthorAsPrev ||
+                                (sameAuthorAsNext && sameMinuteAsNext);
                             return ChatBubble(
                               message: message,
                               mine: mine,
+                              showName: showName,
+                              showTime: showTime,
+                              clustered: clustered,
                               onReply: () => replyTarget.value = message,
                               onDelete: mine && !message.isDeleted
                                   ? () => confirmDelete(message)
@@ -502,6 +556,17 @@ class ChatPage extends HookConsumerWidget {
       ),
     );
   }
+}
+
+bool _sameLocalMinute(String isoA, String isoB) {
+  final a = DateTime.tryParse(isoA)?.toLocal();
+  final b = DateTime.tryParse(isoB)?.toLocal();
+  if (a == null || b == null) return false;
+  return a.year == b.year &&
+      a.month == b.month &&
+      a.day == b.day &&
+      a.hour == b.hour &&
+      a.minute == b.minute;
 }
 
 class _LifecycleObserver with WidgetsBindingObserver {

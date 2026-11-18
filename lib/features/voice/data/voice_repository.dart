@@ -58,9 +58,25 @@ class VoiceRepository {
           VoiceFailure(l10n.voiceRoomDisabled, errorCode: code),
         );
       }
-      if (status == 503) {
+      if (status == 409 || code == 'VOICE_ROOM_FULL') {
+        return Either.left(
+          VoiceFailure(l10n.voiceRoomFull, errorCode: code ?? 'VOICE_ROOM_FULL'),
+        );
+      }
+      if (status == 503 ||
+          status == 502 ||
+          code == 'VOICE_UNAVAILABLE' ||
+          code == 'BAD_GATEWAY') {
         return Either.left(
           VoiceFailure(l10n.voiceUnavailable, errorCode: code),
+        );
+      }
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout ||
+          e.type == DioExceptionType.connectionError) {
+        return Either.left(
+          VoiceFailure(l10n.voiceUnavailable, errorCode: 'VOICE_UNAVAILABLE'),
         );
       }
       return Either.left(VoiceFailure(l10n.voiceJoinFailed, errorCode: code));

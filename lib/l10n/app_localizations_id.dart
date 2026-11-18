@@ -7631,6 +7631,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get encyclopediaReferencesTitle => 'Referensi & Sumber';
 
   @override
+  String get encyclopediaViewOriginalSource => 'Lihat sumber asli';
+
+  @override
   String get contentRelatedSection => 'Terkait';
 
   @override
@@ -12453,6 +12456,57 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get voiceMicDenied => 'Izin mikrofon dibutuhkan untuk voice room.';
+
+  @override
+  String get voiceMiniBarOpenChat => 'Ketuk untuk buka Chat';
+
+  @override
+  String voiceParticipantsTitle(int count) {
+    return 'Peserta voice ($count)';
+  }
+
+  @override
+  String get voiceParticipantsEmpty => 'Belum ada peserta di room.';
+
+  @override
+  String voiceParticipantYou(String name) {
+    return '$name (kamu)';
+  }
+
+  @override
+  String get voiceParticipantSpeaking => 'Sedang bicara';
+
+  @override
+  String get voiceParticipantMuted => 'Mikrofon dimatikan';
+
+  @override
+  String get voiceParticipantListening => 'Mendengarkan';
+
+  @override
+  String get voiceShowParticipants => 'Lihat peserta';
+
+  @override
+  String chatPresenceCount(int count) {
+    return '$count orang di chat';
+  }
+
+  @override
+  String get chatPresenceGuestName => 'Tamu';
+
+  @override
+  String get voiceRoomFull =>
+      'Voice room penuh (maks 15 orang). Coba lagi nanti ya.';
+
+  @override
+  String get voiceDisconnected =>
+      'Koneksi voice putus. Server lagi bermasalah - coba gabung lagi nanti ya.';
+
+  @override
+  String get voiceReconnecting => 'Menyambungkan ulang…';
+
+  @override
+  String get voiceConnectTimeout =>
+      'Gagal terhubung ke voice server. Coba lagi nanti ya.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -20082,6 +20136,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get encyclopediaReferencesTitle => 'Referensi & Sumber';
 
   @override
+  String get encyclopediaViewOriginalSource => 'Lihat sumber asli';
+
+  @override
   String get contentRelatedSection => 'Terkait';
 
   @override
@@ -24904,4 +24961,55 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get voiceMicDenied => 'Izin mikrofon dibutuhkan untuk voice room.';
+
+  @override
+  String get voiceMiniBarOpenChat => 'Ketuk untuk buka Chat';
+
+  @override
+  String voiceParticipantsTitle(int count) {
+    return 'Peserta voice ($count)';
+  }
+
+  @override
+  String get voiceParticipantsEmpty => 'Belum ada peserta di room.';
+
+  @override
+  String voiceParticipantYou(String name) {
+    return '$name (kamu)';
+  }
+
+  @override
+  String get voiceParticipantSpeaking => 'Sedang bicara';
+
+  @override
+  String get voiceParticipantMuted => 'Mikrofon dimatikan';
+
+  @override
+  String get voiceParticipantListening => 'Mendengarkan';
+
+  @override
+  String get voiceShowParticipants => 'Lihat peserta';
+
+  @override
+  String chatPresenceCount(int count) {
+    return '$count orang di chat';
+  }
+
+  @override
+  String get chatPresenceGuestName => 'Tamu';
+
+  @override
+  String get voiceRoomFull =>
+      'Voice room penuh (maks 15 orang). Coba lagi nanti ya.';
+
+  @override
+  String get voiceDisconnected =>
+      'Koneksi voice putus. Server lagi bermasalah - coba gabung lagi nanti ya.';
+
+  @override
+  String get voiceReconnecting => 'Menyambungkan ulang…';
+
+  @override
+  String get voiceConnectTimeout =>
+      'Gagal terhubung ke voice server. Coba lagi nanti ya.';
 }

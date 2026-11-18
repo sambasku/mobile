@@ -53,6 +53,8 @@ import '../../features/discussion/discussion_router.dart';
 import '../../features/jinye/jinye_router.dart';
 import '../../features/entertainment/entertainment_router.dart';
 import '../../features/user_profile/user_profile_router.dart';
+import '../../features/voice/presentation/providers/voice_room_provider.dart';
+import '../../features/voice/presentation/widgets/voice_room_mini_bar.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
 import '../../shared/splash/splash_router.dart';
 import '../network/auth_token_storage.dart';
@@ -351,6 +353,9 @@ class _HomeShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final pendingReview = ref.watch(reviewHubHasPendingProvider).value ?? false;
+    final voiceConnected = ref.watch(
+      voiceRoomProvider.select((s) => s.isInSession),
+    );
 
     // Consent legal: server (GET /users/me) yang jadi sumber kebenaran.
     // Sheet non-dismissible - user agree dulu atau keluar.
@@ -444,7 +449,18 @@ class _HomeShell extends ConsumerWidget {
               ),
             ],
           ),
-          child: navigationShell,
+          child: Stack(
+            children: [
+              navigationShell,
+              if (voiceConnected)
+                const Positioned(
+                  left: 12,
+                  right: 12,
+                  bottom: 8,
+                  child: VoiceRoomMiniBar(),
+                ),
+            ],
+          ),
         ),
       ),
     );

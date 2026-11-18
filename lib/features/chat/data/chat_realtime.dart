@@ -22,6 +22,7 @@ class ChatRealtime {
 
   final SupabaseClient _client;
   RealtimeChannel? _channel;
+  RealtimeChannel? _presenceChannel;
 
   static ChatRealtime? tryCreate() {
     final url = Env.supabaseUrl;
@@ -32,6 +33,55 @@ class ChatRealtime {
     } catch (e, st) {
       debugPrint('ChatRealtime create failed: $e\n$st');
       return null;
+    }
+  }
+
+  /// Presence "siapa sedang di layar Chat". [presenceKey] = userId / guest-*.
+  void startPresence({
+    required String presenceKey,
+    required Map<String, dynamic> meta,
+    required void Function(int count) onCount,
+  }) {
+    stopPresence();
+    final ch = _client.channel(
+      'chat-public-presence',
+      opts: RealtimeChannelConfig(key: presenceKey),
+    );
+    _presenceChannel = ch;
+
+    void emitCount() {
+      try {
+        onCount(ch.presenceState().length);
+      } catch (e, st) {
+        debugPrint('ChatRealtime presence count failed: $e\n$st');
+      }
+    }
+
+    ch
+        .onPresenceSync((_) => emitCount())
+        .onPresenceJoin((_) => emitCount())
+        .onPresenceLeave((_) => emitCount())
+        .subscribe((status, [_]) async {
+          if (status != RealtimeSubscribeStatus.subscribed) return;
+          try {
+            await ch.track(meta);
+          } catch (e, st) {
+            debugPrint('ChatRealtime presence track failed: $e\n$st');
+          }
+        });
+  }
+
+  Future<void> stopPresence() async {
+    final ch = _presenceChannel;
+    _presenceChannel = null;
+    if (ch == null) return;
+    try {
+      await ch.untrack();
+    } catch (_) {}
+    try {
+      await _client.removeChannel(ch);
+    } catch (e, st) {
+      debugPrint('ChatRealtime stopPresence failed: $e\n$st');
     }
   }
 
@@ -104,6 +154,7 @@ class ChatRealtime {
   }
 
   Future<void> stop() async {
+    await stopPresence();
     final ch = _channel;
     _channel = null;
     if (ch != null) await _client.removeChannel(ch);
