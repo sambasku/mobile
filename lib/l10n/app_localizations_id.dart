@@ -843,6 +843,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get profileViewPublic => 'Lihat profil publik';
 
   @override
+  String get profileJinyeComposeQuote => 'Agek mikerkan ape insanak';
+
+  @override
   String get profileNotifications => 'Notifikasi';
 
   @override
@@ -1413,6 +1416,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get commentAddPhoto => 'Foto';
 
   @override
+  String get commentAddSticker => 'Stiker';
+
+  @override
+  String get commentRemoveSticker => 'Lepas stiker';
+
+  @override
   String get commentPhotoPending => 'Foto menunggu pengecekan';
 
   @override
@@ -1428,7 +1437,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get commentRemovePhoto => 'Hapus foto';
 
   @override
-  String get commentBodyOrPhotoRequired => 'Komentar atau foto wajib diisi';
+  String get commentBodyOrPhotoRequired =>
+      'Komentar, foto, atau stiker wajib diisi';
 
   @override
   String get commentRecordTitle => 'Rekam komentar suara';
@@ -2563,6 +2573,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get commonReason => 'Alasan';
+
+  @override
+  String get commonPaste => 'Tempel';
+
+  @override
+  String get commonClipboardEmpty => 'Clipboard kosong';
 
   @override
   String get reviewEntityWord => 'Kata';
@@ -7620,10 +7636,18 @@ class AppLocalizationsId extends AppLocalizations {
   String get exploreCategoryAcaraSubtitle => 'Festival, pameran, dan kegiatan';
 
   @override
+  String get exploreCategoryPantun => 'Pantun';
+
+  @override
+  String get exploreCategoryPantunSubtitle =>
+      'Berbalas pantun bersama warga Sambas';
+
+  @override
   String get exploreCategoryPermainan => 'Permainan';
 
   @override
-  String get exploreCategoryPermainanSubtitle => 'Pantun dan permainan Sambas';
+  String get exploreCategoryPermainanSubtitle =>
+      'Teka-teki dan permainan Sambas';
 
   @override
   String get exploreCategoryEnsiklopedia => 'Ensiklopedia';
@@ -7631,6 +7655,19 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get exploreCategoryEnsiklopediaSubtitle =>
       'Sejarah, kisah, karya, dan tradisi';
+
+  @override
+  String get petakateTitle => 'Petakate';
+
+  @override
+  String get petakateListSubtitle => 'Tebak kata Melayu Sambas hari ini';
+
+  @override
+  String get permainanEmptyTitle => 'Belum ada permainan';
+
+  @override
+  String get permainanEmptySubtitle =>
+      'Game Sambas sedang disiapkan. Cek lagi nanti ya.';
 
   @override
   String get encyclopediaTitle => 'Ensiklopedia';
@@ -7737,6 +7774,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get encyclopediaContributeEditTitle => 'Usul Perbaikan Artikel';
+
+  @override
+  String get encyclopediaProposeEdit => 'Usulkan perbaikan';
 
   @override
   String get encyclopediaContributeIntro =>
@@ -7893,6 +7933,18 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get markdownLinkOpenBrowser => 'Buka di browser';
+
+  @override
+  String get markdownLinkShowFullSemantics => 'Lihat tautan lengkap';
+
+  @override
+  String get markdownLinkFullUrlTitle => 'Tautan lengkap';
+
+  @override
+  String get markdownLinkCopySemantics => 'Salin tautan';
+
+  @override
+  String get markdownLinkOpenBrowserSemantics => 'Buka di browser';
 
   @override
   String get encyclopediaLoginFirstTitle => 'Masuk dulu ya';
@@ -12294,6 +12346,73 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get placeVisitAction => 'Pernah singgah';
+
+  @override
+  String get placeVisitCancel => 'Batal singgah';
+
+  @override
+  String placeVisitCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang pernah singgah';
+  }
+
+  @override
+  String get usahaVisitAction => 'Pernah bertransaksi';
+
+  @override
+  String get usahaVisitCancel => 'Batal transaksi';
+
+  @override
+  String usahaVisitCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang pernah bertransaksi';
+  }
+
+  @override
+  String get placeCommentsTitle => 'Komentar wisata';
+
+  @override
+  String get placeCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get placeCommentHint => 'Tulis komentar tentang tempat ini';
+
+  @override
+  String get usahaCommentsTitle => 'Komentar usaha';
+
+  @override
+  String get usahaCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get usahaCommentHint => 'Tulis komentar tentang usaha ini';
+
+  @override
+  String get cuisineCommentsTitle => 'Komentar kuliner';
+
+  @override
+  String get cuisineCommentsEmpty =>
+      'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get cuisineCommentHint => 'Tulis komentar tentang kuliner ini';
+
+  @override
+  String get eventCommentsTitle => 'Komentar acara';
+
+  @override
+  String get eventCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get eventCommentHint => 'Tulis komentar tentang acara ini';
+
+  @override
   String eventMorePhotos(int count) {
     final intl.NumberFormat countNumberFormat =
         intl.NumberFormat.decimalPattern(localeName);
@@ -12369,6 +12488,20 @@ class AppLocalizationsId extends AppLocalizations {
   String get chatSend => 'Kirim';
 
   @override
+  String get chatPrivacyWarningTitle => 'Peringatan Privasi';
+
+  @override
+  String get chatPrivacyWarningBody =>
+      'Ruang chat ini bersifat publik dan tidak dilengkapi enkripsi atau pengamanan khusus. Pastikan kamu tidak mengirimkan informasi pribadi, data sensitif, atau informasi penting lainnya.';
+
+  @override
+  String get chatPrivacyWarningDismiss => 'Tutup peringatan privasi';
+
+  @override
+  String get chatPrivacyWarningHint =>
+      'Chat ini publik. Jangan kirim data pribadi.';
+
+  @override
   String get chatLoginToSend => 'Masuk dulu untuk ikut chat ya.';
 
   @override
@@ -12376,6 +12509,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get chatEdited => 'disunting';
+
+  @override
+  String get chatScrollToLatest => 'Ke pesan terakhir';
 
   @override
   String chatNewMessages(int count) {
@@ -12389,6 +12525,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get chatReplyCancelSemantics => 'Batalkan balasan';
+
+  @override
+  String get chatReplyJumpSemantics => 'Lihat pesan yang dibalas';
+
+  @override
+  String get chatReplyTargetMissing =>
+      'Pesan itu belum ada di daftar. Gulir ke atas dulu.';
 
   @override
   String get chatDeleteConfirmTitle => 'Hapus pesan?';
@@ -12423,6 +12566,15 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get chatStickerSemantics => 'Stiker';
+
+  @override
+  String get stickerTabAll => 'Semua';
+
+  @override
+  String get stickerSearchHint => 'Cari id stiker';
+
+  @override
+  String get stickerSearchEmpty => 'Tidak ada stiker yang cocok';
 
   @override
   String get chatMicSemantics => 'Rekam suara';
@@ -12472,6 +12624,17 @@ class AppLocalizationsId extends AppLocalizations {
   String voiceStripInRoom(int count) {
     return '$count di room';
   }
+
+  @override
+  String voiceStripHearing(String name) {
+    return 'Suara: $name';
+  }
+
+  @override
+  String get voiceStripMicSending => 'Mic mengirim';
+
+  @override
+  String get voiceStripIncomingHint => 'Ada suara masuk';
 
   @override
   String get voiceJoin => 'Gabung';
@@ -12539,6 +12702,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get voiceRoomFull =>
       'Voice room penuh (maks 15 orang). Coba lagi nanti ya.';
+
+  @override
+  String get voiceAlreadyJoinedOtherDevice =>
+      'Akun ini sudah gabung voice di device lain. Keluar dulu di device itu ya.';
 
   @override
   String get voiceDisconnected =>
@@ -13409,6 +13576,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get profileViewPublic => 'Lihat profil publik';
 
   @override
+  String get profileJinyeComposeQuote => 'Agek mikerkan ape insanak';
+
+  @override
   String get profileNotifications => 'Notifikasi';
 
   @override
@@ -13979,6 +14149,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get commentAddPhoto => 'Foto';
 
   @override
+  String get commentAddSticker => 'Stiker';
+
+  @override
+  String get commentRemoveSticker => 'Lepas stiker';
+
+  @override
   String get commentPhotoPending => 'Foto menunggu pengecekan';
 
   @override
@@ -13994,7 +14170,8 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get commentRemovePhoto => 'Hapus foto';
 
   @override
-  String get commentBodyOrPhotoRequired => 'Komentar atau foto wajib diisi';
+  String get commentBodyOrPhotoRequired =>
+      'Komentar, foto, atau stiker wajib diisi';
 
   @override
   String get commentRecordTitle => 'Rekam komentar suara';
@@ -15129,6 +15306,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get commonReason => 'Alasan';
+
+  @override
+  String get commonPaste => 'Tempel';
+
+  @override
+  String get commonClipboardEmpty => 'Clipboard kosong';
 
   @override
   String get reviewEntityWord => 'Kata';
@@ -20186,10 +20369,18 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get exploreCategoryAcaraSubtitle => 'Festival, pameran, dan kegiatan';
 
   @override
+  String get exploreCategoryPantun => 'Pantun';
+
+  @override
+  String get exploreCategoryPantunSubtitle =>
+      'Berbalas pantun bersama warga Sambas';
+
+  @override
   String get exploreCategoryPermainan => 'Permainan';
 
   @override
-  String get exploreCategoryPermainanSubtitle => 'Pantun dan permainan Sambas';
+  String get exploreCategoryPermainanSubtitle =>
+      'Teka-teki dan permainan Sambas';
 
   @override
   String get exploreCategoryEnsiklopedia => 'Ensiklopedia';
@@ -20197,6 +20388,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get exploreCategoryEnsiklopediaSubtitle =>
       'Sejarah, kisah, karya, dan tradisi';
+
+  @override
+  String get petakateTitle => 'Petakate';
+
+  @override
+  String get petakateListSubtitle => 'Tebak kata Melayu Sambas hari ini';
+
+  @override
+  String get permainanEmptyTitle => 'Belum ada permainan';
+
+  @override
+  String get permainanEmptySubtitle =>
+      'Game Sambas sedang disiapkan. Cek lagi nanti ya.';
 
   @override
   String get encyclopediaTitle => 'Ensiklopedia';
@@ -20303,6 +20507,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get encyclopediaContributeEditTitle => 'Usul Perbaikan Artikel';
+
+  @override
+  String get encyclopediaProposeEdit => 'Usulkan perbaikan';
 
   @override
   String get encyclopediaContributeIntro =>
@@ -20459,6 +20666,18 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get markdownLinkOpenBrowser => 'Buka di browser';
+
+  @override
+  String get markdownLinkShowFullSemantics => 'Lihat tautan lengkap';
+
+  @override
+  String get markdownLinkFullUrlTitle => 'Tautan lengkap';
+
+  @override
+  String get markdownLinkCopySemantics => 'Salin tautan';
+
+  @override
+  String get markdownLinkOpenBrowserSemantics => 'Buka di browser';
 
   @override
   String get encyclopediaLoginFirstTitle => 'Masuk dulu ya';
@@ -24860,6 +25079,73 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
+  String get placeVisitAction => 'Pernah singgah';
+
+  @override
+  String get placeVisitCancel => 'Batal singgah';
+
+  @override
+  String placeVisitCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang pernah singgah';
+  }
+
+  @override
+  String get usahaVisitAction => 'Pernah bertransaksi';
+
+  @override
+  String get usahaVisitCancel => 'Batal transaksi';
+
+  @override
+  String usahaVisitCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang pernah bertransaksi';
+  }
+
+  @override
+  String get placeCommentsTitle => 'Komentar wisata';
+
+  @override
+  String get placeCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get placeCommentHint => 'Tulis komentar tentang tempat ini';
+
+  @override
+  String get usahaCommentsTitle => 'Komentar usaha';
+
+  @override
+  String get usahaCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get usahaCommentHint => 'Tulis komentar tentang usaha ini';
+
+  @override
+  String get cuisineCommentsTitle => 'Komentar kuliner';
+
+  @override
+  String get cuisineCommentsEmpty =>
+      'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get cuisineCommentHint => 'Tulis komentar tentang kuliner ini';
+
+  @override
+  String get eventCommentsTitle => 'Komentar acara';
+
+  @override
+  String get eventCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get eventCommentHint => 'Tulis komentar tentang acara ini';
+
+  @override
   String eventMorePhotos(int count) {
     final intl.NumberFormat countNumberFormat =
         intl.NumberFormat.decimalPattern(localeName);
@@ -24935,6 +25221,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get chatSend => 'Kirim';
 
   @override
+  String get chatPrivacyWarningTitle => 'Peringatan Privasi';
+
+  @override
+  String get chatPrivacyWarningBody =>
+      'Ruang chat ini bersifat publik dan tidak dilengkapi enkripsi atau pengamanan khusus. Pastikan kamu tidak mengirimkan informasi pribadi, data sensitif, atau informasi penting lainnya.';
+
+  @override
+  String get chatPrivacyWarningDismiss => 'Tutup peringatan privasi';
+
+  @override
+  String get chatPrivacyWarningHint =>
+      'Chat ini publik. Jangan kirim data pribadi.';
+
+  @override
   String get chatLoginToSend => 'Masuk dulu untuk ikut chat ya.';
 
   @override
@@ -24942,6 +25242,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get chatEdited => 'disunting';
+
+  @override
+  String get chatScrollToLatest => 'Ke pesan terakhir';
 
   @override
   String chatNewMessages(int count) {
@@ -24955,6 +25258,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get chatReplyCancelSemantics => 'Batalkan balasan';
+
+  @override
+  String get chatReplyJumpSemantics => 'Lihat pesan yang dibalas';
+
+  @override
+  String get chatReplyTargetMissing =>
+      'Pesan itu belum ada di daftar. Gulir ke atas dulu.';
 
   @override
   String get chatDeleteConfirmTitle => 'Hapus pesan?';
@@ -24989,6 +25299,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get chatStickerSemantics => 'Stiker';
+
+  @override
+  String get stickerTabAll => 'Semua';
+
+  @override
+  String get stickerSearchHint => 'Cari id stiker';
+
+  @override
+  String get stickerSearchEmpty => 'Tidak ada stiker yang cocok';
 
   @override
   String get chatMicSemantics => 'Rekam suara';
@@ -25038,6 +25357,17 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String voiceStripInRoom(int count) {
     return '$count di room';
   }
+
+  @override
+  String voiceStripHearing(String name) {
+    return 'Suara: $name';
+  }
+
+  @override
+  String get voiceStripMicSending => 'Mic mengirim';
+
+  @override
+  String get voiceStripIncomingHint => 'Ada suara masuk';
 
   @override
   String get voiceJoin => 'Gabung';
@@ -25105,6 +25435,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get voiceRoomFull =>
       'Voice room penuh (maks 15 orang). Coba lagi nanti ya.';
+
+  @override
+  String get voiceAlreadyJoinedOtherDevice =>
+      'Akun ini sudah gabung voice di device lain. Keluar dulu di device itu ya.';
 
   @override
   String get voiceDisconnected =>

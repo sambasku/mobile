@@ -1577,6 +1577,12 @@ abstract class AppLocalizations {
   /// **'Lihat profil publik'**
   String get profileViewPublic;
 
+  /// CTA quote di tab Profil di bawah Lihat profil publik; buka buat Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Agek mikerkan ape insanak'**
+  String get profileJinyeComposeQuote;
+
   /// No description provided for @profileNotifications.
   ///
   /// In id, this message translates to:
@@ -2597,6 +2603,18 @@ abstract class AppLocalizations {
   /// **'Foto'**
   String get commentAddPhoto;
 
+  /// Chip composer komentar: buka sheet katalog stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Stiker'**
+  String get commentAddSticker;
+
+  /// Hapus stiker yang sedang di-staging di composer
+  ///
+  /// In id, this message translates to:
+  /// **'Lepas stiker'**
+  String get commentRemoveSticker;
+
   /// Chip foto komentar status pending_review
   ///
   /// In id, this message translates to:
@@ -2630,7 +2648,7 @@ abstract class AppLocalizations {
   /// No description provided for @commentBodyOrPhotoRequired.
   ///
   /// In id, this message translates to:
-  /// **'Komentar atau foto wajib diisi'**
+  /// **'Komentar, foto, atau stiker wajib diisi'**
   String get commentBodyOrPhotoRequired;
 
   /// No description provided for @commentRecordTitle.
@@ -4672,6 +4690,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Alasan'**
   String get commonReason;
+
+  /// Semantics / label tombol tempel clipboard di samping field URL
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel'**
+  String get commonPaste;
+
+  /// Toast bila tempel ditekan tapi clipboard kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Clipboard kosong'**
+  String get commonClipboardEmpty;
 
   /// No description provided for @reviewEntityWord.
   ///
@@ -13683,16 +13713,28 @@ abstract class AppLocalizations {
   /// **'Festival, pameran, dan kegiatan'**
   String get exploreCategoryAcaraSubtitle;
 
+  /// Judul kategori Eksplorasi untuk feed pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Pantun'**
+  String get exploreCategoryPantun;
+
+  /// Subjudul kategori Pantun di hub Eksplorasi
+  ///
+  /// In id, this message translates to:
+  /// **'Berbalas pantun bersama warga Sambas'**
+  String get exploreCategoryPantunSubtitle;
+
   /// No description provided for @exploreCategoryPermainan.
   ///
   /// In id, this message translates to:
   /// **'Permainan'**
   String get exploreCategoryPermainan;
 
-  /// No description provided for @exploreCategoryPermainanSubtitle.
+  /// Subjudul hub Permainan setelah Pantun dipisah
   ///
   /// In id, this message translates to:
-  /// **'Pantun dan permainan Sambas'**
+  /// **'Teka-teki dan permainan Sambas'**
   String get exploreCategoryPermainanSubtitle;
 
   /// No description provided for @exploreCategoryEnsiklopedia.
@@ -13706,6 +13748,30 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Sejarah, kisah, karya, dan tradisi'**
   String get exploreCategoryEnsiklopediaSubtitle;
+
+  /// Nama game tebak kata harian di hub Permainan
+  ///
+  /// In id, this message translates to:
+  /// **'Petakate'**
+  String get petakateTitle;
+
+  /// Subtitle baris Petakate di daftar permainan
+  ///
+  /// In id, this message translates to:
+  /// **'Tebak kata Melayu Sambas hari ini'**
+  String get petakateListSubtitle;
+
+  /// Judul empty state hub Permainan
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada permainan'**
+  String get permainanEmptyTitle;
+
+  /// Subtitle empty state hub Permainan
+  ///
+  /// In id, this message translates to:
+  /// **'Game Sambas sedang disiapkan. Cek lagi nanti ya.'**
+  String get permainanEmptySubtitle;
 
   /// No description provided for @encyclopediaTitle.
   ///
@@ -13904,6 +13970,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Usul Perbaikan Artikel'**
   String get encyclopediaContributeEditTitle;
+
+  /// Tile di detail artikel untuk membuka form usulan perbaikan (mode edit)
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan perbaikan'**
+  String get encyclopediaProposeEdit;
 
   /// No description provided for @encyclopediaContributeIntro.
   ///
@@ -14192,6 +14264,30 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Buka di browser'**
   String get markdownLinkOpenBrowser;
+
+  /// Semantics tombol info URL terpotong di sheet pratinjau tautan
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat tautan lengkap'**
+  String get markdownLinkShowFullSemantics;
+
+  /// Judul bottomsheet menampilkan URL markdown penuh
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan lengkap'**
+  String get markdownLinkFullUrlTitle;
+
+  /// Semantics tombol ikon salin di sheet pratinjau tautan
+  ///
+  /// In id, this message translates to:
+  /// **'Salin tautan'**
+  String get markdownLinkCopySemantics;
+
+  /// Semantics tombol ikon buka browser di sheet pratinjau tautan
+  ///
+  /// In id, this message translates to:
+  /// **'Buka di browser'**
+  String get markdownLinkOpenBrowserSemantics;
 
   /// Judul sheet wajib login sebelum aksi ensiklopedia
   ///
@@ -21691,6 +21787,114 @@ abstract class AppLocalizations {
   /// **'{count} orang hadir'**
   String eventGoingCount(int count);
 
+  /// CTA tandai pernah singgah di wisata
+  ///
+  /// In id, this message translates to:
+  /// **'Pernah singgah'**
+  String get placeVisitAction;
+
+  /// CTA batalkan tandai pernah singgah
+  ///
+  /// In id, this message translates to:
+  /// **'Batal singgah'**
+  String get placeVisitCancel;
+
+  /// No description provided for @placeVisitCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} orang pernah singgah'**
+  String placeVisitCount(int count);
+
+  /// CTA tandai pernah bertransaksi di usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Pernah bertransaksi'**
+  String get usahaVisitAction;
+
+  /// CTA batalkan tandai pernah bertransaksi
+  ///
+  /// In id, this message translates to:
+  /// **'Batal transaksi'**
+  String get usahaVisitCancel;
+
+  /// No description provided for @usahaVisitCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} orang pernah bertransaksi'**
+  String usahaVisitCount(int count);
+
+  /// No description provided for @placeCommentsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar wisata'**
+  String get placeCommentsTitle;
+
+  /// No description provided for @placeCommentsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komentar. Jadi yang pertama ya.'**
+  String get placeCommentsEmpty;
+
+  /// No description provided for @placeCommentHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis komentar tentang tempat ini'**
+  String get placeCommentHint;
+
+  /// No description provided for @usahaCommentsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar usaha'**
+  String get usahaCommentsTitle;
+
+  /// No description provided for @usahaCommentsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komentar. Jadi yang pertama ya.'**
+  String get usahaCommentsEmpty;
+
+  /// No description provided for @usahaCommentHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis komentar tentang usaha ini'**
+  String get usahaCommentHint;
+
+  /// No description provided for @cuisineCommentsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar kuliner'**
+  String get cuisineCommentsTitle;
+
+  /// No description provided for @cuisineCommentsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komentar. Jadi yang pertama ya.'**
+  String get cuisineCommentsEmpty;
+
+  /// No description provided for @cuisineCommentHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis komentar tentang kuliner ini'**
+  String get cuisineCommentHint;
+
+  /// No description provided for @eventCommentsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar acara'**
+  String get eventCommentsTitle;
+
+  /// No description provided for @eventCommentsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komentar. Jadi yang pertama ya.'**
+  String get eventCommentsEmpty;
+
+  /// No description provided for @eventCommentHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis komentar tentang acara ini'**
+  String get eventCommentHint;
+
   /// No description provided for @eventMorePhotos.
   ///
   /// In id, this message translates to:
@@ -21817,6 +22021,30 @@ abstract class AppLocalizations {
   /// **'Kirim'**
   String get chatSend;
 
+  /// Judul alert peringatan chat publik tanpa enkripsi
+  ///
+  /// In id, this message translates to:
+  /// **'Peringatan Privasi'**
+  String get chatPrivacyWarningTitle;
+
+  /// Isi alert peringatan chat publik tanpa enkripsi
+  ///
+  /// In id, this message translates to:
+  /// **'Ruang chat ini bersifat publik dan tidak dilengkapi enkripsi atau pengamanan khusus. Pastikan kamu tidak mengirimkan informasi pribadi, data sensitif, atau informasi penting lainnya.'**
+  String get chatPrivacyWarningBody;
+
+  /// Semantics tombol tutup alert privasi chat
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup peringatan privasi'**
+  String get chatPrivacyWarningDismiss;
+
+  /// Satu baris peringatan chat publik. Ketuk untuk baca teks lengkap.
+  ///
+  /// In id, this message translates to:
+  /// **'Chat ini publik. Jangan kirim data pribadi.'**
+  String get chatPrivacyWarningHint;
+
   /// No description provided for @chatLoginToSend.
   ///
   /// In id, this message translates to:
@@ -21835,6 +22063,12 @@ abstract class AppLocalizations {
   /// **'disunting'**
   String get chatEdited;
 
+  /// Semantics tombol kecil loncat ke bawah chat saat scroll naik
+  ///
+  /// In id, this message translates to:
+  /// **'Ke pesan terakhir'**
+  String get chatScrollToLatest;
+
   /// Chip loncat ke pesan baru saat scroll naik
   ///
   /// In id, this message translates to:
@@ -21852,6 +22086,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Batalkan balasan'**
   String get chatReplyCancelSemantics;
+
+  /// Semantics ketuk quote reply untuk loncat ke pesan asal
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat pesan yang dibalas'**
+  String get chatReplyJumpSemantics;
+
+  /// Toast saat pesan yang dibalas belum termuat di list chat
+  ///
+  /// In id, this message translates to:
+  /// **'Pesan itu belum ada di daftar. Gulir ke atas dulu.'**
+  String get chatReplyTargetMissing;
 
   /// No description provided for @chatDeleteConfirmTitle.
   ///
@@ -21918,6 +22164,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Stiker'**
   String get chatStickerSemantics;
+
+  /// Tab picker stiker: semua kategori
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get stickerTabAll;
+
+  /// Hint field pencarian di sheet stiker (by id slug)
+  ///
+  /// In id, this message translates to:
+  /// **'Cari id stiker'**
+  String get stickerSearchHint;
+
+  /// Empty state picker stiker saat filter/search kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada stiker yang cocok'**
+  String get stickerSearchEmpty;
 
   /// No description provided for @chatMicSemantics.
   ///
@@ -22008,6 +22272,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{count} di room'**
   String voiceStripInRoom(int count);
+
+  /// Indikator strip: remote sedang bicara
+  ///
+  /// In id, this message translates to:
+  /// **'Suara: {name}'**
+  String voiceStripHearing(String name);
+
+  /// Semantics/indikator mic lokal sedang mengirim suara
+  ///
+  /// In id, this message translates to:
+  /// **'Mic mengirim'**
+  String get voiceStripMicSending;
+
+  /// Semantics ikon strip saat remote bicara
+  ///
+  /// In id, this message translates to:
+  /// **'Ada suara masuk'**
+  String get voiceStripIncomingHint;
 
   /// No description provided for @voiceJoin.
   ///
@@ -22128,6 +22410,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Voice room penuh (maks 15 orang). Coba lagi nanti ya.'**
   String get voiceRoomFull;
+
+  /// Error 409 VOICE_ALREADY_JOINED - seat voice terikat device lain
+  ///
+  /// In id, this message translates to:
+  /// **'Akun ini sudah gabung voice di device lain. Keluar dulu di device itu ya.'**
+  String get voiceAlreadyJoinedOtherDevice;
 
   /// Error setelah disconnect tak terduga (homelab mati / jaringan)
   ///

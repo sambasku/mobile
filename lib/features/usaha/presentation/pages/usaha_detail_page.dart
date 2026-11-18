@@ -13,6 +13,8 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/entity_comments/entity_comment.dart';
+import '../../../../shared/entity_comments/entity_comments_section.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
@@ -37,8 +39,13 @@ class UsahaDetailPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final usahaAsync = ref.watch(usahaBySlugProvider(slug));
 
+    final usaha = usahaAsync.asData?.value;
     return FScaffold(
       childPad: true,
+      // EntryBar sudah punya top border - jangan dobel dengan footerDecoration.
+      scaffoldStyle: .delta(
+        footerDecoration: .value(const BoxDecoration()),
+      ),
       header: FHeader.nested(
         title: Text(l10n.usahaTitle),
         prefixes: [
@@ -55,6 +62,12 @@ class UsahaDetailPage extends ConsumerWidget {
           ),
         ],
       ),
+      footer: usaha == null
+          ? null
+          : EntityCommentEntryBar(
+              target: EntityCommentTarget.usaha,
+              entityId: usaha.id,
+            ),
       child: usahaAsync.when(
         loading: () => const Center(child: FCircularProgress(size: .sm)),
         error: (_, _) => const _ErrorBody(),
@@ -196,17 +209,19 @@ class UsahaDetailPage extends ConsumerWidget {
   }
 }
 
-class _Body extends StatefulWidget {
+class _Body extends ConsumerStatefulWidget {
   const _Body({required this.usaha, required this.onClaim});
 
   final Usaha usaha;
   final VoidCallback onClaim;
 
   @override
-  State<_Body> createState() => _BodyState();
+  ConsumerState<_Body> createState() => _BodyState();
 }
 
-class _BodyState extends State<_Body> {
+class _BodyState extends ConsumerState<_Body> {
+  bool _visitBusy = false;
+
   @override
   void initState() {
     super.initState();
@@ -216,6 +231,27 @@ class _BodyState extends State<_Body> {
         AnalyticsService.instance.logUsahaOpen(slug: widget.usaha.slug),
       );
     });
+  }
+
+  Future<void> _toggleVisit() async {
+    if (_visitBusy) return;
+    final authed = ref.read(authStatusProvider).value?.isAuth == true;
+    if (!authed) {
+      context.push('/login');
+      return;
+    }
+    final usaha = widget.usaha;
+    setState(() => _visitBusy = true);
+    final mark = !usaha.viewerVisited;
+    try {
+      final repo = ref.read(usahaRepositoryProvider);
+      await (mark ? repo.markVisit(usaha.id) : repo.unmarkVisit(usaha.id));
+      ref.invalidate(usahaBySlugProvider(usaha.slug));
+    } catch (_) {
+      // Biarkan state server yang menang.
+    } finally {
+      if (mounted) setState(() => _visitBusy = false);
+    }
   }
 
   @override
@@ -347,6 +383,23 @@ class _BodyState extends State<_Body> {
         FTileGroup(
           label: Text(l10n.usahaActionSection),
           children: [
+            FTile(
+              prefix: _visitBusy
+                  ? const FCircularProgress(size: .sm)
+                  : Icon(
+                      usaha.viewerVisited
+                          ? FLucideIcons.circleCheck
+                          : FLucideIcons.handshake,
+                      size: 18,
+                    ),
+              title: Text(
+                usaha.viewerVisited
+                    ? l10n.usahaVisitCancel
+                    : l10n.usahaVisitAction,
+              ),
+              subtitle: Text(l10n.usahaVisitCount(usaha.visitCount)),
+              onPress: _visitBusy ? null : _toggleVisit,
+            ),
             FTile(
               prefix: const Icon(FLucideIcons.map, size: 18),
               title: Text(l10n.usahaActionViewOnMap),

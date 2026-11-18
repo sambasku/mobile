@@ -779,6 +779,10 @@
   "profileDefaultName": "Pengguna",
   "profileNotReadyToast": "Profil belum siap, coba lagi",
   "profileViewPublic": "Lihat profil publik",
+  "profileJinyeComposeQuote": "Agek mikerkan ape insanak",
+  "@profileJinyeComposeQuote": {
+    "description": "CTA quote di tab Profil di bawah Lihat profil publik; buka buat Jinye"
+  },
   "profileNotifications": "Notifikasi",
   "profileUnreadSuffix": "belum dibaca",
   "@profileUnreadSuffix": {
@@ -1088,6 +1092,14 @@
   "commentLoginComposerPrompt": "Masuk untuk menulis komentar",
   "commentSent": "Komentar terkirim",
   "commentAddPhoto": "Foto",
+  "commentAddSticker": "Stiker",
+  "@commentAddSticker": {
+    "description": "Chip composer komentar: buka sheet katalog stiker"
+  },
+  "commentRemoveSticker": "Lepas stiker",
+  "@commentRemoveSticker": {
+    "description": "Hapus stiker yang sedang di-staging di composer"
+  },
   "@commentAddPhoto": {
     "description": "Chip lampirkan foto di composer komentar"
   },
@@ -1107,7 +1119,7 @@
   "@commentRemovePhoto": {
     "description": "Aksi hapus pratinjau foto di composer komentar"
   },
-  "commentBodyOrPhotoRequired": "Komentar atau foto wajib diisi",
+  "commentBodyOrPhotoRequired": "Komentar, foto, atau stiker wajib diisi",
   "@commentBodyOrPhotoRequired": {},
   "commentRecordTitle": "Rekam komentar suara",
   "commentRecordBody": "Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.",
@@ -1698,6 +1710,14 @@
   "commonForbiddenRole": "Role tidak diizinkan mengakses endpoint ini",
   "commonVerifierArea": "Area Verifikator",
   "commonReason": "Alasan",
+  "commonPaste": "Tempel",
+  "@commonPaste": {
+    "description": "Semantics / label tombol tempel clipboard di samping field URL"
+  },
+  "commonClipboardEmpty": "Clipboard kosong",
+  "@commonClipboardEmpty": {
+    "description": "Toast bila tempel ditekan tapi clipboard kosong"
+  },
   "reviewEntityWord": "Kata",
   "reviewEntityPronunciation": "Pelafalan",
   "reviewEntityWordImage": "Gambar",
@@ -5414,10 +5434,37 @@
   "karyaCreditRoleOther": "Lainnya",
   "exploreCategoryAcara": "Acara",
   "exploreCategoryAcaraSubtitle": "Festival, pameran, dan kegiatan",
+  "exploreCategoryPantun": "Pantun",
+  "@exploreCategoryPantun": {
+    "description": "Judul kategori Eksplorasi untuk feed pantun"
+  },
+  "exploreCategoryPantunSubtitle": "Berbalas pantun bersama warga Sambas",
+  "@exploreCategoryPantunSubtitle": {
+    "description": "Subjudul kategori Pantun di hub Eksplorasi"
+  },
   "exploreCategoryPermainan": "Permainan",
-  "exploreCategoryPermainanSubtitle": "Pantun dan permainan Sambas",
+  "exploreCategoryPermainanSubtitle": "Teka-teki dan permainan Sambas",
+  "@exploreCategoryPermainanSubtitle": {
+    "description": "Subjudul hub Permainan setelah Pantun dipisah"
+  },
   "exploreCategoryEnsiklopedia": "Ensiklopedia",
   "exploreCategoryEnsiklopediaSubtitle": "Sejarah, kisah, karya, dan tradisi",
+  "petakateTitle": "Petakate",
+  "@petakateTitle": {
+    "description": "Nama game tebak kata harian di hub Permainan"
+  },
+  "petakateListSubtitle": "Tebak kata Melayu Sambas hari ini",
+  "@petakateListSubtitle": {
+    "description": "Subtitle baris Petakate di daftar permainan"
+  },
+  "permainanEmptyTitle": "Belum ada permainan",
+  "@permainanEmptyTitle": {
+    "description": "Judul empty state hub Permainan"
+  },
+  "permainanEmptySubtitle": "Game Sambas sedang disiapkan. Cek lagi nanti ya.",
+  "@permainanEmptySubtitle": {
+    "description": "Subtitle empty state hub Permainan"
+  },
   "encyclopediaTitle": "Ensiklopedia",
   "encyclopediaChip": "Ensik.",
   "@encyclopediaChip": {
@@ -5480,6 +5527,10 @@
   "encyclopediaBookmarkRemoved": "Artikel dihapus dari bookmark",
   "encyclopediaContributeTitle": "Usulkan Artikel",
   "encyclopediaContributeEditTitle": "Usul Perbaikan Artikel",
+  "encyclopediaProposeEdit": "Usulkan perbaikan",
+  "@encyclopediaProposeEdit": {
+    "description": "Tile di detail artikel untuk membuka form usulan perbaikan (mode edit)"
+  },
   "encyclopediaContributeIntro": "Bantu melengkapi khazanah Sambas dengan menulis artikel atau mengusulkan perbaikan.",
   "encyclopediaFieldTitle": "Judul Artikel",
   "encyclopediaFieldTitlePlaceholder": "Contoh: Sejarah Istana Alwatzikoebillah",
@@ -5587,6 +5638,22 @@
   "markdownLinkOpenBrowser": "Buka di browser",
   "@markdownLinkOpenBrowser": {
     "description": "Tombol buka tautan markdown di browser eksternal"
+  },
+  "markdownLinkShowFullSemantics": "Lihat tautan lengkap",
+  "@markdownLinkShowFullSemantics": {
+    "description": "Semantics tombol info URL terpotong di sheet pratinjau tautan"
+  },
+  "markdownLinkFullUrlTitle": "Tautan lengkap",
+  "@markdownLinkFullUrlTitle": {
+    "description": "Judul bottomsheet menampilkan URL markdown penuh"
+  },
+  "markdownLinkCopySemantics": "Salin tautan",
+  "@markdownLinkCopySemantics": {
+    "description": "Semantics tombol ikon salin di sheet pratinjau tautan"
+  },
+  "markdownLinkOpenBrowserSemantics": "Buka di browser",
+  "@markdownLinkOpenBrowserSemantics": {
+    "description": "Semantics tombol ikon buka browser di sheet pratinjau tautan"
   },
   "encyclopediaLoginFirstTitle": "Masuk dulu ya",
   "@encyclopediaLoginFirstTitle": {
@@ -9041,6 +9108,64 @@
       }
     }
   },
+  "placeVisitAction": "Pernah singgah",
+  "@placeVisitAction": {
+    "description": "CTA tandai pernah singgah di wisata"
+  },
+  "placeVisitCancel": "Batal singgah",
+  "@placeVisitCancel": {
+    "description": "CTA batalkan tandai pernah singgah"
+  },
+  "placeVisitCount": "{count} orang pernah singgah",
+  "@placeVisitCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "usahaVisitAction": "Pernah bertransaksi",
+  "@usahaVisitAction": {
+    "description": "CTA tandai pernah bertransaksi di usaha"
+  },
+  "usahaVisitCancel": "Batal transaksi",
+  "@usahaVisitCancel": {
+    "description": "CTA batalkan tandai pernah bertransaksi"
+  },
+  "usahaVisitCount": "{count} orang pernah bertransaksi",
+  "@usahaVisitCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "placeCommentsTitle": "Komentar wisata",
+  "@placeCommentsTitle": {},
+  "placeCommentsEmpty": "Belum ada komentar. Jadi yang pertama ya.",
+  "@placeCommentsEmpty": {},
+  "placeCommentHint": "Tulis komentar tentang tempat ini",
+  "@placeCommentHint": {},
+  "usahaCommentsTitle": "Komentar usaha",
+  "@usahaCommentsTitle": {},
+  "usahaCommentsEmpty": "Belum ada komentar. Jadi yang pertama ya.",
+  "@usahaCommentsEmpty": {},
+  "usahaCommentHint": "Tulis komentar tentang usaha ini",
+  "@usahaCommentHint": {},
+  "cuisineCommentsTitle": "Komentar kuliner",
+  "@cuisineCommentsTitle": {},
+  "cuisineCommentsEmpty": "Belum ada komentar. Jadi yang pertama ya.",
+  "@cuisineCommentsEmpty": {},
+  "cuisineCommentHint": "Tulis komentar tentang kuliner ini",
+  "@cuisineCommentHint": {},
+  "eventCommentsTitle": "Komentar acara",
+  "@eventCommentsTitle": {},
+  "eventCommentsEmpty": "Belum ada komentar. Jadi yang pertama ya.",
+  "@eventCommentsEmpty": {},
+  "eventCommentHint": "Tulis komentar tentang acara ini",
+  "@eventCommentHint": {},
   "eventMorePhotos": "Lihat lainnya ({count} foto)",
   "@eventMorePhotos": {
     "placeholders": {
@@ -9092,11 +9217,31 @@
   "chatEmptyBody": "Jadi yang pertama menyapa warga di sini.",
   "chatComposerHint": "Tulis pesan…",
   "chatSend": "Kirim",
+  "chatPrivacyWarningTitle": "Peringatan Privasi",
+  "@chatPrivacyWarningTitle": {
+    "description": "Judul alert peringatan chat publik tanpa enkripsi"
+  },
+  "chatPrivacyWarningBody": "Ruang chat ini bersifat publik dan tidak dilengkapi enkripsi atau pengamanan khusus. Pastikan kamu tidak mengirimkan informasi pribadi, data sensitif, atau informasi penting lainnya.",
+  "@chatPrivacyWarningBody": {
+    "description": "Isi alert peringatan chat publik tanpa enkripsi"
+  },
+  "chatPrivacyWarningDismiss": "Tutup peringatan privasi",
+  "@chatPrivacyWarningDismiss": {
+    "description": "Semantics tombol tutup alert privasi chat"
+  },
+  "chatPrivacyWarningHint": "Chat ini publik. Jangan kirim data pribadi.",
+  "@chatPrivacyWarningHint": {
+    "description": "Satu baris peringatan chat publik. Ketuk untuk baca teks lengkap."
+  },
   "chatLoginToSend": "Masuk dulu untuk ikut chat ya.",
   "chatTombstone": "Pesan dihapus",
   "chatEdited": "disunting",
   "@chatEdited": {
     "description": "Label kecil di bubble teks yang sudah diedit"
+  },
+  "chatScrollToLatest": "Ke pesan terakhir",
+  "@chatScrollToLatest": {
+    "description": "Semantics tombol kecil loncat ke bawah chat saat scroll naik"
   },
   "chatNewMessages": "{count} chat baru",
   "@chatNewMessages": {
@@ -9117,6 +9262,14 @@
     }
   },
   "chatReplyCancelSemantics": "Batalkan balasan",
+  "chatReplyJumpSemantics": "Lihat pesan yang dibalas",
+  "@chatReplyJumpSemantics": {
+    "description": "Semantics ketuk quote reply untuk loncat ke pesan asal"
+  },
+  "chatReplyTargetMissing": "Pesan itu belum ada di daftar. Gulir ke atas dulu.",
+  "@chatReplyTargetMissing": {
+    "description": "Toast saat pesan yang dibalas belum termuat di list chat"
+  },
   "chatDeleteConfirmTitle": "Hapus pesan?",
   "chatDeleteConfirmBody": "Pesan akan diganti jadi \"Pesan dihapus\".",
   "chatDeleteAction": "Hapus",
@@ -9128,6 +9281,18 @@
   "chatRecordSheetSubmit": "Kirim voice note",
   "chatStickerSheetTitle": "Pilih stiker",
   "chatStickerSemantics": "Stiker",
+  "stickerTabAll": "Semua",
+  "@stickerTabAll": {
+    "description": "Tab picker stiker: semua kategori"
+  },
+  "stickerSearchHint": "Cari id stiker",
+  "@stickerSearchHint": {
+    "description": "Hint field pencarian di sheet stiker (by id slug)"
+  },
+  "stickerSearchEmpty": "Tidak ada stiker yang cocok",
+  "@stickerSearchEmpty": {
+    "description": "Empty state picker stiker saat filter/search kosong"
+  },
   "chatMicSemantics": "Rekam suara",
   "chatSending": "Mengirim…",
   "chatReplySnippetSticker": "[stiker]",
@@ -9153,6 +9318,23 @@
         "type": "int"
       }
     }
+  },
+  "voiceStripHearing": "Suara: {name}",
+  "@voiceStripHearing": {
+    "description": "Indikator strip: remote sedang bicara",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceStripMicSending": "Mic mengirim",
+  "@voiceStripMicSending": {
+    "description": "Semantics/indikator mic lokal sedang mengirim suara"
+  },
+  "voiceStripIncomingHint": "Ada suara masuk",
+  "@voiceStripIncomingHint": {
+    "description": "Semantics ikon strip saat remote bicara"
   },
   "voiceJoin": "Gabung",
   "voiceJoining": "Menghubungkan…",
@@ -9209,6 +9391,10 @@
   "voiceRoomFull": "Voice room penuh (maks 15 orang). Coba lagi nanti ya.",
   "@voiceRoomFull": {
     "description": "Error saat room LiveKit sudah mencapai 15 peserta"
+  },
+  "voiceAlreadyJoinedOtherDevice": "Akun ini sudah gabung voice di device lain. Keluar dulu di device itu ya.",
+  "@voiceAlreadyJoinedOtherDevice": {
+    "description": "Error 409 VOICE_ALREADY_JOINED - seat voice terikat device lain"
   },
   "voiceDisconnected": "Koneksi voice putus. Server lagi bermasalah - coba gabung lagi nanti ya.",
   "@voiceDisconnected": {

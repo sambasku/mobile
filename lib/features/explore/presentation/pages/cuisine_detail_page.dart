@@ -9,15 +9,24 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/models/external_link.dart';
 
 import '../../../../core/utils/display_image_url.dart';
+import '../../../../core/utils/format_number.dart';
+import '../../../../core/widgets/image_preview.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../shared/entity_comments/entity_comment.dart';
+import '../../../../shared/entity_comments/entity_comments_section.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/contributor_appreciation.dart';
+import '../../../auth/auth_router.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/culinary_contribution_api.dart';
 import '../../domain/entities/cuisine.dart';
+import '../../explore_router.dart';
 import '../providers/cuisine_providers.dart';
 import '../widgets/culinary_action_sheets.dart';
+
+const _heroAspect = 16 / 10;
 
 void _back(BuildContext context) =>
     context.canPop() ? context.pop() : context.go('/explore');
@@ -143,15 +152,33 @@ class _BodyState extends ConsumerState<_Body> {
     }
   }
 
+  void _addPhoto() {
+    final authed = ref.read(authStatusProvider).value?.isAuth == true;
+    if (!authed) {
+      context.push(AuthRouter.login.path);
+      return;
+    }
+    context.push(ExploreRouter.cuisineAddPhotoPath(widget.item.slug));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final topInset = MediaQuery.paddingOf(context).top;
     final item = widget.item;
+    final loggedIn = ref.watch(authStatusProvider).value?.isAuth == true;
 
     return FScaffold(
       childPad: false,
+      // EntryBar sudah punya top border - jangan dobel dengan footerDecoration.
+      scaffoldStyle: .delta(
+        footerDecoration: .value(const BoxDecoration()),
+      ),
+      footer: EntityCommentEntryBar(
+        target: EntityCommentTarget.cuisine,
+        entityId: item.id,
+      ),
       child: Stack(
         children: [
           ListView(
@@ -241,6 +268,20 @@ class _BodyState extends ConsumerState<_Body> {
                       label: Text(l10n.cuisineDetailHelpTitle),
                       children: [
                         FTile(
+                          prefix: const Icon(FLucideIcons.imagePlus, size: 18),
+                          title: Text(l10n.cuisineActionAddPhoto),
+                          subtitle: Text(
+                            loggedIn
+                                ? l10n.cuisineAddPhotoBody
+                                : l10n.placeAddPhotoLoginGate,
+                          ),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
+                          onPress: _addPhoto,
+                        ),
+                        FTile(
                           prefix: const Icon(FLucideIcons.pencil, size: 18),
                           title: Text(l10n.culinarySuggestEdit),
                           subtitle: Text(
@@ -323,17 +364,33 @@ class _HeroButton extends StatelessWidget {
   }
 }
 
-class _Hero extends StatelessWidget {
+/// #281: carousel multi-foto (mirror wisata `_Carousel`).
+class _Hero extends StatefulWidget {
   const _Hero({required this.images});
 
   final List<PlaceImage> images;
 
   @override
+  State<_Hero> createState() => _HeroState();
+}
+
+class _HeroState extends State<_Hero> {
+  final _controller = PageController();
+  int _index = 0;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final images = widget.images;
     if (images.isEmpty) {
       return AspectRatio(
-        aspectRatio: 16 / 10,
+        aspectRatio: _heroAspect,
         child: ColoredBox(
           color: theme.colors.muted,
           child: Icon(
@@ -345,15 +402,67 @@ class _Hero extends StatelessWidget {
       );
     }
 
-    final img = images.first;
-    final attribution = img.attribution;
-
+    final attribution = images[_index].attribution;
     final hero = AspectRatio(
-      aspectRatio: 16 / 10,
-      child: CachedNetworkImageWithFallback(
-        imageUrl: displayImageUrl(img.url, width: 1200) ?? img.url,
-        fallbackUrl: img.url,
-        fit: BoxFit.cover,
+      aspectRatio: _heroAspect,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          PageView.builder(
+            controller: _controller,
+            itemCount: images.length,
+            onPageChanged: (i) => setState(() => _index = i),
+            itemBuilder: (context, i) {
+              final img = images[i];
+              return GestureDetector(
+                onTap: () => showImagePreview(
+                  context,
+                  urls: [for (final im in images) im.url],
+                  credits: [for (final im in images) im.attribution],
+                  initialIndex: i,
+                ),
+                child: CachedNetworkImageWithFallback(
+                  imageUrl: displayImageUrl(img.url, width: 1200) ?? img.url,
+                  fallbackUrl: img.url,
+                  fit: BoxFit.cover,
+                ),
+              );
+            },
+          ),
+          const IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment(0, -0.3),
+                  colors: [Colors.black45, Colors.transparent],
+                ),
+              ),
+            ),
+          ),
+          if (images.length > 1)
+            Positioned(
+              right: 12,
+              bottom: 12,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.45),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  '${formatRibuan(_index + 1)}/${formatRibuan(images.length)}',
+                  style: theme.typography.body.xs.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
 

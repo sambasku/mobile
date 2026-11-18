@@ -11,6 +11,8 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
+import '../../../../shared/entity_comments/entity_comment.dart';
+import '../../../../shared/entity_comments/entity_comments_section.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/contributor_appreciation.dart';
 import '../../../auth/auth_router.dart';
@@ -35,9 +37,14 @@ class EventDetailPage extends ConsumerWidget {
     final eventAsync = ref.watch(eventBySlugProvider(slug));
     final l10n = AppLocalizations.of(context);
 
+    final event = eventAsync.asData?.value;
     // childPad false: hero poster full-bleed (pola detail wisata).
     return FScaffold(
       childPad: false,
+      // EntryBar sudah punya top border - jangan dobel dengan footerDecoration.
+      scaffoldStyle: .delta(
+        footerDecoration: .value(const BoxDecoration()),
+      ),
       header: FHeader.nested(
         title: Text(l10n.eventListTitle),
         prefixes: [
@@ -47,6 +54,12 @@ class EventDetailPage extends ConsumerWidget {
           ),
         ],
       ),
+      footer: event == null
+          ? null
+          : EntityCommentEntryBar(
+              target: EntityCommentTarget.event,
+              entityId: event.id,
+            ),
       child: eventAsync.when(
         loading: () => const Center(child: FCircularProgress(size: .sm)),
         error: (_, _) => const _ErrorBody(),

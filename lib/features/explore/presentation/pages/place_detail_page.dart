@@ -26,6 +26,8 @@ import '../../domain/entities/place.dart';
 import '../../explore_router.dart';
 import '../../../event/presentation/providers/event_providers.dart';
 import '../../../event/presentation/widgets/event_ui.dart';
+import '../../../../shared/entity_comments/entity_comment.dart';
+import '../../../../shared/entity_comments/entity_comments_section.dart';
 import '../place_ui.dart';
 import '../providers/places_providers.dart';
 import '../providers/regions_providers.dart';
@@ -146,6 +148,8 @@ class _Body extends ConsumerStatefulWidget {
 }
 
 class _BodyState extends ConsumerState<_Body> {
+  bool _visitBusy = false;
+
   @override
   void initState() {
     super.initState();
@@ -172,6 +176,28 @@ class _BodyState extends ConsumerState<_Body> {
       await ref.read(placesRepositoryProvider).recordView(widget.place.slug);
     } catch (_) {
       // best-effort
+    }
+  }
+
+  /// Toggle "Pernah singgah". Guest diarahkan login dulu.
+  Future<void> _toggleVisit() async {
+    if (_visitBusy) return;
+    final authed = ref.read(authStatusProvider).value?.isAuth == true;
+    if (!authed) {
+      context.push(AuthRouter.login.path);
+      return;
+    }
+    final place = widget.place;
+    setState(() => _visitBusy = true);
+    final mark = !place.viewerVisited;
+    try {
+      final repo = ref.read(placesRepositoryProvider);
+      await (mark ? repo.markVisit(place.id) : repo.unmarkVisit(place.id));
+      ref.invalidate(placeBySlugProvider(place.slug));
+    } catch (_) {
+      // Biarkan state server yang menang.
+    } finally {
+      if (mounted) setState(() => _visitBusy = false);
     }
   }
 
@@ -217,6 +243,14 @@ class _BodyState extends ConsumerState<_Body> {
 
     return FScaffold(
       childPad: false,
+      // EntryBar sudah punya top border - jangan dobel dengan footerDecoration.
+      scaffoldStyle: .delta(
+        footerDecoration: .value(const BoxDecoration()),
+      ),
+      footer: EntityCommentEntryBar(
+        target: EntityCommentTarget.place,
+        entityId: place.id,
+      ),
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: Stack(
@@ -284,6 +318,25 @@ class _BodyState extends ConsumerState<_Body> {
                       FTileGroup(
                         label: Text(l10n.placeSectionActions),
                         children: [
+                          FTile(
+                            prefix: _visitBusy
+                                ? const FCircularProgress(size: .sm)
+                                : Icon(
+                                    place.viewerVisited
+                                        ? FLucideIcons.mapPinned
+                                        : FLucideIcons.mapPin,
+                                    size: 18,
+                                  ),
+                            title: Text(
+                              place.viewerVisited
+                                  ? l10n.placeVisitCancel
+                                  : l10n.placeVisitAction,
+                            ),
+                            subtitle: Text(
+                              l10n.placeVisitCount(place.visitCount),
+                            ),
+                            onPress: _visitBusy ? null : _toggleVisit,
+                          ),
                           FTile(
                             prefix: const Icon(FLucideIcons.map, size: 18),
                             title: Text(l10n.placeActionViewOnMap),

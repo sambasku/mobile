@@ -240,6 +240,9 @@ class ArticleComment {
     required this.status,
     this.imageUrl,
     this.stickerId,
+    this.audioUrl,
+    this.audioMimeType,
+    this.audioDurationMs,
     this.isEdited = false,
     this.createdAt,
     this.updatedAt,
@@ -258,6 +261,12 @@ class ArticleComment {
   final String? imageUrl;
   @JsonKey(name: 'sticker_id')
   final String? stickerId;
+  @JsonKey(name: 'audio_url')
+  final String? audioUrl;
+  @JsonKey(name: 'audio_mime_type')
+  final String? audioMimeType;
+  @JsonKey(name: 'audio_duration_ms')
+  final int? audioDurationMs;
   @JsonKey(name: 'is_edited')
   final bool isEdited;
   @JsonKey(name: 'created_at')
@@ -270,6 +279,8 @@ class ArticleComment {
   bool get isDeletedByAuthor => status == 'deleted_by_author';
   bool get hasSticker =>
       stickerId != null && stickerId!.trim().isNotEmpty;
+  bool get hasAudio => audioUrl != null && audioUrl!.trim().isNotEmpty;
+  bool get hasImage => imageUrl != null && imageUrl!.trim().isNotEmpty;
   bool isOwner(String? actorId) =>
       actorId != null && actorId.isNotEmpty && actorId == user.userId;
 }
