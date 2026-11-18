@@ -8,6 +8,9 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/stickers/sticker_providers.dart';
+import '../../../../shared/stickers/sticker_sheet.dart';
+import '../../../../shared/stickers/sticker_view.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/utils/thread_reply_draft.dart';
@@ -123,6 +126,7 @@ class _JinyeCommentsSectionState extends ConsumerState<JinyeCommentsSection> {
   ThreadReplyDraft? _replyDraft;
   String? _replyChipHandle;
   String? _replyParentId;
+  String? _stagingStickerId;
   bool _submitting = false;
 
   @override
@@ -203,6 +207,53 @@ class _JinyeCommentsSectionState extends ConsumerState<JinyeCommentsSection> {
     _composerFocus.requestFocus();
   }
 
+  void _clearStagingSticker() {
+    setState(() => _stagingStickerId = null);
+  }
+
+  Future<void> _pickCommentSticker() async {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    if (_submitting) return;
+    final stickerId = await showCatalogStickerSheet(context);
+    if (!mounted || stickerId == null) return;
+    setState(() => _stagingStickerId = stickerId);
+  }
+
+  Widget? _buildStickerPreview(BuildContext context) {
+    final stickerId = _stagingStickerId;
+    if (stickerId == null) return null;
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final sticker =
+        ref.watch(stickerLookupProvider(stickerId)).asData?.value;
+    return Row(
+      children: [
+        StickerIdView(
+          stickerId: stickerId,
+          sticker: sticker,
+          size: 56,
+        ),
+        const Gap(8),
+        Expanded(
+          child: Text(
+            l10n.commentAddSticker,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+        ),
+        FButton(
+          variant: FButtonVariant.ghost,
+          onPress: _clearStagingSticker,
+          child: Text(l10n.commentRemoveSticker),
+        ),
+      ],
+    );
+  }
+
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
     if (!_isAuth()) {
@@ -210,15 +261,18 @@ class _JinyeCommentsSectionState extends ConsumerState<JinyeCommentsSection> {
       return;
     }
     final trimmed = _bodyCtrl.text.trim();
-    if (trimmed.isEmpty || _submitting) return;
+    final stickerId = _stagingStickerId;
+    if ((trimmed.isEmpty && stickerId == null) || _submitting) return;
     setState(() => _submitting = true);
     try {
       await ref.read(jinyeRepositoryProvider).createComment(
             jinyeId: widget.jinyeId,
             body: trimmed,
             parentId: _replyParentId,
+            stickerId: stickerId,
           );
       _bodyCtrl.clear();
+      _clearStagingSticker();
       _dismissReply(clearComposerPrefix: false);
       ref.invalidate(jinyeCommentsProvider(widget.jinyeId));
       ref.invalidate(jinyeDetailProvider(widget.jinyeId));
@@ -491,6 +545,8 @@ class _JinyeCommentsSectionState extends ConsumerState<JinyeCommentsSection> {
                   focusNode: _composerFocus,
                   isSubmitting: _submitting,
                   onSubmit: _submit,
+                  onPickSticker: _pickCommentSticker,
+                  attachmentPreview: _buildStickerPreview(context),
                   hint: l10n.jinyeCommentHint,
                   replyBanner: _replyDraft == null
                       ? null
@@ -634,7 +690,7 @@ class _JinyeThreadComment extends ConsumerWidget {
               ),
             ),
       dateLabel: formatRelativeCompact(comment.createdAt),
-      media: _jinyeCommentMedia(context, comment),
+      media: _jinyeCommentMedia(context, ref, comment),
       isEdited: comment.isEdited,
       editedLabel: l10n.commentEdited,
       onShowEditHistory:
@@ -681,41 +737,78 @@ class _JinyeThreadComment extends ConsumerWidget {
   }
 }
 
-Widget? _jinyeCommentMedia(BuildContext context, JinyeComment comment) {
+Widget? _jinyeCommentMedia(
+  BuildContext context,
+  WidgetRef ref,
+  JinyeComment comment,
+) {
+  final parts = <Widget>[];
+  if (comment.hasSticker) {
+    final sticker = ref
+        .watch(stickerLookupProvider(comment.stickerId!))
+        .asData
+        ?.value;
+    parts.add(
+      Align(
+        alignment: Alignment.centerLeft,
+        child: StickerIdView(
+          stickerId: comment.stickerId!,
+          sticker: sticker,
+          size: 96,
+        ),
+      ),
+    );
+  }
   final l10n = AppLocalizations.of(context);
   final theme = context.theme;
   final displayable =
       comment.images.where((i) => i.displaySource != null).toList();
   if (displayable.isEmpty) {
-    if (comment.images.isEmpty) return null;
-    return Text(
-      l10n.jinyePhotosPendingReview,
-      style: theme.typography.body.sm.copyWith(
-        color: theme.colors.mutedForeground,
+    if (comment.images.isNotEmpty) {
+      parts.add(
+        Text(
+          l10n.jinyePhotosPendingReview,
+          style: theme.typography.body.sm.copyWith(
+            color: theme.colors.mutedForeground,
+          ),
+        ),
+      );
+    }
+  } else {
+    parts.add(
+      SizedBox(
+        height: 72,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: displayable.length,
+          separatorBuilder: (_, _) => const Gap(6),
+          itemBuilder: (context, index) {
+            final src = displayable[index].displaySource!;
+            final url = displayImageUrl(src, width: 200) ?? src;
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: CachedNetworkImageWithFallback(
+                  imageUrl: url,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
-  return SizedBox(
-    height: 72,
-    child: ListView.separated(
-      scrollDirection: Axis.horizontal,
-      itemCount: displayable.length,
-      separatorBuilder: (_, _) => const Gap(6),
-      itemBuilder: (context, index) {
-        final src = displayable[index].displaySource!;
-        final url = displayImageUrl(src, width: 200) ?? src;
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(6),
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: CachedNetworkImageWithFallback(
-              imageUrl: url,
-              fit: BoxFit.cover,
-            ),
-          ),
-        );
-      },
-    ),
+  if (parts.isEmpty) return null;
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      for (var i = 0; i < parts.length; i++) ...[
+        if (i > 0) const Gap(6),
+        parts[i],
+      ],
+    ],
   );
 }
 

@@ -445,13 +445,16 @@ class JinyeRepository {
     required String jinyeId,
     String body = '',
     String? parentId,
+    String? stickerId,
     List<JinyeImageRef> images = const [],
   }) async {
+    final sid = stickerId?.trim();
     final res = await _dio.post<Map<String, dynamic>>(
       '$_base/$jinyeId/comments',
       data: {
         'body': body.trim(),
         if (parentId != null && parentId.isNotEmpty) 'parent_id': parentId,
+        if (sid != null && sid.isNotEmpty) 'sticker_id': sid,
         if (images.isNotEmpty)
           'images': [for (final i in images) i.toJson()],
       },

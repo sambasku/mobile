@@ -415,6 +415,7 @@ class JinyeComment {
     this.avatarUrl,
     this.status = 'published',
     this.isEdited = false,
+    this.stickerId,
     this.images = const [],
     this.replies = const [],
     this.upvotes = 0,
@@ -432,12 +433,16 @@ class JinyeComment {
   final String? avatarUrl;
   final String status;
   final bool isEdited;
+  final String? stickerId;
   final List<JinyeImage> images;
   final List<JinyeComment> replies;
   final int upvotes;
   final int downvotes;
 
   bool get isPublished => status == 'published';
+
+  bool get hasSticker =>
+      stickerId != null && stickerId!.trim().isNotEmpty;
 
   bool isOwner(String? authUserId) =>
       authUserId != null && userId != null && userId == authUserId;
@@ -457,6 +462,7 @@ class JinyeComment {
       avatarUrl: json['avatar_url'] as String?,
       status: json['status'] as String? ?? 'published',
       isEdited: json['is_edited'] == true,
+      stickerId: json['sticker_id'] as String?,
       images: imagesRaw is List
           ? imagesRaw
               .whereType<Map>()
