@@ -14,8 +14,6 @@ import '../../../../shared/widgets/back_to_top_button.dart';
 import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
-import '../../../chat/presentation/pages/chat_page.dart';
-import '../../../chat/presentation/widgets/discussion_hub_segment.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../domain/discussion_models.dart';
@@ -24,31 +22,15 @@ import '../providers/discussion_list_providers.dart';
 import '../widgets/discussion_image_thumb.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Hub Diskusi: tab Ruang Diskusi (feed) + Chat publik.
-class DiscussionFeedPage extends HookConsumerWidget {
-  const DiscussionFeedPage({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final hubTab = useState(0); // 0 = ruang, 1 = chat
-    if (hubTab.value == 1) {
-      return ChatPage(onSelectRoomsTab: () => hubTab.value = 0);
-    }
-    return _DiscussionRoomsBody(onSelectChatTab: () => hubTab.value = 1);
-  }
-}
-
-class _DiscussionRoomsBody extends HookConsumerWidget {
-  const _DiscussionRoomsBody({required this.onSelectChatTab});
-
-  final VoidCallback onSelectChatTab;
+/// Isi tab Ruang Diskusi (feed). Chrome hub ada di [DiscussionHubShell].
+class DiscussionRoomsPage extends HookConsumerWidget {
+  const DiscussionRoomsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(discussionFeedProvider);
     final sortState = ref.watch(discussionFeedSortProvider);
     final scroll = useScrollController();
-    final l10n = AppLocalizations.of(context);
 
     Future<void> applySortChange(VoidCallback mutate) async {
       // Hapus cache dulu supaya rebuild (watch sort) tidak dapat halaman lama.
@@ -70,73 +52,51 @@ class _DiscussionRoomsBody extends HookConsumerWidget {
       return () => scroll.removeListener(listener);
     }, [scroll]);
 
-    return FScaffold(
-      childPad: true,
-      header: FHeader.nested(
-        title: Text(l10n.discussionHubTitle),
-        prefixes: [FHeaderAction.back(onPress: () => context.pop())],
-        suffixes: [
-          FHeaderAction(
-            icon: const Icon(FLucideIcons.history),
-            onPress: () => context.push(DiscussionRouter.mine.path),
+    return ScrollWithBackToTop(
+      controller: scroll,
+      child: RefreshIndicator(
+        onRefresh: () async {
+          await ref
+              .read(responseCacheStoreProvider)
+              .deleteByPrefix('GET|/api/v1/discussions');
+          ref.invalidate(discussionFeedProvider);
+          await ref.read(discussionFeedProvider.future);
+        },
+        child: async.when(
+          // Sort/refresh: tetap tampilkan data lama, jangan flash skeleton.
+          skipLoadingOnReload: true,
+          skipLoadingOnRefresh: true,
+          loading: () => const _FeedSkeleton(),
+          error: (error, _) => ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            children: [
+              const _NewThreadComposer(),
+              const Gap(24),
+              Icon(
+                FLucideIcons.circleAlert,
+                size: 40,
+                color: context.theme.colors.mutedForeground,
+              ),
+              const Gap(10),
+              Text(
+                error is DiscussionFailure
+                    ? error.message
+                    : AppLocalizations.of(context).discussionFeedLoadFailed,
+                textAlign: TextAlign.center,
+                style: context.theme.typography.body.sm.copyWith(
+                  color: context.theme.colors.mutedForeground,
+                ),
+              ),
+              const Gap(16),
+              FButton(
+                variant: FButtonVariant.outline,
+                onPress: () => ref.invalidate(discussionFeedProvider),
+                child: Text(AppLocalizations.of(context).discussionFeedRetry),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        children: [
-          DiscussionHubSegment(
-            index: 0,
-            onChanged: (i) {
-              if (i == 1) onSelectChatTab();
-            },
-          ),
-          Expanded(
-            child: ScrollWithBackToTop(
-              controller: scroll,
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  await ref
-                      .read(responseCacheStoreProvider)
-                      .deleteByPrefix('GET|/api/v1/discussions');
-                  ref.invalidate(discussionFeedProvider);
-                  await ref.read(discussionFeedProvider.future);
-                },
-                child: async.when(
-                  loading: () => const _FeedSkeleton(),
-                  error: (error, _) => ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(vertical: 24),
-                    children: [
-                      const _NewThreadComposer(),
-                      const Gap(24),
-                      Icon(
-                        FLucideIcons.circleAlert,
-                        size: 40,
-                        color: context.theme.colors.mutedForeground,
-                      ),
-                      const Gap(10),
-                      Text(
-                        error is DiscussionFailure
-                            ? error.message
-                            : AppLocalizations.of(
-                                context,
-                              ).discussionFeedLoadFailed,
-                        textAlign: TextAlign.center,
-                        style: context.theme.typography.body.sm.copyWith(
-                          color: context.theme.colors.mutedForeground,
-                        ),
-                      ),
-                      const Gap(16),
-                      FButton(
-                        variant: FButtonVariant.outline,
-                        onPress: () => ref.invalidate(discussionFeedProvider),
-                        child: Text(
-                          AppLocalizations.of(context).discussionFeedRetry,
-                        ),
-                      ),
-                    ],
-                  ),
-                  data: (state) {
+          data: (state) {
                     if (state.items.isEmpty) {
                       return ListView(
                         physics: const AlwaysScrollableScrollPhysics(),
@@ -240,11 +200,7 @@ class _DiscussionRoomsBody extends HookConsumerWidget {
                       },
                     );
                   },
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -630,33 +586,59 @@ class _FeedSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Skeletonizer(
-      child: ListView.builder(
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(0, 4, 0, 32),
-        itemCount: 6,
-        itemBuilder: (_, _) => const Padding(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Composer stub
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                Bone.circle(size: 40),
+                Gap(12),
+                Expanded(child: Bone(height: 40, uniRadius: 10)),
+              ],
+            ),
+          ),
+          const Gap(8),
+          // Sort chips stub
+          const Row(
             children: [
-              Bone.circle(size: 40),
-              Gap(12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Bone.text(words: 2),
-                    Gap(4),
-                    Bone.multiText(lines: 2),
-                    Gap(4),
-                    Bone.text(words: 2),
-                  ],
-                ),
-              ),
-              Gap(12),
-              Bone(width: 72, height: 72),
+              Bone(width: 72, height: 28, uniRadius: 14),
+              Gap(8),
+              Bone(width: 64, height: 28, uniRadius: 14),
+              Gap(8),
+              Bone(width: 80, height: 28, uniRadius: 14),
             ],
           ),
-        ),
+          const Gap(8),
+          for (var i = 0; i < 5; i++)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Bone.circle(size: 40),
+                  Gap(12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Bone.text(words: 2),
+                        Gap(4),
+                        Bone.multiText(lines: 2),
+                        Gap(4),
+                        Bone.text(words: 2),
+                      ],
+                    ),
+                  ),
+                  Gap(12),
+                  Bone(width: 72, height: 72, uniRadius: 8),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }

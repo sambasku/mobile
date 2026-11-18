@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/chat_models.dart';
@@ -20,16 +21,27 @@ import '../widgets/chat_bubble.dart';
 import '../widgets/chat_composer.dart';
 import '../widgets/chat_new_messages_chip.dart';
 import '../widgets/chat_presence_badge.dart';
+import '../widgets/chat_privacy_warning.dart';
 import '../widgets/chat_sticker_sheet.dart';
 import '../widgets/chat_typing_indicator.dart';
 import '../widgets/discussion_hub_segment.dart';
 import '../../../voice/presentation/widgets/voice_room_strip.dart';
 
 /// Stream chat publik (satu channel). Dipakai dari tab hub Diskusi.
+///
+/// [embeddedInHub] = true: hanya isi body (chrome di [DiscussionHubShell]).
 class ChatPage extends HookConsumerWidget {
-  const ChatPage({super.key, required this.onSelectRoomsTab});
+  const ChatPage({
+    super.key,
+    this.embeddedInHub = false,
+    this.onSelectRoomsTab,
+  });
 
-  final VoidCallback onSelectRoomsTab;
+  /// Bila true, tanpa FScaffold/header/segment (shell hub yang punya).
+  final bool embeddedInHub;
+
+  /// Dipakai hanya jika [embeddedInHub] false (standalone).
+  final VoidCallback? onSelectRoomsTab;
 
   static const _nearBottomPx = 80.0;
 
@@ -49,6 +61,120 @@ class ChatPage extends HookConsumerWidget {
     final newCount = useState(0);
     final pinnedBottom = useRef(true);
     final didInitialScroll = useRef(false);
+    final bubbleKeys = useRef<Map<String, GlobalKey>>({});
+    final highlightId = useState<String?>(null);
+    final highlightTimer = useRef<Timer?>(null);
+    // Prefiks `@username ` yang disisip saat balas (pola komentar).
+    final replyMentionPrefix = useRef<String?>(null);
+
+    useEffect(
+      () =>
+          () => highlightTimer.value?.cancel(),
+      const [],
+    );
+
+    void stripReplyMention() {
+      final prefix = replyMentionPrefix.value;
+      replyMentionPrefix.value = null;
+      if (prefix == null) return;
+      final text = textController.text;
+      if (!text.startsWith(prefix)) return;
+      final rest = text.substring(prefix.length);
+      textController.value = TextEditingValue(
+        text: rest,
+        selection: TextSelection.collapsed(offset: rest.length),
+      );
+    }
+
+    void startReply(ChatMessage message) {
+      stripReplyMention();
+      replyTarget.value = message;
+      final me = auth?.username;
+      final username = message.username;
+      if (!isLinkablePublicUsername(username)) return;
+      if (me != null && username!.toLowerCase() == me.toLowerCase()) return;
+      final mention = '@$username ';
+      replyMentionPrefix.value = mention;
+      final current = textController.text;
+      if (current.startsWith(mention)) {
+        textController.selection = TextSelection.collapsed(
+          offset: mention.length,
+        );
+        return;
+      }
+      textController.value = TextEditingValue(
+        text: '$mention$current',
+        selection: TextSelection.collapsed(offset: mention.length),
+      );
+    }
+
+    void clearReply() {
+      stripReplyMention();
+      replyTarget.value = null;
+    }
+
+    GlobalKey keyFor(String id) =>
+        bubbleKeys.value.putIfAbsent(id, GlobalKey.new);
+
+    Future<void> jumpToMessage(String id) async {
+      final items = ref.read(chatMessagesProvider).asData?.value.items;
+      if (items == null || !context.mounted) return;
+      final index = items.indexWhere((m) => m.id == id);
+      if (index < 0) {
+        showFToast(context: context, title: Text(l10n.chatReplyTargetMissing));
+        return;
+      }
+
+      void mark() {
+        highlightId.value = id;
+        highlightTimer.value?.cancel();
+        highlightTimer.value = Timer(const Duration(milliseconds: 1400), () {
+          if (highlightId.value == id) highlightId.value = null;
+        });
+      }
+
+      Future<bool> reveal() async {
+        final target = keyFor(id).currentContext;
+        if (target == null || !target.mounted) return false;
+        await Scrollable.ensureVisible(
+          target,
+          alignment: 0.35,
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+        );
+        if (!context.mounted) return true;
+        mark();
+        return true;
+      }
+
+      if (await reveal()) return;
+      if (!scroll.hasClients) return;
+
+      // Item belum kebangun. Geser satu viewport per frame sampai key-nya ada.
+      for (var attempt = 0; attempt < 24; attempt++) {
+        if (!context.mounted || !scroll.hasClients) return;
+        final visible = <int>[];
+        for (var i = 0; i < items.length; i++) {
+          final built = keyFor(items[i].id).currentContext;
+          if (built != null && built.mounted) visible.add(i);
+        }
+        if (visible.isEmpty) break;
+        final pos = scroll.position;
+        if (!pos.hasContentDimensions) break;
+        final up = index < visible.first;
+        final delta = pos.viewportDimension * 0.85;
+        final next = (up ? pos.pixels - delta : pos.pixels + delta).clamp(
+          pos.minScrollExtent,
+          pos.maxScrollExtent,
+        );
+        if ((next - pos.pixels).abs() < 1) break;
+        scroll.jumpTo(next);
+        await SchedulerBinding.instance.endOfFrame;
+        if (await reveal()) return;
+      }
+      if (!context.mounted) return;
+      showFToast(context: context, title: Text(l10n.chatReplyTargetMissing));
+    }
 
     void promptLogin() {
       showFToast(context: context, title: Text(l10n.chatLoginToSend));
@@ -96,24 +222,30 @@ class ChatPage extends HookConsumerWidget {
       final name = (auth?.displayName?.trim().isNotEmpty == true)
           ? auth!.displayName!.trim()
           : (auth?.username?.trim().isNotEmpty == true)
-              ? auth!.username!.trim()
-              : l10n.chatPresenceGuestName;
-      ref.read(chatPresenceCountProvider.notifier).enter(
-            presenceKey: presenceKey,
-            name: name,
-            userId: auth?.userId,
-          );
+          ? auth!.username!.trim()
+          : l10n.chatPresenceGuestName;
+      // Capture notifier: jangan pakai WidgetRef di cleanup (unmounted).
+      final presence = ref.read(chatPresenceCountProvider.notifier);
+      presence.enter(
+        presenceKey: presenceKey,
+        name: name,
+        userId: auth?.userId,
+      );
       return () {
-        ref.read(chatPresenceCountProvider.notifier).leave();
+        // Jangan ubah provider di tengah dispose/build shell.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          unawaited(presence.leave());
+        });
       };
     }, [presenceKey]);
 
     useEffect(() {
-      ref
-          .read(chatTypingProvider.notifier)
-          .startListening(selfUserId: myUserId);
+      final typing = ref.read(chatTypingProvider.notifier);
+      typing.startListening(selfUserId: myUserId);
       return () {
-        unawaited(ref.read(chatTypingProvider.notifier).stopListening());
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          unawaited(typing.stopListening());
+        });
       };
     }, [myUserId]);
 
@@ -124,9 +256,11 @@ class ChatPage extends HookConsumerWidget {
         final name = (auth?.displayName?.trim().isNotEmpty == true)
             ? auth!.displayName!.trim()
             : (auth?.username?.trim().isNotEmpty == true)
-                ? auth!.username!.trim()
-                : l10n.chatPresenceGuestName;
-        ref.read(chatTypingProvider.notifier).onLocalTextChanged(
+            ? auth!.username!.trim()
+            : l10n.chatPresenceGuestName;
+        ref
+            .read(chatTypingProvider.notifier)
+            .onLocalTextChanged(
               userId: myUserId,
               name: name,
               text: textController.text,
@@ -143,19 +277,44 @@ class ChatPage extends HookConsumerWidget {
       return () => scroll.removeListener(listener);
     }, [scroll]);
 
-    // Loncat ke bawah sekali saat histori pertama siap.
+    // Loncat ke bawah saat histori pertama siap. Ulang sampai benar-benar
+    // di bawah: dua frame saja sering gagal (VN/stiker/font masih layout).
     useEffect(() {
       final items = async.asData?.value.items;
       if (didInitialScroll.value) return null;
       if (items == null || items.isEmpty) return null;
-      didInitialScroll.value = true;
-      // Dua frame: tunggu ListView selesai layout sebelum jump.
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          scrollToBottom(animate: false);
-        });
-      });
-      return null;
+
+      var cancelled = false;
+      Future<void> pinBottom() async {
+        for (var attempt = 0; attempt < 16; attempt++) {
+          if (cancelled || !context.mounted) return;
+          await SchedulerBinding.instance.endOfFrame;
+          if (!scroll.hasClients) continue;
+          final pos = scroll.position;
+          if (!pos.hasContentDimensions) continue;
+          final target = pos.maxScrollExtent;
+          if ((pos.pixels - target).abs() > 1) {
+            scroll.jumpTo(target);
+          }
+          // Frame berikutnya: extent bisa naik lagi setelah item tinggi final.
+          await SchedulerBinding.instance.endOfFrame;
+          if (cancelled || !scroll.hasClients) continue;
+          final after = scroll.position;
+          if (!after.hasContentDimensions) continue;
+          if (after.maxScrollExtent - after.pixels <= 2) {
+            didInitialScroll.value = true;
+            nearBottom.value = true;
+            pinnedBottom.value = true;
+            newCount.value = 0;
+            return;
+          }
+        }
+        // Best-effort: jangan biarkan loop tiap rebuild.
+        didInitialScroll.value = true;
+      }
+
+      unawaited(pinBottom());
+      return () => cancelled = true;
     }, [async.asData?.value.items.length]);
 
     useEffect(() {
@@ -273,19 +432,19 @@ class ChatPage extends HookConsumerWidget {
       pinnedBottom.value = true;
       final reply = replyTarget.value;
       textController.clear();
+      replyMentionPrefix.value = null;
       replyTarget.value = null;
       if (myUserId != null) {
         final auth = ref.read(authStatusProvider).value;
         final name = (auth?.displayName?.trim().isNotEmpty == true)
             ? auth!.displayName!.trim()
             : (auth?.username?.trim().isNotEmpty == true)
-                ? auth!.username!.trim()
-                : l10n.chatPresenceGuestName;
+            ? auth!.username!.trim()
+            : l10n.chatPresenceGuestName;
         unawaited(
-          ref.read(chatTypingProvider.notifier).stopLocalTyping(
-                userId: myUserId,
-                name: name,
-              ),
+          ref
+              .read(chatTypingProvider.notifier)
+              .stopLocalTyping(userId: myUserId, name: name),
         );
       }
       final failure = await ref
@@ -325,6 +484,7 @@ class ChatPage extends HookConsumerWidget {
       sending.value = true;
       pinnedBottom.value = true;
       final reply = replyTarget.value;
+      stripReplyMention();
       replyTarget.value = null;
       final failure = await ref
           .read(chatMessagesProvider.notifier)
@@ -370,6 +530,7 @@ class ChatPage extends HookConsumerWidget {
       sending.value = true;
       pinnedBottom.value = true;
       final reply = replyTarget.value;
+      stripReplyMention();
       replyTarget.value = null;
       final failure = await ref
           .read(chatMessagesProvider.notifier)
@@ -413,203 +574,220 @@ class ChatPage extends HookConsumerWidget {
       return null;
     }, [keyboardInset]);
 
-    return FScaffold(
-      childPad: true,
-      resizeToAvoidBottomInset: false,
-      header: FHeader.nested(
-        title: Text(l10n.discussionHubTitle),
-        prefixes: [FHeaderAction.back(onPress: () => context.pop())],
-      ),
-      child: Padding(
-        padding: EdgeInsets.only(bottom: keyboardInset),
-        child: Column(
-          children: [
+    final body = Padding(
+      padding: EdgeInsets.only(bottom: keyboardInset),
+      child: Column(
+        children: [
+          if (!embeddedInHub)
             DiscussionHubSegment(
               index: 1,
               onChanged: (i) {
-                if (i == 0) onSelectRoomsTab();
+                if (i == 0) onSelectRoomsTab?.call();
               },
             ),
-            // Jarak dari chrome tab supaya strip voice tidak nempel.
-            const Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ChatPresenceBadge(),
-                  VoiceRoomStrip(),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Stack(
-                children: [
-                async.when(
-                  loading: () =>
-                      const Center(child: FCircularProgress(size: .md)),
-                  error: (error, _) => ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(vertical: 24),
-                    children: [
-                      Icon(
-                        FLucideIcons.circleAlert,
-                        size: 40,
-                        color: context.theme.colors.mutedForeground,
-                      ),
-                      const Gap(10),
-                      Text(
-                        error is ChatFailure
-                            ? error.message
-                            : l10n.chatLoadFailed,
-                        textAlign: TextAlign.center,
-                        style: context.theme.typography.body.sm.copyWith(
-                          color: context.theme.colors.mutedForeground,
-                        ),
-                      ),
-                      const Gap(16),
-                      FButton(
-                        variant: FButtonVariant.outline,
-                        onPress: () => ref.invalidate(chatMessagesProvider),
-                        child: Text(l10n.chatRetry),
-                      ),
-                    ],
-                  ),
-                  data: (state) {
-                    if (state.items.isEmpty) {
-                      return RefreshIndicator(
-                        onRefresh: () =>
-                            ref.read(chatMessagesProvider.notifier).refresh(),
-                        child: ListView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(vertical: 48),
-                          children: [
-                            Icon(
-                              FLucideIcons.messageCircle,
-                              size: 40,
-                              color: context.theme.colors.mutedForeground,
-                            ),
-                            const Gap(10),
-                            Text(
-                              l10n.chatEmpty,
-                              textAlign: TextAlign.center,
-                              style: context.theme.typography.body.md.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const Gap(6),
-                            Text(
-                              l10n.chatEmptyBody,
-                              textAlign: TextAlign.center,
-                              style: context.theme.typography.body.sm.copyWith(
-                                color: context.theme.colors.mutedForeground,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        await ref.read(chatMessagesProvider.notifier).refresh();
-                        if (context.mounted) {
-                          await scrollToBottom(animate: false);
-                        }
-                      },
-                      child: NotificationListener<ScrollNotification>(
-                        onNotification: (n) {
-                          if (n.metrics.pixels <= 80 &&
-                              state.hasMoreOlder &&
-                              !state.isLoadingOlder) {
-                            ref.read(chatMessagesProvider.notifier).loadOlder();
-                          }
-                          return false;
-                        },
-                        child: ListView.builder(
-                          controller: scroll,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 12),
-                          itemCount:
-                              state.items.length +
-                              (state.isLoadingOlder ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (state.isLoadingOlder && index == 0) {
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 12),
-                                child: Center(
-                                  child: FCircularProgress(size: .sm),
-                                ),
-                              );
-                            }
-                            final itemIndex = state.isLoadingOlder
-                                ? index - 1
-                                : index;
-                            final items = state.items;
-                            final message = items[itemIndex];
-                            final prev =
-                                itemIndex > 0 ? items[itemIndex - 1] : null;
-                            final next = itemIndex < items.length - 1
-                                ? items[itemIndex + 1]
-                                : null;
-                            final mine =
-                                myUserId != null &&
-                                myUserId.isNotEmpty &&
-                                message.userId == myUserId;
-                            final sameAuthorAsPrev =
-                                prev != null &&
-                                prev.userId == message.userId;
-                            final sameAuthorAsNext =
-                                next != null &&
-                                next.userId == message.userId;
-                            final sameMinuteAsNext =
-                                next != null &&
-                                _sameLocalMinute(
-                                  message.createdAt,
-                                  next.createdAt,
-                                );
-                            // Jam hanya di akhir run: orang sama + menit sama.
-                            final showTime = message.pending ||
-                                !(sameAuthorAsNext && sameMinuteAsNext);
-                            final showName = !mine && !sameAuthorAsPrev;
-                            final clustered =
-                                sameAuthorAsPrev ||
-                                (sameAuthorAsNext && sameMinuteAsNext);
-                            return ChatBubble(
-                              message: message,
-                              mine: mine,
-                              showName: showName,
-                              showTime: showTime,
-                              clustered: clustered,
-                              onReply: () => replyTarget.value = message,
-                              onDelete: mine && !message.isDeleted
-                                  ? () => confirmDelete(message)
-                                  : null,
-                            );
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                if (newCount.value > 0)
-                  Positioned(
-                    right: 8,
-                    bottom: 8,
-                    child: ChatNewMessagesChip(
-                      count: newCount.value,
-                      onPress: () => scrollToBottom(),
-                    ),
-                  ),
+          // Jarak dari chrome tab supaya strip voice tidak nempel.
+          const Padding(
+            padding: EdgeInsets.only(top: 10, bottom: 4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ChatPresenceBadge(),
+                VoiceRoomStrip(),
+                ChatPrivacyWarning(),
               ],
             ),
           ),
+          Expanded(
+            child: Stack(
+              children: [
+                async.when(
+                    loading: () =>
+                        const Center(child: FCircularProgress(size: .md)),
+                    error: (error, _) => ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      children: [
+                        Icon(
+                          FLucideIcons.circleAlert,
+                          size: 40,
+                          color: context.theme.colors.mutedForeground,
+                        ),
+                        const Gap(10),
+                        Text(
+                          error is ChatFailure
+                              ? error.message
+                              : l10n.chatLoadFailed,
+                          textAlign: TextAlign.center,
+                          style: context.theme.typography.body.sm.copyWith(
+                            color: context.theme.colors.mutedForeground,
+                          ),
+                        ),
+                        const Gap(16),
+                        FButton(
+                          variant: FButtonVariant.outline,
+                          onPress: () => ref.invalidate(chatMessagesProvider),
+                          child: Text(l10n.chatRetry),
+                        ),
+                      ],
+                    ),
+                    data: (state) {
+                      if (state.items.isEmpty) {
+                        return RefreshIndicator(
+                          onRefresh: () =>
+                              ref.read(chatMessagesProvider.notifier).refresh(),
+                          child: ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: const EdgeInsets.symmetric(vertical: 48),
+                            children: [
+                              Icon(
+                                FLucideIcons.messageCircle,
+                                size: 40,
+                                color: context.theme.colors.mutedForeground,
+                              ),
+                              const Gap(10),
+                              Text(
+                                l10n.chatEmpty,
+                                textAlign: TextAlign.center,
+                                style: context.theme.typography.body.md
+                                    .copyWith(fontWeight: FontWeight.w600),
+                              ),
+                              const Gap(6),
+                              Text(
+                                l10n.chatEmptyBody,
+                                textAlign: TextAlign.center,
+                                style: context.theme.typography.body.sm
+                                    .copyWith(
+                                      color:
+                                          context.theme.colors.mutedForeground,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          await ref
+                              .read(chatMessagesProvider.notifier)
+                              .refresh();
+                          if (context.mounted) {
+                            await scrollToBottom(animate: false);
+                          }
+                        },
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: (n) {
+                            if (n.metrics.pixels <= 80 &&
+                                state.hasMoreOlder &&
+                                !state.isLoadingOlder) {
+                              ref
+                                  .read(chatMessagesProvider.notifier)
+                                  .loadOlder();
+                            }
+                            return false;
+                          },
+                          child: ListView.builder(
+                            controller: scroll,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: const EdgeInsets.fromLTRB(0, 8, 0, 12),
+                            itemCount:
+                                state.items.length +
+                                (state.isLoadingOlder ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              if (state.isLoadingOlder && index == 0) {
+                                return const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  child: Center(
+                                    child: FCircularProgress(size: .sm),
+                                  ),
+                                );
+                              }
+                              final itemIndex = state.isLoadingOlder
+                                  ? index - 1
+                                  : index;
+                              final items = state.items;
+                              final message = items[itemIndex];
+                              final prev = itemIndex > 0
+                                  ? items[itemIndex - 1]
+                                  : null;
+                              final next = itemIndex < items.length - 1
+                                  ? items[itemIndex + 1]
+                                  : null;
+                              final mine =
+                                  myUserId != null &&
+                                  myUserId.isNotEmpty &&
+                                  message.userId == myUserId;
+                              final sameAuthorAsPrev =
+                                  prev != null && prev.userId == message.userId;
+                              final sameAuthorAsNext =
+                                  next != null && next.userId == message.userId;
+                              final sameMinuteAsNext =
+                                  next != null &&
+                                  _sameLocalMinute(
+                                    message.createdAt,
+                                    next.createdAt,
+                                  );
+                              // Jam hanya di akhir run: orang sama + menit sama.
+                              final showTime =
+                                  message.pending ||
+                                  !(sameAuthorAsNext && sameMinuteAsNext);
+                              final showName = !mine && !sameAuthorAsPrev;
+                              final clustered =
+                                  sameAuthorAsPrev ||
+                                  (sameAuthorAsNext && sameMinuteAsNext);
+                              return ChatBubble(
+                                key: keyFor(message.id),
+                                message: message,
+                                mine: mine,
+                                showName: showName,
+                                showTime: showTime,
+                                clustered: clustered,
+                                highlighted: highlightId.value == message.id,
+                                onReply: () => startReply(message),
+                                onJumpToReply: message.replyToId == null
+                                    ? null
+                                    : () => jumpToMessage(message.replyToId!),
+                                onDelete: mine && !message.isDeleted
+                                    ? () => confirmDelete(message)
+                                    : null,
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  if (!nearBottom.value && newCount.value == 0)
+                    Positioned(
+                      right: 10,
+                      bottom: 10,
+                      child: ChatScrollToBottomButton(
+                        onPress: () => scrollToBottom(),
+                      ),
+                    ),
+                  if (newCount.value > 0)
+                    Positioned(
+                      right: 8,
+                      bottom: 8,
+                      child: ChatNewMessagesChip(
+                        count: newCount.value,
+                        onPress: () => scrollToBottom(),
+                      ),
+                    ),
+                ],
+              ),
+            ),
             const ChatTypingIndicator(),
             ChatComposer(
               controller: textController,
               enabled: isAuth,
               sending: sending.value,
               replyTarget: replyTarget.value,
-              onClearReply: () => replyTarget.value = null,
+              onClearReply: clearReply,
+              onJumpToReply: () {
+                final id = replyTarget.value?.id;
+                if (id != null) jumpToMessage(id);
+              },
               onSendText: sendText,
               onOpenStickers: sendSticker,
               onRecordVoice: recordVoice,
@@ -617,7 +795,20 @@ class ChatPage extends HookConsumerWidget {
             ),
           ],
         ),
+      );
+
+    if (embeddedInHub) {
+      return body;
+    }
+
+    return FScaffold(
+      childPad: true,
+      resizeToAvoidBottomInset: false,
+      header: FHeader.nested(
+        title: Text(l10n.discussionHubTitle),
+        prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
+      child: body,
     );
   }
 }

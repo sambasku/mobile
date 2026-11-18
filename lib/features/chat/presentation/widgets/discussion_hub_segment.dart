@@ -6,8 +6,8 @@ import '../../../../l10n/app_localizations.dart';
 
 /// Tab bar hub Diskusi - visual [FTabs] Forui (sama Tentang / Baleho).
 ///
-/// Konten tetap di parent ([DiscussionFeedPage] / [ChatPage]); di sini hanya
-/// chrome tab supaya tidak dobel scaffold.
+/// Konten di [DiscussionHubShell] via `StatefulNavigationShell`; di sini
+/// hanya chrome tab supaya tidak dobel scaffold.
 class DiscussionHubSegment extends StatelessWidget {
   const DiscussionHubSegment({
     super.key,
