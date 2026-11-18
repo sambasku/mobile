@@ -1,10 +1,13 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../../l10n/app_localizations.dart';
 
-/// Segment Ruang Diskusi | Chat di bawah header hub Diskusi.
+/// Tab bar hub Diskusi - visual [FTabs] Forui (sama Tentang / Baleho).
+///
+/// Konten tetap di parent ([DiscussionFeedPage] / [ChatPage]); di sini hanya
+/// chrome tab supaya tidak dobel scaffold.
 class DiscussionHubSegment extends StatelessWidget {
   const DiscussionHubSegment({
     super.key,
@@ -19,31 +22,70 @@ class DiscussionHubSegment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-      child: Row(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: FTabs(
+        expands: false,
+        control: .lifted(index: index, onChange: onChanged),
         children: [
-          Expanded(
-            child: FButton(
-              variant: index == 0
-                  ? FButtonVariant.primary
-                  : FButtonVariant.outline,
-              onPress: () => onChanged(0),
-              child: Text(l10n.discussionTabRooms),
+          FTabEntry.entry(
+            label: _HubTabLabel(
+              icon: FLucideIcons.messagesSquare,
+              text: l10n.discussionTabRooms,
+              selected: index == 0,
+              theme: theme,
             ),
+            child: const SizedBox.shrink(),
           ),
-          const Gap(8),
-          Expanded(
-            child: FButton(
-              variant: index == 1
-                  ? FButtonVariant.primary
-                  : FButtonVariant.outline,
-              onPress: () => onChanged(1),
-              child: Text(l10n.discussionTabChat),
+          FTabEntry.entry(
+            label: _HubTabLabel(
+              icon: FLucideIcons.messageCircle,
+              text: l10n.discussionTabChat,
+              selected: index == 1,
+              theme: theme,
             ),
+            child: const SizedBox.shrink(),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _HubTabLabel extends StatelessWidget {
+  const _HubTabLabel({
+    required this.icon,
+    required this.text,
+    required this.selected,
+    required this.theme,
+  });
+
+  final IconData icon;
+  final String text;
+  final bool selected;
+  final FThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = selected
+        ? theme.colors.foreground
+        : theme.colors.mutedForeground;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 15, color: color),
+        const Gap(6),
+        Text(
+          text,
+          style: theme.typography.body.sm.copyWith(
+            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+            color: color,
+          ),
+        ),
+      ],
     );
   }
 }
