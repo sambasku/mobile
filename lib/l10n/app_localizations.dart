@@ -1343,6 +1343,36 @@ abstract class AppLocalizations {
   /// **'Pilih area kosong di papan, lalu aktifkan ulang creative lama.'**
   String get balehoHistoryRebookHint;
 
+  /// Judul blok metrik performa di riwayat Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Performa'**
+  String get balehoHistoryStatsTitle;
+
+  /// Label hitungan impression Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Tayang'**
+  String get balehoHistoryStatImpressions;
+
+  /// Label hitungan tap membuka sheet detail
+  ///
+  /// In id, this message translates to:
+  /// **'Buka detail'**
+  String get balehoHistoryStatTaps;
+
+  /// Label hitungan klik CTA di sheet Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Klik tombol'**
+  String get balehoHistoryStatActions;
+
+  /// CTR tap/impresi di riwayat Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'CTR {percent}%'**
+  String balehoHistoryStatCtr(String percent);
+
   /// No description provided for @balehoValidationNeedFrame.
   ///
   /// In id, this message translates to:

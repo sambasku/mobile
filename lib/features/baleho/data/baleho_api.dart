@@ -67,6 +67,10 @@ class BalehoPlacementHistoryItem {
     this.title,
     this.mediaUrl,
     this.endsAt,
+    this.impressions = 0,
+    this.taps = 0,
+    this.actions = 0,
+    this.ctrPercent = 0,
   });
 
   final String id;
@@ -80,6 +84,18 @@ class BalehoPlacementHistoryItem {
   final String? mediaUrl;
   final DateTime createdAt;
   final DateTime? endsAt;
+
+  /// Tampil di viewport papan.
+  final int impressions;
+
+  /// Tap membuka sheet detail.
+  final int taps;
+
+  /// Klik tombol CTA di sheet.
+  final int actions;
+
+  /// CTR tap/impresi (%), 1 desimal dari API.
+  final double ctrPercent;
 
   factory BalehoPlacementHistoryItem.fromJson(Map<String, dynamic> json) {
     return BalehoPlacementHistoryItem(
@@ -97,6 +113,10 @@ class BalehoPlacementHistoryItem {
       endsAt: json['ends_at'] == null
           ? null
           : DateTime.tryParse('${json['ends_at']}'),
+      impressions: (json['impressions'] as num?)?.toInt() ?? 0,
+      taps: (json['taps'] as num?)?.toInt() ?? 0,
+      actions: (json['actions'] as num?)?.toInt() ?? 0,
+      ctrPercent: (json['ctr_percent'] as num?)?.toDouble() ?? 0,
     );
   }
 }

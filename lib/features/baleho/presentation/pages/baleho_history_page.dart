@@ -242,12 +242,70 @@ class _HistoryList extends ConsumerWidget {
                           )
                         : null,
                   ),
+                  FTile(
+                    title: Text(l10n.balehoHistoryStatsTitle),
+                    subtitle: _BalehoPerfStats(item: item),
+                  ),
                 ],
               );
             },
           ),
         );
       },
+    );
+  }
+}
+
+/// Baris metrik padat: Tayang / Buka detail / Klik tombol (+ CTR).
+class _BalehoPerfStats extends StatelessWidget {
+  const _BalehoPerfStats({required this.item});
+
+  final BalehoPlacementHistoryItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final muted = theme.typography.body.xs.copyWith(
+      color: theme.colors.mutedForeground,
+      height: 1.35,
+    );
+    final valueStyle = theme.typography.body.sm.copyWith(
+      fontWeight: FontWeight.w600,
+      height: 1.2,
+    );
+    final ctr = item.ctrPercent == item.ctrPercent.roundToDouble()
+        ? '${item.ctrPercent.toInt()}'
+        : item.ctrPercent.toStringAsFixed(1);
+
+    Widget cell(String label, String value) {
+      return Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(value, style: valueStyle),
+            const Gap(2),
+            Text(label, style: muted, maxLines: 1, overflow: TextOverflow.ellipsis),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            cell(l10n.balehoHistoryStatImpressions, '${item.impressions}'),
+            cell(l10n.balehoHistoryStatTaps, '${item.taps}'),
+            cell(l10n.balehoHistoryStatActions, '${item.actions}'),
+          ],
+        ),
+        if (item.impressions > 0) ...[
+          const Gap(4),
+          Text(l10n.balehoHistoryStatCtr(ctr), style: muted),
+        ],
+      ],
     );
   }
 }

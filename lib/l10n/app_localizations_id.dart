@@ -724,6 +724,23 @@ class AppLocalizationsId extends AppLocalizations {
       'Pilih area kosong di papan, lalu aktifkan ulang creative lama.';
 
   @override
+  String get balehoHistoryStatsTitle => 'Performa';
+
+  @override
+  String get balehoHistoryStatImpressions => 'Tayang';
+
+  @override
+  String get balehoHistoryStatTaps => 'Buka detail';
+
+  @override
+  String get balehoHistoryStatActions => 'Klik tombol';
+
+  @override
+  String balehoHistoryStatCtr(String percent) {
+    return 'CTR $percent%';
+  }
+
+  @override
   String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';
 
   @override
@@ -13575,6 +13592,23 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get balehoHistoryRebookHint =>
       'Pilih area kosong di papan, lalu aktifkan ulang creative lama.';
+
+  @override
+  String get balehoHistoryStatsTitle => 'Performa';
+
+  @override
+  String get balehoHistoryStatImpressions => 'Tayang';
+
+  @override
+  String get balehoHistoryStatTaps => 'Buka detail';
+
+  @override
+  String get balehoHistoryStatActions => 'Klik tombol';
+
+  @override
+  String balehoHistoryStatCtr(String percent) {
+    return 'CTR $percent%';
+  }
 
   @override
   String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';

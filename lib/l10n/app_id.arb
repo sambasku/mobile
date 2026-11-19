@@ -731,6 +731,31 @@
   "@balehoHistoryRebookHint": {
     "description": "Hint singkat CTA pesan lagi di riwayat"
   },
+  "balehoHistoryStatsTitle": "Performa",
+  "@balehoHistoryStatsTitle": {
+    "description": "Judul blok metrik performa di riwayat Baleho"
+  },
+  "balehoHistoryStatImpressions": "Tayang",
+  "@balehoHistoryStatImpressions": {
+    "description": "Label hitungan impression Baleho"
+  },
+  "balehoHistoryStatTaps": "Buka detail",
+  "@balehoHistoryStatTaps": {
+    "description": "Label hitungan tap membuka sheet detail"
+  },
+  "balehoHistoryStatActions": "Klik tombol",
+  "@balehoHistoryStatActions": {
+    "description": "Label hitungan klik CTA di sheet Baleho"
+  },
+  "balehoHistoryStatCtr": "CTR {percent}%",
+  "@balehoHistoryStatCtr": {
+    "description": "CTR tap/impresi di riwayat Baleho",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
   "balehoValidationNeedFrame": "Isi minimal satu slide Baleho",
   "balehoValidationVideoSize": "Video hanya untuk ukuran 4x2",
   "balehoValidationVideoMax": "Maksimal satu video per pesanan",
