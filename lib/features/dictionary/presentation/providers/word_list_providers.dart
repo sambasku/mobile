@@ -14,8 +14,9 @@ import '../providers/search_history_provider.dart';
 
 part 'word_list_providers.g.dart';
 
-/// Debounce filter q. 700 ms supaya ketikan seperti "sapaka" tidak
-/// memicu hit tengah ("sa", "sapa") yang merekam search-miss palsu.
+/// Debounce filter q. 700 ms = jeda ketikan; setelah settle baru fetch +
+/// boleh rekam miss. Hit tengah ("sa" saat mengetik "sapaka") dibatalkan
+/// lewat CancelToken, bukan lewat wajib tekan Enter.
 const _kDebounceMs = 700;
 
 /// Min huruf untuk commit miss (selaras API; lemma Sambas bisa 2 huruf).
@@ -41,7 +42,7 @@ class WordListNotifier extends _$WordListNotifier {
   bool _isLoadingSync = false;
   bool _isLoadingMoreSync = false;
 
-  /// Query terakhir yang sudah di-commit (Enter / blur) untuk rekam miss.
+  /// Query terakhir yang sudah di-commit (debounce settle / Enter / blur).
   String? _missCommittedQ;
 
   @override
@@ -136,27 +137,30 @@ class WordListNotifier extends _$WordListNotifier {
       return;
     }
     _debounce?.cancel();
-    // Ketikan = explore (record_miss=false). Commit miss lewat
-    // [commitSearch] (Enter / blur idle).
+    // Setelah jeda ketikan: fetch + boleh rekam miss (0 hasil). Tidak perlu
+    // Enter - user yang berhenti mengetik = sudah "mencari".
     _dropInFlight();
     if (state.isLoading) {
       state = state.copyWith(isLoading: false);
     }
-    _debounce = Timer(
-      const Duration(milliseconds: _kDebounceMs),
-      () => load(recordMiss: false),
-    );
+    _debounce = Timer(const Duration(milliseconds: _kDebounceMs), () {
+      final settled = state.q.trim();
+      if (settled.length >= _kMinCommitLen) {
+        _missCommittedQ = settled;
+      }
+      load(recordMiss: true);
+    });
   }
 
-  /// Commit pencarian: Enter, tombol Cari, blur idle, atau pilih riwayat.
-  /// Hanya ini yang boleh merekam search-miss di server.
+  /// Commit segera: Enter, tombol Cari, blur idle, atau pilih riwayat.
+  /// Debounce settle sudah merekam miss; ini untuk commit tanpa menunggu jeda.
   void commitSearch() {
     final q = state.q.trim();
     if (q.length < _kMinCommitLen) return;
     if (_missCommittedQ == q) return;
     _missCommittedQ = q;
     _debounce?.cancel();
-    // Ada hasil explore → tidak perlu hit lagi hanya untuk miss.
+    // Ada hasil → tidak perlu hit lagi hanya untuk miss.
     if (state.items.isNotEmpty && !state.isLoading && !_isLoadingSync) {
       return;
     }
@@ -308,7 +312,7 @@ class WordListNotifier extends _$WordListNotifier {
   }
 
   /// Halaman pertama (buka halaman / q berubah / pull-to-refresh / commit).
-  /// [recordMiss] true hanya dari [commitSearch].
+  /// [recordMiss] true setelah debounce settle atau [commitSearch].
   Future<void> load({bool recordMiss = false}) async {
     if (_isLoadingSync || !ref.mounted) return;
     _isLoadingSync = true;

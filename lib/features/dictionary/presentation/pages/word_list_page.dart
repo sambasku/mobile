@@ -21,8 +21,8 @@ import '../providers/word_list_providers.dart';
 import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 
 /// Daftar kata. q kosong di mode Sambas = A-Z (`GET /words`).
-/// Ketikan = explore (`record_miss=false`). Miss hanya setelah commit
-/// (Enter / blur idle / pilih riwayat).
+/// Setelah jeda ketikan (~700 ms) fetch + boleh rekam miss; Enter/blur
+/// tetap commit segera tanpa menunggu jeda.
 class WordListPage extends HookConsumerWidget {
   const WordListPage({super.key, this.autofocus = false});
 
@@ -175,16 +175,6 @@ class WordListPage extends HookConsumerWidget {
                     const Icon(FLucideIcons.search),
                   ),
             ),
-            if (state.q.trim().length >= 2)
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Text(
-                  AppLocalizations.of(context).dictSearchCommitHint,
-                  style: theme.typography.body.xs.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-              ),
             const Gap(10),
             categories.maybeWhen(
               data: (items) {
