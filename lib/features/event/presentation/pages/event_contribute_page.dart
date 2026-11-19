@@ -148,15 +148,12 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
     super.dispose();
   }
 
-  /// Jadwal gabungan. Tanggal dari FDateField selalu UTC midnight
-  /// (lihat `FDateSelectionController`), jam digabung di waktu lokal.
-  DateTime? get _startsAt => _combine(_startDate, _startTime);
-
-  DateTime? get _endsAt => _combine(_endDate, _endTime);
-
+  /// Tanggal dari FDateField = UTC midnight; jam opsional → 00:00 lokal.
   static DateTime? _combine(DateTime? date, FTime? time) {
-    if (date == null || time == null) return null;
-    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
+    if (date == null) return null;
+    final hour = time?.hour ?? 0;
+    final minute = time?.minute ?? 0;
+    return DateTime(date.year, date.month, date.day, hour, minute);
   }
 
   /// Tanggal dari kalender = UTC midnight. Formatnya pakai komponen tanggal
@@ -308,34 +305,23 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
   }
 
   Future<void> _submit() async {
-    final startsAt = _startsAt;
-    final endsAt = _endsAt;
+    // Tanggal mulai tanpa jam → 00:00. Selesai opsional (null bila tanpa tanggal).
+    final startsAt = _startDate == null ? null : _combine(_startDate, _startTime);
+    final endsAt = _endDate == null ? null : _combine(_endDate, _endTime);
     if (_name.text.trim().isEmpty) {
       _validationError(AppLocalizations.of(context).eventFormNameRequired);
-      return;
-    }
-    if (_description.text.trim().isEmpty) {
-      _validationError(AppLocalizations.of(context).eventFormDescRequired);
       return;
     }
     if (_categoryId == null) {
       _validationError(AppLocalizations.of(context).eventFormCategoryRequired);
       return;
     }
-    if (startsAt == null || _startDate == null || _startTime == null) {
+    if (startsAt == null || _startDate == null) {
       _validationError(AppLocalizations.of(context).eventFormStartRequired);
       return;
     }
-    if (endsAt == null || _endDate == null || _endTime == null) {
-      _validationError(AppLocalizations.of(context).eventFormEndRequired);
-      return;
-    }
-    if (endsAt.isBefore(startsAt)) {
+    if (endsAt != null && endsAt.isBefore(startsAt)) {
       _validationError(AppLocalizations.of(context).eventFormEndBeforeStart);
-      return;
-    }
-    if (_location.text.trim().isEmpty) {
-      _validationError(AppLocalizations.of(context).eventFormLocationRequired);
       return;
     }
     final sourceUrl = _sourceUrl.text.trim();
@@ -484,9 +470,9 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
                   if (picked == null || !mounted) return;
                   setState(() {
                     _startDate = picked;
-                    // Acara satu hari paling umum - isi otomatis.
+                    // Kalau selesai sudah diisi tapi sebelum mulai, sesuaikan.
                     final end = _endDate;
-                    if (end == null || end.isBefore(picked)) {
+                    if (end != null && end.isBefore(picked)) {
                       _endDate = picked;
                     }
                   });

@@ -18,9 +18,7 @@ class EventDto {
     if (id == null ||
         slug == null ||
         name == null ||
-        categoryId == null ||
-        startsAt == null ||
-        endsAt == null) {
+        categoryId == null) {
       return null;
     }
 

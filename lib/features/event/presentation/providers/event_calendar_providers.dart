@@ -19,7 +19,14 @@ class EventCalendarMonthState {
     final dayEvents = items
         .where((e) => eventOverlapsCalendarDay(e, cellUtc))
         .toList();
-    dayEvents.sort((a, b) => a.startsAt.compareTo(b.startsAt));
+    dayEvents.sort((a, b) {
+      final aStart = a.startsAt;
+      final bStart = b.startsAt;
+      if (aStart == null && bStart == null) return 0;
+      if (aStart == null) return 1;
+      if (bStart == null) return -1;
+      return aStart.compareTo(bStart);
+    });
     return dayEvents;
   }
 }

@@ -95,8 +95,8 @@ class Event {
   final String categoryId;
   final EventCategoryRef? category;
 
-  final DateTime startsAt;
-  final DateTime endsAt;
+  final DateTime? startsAt;
+  final DateTime? endsAt;
   final EventOccurrenceStatus occurrenceStatus;
 
   /// Lokasi aktual acara. Wajib - independen dari relasi desa/wisata.
@@ -144,9 +144,12 @@ class Event {
   /// client biar UI tidak stale kalau data lama di-cache.
   EventOccurrenceStatus get effectiveOccurrenceStatus {
     if (cancelledAt != null) return EventOccurrenceStatus.cancelled;
+    final start = startsAt;
+    if (start == null) return EventOccurrenceStatus.upcoming;
+    final end = endsAt ?? start;
     final now = DateTime.now();
-    if (now.isBefore(startsAt)) return EventOccurrenceStatus.upcoming;
-    if (now.isAfter(endsAt)) return EventOccurrenceStatus.completed;
+    if (now.isBefore(start)) return EventOccurrenceStatus.upcoming;
+    if (now.isAfter(end)) return EventOccurrenceStatus.completed;
     return EventOccurrenceStatus.ongoing;
   }
 }

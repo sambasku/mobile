@@ -3,7 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/utils/format_datetime.dart'; // formatDateTime + formatDateShort
 import '../../domain/entities/event.dart';
 import '../../event_router.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -37,19 +37,36 @@ FBadge eventOccurrenceBadge(
 /// Format jadwal acara: `17 Nov 2026 21:00 - 23:00`.
 ///
 /// Tanggal sama = jam saja di bagian kedua.
+bool _isMidnightLocal(DateTime dt) {
+  final local = dt.toLocal();
+  return local.hour == 0 && local.minute == 0;
+}
+
+String _formatEventInstant(DateTime? dt) {
+  if (dt == null) return '';
+  if (_isMidnightLocal(dt)) return formatDateShort(dt);
+  return formatDateTime(dt);
+}
+
 String formatEventSchedule(Event event) {
-  final start = formatDateTime(event.startsAt);
-  final end = formatDateTime(event.endsAt);
-  if (start.isEmpty) return '';
+  final startAt = event.startsAt;
+  if (startAt == null) return '';
+  final start = _formatEventInstant(startAt);
+  final endAt = event.endsAt;
+  if (endAt == null) return start;
+  final end = _formatEventInstant(endAt);
   if (end.isEmpty || end == start) return start;
+  final startLocal = startAt.toLocal();
+  final endLocal = endAt.toLocal();
   final sameDay =
-      event.startsAt.toLocal().day == event.endsAt.toLocal().day &&
-      event.startsAt.toLocal().month == event.endsAt.toLocal().month &&
-      event.startsAt.toLocal().year == event.endsAt.toLocal().year;
-  if (sameDay) {
+      startLocal.day == endLocal.day &&
+      startLocal.month == endLocal.month &&
+      startLocal.year == endLocal.year;
+  if (sameDay && !_isMidnightLocal(endAt)) {
     final timeOnly = end.split(' ').last;
     return '$start - $timeOnly';
   }
+  if (sameDay && _isMidnightLocal(endAt)) return start;
   return '$start - $end';
 }
 

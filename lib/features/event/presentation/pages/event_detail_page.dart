@@ -9,7 +9,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/models/external_link.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/display_image_url.dart';
-import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/entity_comments/entity_comment.dart';
 import '../../../../shared/entity_comments/entity_comments_section.dart';
@@ -398,16 +397,7 @@ class _InfoGroup extends ConsumerWidget {
           prefix: const Icon(FLucideIcons.calendarClock, size: 18),
           title: Text(l10n.eventStart),
           subtitle: Text(
-            formatDateTime(event.startsAt),
-            maxLines: 2,
-            softWrap: true,
-          ),
-        ),
-        FTile(
-          prefix: const Icon(FLucideIcons.calendarCheck, size: 18),
-          title: Text(l10n.eventEnd),
-          subtitle: Text(
-            formatDateTime(event.endsAt),
+            formatEventSchedule(event),
             maxLines: 2,
             softWrap: true,
           ),
