@@ -2521,6 +2521,18 @@
   "reviewExplorePlaceListTitle": "Usulan wisata",
   "reviewExploreCulinaryListTitle": "Usulan kuliner",
   "reviewExploreEventListTitle": "Usulan acara",
+  "reviewExploreEventSearchHint": "Cari nama atau lokasi",
+  "@reviewExploreEventSearchHint": {
+    "description": "Hint field cari di antrean/riwayat usulan acara"
+  },
+  "reviewExploreEventTabPeriksa": "Periksa",
+  "@reviewExploreEventTabPeriksa": {
+    "description": "Tab antrean usulan acara pending"
+  },
+  "reviewExploreEventTabRiwayat": "Riwayat",
+  "@reviewExploreEventTabRiwayat": {
+    "description": "Tab usulan acara sudah diputus"
+  },
   "reviewExploreLayananListTitle": "Usulan layanan publik",
   "reviewExploreEmpty": "Tidak ada usulan menunggu",
   "@reviewExploreEmpty": {
@@ -2988,25 +3000,44 @@
   "@hotTopicsTabSearched": {
     "description": "Tab Hot: search miss 24 jam"
   },
-  "hotTopicsTabProposed": "Diusulkan",
+  "hotTopicsTabProposed": "Usulan",
   "@hotTopicsTabProposed": {
-    "description": "Tab Hot: usulan kata pending"
+    "description": "Tab Sorotan: usulan kata pending"
   },
-  "hotTopicsTabNearThreshold": "Dekati ambang",
+  "hotTopicsTabNearThreshold": "Hits",
   "@hotTopicsTabNearThreshold": {
-    "description": "Tab Hot: makna net dekat Voting Warga"
+    "description": "Tab Sorotan: kata hits / banyak dilihat (word_views)"
   },
-  "hotTopicsTabEmpty": "Belum ada di tab ini.",
+  "hotTopicsTabEmpty": "Belum ada data",
+  "@hotTopicsTabEmpty": {
+    "description": "Judul empty state tab Sorotan"
+  },
+  "hotTopicsTabEmptySearchedBody": "Belum ada pencarian kosong yang menonjol hari ini.",
+  "@hotTopicsTabEmptySearchedBody": {
+    "description": "Subtitle empty tab Dicari"
+  },
+  "hotTopicsTabEmptyProposedBody": "Belum ada usulan kata yang menunggu peninjauan.",
+  "@hotTopicsTabEmptyProposedBody": {
+    "description": "Subtitle empty tab Usulan"
+  },
+  "hotTopicsTabEmptyNearBody": "Belum ada hits hari ini.",
+  "@hotTopicsTabEmptyNearBody": {
+    "description": "Subtitle empty tab Hits"
+  },
   "hotTopicsBackfillHint": "Sebagian dari 7 hari terakhir.",
   "@hotTopicsBackfillHint": {
     "description": "Hint saat tab Hot memakai backfill di luar 24 jam"
   },
   "hotTopicsProposedSubtitle": "Usulan menunggu peninjauan",
-  "hotTopicsNearNet": "Net {net}",
-  "@hotTopicsNearNet": {
-    "description": "Subtitle skor vote net di tab Dekati ambang",
+  "hotTopicsEmptySlot": "-",
+  "@hotTopicsEmptySlot": {
+    "description": "Placeholder judul slot Sorotan yang belum terisi"
+  },
+  "hotTopicsViewCount": "{count}× dibuka",
+  "@hotTopicsViewCount": {
+    "description": "Subtitle jumlah pembaca unik di tab Hits; pola sama Dicari ({count}× …)",
     "placeholders": {
-      "net": {
+      "count": {
         "type": "String"
       }
     }
@@ -3952,6 +3983,7 @@
   "@feedPeriksaKataStubBody": {
     "description": "Placeholder body /periksa-kata sebelum Phase 4"
   },
+
   "periksaKataLoginPrompt": "Masuk dulu untuk memeriksa kata",
   "@periksaKataLoginPrompt": {
     "description": "Gate login halaman Periksa Kata"
@@ -7120,7 +7152,7 @@
   "@eventFormDescRequired": {},
   "eventFormCategoryRequired": "Pilih kategori acara dulu.",
   "@eventFormCategoryRequired": {},
-  "eventFormStartRequired": "Tentukan waktu mulai.",
+  "eventFormStartRequired": "Tentukan tanggal mulai.",
   "@eventFormStartRequired": {},
   "eventFormEndRequired": "Tentukan waktu selesai.",
   "@eventFormEndRequired": {},
@@ -7140,27 +7172,27 @@
   "@eventSubmitting": {},
   "eventSubmitCta": "Kirim usulan",
   "@eventSubmitCta": {},
-  "eventFormIntro": "Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.",
+  "eventFormIntro": "Isi nama, kategori, dan tanggal mulai. Yang lain boleh dikosongkan. Usulan ditinjau dulu sebelum tayang.",
   "@eventFormIntro": {},
   "eventFormNameLabel": "Nama acara",
   "@eventFormNameLabel": {},
   "eventFormDescLabel": "Deskripsi",
   "@eventFormDescLabel": {},
-  "eventFormDescHint": "Ceritakan singkat acaranya",
+  "eventFormDescHint": "Opsional - ceritakan singkat acaranya",
   "@eventFormDescHint": {},
   "eventFormScheduleLabel": "Jadwal",
   "@eventFormScheduleLabel": {},
   "eventFormStartDateLabel": "Tanggal mulai",
   "@eventFormStartDateLabel": {},
-  "eventFormStartTimeLabel": "Jam mulai",
+  "eventFormStartTimeLabel": "Jam mulai (opsional)",
   "@eventFormStartTimeLabel": {},
-  "eventFormEndDateLabel": "Tanggal selesai",
+  "eventFormEndDateLabel": "Tanggal selesai (opsional)",
   "@eventFormEndDateLabel": {},
-  "eventFormEndTimeLabel": "Jam selesai",
+  "eventFormEndTimeLabel": "Jam selesai (opsional)",
   "@eventFormEndTimeLabel": {},
   "eventFormLocationLabel": "Lokasi",
   "@eventFormLocationLabel": {},
-  "eventFormLocationHint": "Nama tempat atau alamat acara",
+  "eventFormLocationHint": "Opsional - nama tempat atau alamat",
   "@eventFormLocationHint": {},
   "eventFormMapHint": "Ketuk peta untuk memilih koordinat. Opsional.",
   "@eventFormMapHint": {},
@@ -8730,13 +8762,41 @@
   "@jinyePreviewEmpty": {
     "description": "Fallback preview Jinye tanpa teks/media"
   },
+  "jinyeProfileJikuLabel": "Jiku",
+  "@jinyeProfileJikuLabel": {
+    "description": "Label kecil di atas preview Jinye di halaman profil"
+  },
   "jinyeSheetReply": "Balas",
   "@jinyeSheetReply": {
-    "description": "CTA sheet profil - fokus reply"
+    "description": "CTA sheet profil - fokus reply (legacy)"
   },
   "jinyeSheetViewDiscussion": "Lihat diskusi",
   "@jinyeSheetViewDiscussion": {
-    "description": "CTA sheet profil - buka thread"
+    "description": "CTA sheet profil - buka thread (legacy)"
+  },
+  "jinyeSheetCreateNew": "Buat jinye baru",
+  "@jinyeSheetCreateNew": {
+    "description": "CTA sheet profil sendiri - buka compose Jinye baru"
+  },
+  "jinyeSheetClear": "Kosongkan jinye",
+  "@jinyeSheetClear": {
+    "description": "CTA sheet profil sendiri - arsipkan status agar hilang dari bubble"
+  },
+  "jinyeSheetClearConfirmTitle": "Kosongkan jinye?",
+  "@jinyeSheetClearConfirmTitle": {
+    "description": "Judul konfirmasi kosongkan Jinye di profil"
+  },
+  "jinyeSheetClearConfirmBody": "Status di profil kamu hilang. Jinye tetap tersimpan di arsip.",
+  "@jinyeSheetClearConfirmBody": {
+    "description": "Isi konfirmasi kosongkan Jinye di profil"
+  },
+  "jinyeSheetClearConfirmAction": "Kosongkan",
+  "@jinyeSheetClearConfirmAction": {
+    "description": "Tombol konfirmasi destruktif kosongkan Jinye"
+  },
+  "jinyeClearedSuccess": "Jinye dikosongkan",
+  "@jinyeClearedSuccess": {
+    "description": "Toast sukses setelah kosongkan Jinye dari profil"
   },
   "jinyeDiscussionEmpty": "Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.",
   "@jinyeDiscussionEmpty": {

@@ -1709,6 +1709,18 @@
   "reviewExplorePlaceListTitle": "Usulan wisata",
   "reviewExploreCulinaryListTitle": "Usulan kuliner",
   "reviewExploreEventListTitle": "Usulan acara",
+  "reviewExploreEventSearchHint": "Cari nama atau lokasi",
+  "@reviewExploreEventSearchHint": {
+    "description": "Hint field cari di antrean/riwayat usulan acara"
+  },
+  "reviewExploreEventTabPeriksa": "Periksa",
+  "@reviewExploreEventTabPeriksa": {
+    "description": "Tab antrean usulan acara pending"
+  },
+  "reviewExploreEventTabRiwayat": "Riwayat",
+  "@reviewExploreEventTabRiwayat": {
+    "description": "Tab usulan acara sudah diputus"
+  },
   "reviewExploreLayananListTitle": "Usulan layanan publik",
   "reviewExploreEmpty": "Tidak ada usulan menunggu",
   "reviewExploreDetailTitle": "Detail usulan",
@@ -1962,35 +1974,35 @@
   "dictProposeThisWord": "Usul kata ini",
   "hotTopicsTitle": "Sorotan hari ini",
   "hotTopicsTabSearched": "Dicari",
-  "hotTopicsTabProposed": "Diusulkan",
-  "hotTopicsTabNearThreshold": "Dekati ambang",
-  "hotTopicsTabEmpty": "Belum ada di tab ini.",
+  "hotTopicsTabProposed": "Usulan",
+  "hotTopicsTabNearThreshold": "Hits",
+  "hotTopicsTabEmpty": "Belum ada data",
+  "@hotTopicsTabEmpty": {
+    "description": "Judul empty state tab Sorotan"
+  },
+  "hotTopicsTabEmptySearchedBody": "Belum ada pencarian kosong yang menonjol hari ini.",
+  "@hotTopicsTabEmptySearchedBody": {
+    "description": "Subtitle empty tab Dicari"
+  },
+  "hotTopicsTabEmptyProposedBody": "Belum ada usulan kata yang menunggu peninjauan.",
+  "@hotTopicsTabEmptyProposedBody": {
+    "description": "Subtitle empty tab Usulan"
+  },
+  "hotTopicsTabEmptyNearBody": "Belum ada hits hari ini.",
+  "@hotTopicsTabEmptyNearBody": {
+    "description": "Subtitle empty tab Hits"
+  },
   "hotTopicsBackfillHint": "Sebagian dari 7 hari terakhir.",
   "hotTopicsProposedSubtitle": "Usulan menunggu peninjauan",
-  "hotTopicsNearNet": "Net {net}",
-  "dictCorrectSpellingCta": "Koreksi ejaan",
-  "contributeSpellCorrectTitle": "Koreksi ejaan",
-  "contributeSpellTypedLabel": "Yang kamu ketik: {term}",
-  "contributeSpellCorrectHint": "Ejaan yang benar",
-  "dictRelatedMeaningSubtitle": "Makna terkait · {subtitle}",
-  "dictSearchHistory": "Riwayat pencarian",
-  "dictRemove": "Hapus",
-  "dictAudioPlay": "Putar audio {meta}",
-  "dictAudioPause": "Jeda audio {meta}",
-  "dictAudioResume": "Lanjutkan audio {meta}",
-  "dictAudioLoading": "Memuat audio {meta}",
-  "dictAudioError": "Gagal memutar {meta}, ketuk untuk coba lagi",
-  "dictAudioErrorRetry": "Gagal memutar audio. Coba lagi dalam beberapa saat.",
-  "dictAudioProgress": "Progres pemutaran",
-  "dictAudioProgressPercent": "{percent} persen",
-  "dictPronunciationSection": "Pelafalan",
-  "dictNoPronunciationAudio": "Belum ada audio pelafalan kata",
-  "dictRecordExampleAudio": "Rekam audio contoh",
-  "dictRecordPronunciation": "Rekam pelafalan",
-  "dictLoginToRecord": "Masuk dulu untuk rekam pelafalan",
-  "dictAddPronunciation": "Tambah pelafalan",
-  "@dictAddPronunciation": {
-    "description": "CTA di bawah lemma bila belum ada pelafalan tertulis"
+  "hotTopicsEmptySlot": "-",
+  "hotTopicsViewCount": "{count}× dibuka",
+  "@hotTopicsViewCount": {
+    "description": "Subtitle jumlah pembaca unik di tab Hits; pola sama Dicari ({count}× …)",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
   },
   "dictAddPronunciationTitle": "Tambah pelafalan",
   "@dictAddPronunciationTitle": {
@@ -2242,6 +2254,7 @@
   "feedContributeSearchMissSubtitle": "Kata yang dicari warga tapi belum ketemu. Bantu isi artinya",
   "feedContributePeriksaKata": "Periksa kata",
   "feedPeriksaKataStubBody": "Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.",
+
   "periksaKataLoginPrompt": "Masuk dulu untuk memeriksa kata",
   "periksaKataSearchHint": "Cari lemma…",
   "periksaKataEmpty": "Belum ada makna menunggu pengecekan",
@@ -4121,7 +4134,7 @@
   "@eventFormDescRequired": {},
   "eventFormCategoryRequired": "Pilih kategori acara dulu.",
   "@eventFormCategoryRequired": {},
-  "eventFormStartRequired": "Tentukan waktu mulai.",
+  "eventFormStartRequired": "Tentukan tanggal mulai.",
   "@eventFormStartRequired": {},
   "eventFormEndRequired": "Tentukan waktu selesai.",
   "@eventFormEndRequired": {},
@@ -4141,27 +4154,27 @@
   "@eventSubmitting": {},
   "eventSubmitCta": "Kirim usulan",
   "@eventSubmitCta": {},
-  "eventFormIntro": "Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.",
+  "eventFormIntro": "Isi nama, kategori, dan tanggal mulai. Yang lain boleh dikosongkan. Usulan ditinjau dulu sebelum tayang.",
   "@eventFormIntro": {},
   "eventFormNameLabel": "Nama acara",
   "@eventFormNameLabel": {},
   "eventFormDescLabel": "Deskripsi",
   "@eventFormDescLabel": {},
-  "eventFormDescHint": "Ceritakan singkat acaranya",
+  "eventFormDescHint": "Opsional - ceritakan singkat acaranya",
   "@eventFormDescHint": {},
   "eventFormScheduleLabel": "Jadwal",
   "@eventFormScheduleLabel": {},
   "eventFormStartDateLabel": "Tanggal mulai",
   "@eventFormStartDateLabel": {},
-  "eventFormStartTimeLabel": "Jam mulai",
+  "eventFormStartTimeLabel": "Jam mulai (opsional)",
   "@eventFormStartTimeLabel": {},
-  "eventFormEndDateLabel": "Tanggal selesai",
+  "eventFormEndDateLabel": "Tanggal selesai (opsional)",
   "@eventFormEndDateLabel": {},
-  "eventFormEndTimeLabel": "Jam selesai",
+  "eventFormEndTimeLabel": "Jam selesai (opsional)",
   "@eventFormEndTimeLabel": {},
   "eventFormLocationLabel": "Lokasi",
   "@eventFormLocationLabel": {},
-  "eventFormLocationHint": "Nama tempat atau alamat acara",
+  "eventFormLocationHint": "Opsional - nama tempat atau alamat",
   "@eventFormLocationHint": {},
   "eventFormMapHint": "Ketuk peta untuk memilih koordinat. Opsional.",
   "@eventFormMapHint": {},
@@ -5660,8 +5673,15 @@
   "jinyePreviewVoiceOnly": "Rekaman suara",
   "jinyePreviewPhotoOnly": "Foto",
   "jinyePreviewEmpty": "Jinye",
+  "jinyeProfileJikuLabel": "Jiku",
   "jinyeSheetReply": "Balas",
   "jinyeSheetViewDiscussion": "Lihat diskusi",
+  "jinyeSheetCreateNew": "Buat jinye baru",
+  "jinyeSheetClear": "Kosongkan jinye",
+  "jinyeSheetClearConfirmTitle": "Kosongkan jinye?",
+  "jinyeSheetClearConfirmBody": "Status di profil kamu hilang. Jinye tetap tersimpan di arsip.",
+  "jinyeSheetClearConfirmAction": "Kosongkan",
+  "jinyeClearedSuccess": "Jinye dikosongkan",
   "jinyeDiscussionEmpty": "Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.",
   "jinyeComposeEntryTooltip": "Buat Jinye",
   "jinyeCreateAudioLabel": "Rekaman suara (opsional)",

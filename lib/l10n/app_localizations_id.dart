@@ -3915,6 +3915,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get reviewExploreEventListTitle => 'Usulan acara';
 
   @override
+  String get reviewExploreEventSearchHint => 'Cari nama atau lokasi';
+
+  @override
+  String get reviewExploreEventTabPeriksa => 'Periksa';
+
+  @override
+  String get reviewExploreEventTabRiwayat => 'Riwayat';
+
+  @override
   String get reviewExploreLayananListTitle => 'Usulan layanan publik';
 
   @override
@@ -4733,13 +4742,24 @@ class AppLocalizationsId extends AppLocalizations {
   String get hotTopicsTabSearched => 'Dicari';
 
   @override
-  String get hotTopicsTabProposed => 'Diusulkan';
+  String get hotTopicsTabProposed => 'Usulan';
 
   @override
-  String get hotTopicsTabNearThreshold => 'Dekati ambang';
+  String get hotTopicsTabNearThreshold => 'Hits';
 
   @override
-  String get hotTopicsTabEmpty => 'Belum ada di tab ini.';
+  String get hotTopicsTabEmpty => 'Belum ada data';
+
+  @override
+  String get hotTopicsTabEmptySearchedBody =>
+      'Belum ada pencarian kosong yang menonjol hari ini.';
+
+  @override
+  String get hotTopicsTabEmptyProposedBody =>
+      'Belum ada usulan kata yang menunggu peninjauan.';
+
+  @override
+  String get hotTopicsTabEmptyNearBody => 'Belum ada hits hari ini.';
 
   @override
   String get hotTopicsBackfillHint => 'Sebagian dari 7 hari terakhir.';
@@ -4748,8 +4768,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get hotTopicsProposedSubtitle => 'Usulan menunggu peninjauan';
 
   @override
-  String hotTopicsNearNet(String net) {
-    return 'Net $net';
+  String get hotTopicsEmptySlot => '-';
+
+  @override
+  String hotTopicsViewCount(String count) {
+    return '$count× dibuka';
   }
 
   @override
@@ -10229,7 +10252,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventFormCategoryRequired => 'Pilih kategori acara dulu.';
 
   @override
-  String get eventFormStartRequired => 'Tentukan waktu mulai.';
+  String get eventFormStartRequired => 'Tentukan tanggal mulai.';
 
   @override
   String get eventFormEndRequired => 'Tentukan waktu selesai.';
@@ -10262,7 +10285,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get eventFormIntro =>
-      'Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.';
+      'Isi nama, kategori, dan tanggal mulai. Yang lain boleh dikosongkan. Usulan ditinjau dulu sebelum tayang.';
 
   @override
   String get eventFormNameLabel => 'Nama acara';
@@ -10271,7 +10294,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventFormDescLabel => 'Deskripsi';
 
   @override
-  String get eventFormDescHint => 'Ceritakan singkat acaranya';
+  String get eventFormDescHint => 'Opsional - ceritakan singkat acaranya';
 
   @override
   String get eventFormScheduleLabel => 'Jadwal';
@@ -10280,19 +10303,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventFormStartDateLabel => 'Tanggal mulai';
 
   @override
-  String get eventFormStartTimeLabel => 'Jam mulai';
+  String get eventFormStartTimeLabel => 'Jam mulai (opsional)';
 
   @override
-  String get eventFormEndDateLabel => 'Tanggal selesai';
+  String get eventFormEndDateLabel => 'Tanggal selesai (opsional)';
 
   @override
-  String get eventFormEndTimeLabel => 'Jam selesai';
+  String get eventFormEndTimeLabel => 'Jam selesai (opsional)';
 
   @override
   String get eventFormLocationLabel => 'Lokasi';
 
   @override
-  String get eventFormLocationHint => 'Nama tempat atau alamat acara';
+  String get eventFormLocationHint => 'Opsional - nama tempat atau alamat';
 
   @override
   String get eventFormMapHint =>
@@ -12074,10 +12097,32 @@ class AppLocalizationsId extends AppLocalizations {
   String get jinyePreviewEmpty => 'Jinye';
 
   @override
+  String get jinyeProfileJikuLabel => 'Jiku';
+
+  @override
   String get jinyeSheetReply => 'Balas';
 
   @override
   String get jinyeSheetViewDiscussion => 'Lihat diskusi';
+
+  @override
+  String get jinyeSheetCreateNew => 'Buat jinye baru';
+
+  @override
+  String get jinyeSheetClear => 'Kosongkan jinye';
+
+  @override
+  String get jinyeSheetClearConfirmTitle => 'Kosongkan jinye?';
+
+  @override
+  String get jinyeSheetClearConfirmBody =>
+      'Status di profil kamu hilang. Jinye tetap tersimpan di arsip.';
+
+  @override
+  String get jinyeSheetClearConfirmAction => 'Kosongkan';
+
+  @override
+  String get jinyeClearedSuccess => 'Jinye dikosongkan';
 
   @override
   String get jinyeDiscussionEmpty =>
@@ -16858,6 +16903,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reviewExploreEventListTitle => 'Usulan acara';
 
   @override
+  String get reviewExploreEventSearchHint => 'Cari nama atau lokasi';
+
+  @override
+  String get reviewExploreEventTabPeriksa => 'Periksa';
+
+  @override
+  String get reviewExploreEventTabRiwayat => 'Riwayat';
+
+  @override
   String get reviewExploreLayananListTitle => 'Usulan layanan publik';
 
   @override
@@ -17676,13 +17730,24 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get hotTopicsTabSearched => 'Dicari';
 
   @override
-  String get hotTopicsTabProposed => 'Diusulkan';
+  String get hotTopicsTabProposed => 'Usulan';
 
   @override
-  String get hotTopicsTabNearThreshold => 'Dekati ambang';
+  String get hotTopicsTabNearThreshold => 'Hits';
 
   @override
-  String get hotTopicsTabEmpty => 'Belum ada di tab ini.';
+  String get hotTopicsTabEmpty => 'Belum ada data';
+
+  @override
+  String get hotTopicsTabEmptySearchedBody =>
+      'Belum ada pencarian kosong yang menonjol hari ini.';
+
+  @override
+  String get hotTopicsTabEmptyProposedBody =>
+      'Belum ada usulan kata yang menunggu peninjauan.';
+
+  @override
+  String get hotTopicsTabEmptyNearBody => 'Belum ada hits hari ini.';
 
   @override
   String get hotTopicsBackfillHint => 'Sebagian dari 7 hari terakhir.';
@@ -17691,93 +17756,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get hotTopicsProposedSubtitle => 'Usulan menunggu peninjauan';
 
   @override
-  String hotTopicsNearNet(String net) {
-    return 'Net $net';
+  String get hotTopicsEmptySlot => '-';
+
+  @override
+  String hotTopicsViewCount(String count) {
+    return '$count× dibuka';
   }
-
-  @override
-  String get dictCorrectSpellingCta => 'Koreksi ejaan';
-
-  @override
-  String get contributeSpellCorrectTitle => 'Koreksi ejaan';
-
-  @override
-  String contributeSpellTypedLabel(String term) {
-    return 'Yang kamu ketik: $term';
-  }
-
-  @override
-  String get contributeSpellCorrectHint => 'Ejaan yang benar';
-
-  @override
-  String dictRelatedMeaningSubtitle(String subtitle) {
-    return 'Makna terkait · $subtitle';
-  }
-
-  @override
-  String get dictSearchHistory => 'Riwayat pencarian';
-
-  @override
-  String get dictRemove => 'Hapus';
-
-  @override
-  String dictAudioPlay(String meta) {
-    return 'Putar audio $meta';
-  }
-
-  @override
-  String dictAudioPause(String meta) {
-    return 'Jeda audio $meta';
-  }
-
-  @override
-  String dictAudioResume(String meta) {
-    return 'Lanjutkan audio $meta';
-  }
-
-  @override
-  String dictAudioLoading(String meta) {
-    return 'Memuat audio $meta';
-  }
-
-  @override
-  String dictAudioError(String meta) {
-    return 'Gagal memutar $meta, ketuk untuk coba lagi';
-  }
-
-  @override
-  String get dictAudioErrorRetry =>
-      'Gagal memutar audio. Coba lagi dalam beberapa saat.';
-
-  @override
-  String get dictAudioProgress => 'Progres pemutaran';
-
-  @override
-  String dictAudioProgressPercent(int percent) {
-    final intl.NumberFormat percentNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
-    final String percentString = percentNumberFormat.format(percent);
-
-    return '$percentString persen';
-  }
-
-  @override
-  String get dictPronunciationSection => 'Pelafalan';
-
-  @override
-  String get dictNoPronunciationAudio => 'Belum ada audio pelafalan kata';
-
-  @override
-  String get dictRecordExampleAudio => 'Rekam audio contoh';
-
-  @override
-  String get dictRecordPronunciation => 'Rekam pelafalan';
-
-  @override
-  String get dictLoginToRecord => 'Masuk dulu untuk rekam pelafalan';
-
-  @override
-  String get dictAddPronunciation => 'Tambah pelafalan';
 
   @override
   String get dictAddPronunciationTitle => 'Tambah pelafalan';
@@ -23172,7 +23156,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventFormCategoryRequired => 'Pilih kategori acara dulu.';
 
   @override
-  String get eventFormStartRequired => 'Tentukan waktu mulai.';
+  String get eventFormStartRequired => 'Tentukan tanggal mulai.';
 
   @override
   String get eventFormEndRequired => 'Tentukan waktu selesai.';
@@ -23205,7 +23189,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get eventFormIntro =>
-      'Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.';
+      'Isi nama, kategori, dan tanggal mulai. Yang lain boleh dikosongkan. Usulan ditinjau dulu sebelum tayang.';
 
   @override
   String get eventFormNameLabel => 'Nama acara';
@@ -23214,7 +23198,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventFormDescLabel => 'Deskripsi';
 
   @override
-  String get eventFormDescHint => 'Ceritakan singkat acaranya';
+  String get eventFormDescHint => 'Opsional - ceritakan singkat acaranya';
 
   @override
   String get eventFormScheduleLabel => 'Jadwal';
@@ -23223,19 +23207,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventFormStartDateLabel => 'Tanggal mulai';
 
   @override
-  String get eventFormStartTimeLabel => 'Jam mulai';
+  String get eventFormStartTimeLabel => 'Jam mulai (opsional)';
 
   @override
-  String get eventFormEndDateLabel => 'Tanggal selesai';
+  String get eventFormEndDateLabel => 'Tanggal selesai (opsional)';
 
   @override
-  String get eventFormEndTimeLabel => 'Jam selesai';
+  String get eventFormEndTimeLabel => 'Jam selesai (opsional)';
 
   @override
   String get eventFormLocationLabel => 'Lokasi';
 
   @override
-  String get eventFormLocationHint => 'Nama tempat atau alamat acara';
+  String get eventFormLocationHint => 'Opsional - nama tempat atau alamat';
 
   @override
   String get eventFormMapHint =>
@@ -25017,10 +25001,32 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get jinyePreviewEmpty => 'Jinye';
 
   @override
+  String get jinyeProfileJikuLabel => 'Jiku';
+
+  @override
   String get jinyeSheetReply => 'Balas';
 
   @override
   String get jinyeSheetViewDiscussion => 'Lihat diskusi';
+
+  @override
+  String get jinyeSheetCreateNew => 'Buat jinye baru';
+
+  @override
+  String get jinyeSheetClear => 'Kosongkan jinye';
+
+  @override
+  String get jinyeSheetClearConfirmTitle => 'Kosongkan jinye?';
+
+  @override
+  String get jinyeSheetClearConfirmBody =>
+      'Status di profil kamu hilang. Jinye tetap tersimpan di arsip.';
+
+  @override
+  String get jinyeSheetClearConfirmAction => 'Kosongkan';
+
+  @override
+  String get jinyeClearedSuccess => 'Jinye dikosongkan';
 
   @override
   String get jinyeDiscussionEmpty =>

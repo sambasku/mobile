@@ -6869,6 +6869,24 @@ abstract class AppLocalizations {
   /// **'Usulan acara'**
   String get reviewExploreEventListTitle;
 
+  /// Hint field cari di antrean/riwayat usulan acara
+  ///
+  /// In id, this message translates to:
+  /// **'Cari nama atau lokasi'**
+  String get reviewExploreEventSearchHint;
+
+  /// Tab antrean usulan acara pending
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa'**
+  String get reviewExploreEventTabPeriksa;
+
+  /// Tab usulan acara sudah diputus
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat'**
+  String get reviewExploreEventTabRiwayat;
+
   /// No description provided for @reviewExploreLayananListTitle.
   ///
   /// In id, this message translates to:
@@ -8319,23 +8337,41 @@ abstract class AppLocalizations {
   /// **'Dicari'**
   String get hotTopicsTabSearched;
 
-  /// Tab Hot: usulan kata pending
+  /// Tab Sorotan: usulan kata pending
   ///
   /// In id, this message translates to:
-  /// **'Diusulkan'**
+  /// **'Usulan'**
   String get hotTopicsTabProposed;
 
-  /// Tab Hot: makna net dekat Voting Warga
+  /// Tab Sorotan: kata hits / banyak dilihat (word_views)
   ///
   /// In id, this message translates to:
-  /// **'Dekati ambang'**
+  /// **'Hits'**
   String get hotTopicsTabNearThreshold;
 
-  /// No description provided for @hotTopicsTabEmpty.
+  /// Judul empty state tab Sorotan
   ///
   /// In id, this message translates to:
-  /// **'Belum ada di tab ini.'**
+  /// **'Belum ada data'**
   String get hotTopicsTabEmpty;
+
+  /// Subtitle empty tab Dicari
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada pencarian kosong yang menonjol hari ini.'**
+  String get hotTopicsTabEmptySearchedBody;
+
+  /// Subtitle empty tab Usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan kata yang menunggu peninjauan.'**
+  String get hotTopicsTabEmptyProposedBody;
+
+  /// Subtitle empty tab Hits
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada hits hari ini.'**
+  String get hotTopicsTabEmptyNearBody;
 
   /// Hint saat tab Hot memakai backfill di luar 24 jam
   ///
@@ -8349,11 +8385,17 @@ abstract class AppLocalizations {
   /// **'Usulan menunggu peninjauan'**
   String get hotTopicsProposedSubtitle;
 
-  /// Subtitle skor vote net di tab Dekati ambang
+  /// Placeholder judul slot Sorotan yang belum terisi
   ///
   /// In id, this message translates to:
-  /// **'Net {net}'**
-  String hotTopicsNearNet(String net);
+  /// **'-'**
+  String get hotTopicsEmptySlot;
+
+  /// Subtitle jumlah pembaca unik di tab Hits; pola sama Dicari ({count}× …)
+  ///
+  /// In id, this message translates to:
+  /// **'{count}× dibuka'**
+  String hotTopicsViewCount(String count);
 
   /// CTA empty-state: buka form koreksi typo jadi varian lemma benar
   ///
@@ -18144,7 +18186,7 @@ abstract class AppLocalizations {
   /// No description provided for @eventFormStartRequired.
   ///
   /// In id, this message translates to:
-  /// **'Tentukan waktu mulai.'**
+  /// **'Tentukan tanggal mulai.'**
   String get eventFormStartRequired;
 
   /// No description provided for @eventFormEndRequired.
@@ -18204,7 +18246,7 @@ abstract class AppLocalizations {
   /// No description provided for @eventFormIntro.
   ///
   /// In id, this message translates to:
-  /// **'Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.'**
+  /// **'Isi nama, kategori, dan tanggal mulai. Yang lain boleh dikosongkan. Usulan ditinjau dulu sebelum tayang.'**
   String get eventFormIntro;
 
   /// No description provided for @eventFormNameLabel.
@@ -18222,7 +18264,7 @@ abstract class AppLocalizations {
   /// No description provided for @eventFormDescHint.
   ///
   /// In id, this message translates to:
-  /// **'Ceritakan singkat acaranya'**
+  /// **'Opsional - ceritakan singkat acaranya'**
   String get eventFormDescHint;
 
   /// No description provided for @eventFormScheduleLabel.
@@ -18240,19 +18282,19 @@ abstract class AppLocalizations {
   /// No description provided for @eventFormStartTimeLabel.
   ///
   /// In id, this message translates to:
-  /// **'Jam mulai'**
+  /// **'Jam mulai (opsional)'**
   String get eventFormStartTimeLabel;
 
   /// No description provided for @eventFormEndDateLabel.
   ///
   /// In id, this message translates to:
-  /// **'Tanggal selesai'**
+  /// **'Tanggal selesai (opsional)'**
   String get eventFormEndDateLabel;
 
   /// No description provided for @eventFormEndTimeLabel.
   ///
   /// In id, this message translates to:
-  /// **'Jam selesai'**
+  /// **'Jam selesai (opsional)'**
   String get eventFormEndTimeLabel;
 
   /// No description provided for @eventFormLocationLabel.
@@ -18264,7 +18306,7 @@ abstract class AppLocalizations {
   /// No description provided for @eventFormLocationHint.
   ///
   /// In id, this message translates to:
-  /// **'Nama tempat atau alamat acara'**
+  /// **'Opsional - nama tempat atau alamat'**
   String get eventFormLocationHint;
 
   /// No description provided for @eventFormMapHint.
@@ -21277,17 +21319,59 @@ abstract class AppLocalizations {
   /// **'Jinye'**
   String get jinyePreviewEmpty;
 
-  /// CTA sheet profil - fokus reply
+  /// Label kecil di atas preview Jinye di halaman profil
+  ///
+  /// In id, this message translates to:
+  /// **'Jiku'**
+  String get jinyeProfileJikuLabel;
+
+  /// CTA sheet profil - fokus reply (legacy)
   ///
   /// In id, this message translates to:
   /// **'Balas'**
   String get jinyeSheetReply;
 
-  /// CTA sheet profil - buka thread
+  /// CTA sheet profil - buka thread (legacy)
   ///
   /// In id, this message translates to:
   /// **'Lihat diskusi'**
   String get jinyeSheetViewDiscussion;
+
+  /// CTA sheet profil sendiri - buka compose Jinye baru
+  ///
+  /// In id, this message translates to:
+  /// **'Buat jinye baru'**
+  String get jinyeSheetCreateNew;
+
+  /// CTA sheet profil sendiri - arsipkan status agar hilang dari bubble
+  ///
+  /// In id, this message translates to:
+  /// **'Kosongkan jinye'**
+  String get jinyeSheetClear;
+
+  /// Judul konfirmasi kosongkan Jinye di profil
+  ///
+  /// In id, this message translates to:
+  /// **'Kosongkan jinye?'**
+  String get jinyeSheetClearConfirmTitle;
+
+  /// Isi konfirmasi kosongkan Jinye di profil
+  ///
+  /// In id, this message translates to:
+  /// **'Status di profil kamu hilang. Jinye tetap tersimpan di arsip.'**
+  String get jinyeSheetClearConfirmBody;
+
+  /// Tombol konfirmasi destruktif kosongkan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Kosongkan'**
+  String get jinyeSheetClearConfirmAction;
+
+  /// Toast sukses setelah kosongkan Jinye dari profil
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye dikosongkan'**
+  String get jinyeClearedSuccess;
 
   /// Empty state diskusi Jinye Phase 1
   ///
