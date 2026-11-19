@@ -18,14 +18,25 @@ class ExplorationReviewRepositoryImpl implements ExplorationReviewRepository {
 
   @override
   Future<Either<ReviewFailure, List<ExplorationProposal>>> listPending(
-    ExplorationReviewDomain domain,
-  ) async {
+    ExplorationReviewDomain domain, {
+    ExplorationListQuery query = const ExplorationListQuery(),
+  }) async {
     try {
+      final params = <String, String>{};
+      if (domain.supportsListSearch) {
+        if (query.decided) {
+          params['decided'] = '1';
+        } else {
+          params['status'] = 'pending';
+        }
+        final q = query.q.trim();
+        if (q.isNotEmpty) params['q'] = q;
+      } else if (domain.listUsesStatusQuery) {
+        params['status'] = 'pending';
+      }
       final res = await _dio.get<Map<String, dynamic>>(
         _base(domain),
-        queryParameters: domain.listUsesStatusQuery
-            ? const {'status': 'pending'}
-            : null,
+        queryParameters: params.isEmpty ? null : params,
       );
       final data = asStringKeyMap(res.data?['data']);
       final rawItems = data['items'];
