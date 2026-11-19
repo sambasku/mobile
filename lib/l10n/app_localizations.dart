@@ -8223,10 +8223,10 @@ abstract class AppLocalizations {
   /// **'Usul kata ini'**
   String get dictProposeThisWord;
 
-  /// Judul kartu Hot di beranda (G4)
+  /// Judul kartu Trending di beranda (G4)
   ///
   /// In id, this message translates to:
-  /// **'Hot hari ini'**
+  /// **'Trending hari ini'**
   String get hotTopicsTitle;
 
   /// Tab Hot: search miss 24 jam

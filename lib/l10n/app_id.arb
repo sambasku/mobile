@@ -2928,9 +2928,9 @@
   },
   "dictNotInDictionary": "Belum ada di kamus. Usulkan supaya bisa dicari orang lain.",
   "dictProposeThisWord": "Usul kata ini",
-  "hotTopicsTitle": "Hot hari ini",
+  "hotTopicsTitle": "Trending hari ini",
   "@hotTopicsTitle": {
-    "description": "Judul kartu Hot di beranda (G4)"
+    "description": "Judul kartu Trending di beranda (G4)"
   },
   "hotTopicsTabSearched": "Dicari",
   "@hotTopicsTabSearched": {

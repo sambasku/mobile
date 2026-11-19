@@ -4679,7 +4679,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictProposeThisWord => 'Usul kata ini';
 
   @override
-  String get hotTopicsTitle => 'Hot hari ini';
+  String get hotTopicsTitle => 'Trending hari ini';
 
   @override
   String get hotTopicsTabSearched => 'Dicari';
@@ -17473,7 +17473,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictProposeThisWord => 'Usul kata ini';
 
   @override
-  String get hotTopicsTitle => 'Hot hari ini';
+  String get hotTopicsTitle => 'Trending hari ini';
 
   @override
   String get hotTopicsTabSearched => 'Dicari';
