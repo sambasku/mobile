@@ -36,6 +36,9 @@ class WordListNotifier extends _$WordListNotifier {
   bool _isLoadingSync = false;
   bool _isLoadingMoreSync = false;
 
+  /// Query terakhir yang sudah di-commit (Enter / blur) untuk rekam miss.
+  String? _missCommittedQ;
+
   @override
   WordListState build() {
     ref.onDispose(() {
@@ -90,6 +93,7 @@ class WordListNotifier extends _$WordListNotifier {
     }
 
     state = state.copyWith(q: q, clearErrorMessage: true);
+    _missCommittedQ = null;
     if (nextEmpty) {
       _debounce?.cancel();
       if (state.searchIn == 'translation') {
@@ -113,14 +117,32 @@ class WordListNotifier extends _$WordListNotifier {
       return;
     }
     _debounce?.cancel();
-    // Ketikan lanjut setelah request lama jalan: buang respons/stale
-    // (UI). Request yang sudah sampai server tetap selesai - debounce
-    // lebih panjang mengurangi hit tengah.
+    // Ketikan = explore (record_miss=false). Commit miss lewat
+    // [commitSearch] (Enter / blur idle).
     _dropInFlight();
     if (state.isLoading) {
       state = state.copyWith(isLoading: false);
     }
-    _debounce = Timer(const Duration(milliseconds: _kDebounceMs), load);
+    _debounce = Timer(
+      const Duration(milliseconds: _kDebounceMs),
+      () => load(recordMiss: false),
+    );
+  }
+
+  /// Commit pencarian: Enter, tombol Cari, blur idle, atau pilih riwayat.
+  /// Hanya ini yang boleh merekam search-miss di server.
+  void commitSearch() {
+    final q = state.q.trim();
+    if (q.length < 2) return;
+    if (_missCommittedQ == q) return;
+    _missCommittedQ = q;
+    _debounce?.cancel();
+    // Ada hasil explore → tidak perlu hit lagi hanya untuk miss.
+    if (state.items.isNotEmpty && !state.isLoading && !_isLoadingSync) {
+      return;
+    }
+    _dropInFlight();
+    scheduleMicrotask(() => load(recordMiss: true));
   }
 
   /// Filter kategori berubah (#50). Reset + fetch halaman pertama.
@@ -194,6 +216,7 @@ class WordListNotifier extends _$WordListNotifier {
                 query: state.q,
                 cursor: state.nextCursor,
                 searchIn: state.searchIn,
+                recordMiss: false,
               ),
             )
           : await ref.read(listWordsUseCaseProvider)(
@@ -265,8 +288,9 @@ class WordListNotifier extends _$WordListNotifier {
     }
   }
 
-  /// Halaman pertama (buka halaman / q berubah / pull-to-refresh).
-  Future<void> load() async {
+  /// Halaman pertama (buka halaman / q berubah / pull-to-refresh / commit).
+  /// [recordMiss] true hanya dari [commitSearch].
+  Future<void> load({bool recordMiss = false}) async {
     if (_isLoadingSync || !ref.mounted) return;
     _isLoadingSync = true;
     final reqId = ++_loadReqId;
@@ -297,7 +321,11 @@ class WordListNotifier extends _$WordListNotifier {
 
       if (searchIn == 'translation') {
         final result = await ref.read(searchWordsUseCaseProvider)(
-          SearchWordsParams(query: q, searchIn: 'translation'),
+          SearchWordsParams(
+            query: q,
+            searchIn: 'translation',
+            recordMiss: recordMiss,
+          ),
         );
         if (!ref.mounted || reqId != _loadReqId) return;
         result.match(
@@ -327,10 +355,14 @@ class WordListNotifier extends _$WordListNotifier {
       final found = page;
       if (found == null) return;
       // Saringan Sambas kosong + q cukup panjang: coba pencarian lemma
-      // (variasi penulisan + rekam search-miss bila tetap kosong).
+      // (variasi + miss hanya bila [recordMiss]).
       if (found.items.isEmpty && q.trim().length >= 2) {
         final searched = await ref.read(searchWordsUseCaseProvider)(
-          SearchWordsParams(query: q, searchIn: 'lemma'),
+          SearchWordsParams(
+            query: q,
+            searchIn: 'lemma',
+            recordMiss: recordMiss,
+          ),
         );
         if (!ref.mounted || reqId != _loadReqId) return;
         searched.match(

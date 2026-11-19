@@ -17,6 +17,7 @@ class SearchWordsUseCase {
       limit: params.limit,
       cursor: params.cursor,
       searchIn: params.searchIn,
+      recordMiss: params.recordMiss,
     );
   }
 }
@@ -27,10 +28,14 @@ class SearchWordsParams {
     this.limit = 20,
     this.cursor,
     this.searchIn = 'lemma',
+    this.recordMiss = true,
   });
 
   final String query;
   final int limit;
   final String? cursor;
   final String searchIn;
+
+  /// false = explore/typeahead; true = Enter / Cari / blur idle.
+  final bool recordMiss;
 }

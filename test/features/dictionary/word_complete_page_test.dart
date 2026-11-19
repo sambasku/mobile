@@ -137,6 +137,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    bool recordMiss = true,
   }) async {
     if (fail) return Either.left(const DictionaryFailure('Gagal memuat kata'));
     return Either.right(

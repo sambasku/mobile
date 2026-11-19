@@ -53,6 +53,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    bool recordMiss = true,
   }) {
     return _gate.read(
       budget: LemmaDatasetConstants.searchTimeout,
@@ -63,6 +64,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         limit: limit,
         cursor: cursor,
         searchIn: searchIn,
+        recordMiss: recordMiss,
       ),
       local: () async {
         final local = _local;
@@ -84,6 +86,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    bool recordMiss = true,
   }) async {
     try {
       final response = await _remoteDatasource.searchWords({
@@ -91,6 +94,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         'limit': limit,
         'cursor': ?cursor,
         'search_in': searchIn,
+        'record_miss': recordMiss ? '1' : '0',
       });
 
       if (response.success == false) {

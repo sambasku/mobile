@@ -13,6 +13,8 @@ abstract interface class DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    /// false = ketikan/explore (jangan rekam miss). true = commit.
+    bool recordMiss = true,
   });
 
   /// Detail kata by id. 404 WORD_NOT_FOUND → Failure.

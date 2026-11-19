@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import '../dictionary_labels.dart';
@@ -19,13 +21,15 @@ import '../providers/word_list_providers.dart';
 import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 
 /// Daftar kata. q kosong di mode Sambas = A-Z (`GET /words`).
-/// q terisi, atau mode Indonesia, memakai `GET /words/search` supaya
-/// hasil kosong tercatat sebagai search-miss dan bisa diusulkan.
+/// Ketikan = explore (`record_miss=false`). Miss hanya setelah commit
+/// (Enter / blur idle / pilih riwayat).
 class WordListPage extends HookConsumerWidget {
   const WordListPage({super.key, this.autofocus = false});
 
   /// true saat dibuka dari kolom cari beranda (`?focus=1`).
   final bool autofocus;
+
+  static const _blurIdleMs = 600;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,6 +53,27 @@ class WordListPage extends HookConsumerWidget {
       });
       return null;
     }, [autofocus]);
+
+    // Blur idle: setelah field kehilangan fokus, commit miss.
+    useEffect(() {
+      Timer? blurTimer;
+      void onFocusChange() {
+        if (focusNode.hasFocus) {
+          blurTimer?.cancel();
+          return;
+        }
+        blurTimer?.cancel();
+        blurTimer = Timer(const Duration(milliseconds: _blurIdleMs), () {
+          notifier.commitSearch();
+        });
+      }
+
+      focusNode.addListener(onFocusChange);
+      return () {
+        blurTimer?.cancel();
+        focusNode.removeListener(onFocusChange);
+      };
+    }, [focusNode, notifier]);
 
     useEffect(() {
       void listener() {
@@ -136,6 +161,8 @@ class WordListPage extends HookConsumerWidget {
                 onChange: (value) => notifier.onQueryChanged(value.text),
               ),
               focusNode: focusNode,
+              textInputAction: TextInputAction.search,
+              onSubmit: (_) => notifier.commitSearch(),
               hint: state.searchIn == 'translation'
                   ? AppLocalizations.of(context).dictSearchIndonesianHint
                   : AppLocalizations.of(context).dictSearchSambasHint,
@@ -183,6 +210,7 @@ class WordListPage extends HookConsumerWidget {
                 onPick: (q) {
                   controller.text = q;
                   notifier.onQueryChanged(q);
+                  notifier.commitSearch();
                 },
                 onRemove: (q) => ref
                     .read(searchHistoryControllerProvider.notifier)

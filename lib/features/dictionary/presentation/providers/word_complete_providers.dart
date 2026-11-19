@@ -62,7 +62,12 @@ class WordCompleteNotifier extends _$WordCompleteNotifier {
     final generation = _generation;
     try {
       final result = await ref.read(searchWordsUseCaseProvider)(
-        SearchWordsParams(query: q, limit: _limit, searchIn: 'lemma'),
+        SearchWordsParams(
+          query: q,
+          limit: _limit,
+          searchIn: 'lemma',
+          recordMiss: false,
+        ),
       );
       if (!ref.mounted || generation != _generation) return;
       result.match(

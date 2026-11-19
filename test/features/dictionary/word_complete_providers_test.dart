@@ -155,6 +155,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    bool recordMiss = true,
   }) async {
     calls.add((query: query, limit: limit, searchIn: searchIn));
 

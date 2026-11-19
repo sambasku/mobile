@@ -105,6 +105,7 @@ class _EmptyLatestRepository implements DictionaryRepository {
     String? letter,
     bool? isVerified,
     String searchIn = 'lemma',
+    bool recordMiss = true,
   }) async => throw UnimplementedError();
 
   @override

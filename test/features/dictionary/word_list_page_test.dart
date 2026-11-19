@@ -93,6 +93,7 @@ class _StubDictionaryRepository implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    bool recordMiss = true,
   }) async => throw UnimplementedError();
 
   @override

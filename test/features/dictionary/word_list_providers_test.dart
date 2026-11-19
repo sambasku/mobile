@@ -22,7 +22,8 @@ WordSummary _word(String lemma) => WordSummary(
 /// habis). Mencatat tiap panggilan listWords untuk assert filter/pagination.
 class _FakeDictionaryRepository implements DictionaryRepository {
   final calls = <({String q, String? cursor})>[];
-  final searchCalls = <({String query, String searchIn, String? cursor})>[];
+  final searchCalls =
+      <({String query, String searchIn, String? cursor, bool recordMiss})>[];
   bool failNext = false;
   bool empty = false;
   bool searchReturnsVariant = false;
@@ -91,8 +92,14 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    bool recordMiss = true,
   }) async {
-    searchCalls.add((query: query, searchIn: searchIn, cursor: cursor));
+    searchCalls.add((
+      query: query,
+      searchIn: searchIn,
+      cursor: cursor,
+      recordMiss: recordMiss,
+    ));
     if (searchReturnsVariant && cursor == null) {
       return Either.right(
         WordSearchPage(
@@ -368,6 +375,32 @@ void main() {
 
     expect(repo.calls.length, callsBefore + 1);
     expect(repo.calls.last.q, 'sapaka');
+    sub.close();
+  });
+
+  test('explore tidak record miss; commitSearch merekam', () async {
+    final repo = _FakeDictionaryRepository()..empty = true;
+    final container = ProviderContainer(
+      overrides: [dictionaryRepositoryProvider.overrideWithValue(repo)],
+    );
+    addTearDown(container.dispose);
+
+    final sub = container.listen(wordListProvider, (_, _) {});
+    await _flush();
+
+    final notifier = container.read(wordListProvider.notifier);
+    notifier.onQueryChanged('sapaka');
+    await Future<void>.delayed(const Duration(milliseconds: 800));
+
+    expect(repo.searchCalls, isNotEmpty);
+    expect(repo.searchCalls.last.recordMiss, isFalse);
+
+    notifier.commitSearch();
+    await _flush();
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+
+    expect(repo.searchCalls.last.recordMiss, isTrue);
+    expect(repo.searchCalls.last.query, 'sapaka');
     sub.close();
   });
 }
