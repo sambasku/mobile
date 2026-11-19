@@ -518,7 +518,7 @@ class _PlacementCellState extends State<_PlacementCell> {
     _timer?.cancel();
     final frames = widget.placement.frames;
     if (frames.length < 2) return;
-    _timer = Timer.periodic(const Duration(seconds: 5), (_) {
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
       if (!mounted) return;
       setState(() => _frameIndex = (_frameIndex + 1) % frames.length);
     });
