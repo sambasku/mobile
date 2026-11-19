@@ -38,6 +38,7 @@ import '../../../vote/presentation/providers/meaning_vote_providers.dart';
 import '../../../vote/presentation/widgets/meaning_vote_row.dart';
 import '../../domain/entities/word_detail.dart';
 import '../../domain/failures/dictionary_failure.dart';
+import '../../data/providers/dictionary_data_providers.dart';
 import '../../domain/providers/dictionary_domain_providers.dart';
 import '../providers/word_detail_providers.dart';
 import '../../../../shared/utils/public_account_name.dart';
@@ -66,6 +67,14 @@ bool _lemmaUsesLocalCorpus(WidgetRef ref) {
   return offline || source == LemmaDataSourceKind.local;
 }
 
+Future<void> _recordWordView(WidgetRef ref, String wordId) async {
+  try {
+    await ref.read(dictionaryRepositoryProvider).recordView(wordId);
+  } catch (_) {
+    // best-effort
+  }
+}
+
 /// Halaman detail kata publik - GET /api/v1/words/:id.
 class WordDetailPage extends HookConsumerWidget {
   const WordDetailPage({super.key, required this.wordId});
@@ -81,6 +90,18 @@ class WordDetailPage extends HookConsumerWidget {
 
     final async = ref.watch(wordDetailProvider(wordId));
     final theme = context.theme;
+    final recordedView = useRef<String?>(null);
+
+    // Metrik popularitas (docs/api/59-api-word-views.md) - sekali saat
+    // detail siap; best-effort, gagal jaringan tidak boleh ganggu tampilan.
+    useEffect(() {
+      final detail = async.asData?.value;
+      if (detail == null) return null;
+      if (recordedView.value == detail.id) return null;
+      recordedView.value = detail.id;
+      unawaited(_recordWordView(ref, detail.id));
+      return null;
+    }, [async.asData?.value?.id]);
 
     // Deep link lemma → ganti URL ke ULID kanonis supaya history/bookmark
     // dan navigasi internal selalu pakai id.

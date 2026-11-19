@@ -196,4 +196,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     String? cursor,
     bool forceRefresh = false,
   }) => throw UnimplementedError();
+
+  @override
+  Future<void> recordView(String wordId) async {}
 }

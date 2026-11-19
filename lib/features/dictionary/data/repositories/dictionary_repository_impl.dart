@@ -938,4 +938,14 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     }
     return DictionaryFailure(fallback);
   }
+
+  @override
+  Future<void> recordView(String wordId) async {
+    final dio = _dio;
+    if (dio == null) return;
+    await dio.post<dynamic>(
+      '/api/v1/words/${Uri.encodeComponent(wordId)}/view',
+      options: Options(sendTimeout: const Duration(seconds: 5)),
+    );
+  }
 }

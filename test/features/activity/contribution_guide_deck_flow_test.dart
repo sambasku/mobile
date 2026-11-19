@@ -105,6 +105,9 @@ class _EmptyLatestRepository implements DictionaryRepository {
     bool? isVerified,
     String searchIn = 'lemma',
   }) async => throw UnimplementedError();
+
+  @override
+  Future<void> recordView(String wordId) async {}
 }
 
 Finder tabItem(String label) => find.descendant(

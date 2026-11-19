@@ -58,4 +58,7 @@ abstract interface class DictionaryRepository {
   /// Daftar kategori/glosarium (GET /api/v1/categories) untuk filter
   /// browse A-Z (#50).
   Future<Either<DictionaryFailure, List<WordCategory>>> listCategories();
+
+  /// Catat 1 view detail kata (docs/api/59-api-word-views.md). Best-effort.
+  Future<void> recordView(String wordId);
 }

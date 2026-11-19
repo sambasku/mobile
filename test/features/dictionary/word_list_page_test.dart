@@ -101,6 +101,9 @@ class _StubDictionaryRepository implements DictionaryRepository {
     String? cursor,
     bool forceRefresh = false,
   }) async => throw UnimplementedError();
+
+  @override
+  Future<void> recordView(String wordId) async {}
 }
 
 void main() {
