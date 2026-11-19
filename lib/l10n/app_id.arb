@@ -1026,6 +1026,18 @@
     }
   },
   "voteLoginPrompt": "Masuk dulu untuk memberi vote",
+  "voteTrustProgressLabel": "Menuju verifikasi warga",
+  "@voteTrustProgressLabel": {
+    "description": "Label progress bar vote makna menuju ambang Voting Warga (+5)"
+  },
+  "notificationTypeMeaningAutoVerified": "Makna terverifikasi warga",
+  "@notificationTypeMeaningAutoVerified": {
+    "description": "Label tipe inbox: makna auto-verif Voting Warga"
+  },
+  "notificationTypeMeaningNeedsReview": "Makna perlu ditinjau",
+  "@notificationTypeMeaningNeedsReview": {
+    "description": "Label tipe inbox: makna needs_review setelah downvote massal"
+  },
   "voteDeckLoginPrompt": "Masuk dulu untuk menilai kata",
   "voteDeckLoginCta": "Masuk",
   "voteDeckHelper": "Bantu nilai agar arti kata lebih akurat",

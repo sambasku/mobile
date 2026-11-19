@@ -1750,7 +1750,10 @@ class _MeaningBlock extends ConsumerWidget {
                 ],
                 const Gap(8),
                 if (!_lemmaUsesLocalCorpus(ref))
-                  MeaningVoteRow(meaningId: meaning.id),
+                  MeaningVoteRow(
+                    meaningId: meaning.id,
+                    isVerified: meaning.isVerified,
+                  ),
               ],
             ),
           ),

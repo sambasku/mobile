@@ -1309,6 +1309,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get voteLoginPrompt => 'Masuk dulu untuk memberi vote';
 
   @override
+  String get voteTrustProgressLabel => 'Menuju verifikasi warga';
+
+  @override
+  String get notificationTypeMeaningAutoVerified => 'Makna terverifikasi warga';
+
+  @override
+  String get notificationTypeMeaningNeedsReview => 'Makna perlu ditinjau';
+
+  @override
   String get voteDeckLoginPrompt => 'Masuk dulu untuk menilai kata';
 
   @override
@@ -14052,6 +14061,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get voteLoginPrompt => 'Masuk dulu untuk memberi vote';
+
+  @override
+  String get voteTrustProgressLabel => 'Menuju verifikasi warga';
+
+  @override
+  String get notificationTypeMeaningAutoVerified => 'Makna terverifikasi warga';
+
+  @override
+  String get notificationTypeMeaningNeedsReview => 'Makna perlu ditinjau';
 
   @override
   String get voteDeckLoginPrompt => 'Masuk dulu untuk menilai kata';

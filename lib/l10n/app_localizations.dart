@@ -2417,6 +2417,24 @@ abstract class AppLocalizations {
   /// **'Masuk dulu untuk memberi vote'**
   String get voteLoginPrompt;
 
+  /// Label progress bar vote makna menuju ambang Voting Warga (+5)
+  ///
+  /// In id, this message translates to:
+  /// **'Menuju verifikasi warga'**
+  String get voteTrustProgressLabel;
+
+  /// Label tipe inbox: makna auto-verif Voting Warga
+  ///
+  /// In id, this message translates to:
+  /// **'Makna terverifikasi warga'**
+  String get notificationTypeMeaningAutoVerified;
+
+  /// Label tipe inbox: makna needs_review setelah downvote massal
+  ///
+  /// In id, this message translates to:
+  /// **'Makna perlu ditinjau'**
+  String get notificationTypeMeaningNeedsReview;
+
   /// No description provided for @voteDeckLoginPrompt.
   ///
   /// In id, this message translates to:
