@@ -13,8 +13,9 @@ import '../providers/search_history_provider.dart';
 
 part 'word_list_providers.g.dart';
 
-/// Debounce filter q - sama dengan pencarian beranda (400 ms).
-const _kDebounceMs = 400;
+/// Debounce filter q. 700 ms supaya ketikan seperti "sapaka" tidak
+/// memicu hit tengah ("sa", "sapa") yang merekam search-miss palsu.
+const _kDebounceMs = 700;
 
 /// Notifier halaman Daftar Kata A-Z (18-api-list-words.md). Meniru
 /// DictionarySearchNotifier: debounce, req id guard anti stale response,
@@ -68,7 +69,7 @@ class WordListNotifier extends _$WordListNotifier {
     _isLoadingMoreSync = false;
   }
 
-  /// Filter q berubah (dari search box halaman list). Debounce 400 ms →
+  /// Filter q berubah (dari search box halaman list). Debounce 700 ms →
   /// reset + fetch halaman pertama dengan q baru (server-side). q kosong
   /// di mode Sambas → kembali full A-Z tanpa menunggu debounce.
   void onQueryChanged(String q) {
@@ -112,6 +113,13 @@ class WordListNotifier extends _$WordListNotifier {
       return;
     }
     _debounce?.cancel();
+    // Ketikan lanjut setelah request lama jalan: buang respons/stale
+    // (UI). Request yang sudah sampai server tetap selesai - debounce
+    // lebih panjang mengurangi hit tengah.
+    _dropInFlight();
+    if (state.isLoading) {
+      state = state.copyWith(isLoading: false);
+    }
     _debounce = Timer(const Duration(milliseconds: _kDebounceMs), load);
   }
 

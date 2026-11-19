@@ -14,8 +14,8 @@ part 'word_complete_providers.g.dart';
 /// hub tidak menyisakan query/hasil yang basi.
 @Riverpod(keepAlive: false)
 class WordCompleteNotifier extends _$WordCompleteNotifier {
-  /// Sama dengan halaman detail kata supaya tidak terasa "lambat".
-  static const _debounceMs = 400;
+  /// Selaras daftar kata: tunggu ketikan selesai sebelum hit API.
+  static const _debounceMs = 700;
 
   static const _limit = 20;
 
