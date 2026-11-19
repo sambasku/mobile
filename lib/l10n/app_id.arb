@@ -2928,6 +2928,35 @@
   },
   "dictNotInDictionary": "Belum ada di kamus. Usulkan supaya bisa dicari orang lain.",
   "dictProposeThisWord": "Usul kata ini",
+  "hotTopicsTitle": "Hot hari ini",
+  "@hotTopicsTitle": {
+    "description": "Judul kartu Hot di beranda (G4)"
+  },
+  "hotTopicsTabSearched": "Dicari",
+  "@hotTopicsTabSearched": {
+    "description": "Tab Hot: search miss 24 jam"
+  },
+  "hotTopicsTabProposed": "Diusulkan",
+  "@hotTopicsTabProposed": {
+    "description": "Tab Hot: usulan kata pending"
+  },
+  "hotTopicsTabNearThreshold": "Dekati ambang",
+  "@hotTopicsTabNearThreshold": {
+    "description": "Tab Hot: makna net dekat Voting Warga"
+  },
+  "hotTopicsTabEmpty": "Belum ada di tab ini.",
+  "hotTopicsBackfillHint": "Sebagian dari 7 hari terakhir.",
+  "@hotTopicsBackfillHint": {
+    "description": "Hint saat tab Hot memakai backfill di luar 24 jam"
+  },
+  "hotTopicsProposedSubtitle": "Usulan menunggu peninjauan",
+  "hotTopicsNearNet": "Net {net}",
+  "@hotTopicsNearNet": {
+    "description": "Subtitle skor vote net di tab Dekati ambang",
+    "placeholders": {
+      "net": { "type": "String" }
+    }
+  },
   "dictCorrectSpellingCta": "Koreksi ejaan",
   "@dictCorrectSpellingCta": {
     "description": "CTA empty-state: buka form koreksi typo jadi varian lemma benar"

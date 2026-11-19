@@ -22,6 +22,8 @@ import '../../../activity/presentation/activity_labels.dart';
 import '../../../activity/presentation/providers/announcement_detail_provider.dart';
 import '../../../activity/presentation/widgets/activity_feed_tile.dart';
 import '../../../activity/presentation/widgets/pinned_home_banner.dart';
+import '../../../hot_topics/presentation/providers/hot_topics_providers.dart';
+import '../../../hot_topics/presentation/widgets/hot_topics_card.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../encyclopedia/encyclopedia_router.dart';
@@ -85,6 +87,7 @@ class HomeSearchPage extends HookConsumerWidget {
       // Pengumuman pinned bisa expired saat app di background; invalidate
       // (data lama tetap tampil selagi reload, tanpa skeleton berkedip).
       ref.invalidate(pinnedAnnouncementsProvider);
+      ref.invalidate(hotTopicsProvider);
       ref.read(activityFeedProvider(selectedCategory.value).notifier).load();
     });
 
@@ -213,6 +216,7 @@ class HomeSearchPage extends HookConsumerWidget {
               child: Padding(padding: _hPad, child: WordOfDayCard()),
             ),
             const SliverToBoxAdapter(child: PinnedHomeBanner()),
+            const SliverToBoxAdapter(child: HotTopicsCard()),
             const SliverToBoxAdapter(
               child: Padding(padding: _hPad, child: _FeedHeading()),
             ),
@@ -288,11 +292,13 @@ class HomeSearchPage extends HookConsumerWidget {
     await store.deleteByPrefix('GET|/api/v1/activity');
     ref.invalidate(wordOfDayProvider);
     ref.invalidate(pinnedAnnouncementsProvider);
+    ref.invalidate(hotTopicsProvider);
     await Future.wait([
       ref
           .read(activityFeedProvider(category).notifier)
           .load(forceRefresh: true),
       ref.read(wordOfDayProvider.future),
+      ref.read(hotTopicsProvider.future),
     ]);
   }
 }

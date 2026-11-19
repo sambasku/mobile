@@ -8223,6 +8223,54 @@ abstract class AppLocalizations {
   /// **'Usul kata ini'**
   String get dictProposeThisWord;
 
+  /// Judul kartu Hot di beranda (G4)
+  ///
+  /// In id, this message translates to:
+  /// **'Hot hari ini'**
+  String get hotTopicsTitle;
+
+  /// Tab Hot: search miss 24 jam
+  ///
+  /// In id, this message translates to:
+  /// **'Dicari'**
+  String get hotTopicsTabSearched;
+
+  /// Tab Hot: usulan kata pending
+  ///
+  /// In id, this message translates to:
+  /// **'Diusulkan'**
+  String get hotTopicsTabProposed;
+
+  /// Tab Hot: makna net dekat Voting Warga
+  ///
+  /// In id, this message translates to:
+  /// **'Dekati ambang'**
+  String get hotTopicsTabNearThreshold;
+
+  /// No description provided for @hotTopicsTabEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada di tab ini.'**
+  String get hotTopicsTabEmpty;
+
+  /// Hint saat tab Hot memakai backfill di luar 24 jam
+  ///
+  /// In id, this message translates to:
+  /// **'Sebagian dari 7 hari terakhir.'**
+  String get hotTopicsBackfillHint;
+
+  /// No description provided for @hotTopicsProposedSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan menunggu peninjauan'**
+  String get hotTopicsProposedSubtitle;
+
+  /// Subtitle skor vote net di tab Dekati ambang
+  ///
+  /// In id, this message translates to:
+  /// **'Net {net}'**
+  String hotTopicsNearNet(String net);
+
   /// CTA empty-state: buka form koreksi typo jadi varian lemma benar
   ///
   /// In id, this message translates to:

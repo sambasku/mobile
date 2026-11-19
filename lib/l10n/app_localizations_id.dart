@@ -4679,6 +4679,32 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictProposeThisWord => 'Usul kata ini';
 
   @override
+  String get hotTopicsTitle => 'Hot hari ini';
+
+  @override
+  String get hotTopicsTabSearched => 'Dicari';
+
+  @override
+  String get hotTopicsTabProposed => 'Diusulkan';
+
+  @override
+  String get hotTopicsTabNearThreshold => 'Dekati ambang';
+
+  @override
+  String get hotTopicsTabEmpty => 'Belum ada di tab ini.';
+
+  @override
+  String get hotTopicsBackfillHint => 'Sebagian dari 7 hari terakhir.';
+
+  @override
+  String get hotTopicsProposedSubtitle => 'Usulan menunggu peninjauan';
+
+  @override
+  String hotTopicsNearNet(String net) {
+    return 'Net $net';
+  }
+
+  @override
   String get dictCorrectSpellingCta => 'Koreksi ejaan';
 
   @override
@@ -17445,6 +17471,32 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get dictProposeThisWord => 'Usul kata ini';
+
+  @override
+  String get hotTopicsTitle => 'Hot hari ini';
+
+  @override
+  String get hotTopicsTabSearched => 'Dicari';
+
+  @override
+  String get hotTopicsTabProposed => 'Diusulkan';
+
+  @override
+  String get hotTopicsTabNearThreshold => 'Dekati ambang';
+
+  @override
+  String get hotTopicsTabEmpty => 'Belum ada di tab ini.';
+
+  @override
+  String get hotTopicsBackfillHint => 'Sebagian dari 7 hari terakhir.';
+
+  @override
+  String get hotTopicsProposedSubtitle => 'Usulan menunggu peninjauan';
+
+  @override
+  String hotTopicsNearNet(String net) {
+    return 'Net $net';
+  }
 
   @override
   String get dictCorrectSpellingCta => 'Koreksi ejaan';
