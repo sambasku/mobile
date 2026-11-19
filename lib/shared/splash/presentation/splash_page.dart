@@ -101,18 +101,19 @@ class _SplashPageState extends ConsumerState<SplashPage>
     try {
       final items =
           await ref.read(aboutApiDatasourceProvider).fetchSplashSponsorships();
+      final logos = await Future.wait([
+        for (final s in items) _toLogo(s),
+      ]);
       if (!mounted) return;
       setState(() {
-        _logos = [
-          for (final s in items) ?_toLogo(s),
-        ];
+        _logos = [for (final logo in logos) ?logo];
       });
     } catch (_) {
       // Fail-soft: slot kosong.
     }
   }
 
-  SplashSponsorLogo? _toLogo(AboutSponsorship s) {
+  Future<SplashSponsorLogo?> _toLogo(AboutSponsorship s) async {
     final url = s.logoUrl?.trim();
     if (url == null || url.isEmpty) return null;
     final tier = switch (s.tier) {
@@ -122,11 +123,48 @@ class _SplashPageState extends ConsumerState<SplashPage>
       _ => null,
     };
     if (tier == null) return null;
+    final aspect = await _detectLogoAspect(url);
     return SplashSponsorLogo(
       tier: tier,
       imageUrl: url,
       name: s.name,
+      aspect: aspect,
     );
+  }
+
+  /// Square bila rasio dekat 1:1; selain itu landscape. Timeout → landscape.
+  Future<SplashSponsorLogoAspect> _detectLogoAspect(String url) async {
+    try {
+      final provider = NetworkImage(url);
+      final stream = provider.resolve(ImageConfiguration.empty);
+      final completer = Completer<SplashSponsorLogoAspect>();
+      late final ImageStreamListener listener;
+      listener = ImageStreamListener(
+        (info, _) {
+          final w = info.image.width.toDouble();
+          final h = info.image.height.toDouble();
+          final ratio = h == 0 ? 1.0 : w / h;
+          final aspect = (ratio >= 0.85 && ratio <= 1.15)
+              ? SplashSponsorLogoAspect.square
+              : SplashSponsorLogoAspect.landscape;
+          if (!completer.isCompleted) completer.complete(aspect);
+          stream.removeListener(listener);
+        },
+        onError: (_, _) {
+          if (!completer.isCompleted) {
+            completer.complete(SplashSponsorLogoAspect.landscape);
+          }
+          stream.removeListener(listener);
+        },
+      );
+      stream.addListener(listener);
+      return await completer.future.timeout(
+        const Duration(milliseconds: 800),
+        onTimeout: () => SplashSponsorLogoAspect.landscape,
+      );
+    } catch (_) {
+      return SplashSponsorLogoAspect.landscape;
+    }
   }
 
   @override
