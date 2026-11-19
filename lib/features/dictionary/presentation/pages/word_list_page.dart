@@ -175,7 +175,7 @@ class WordListPage extends HookConsumerWidget {
                     const Icon(FLucideIcons.search),
                   ),
             ),
-            if (state.q.trim().length >= 3)
+            if (state.q.trim().length >= 2)
               Padding(
                 padding: const EdgeInsets.only(top: 6),
                 child: Text(

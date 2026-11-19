@@ -18,8 +18,8 @@ part 'word_list_providers.g.dart';
 /// memicu hit tengah ("sa", "sapa") yang merekam search-miss palsu.
 const _kDebounceMs = 700;
 
-/// Min huruf untuk commit miss (selaras API quality gate).
-const _kMinCommitLen = 3;
+/// Min huruf untuk commit miss (selaras API; lemma Sambas bisa 2 huruf).
+const _kMinCommitLen = 2;
 
 /// Notifier halaman Daftar Kata A-Z (18-api-list-words.md). Meniru
 /// DictionarySearchNotifier: debounce, req id guard anti stale response,
