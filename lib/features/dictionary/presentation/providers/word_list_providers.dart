@@ -227,6 +227,8 @@ class WordListNotifier extends _$WordListNotifier {
       clearNextCursor: page.nextCursor == null,
       hasMore: page.hasMore,
       viaSearch: viaSearch,
+      lastSearchMissId: page.searchMissId,
+      clearLastSearchMissId: page.searchMissId == null,
     );
     if (viaSearch && state.q.trim().isNotEmpty) {
       AnalyticsService.instance.logSearchSubmit(

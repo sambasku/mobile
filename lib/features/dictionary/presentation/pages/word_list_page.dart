@@ -254,11 +254,32 @@ class WordListPage extends HookConsumerWidget {
                       queryParameters: {
                         'lemma': query,
                         'search_in': state.searchIn,
+                        if (state.lastSearchMissId != null)
+                          'miss_id': state.lastSearchMissId!,
                       },
                     ).query;
                     context.push('/contribute?$params');
                   },
                   child: Text(AppLocalizations.of(context).dictProposeThisWord),
+                ),
+                const Gap(8),
+                FButton(
+                  variant: FButtonVariant.outline,
+                  onPress: () {
+                    final params = Uri(
+                      queryParameters: {
+                        'lemma': query,
+                        'search_in': state.searchIn,
+                        'correction': '1',
+                        if (state.lastSearchMissId != null)
+                          'miss_id': state.lastSearchMissId!,
+                      },
+                    ).query;
+                    context.push('/contribute?$params');
+                  },
+                  child: Text(
+                    AppLocalizations.of(context).dictCorrectSpellingCta,
+                  ),
                 ),
               ],
               if (!askIndonesia) ...[

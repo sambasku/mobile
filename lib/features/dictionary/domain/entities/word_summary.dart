@@ -62,9 +62,13 @@ class WordSearchPage {
     required this.items,
     this.nextCursor,
     required this.hasMore,
+    this.searchMissId,
   });
 
   final List<WordSummary> items;
   final String? nextCursor;
   final bool hasMore;
+
+  /// G3b: id miss dari meta search saat 0 hasil (CTA koreksi ejaan).
+  final String? searchMissId;
 }

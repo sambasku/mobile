@@ -15,6 +15,9 @@ class BulkContributeRow {
     this.status = BulkRowSubmitStatus.idle,
     this.errorMessage,
     this.wordId,
+    this.searchMissId,
+    this.typedTypo,
+    this.missSearchIn,
   });
 
   final String id;
@@ -23,6 +26,15 @@ class BulkContributeRow {
   final BulkRowSubmitStatus status;
   final String? errorMessage;
   final String? wordId;
+
+  /// G3b: provenance miss (baris dari empty-state / koreksi).
+  final String? searchMissId;
+
+  /// Term yang diketik di pencarian (typo) - jadi varian / terjemahan tambahan.
+  final String? typedTypo;
+
+  /// `lemma` | `translation` - arah miss untuk aturan submit G3b.
+  final String? missSearchIn;
 
   bool get isComplete =>
       lemma.trim().isNotEmpty && translation.trim().isNotEmpty;
@@ -41,6 +53,9 @@ class BulkContributeRow {
     BulkRowSubmitStatus? status,
     String? errorMessage,
     String? wordId,
+    String? searchMissId,
+    String? typedTypo,
+    String? missSearchIn,
     bool clearError = false,
     bool clearWordId = false,
   }) {
@@ -51,6 +66,9 @@ class BulkContributeRow {
       status: status ?? this.status,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       wordId: clearWordId ? null : (wordId ?? this.wordId),
+      searchMissId: searchMissId ?? this.searchMissId,
+      typedTypo: typedTypo ?? this.typedTypo,
+      missSearchIn: missSearchIn ?? this.missSearchIn,
     );
   }
 }

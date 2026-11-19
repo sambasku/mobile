@@ -53,11 +53,15 @@ class ContributePage extends ConsumerStatefulWidget {
     this.initialLemma,
     this.initialSearchIn,
     this.initialSearchMissId,
+    this.spellCorrection = false,
   });
 
   final String? initialLemma;
   final String? initialSearchIn;
   final String? initialSearchMissId;
+
+  /// G3b: form koreksi ejaan - term ketikan jadi varian, field isi ejaan benar.
+  final bool spellCorrection;
 
   @override
   ConsumerState<ContributePage> createState() => _ContributePageState();
@@ -123,17 +127,25 @@ class _ContributePageState extends ConsumerState<ContributePage> {
   void initState() {
     super.initState();
     final isTranslationMiss = widget.initialSearchIn == 'translation';
+    final spell = widget.spellCorrection;
+    // Koreksi ejaan: field utama kosong (user isi yang benar); typo di banner.
     _lemmaCtrl = TextEditingController(
-      text: isTranslationMiss ? '' : (widget.initialLemma ?? ''),
+      text: spell
+          ? ''
+          : (isTranslationMiss ? '' : (widget.initialLemma ?? '')),
     );
     _lemmaFocus = FocusNode();
     _pronunciationCtrl = TextEditingController();
     _standardTranslationCtrl = TextEditingController(
-      text: isTranslationMiss ? (widget.initialLemma ?? '') : '',
+      text: spell
+          ? ''
+          : (isTranslationMiss ? (widget.initialLemma ?? '') : ''),
     );
     _meanings = [
       _MeaningDraft(
-        initialPadanan: isTranslationMiss ? (widget.initialLemma ?? '') : null,
+        initialPadanan: spell
+            ? null
+            : (isTranslationMiss ? (widget.initialLemma ?? '') : null),
       ),
     ];
 
@@ -470,9 +482,16 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       }
     });
 
+    final typedTypo = (widget.initialLemma ?? '').trim();
+    final showSpellBanner = widget.spellCorrection && typedTypo.isNotEmpty;
+
     return FScaffold(
       header: FHeader.nested(
-        title: Text(l10n.contributeTitle),
+        title: Text(
+          showSpellBanner
+              ? l10n.contributeSpellCorrectTitle
+              : l10n.contributeTitle,
+        ),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop() ? context.pop() : context.go('/'),
@@ -509,21 +528,51 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               color: theme.colors.mutedForeground,
             ),
           ),
-          const Gap(16),
-          FTileGroup(
-            children: [
-              FTile(
-                prefix: Icon(
-                  FLucideIcons.listPlus,
-                  color: theme.colors.primary,
+          if (showSpellBanner) ...[
+            const Gap(12),
+            FTileGroup(
+              children: [
+                FTile(
+                  title: Text(l10n.contributeSpellTypedLabel(typedTypo)),
+                  subtitle: Text(l10n.contributeSpellCorrectHint),
                 ),
-                title: Text(l10n.contributeBulkTitle),
-                subtitle: Text(l10n.contributeBulkSubtitle),
-                suffix: const Icon(FLucideIcons.chevronRight),
-                onPress: () => context.push('/contribute/bulk'),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
+          if (!showSpellBanner) ...[
+            const Gap(16),
+            FTileGroup(
+              children: [
+                FTile(
+                  prefix: Icon(
+                    FLucideIcons.listPlus,
+                    color: theme.colors.primary,
+                  ),
+                  title: Text(l10n.contributeBulkTitle),
+                  subtitle: Text(l10n.contributeBulkSubtitle),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () {
+                    final params = Uri(
+                      queryParameters: {
+                        if ((widget.initialLemma ?? '').trim().isNotEmpty)
+                          'lemma': widget.initialLemma!.trim(),
+                        if (widget.initialSearchIn != null)
+                          'search_in': widget.initialSearchIn!,
+                        if (widget.initialSearchMissId != null)
+                          'miss_id': widget.initialSearchMissId!,
+                        if (widget.spellCorrection) 'correction': '1',
+                      },
+                    ).query;
+                    context.push(
+                      params.isEmpty
+                          ? '/contribute/bulk'
+                          : '/contribute/bulk?$params',
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
           const Gap(16),
           _FieldCaption(l10n.contributeHowToFill),
           _ContributeModeChips(
@@ -1078,6 +1127,23 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               ?.id;
     }
     final notes = _relations.notesText.trim();
+    final typedTypo = (widget.initialLemma ?? '').trim();
+    final spellLemma = widget.spellCorrection &&
+        widget.initialSearchIn != 'translation' &&
+        typedTypo.isNotEmpty;
+    final spellTranslation = widget.spellCorrection &&
+        widget.initialSearchIn == 'translation' &&
+        typedTypo.isNotEmpty;
+
+    List<String> translationTextsFor(List<String> primary) {
+      if (!spellTranslation) return primary;
+      final out = <String>[...primary.where((t) => t.trim().isNotEmpty)];
+      if (!out.any((t) => t.trim().toLowerCase() == typedTypo.toLowerCase())) {
+        out.add(typedTypo);
+      }
+      return out;
+    }
+
     final meanings = _advanced
         ? [
             for (final m in _meanings)
@@ -1085,9 +1151,11 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                 wordClassId: m.wordClassId ?? '',
                 definition: m.wantDefinition ? m.defCtrl.text : '-',
                 isHaveDefinition: m.wantDefinition,
-                isHaveTranslation: m.wantPadanan,
+                isHaveTranslation: m.wantPadanan || spellTranslation,
                 meaningSource: _resolveDraftMeaningSource(m).apiValue,
-                translationTexts: m.wantPadanan ? [m.trCtrl.text] : const [],
+                translationTexts: translationTextsFor(
+                  m.wantPadanan ? [m.trCtrl.text] : const [],
+                ),
               ),
           ]
         : [
@@ -1099,9 +1167,26 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               isHaveDefinition: _standardDefinition.trim().isNotEmpty,
               isHaveTranslation: true,
               meaningSource: _resolveStandardMeaningSource().apiValue,
-              translationTexts: [_standardTranslationCtrl.text],
+              translationTexts: translationTextsFor([
+                _standardTranslationCtrl.text,
+              ]),
             ),
           ];
+
+    final variants = <String>[
+      if (_advanced) ..._parseCsv(_relations.variantsText),
+      if (spellLemma) typedTypo,
+    ];
+    // Dedup case-insensitive, jaga urutan.
+    final seen = <String>{};
+    final spellingVariants = <String>[];
+    for (final v in variants) {
+      final key = v.trim().toLowerCase();
+      if (key.isEmpty || seen.contains(key)) continue;
+      seen.add(key);
+      spellingVariants.add(v.trim());
+    }
+
     await notifier.submit(
       lemma: _lemmaCtrl.text,
       languageId: languageId,
@@ -1111,9 +1196,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       categoryIds: [],
       usageLabels: _usageLabels.toList(growable: false),
       notes: _advanced && notes.isNotEmpty ? notes : null,
-      spellingVariants: _advanced
-          ? _parseCsv(_relations.variantsText)
-          : const [],
+      spellingVariants: spellingVariants,
       relatedWords: _advanced ? _buildRelatedWords() : const [],
       translationLanguageId: translationLanguageId,
       images: _advanced ? readySubmitImages(_images) : const [],

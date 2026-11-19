@@ -24,7 +24,18 @@ import '../utils/invalidate_word_detail.dart';
 import '../../../../shared/utils/message_dialog.dart';
 
 class BulkContributePage extends ConsumerStatefulWidget {
-  const BulkContributePage({super.key});
+  const BulkContributePage({
+    super.key,
+    this.initialLemma,
+    this.initialSearchIn,
+    this.initialSearchMissId,
+    this.spellCorrection = false,
+  });
+
+  final String? initialLemma;
+  final String? initialSearchIn;
+  final String? initialSearchMissId;
+  final bool spellCorrection;
 
   @override
   ConsumerState<BulkContributePage> createState() => _BulkContributePageState();
@@ -55,9 +66,31 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
       final guest = !(ref.read(authStatusProvider).value?.isAuth ?? false);
       AnalyticsService.instance.log(
         AnalyticsEvents.contributeStart,
-        params: {'guest': guest ? 1 : 0, 'from': 'bulk'},
+        params: {
+          'guest': guest ? 1 : 0,
+          'from': widget.initialSearchMissId != null
+              ? (widget.spellCorrection ? 'bulk_miss_correct' : 'bulk_miss')
+              : 'bulk',
+        },
       );
-      _syncControllers(ref.read(bulkSubmitWordProvider).rows);
+      // G3b: prefill baris pertama dari miss / koreksi ejaan.
+      ref.read(bulkSubmitWordProvider.notifier).seedFromMiss(
+            lemma: widget.initialLemma,
+            searchIn: widget.initialSearchIn,
+            searchMissId: widget.initialSearchMissId,
+            spellCorrection: widget.spellCorrection,
+          );
+      final rows = ref.read(bulkSubmitWordProvider).rows;
+      _syncControllers(rows);
+      // Controllers bisa sudah ada dari kunjungan sebelumnya - samakan teks.
+      for (final row in rows) {
+        final c = _ctrls[row.id];
+        if (c == null) continue;
+        if (c.lemmaCtrl.text != row.lemma) c.lemmaCtrl.text = row.lemma;
+        if (c.translationCtrl.text != row.translation) {
+          c.translationCtrl.text = row.translation;
+        }
+      }
     });
   }
 

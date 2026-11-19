@@ -2928,6 +2928,25 @@
   },
   "dictNotInDictionary": "Belum ada di kamus. Usulkan supaya bisa dicari orang lain.",
   "dictProposeThisWord": "Usul kata ini",
+  "dictCorrectSpellingCta": "Koreksi ejaan",
+  "@dictCorrectSpellingCta": {
+    "description": "CTA empty-state: buka form koreksi typo jadi varian lemma benar"
+  },
+  "contributeSpellCorrectTitle": "Koreksi ejaan",
+  "@contributeSpellCorrectTitle": {
+    "description": "Judul form usul saat mode koreksi ejaan dari miss"
+  },
+  "contributeSpellTypedLabel": "Yang kamu ketik: {term}",
+  "@contributeSpellTypedLabel": {
+    "description": "Label baca-saja term typo di form koreksi",
+    "placeholders": {
+      "term": { "type": "String" }
+    }
+  },
+  "contributeSpellCorrectHint": "Ejaan yang benar",
+  "@contributeSpellCorrectHint": {
+    "description": "Hint field ejaan kanonik di mode koreksi"
+  },
   "dictRelatedMeaningSubtitle": "Makna terkait · {subtitle}",
   "@dictRelatedMeaningSubtitle": {
     "placeholders": {

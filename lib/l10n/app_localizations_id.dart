@@ -4679,6 +4679,20 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictProposeThisWord => 'Usul kata ini';
 
   @override
+  String get dictCorrectSpellingCta => 'Koreksi ejaan';
+
+  @override
+  String get contributeSpellCorrectTitle => 'Koreksi ejaan';
+
+  @override
+  String contributeSpellTypedLabel(String term) {
+    return 'Yang kamu ketik: $term';
+  }
+
+  @override
+  String get contributeSpellCorrectHint => 'Ejaan yang benar';
+
+  @override
   String dictRelatedMeaningSubtitle(String subtitle) {
     return 'Makna terkait · $subtitle';
   }
@@ -17431,6 +17445,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get dictProposeThisWord => 'Usul kata ini';
+
+  @override
+  String get dictCorrectSpellingCta => 'Koreksi ejaan';
+
+  @override
+  String get contributeSpellCorrectTitle => 'Koreksi ejaan';
+
+  @override
+  String contributeSpellTypedLabel(String term) {
+    return 'Yang kamu ketik: $term';
+  }
+
+  @override
+  String get contributeSpellCorrectHint => 'Ejaan yang benar';
 
   @override
   String dictRelatedMeaningSubtitle(String subtitle) {

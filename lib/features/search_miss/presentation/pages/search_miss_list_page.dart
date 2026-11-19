@@ -22,6 +22,58 @@ class SearchMissListPage extends ConsumerWidget {
     await ref.read(searchMissListProvider(_limit).future);
   }
 
+  Future<void> _openMissActions(BuildContext context, SearchMiss item) async {
+    final l10n = AppLocalizations.of(context);
+    AnalyticsService.instance.log(
+      AnalyticsEvents.searchMissTap,
+      params: {'miss_id': item.id},
+    );
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      builder: (sheetContext) => Padding(
+        padding: MediaQuery.of(sheetContext).viewInsets,
+        child: SafeArea(
+          top: false,
+          child: FTileGroup(
+            children: [
+              FTile(
+                title: Text(item.term),
+                subtitle: Text(_missSubtitle(item, l10n)),
+              ),
+              FTile(
+                title: Text(l10n.dictProposeThisWord),
+                onPress: () => Navigator.pop(sheetContext, 'propose'),
+              ),
+              FTile(
+                title: Text(l10n.dictCorrectSpellingCta),
+                onPress: () => Navigator.pop(sheetContext, 'correct'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (!context.mounted || choice == null) return;
+    AnalyticsService.instance.log(
+      AnalyticsEvents.contributeStart,
+      params: {
+        'guest': 1,
+        'from': choice == 'correct' ? 'search_miss_correct' : 'search_miss',
+      },
+    );
+    final q = Uri(
+      queryParameters: <String, String>{
+        'lemma': item.term,
+        'search_in': item.searchIn,
+        'miss_id': item.id,
+        if (choice == 'correct') 'correction': '1',
+      },
+    ).query;
+    context.push('/contribute?$q');
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
@@ -98,24 +150,7 @@ class SearchMissListPage extends ConsumerWidget {
                           FLucideIcons.chevronRight,
                           color: theme.colors.mutedForeground,
                         ),
-                        onPress: () {
-                          AnalyticsService.instance.log(
-                            AnalyticsEvents.searchMissTap,
-                            params: {'miss_id': item.id},
-                          );
-                          AnalyticsService.instance.log(
-                            AnalyticsEvents.contributeStart,
-                            params: {'guest': 1, 'from': 'search_miss'},
-                          );
-                          final q = Uri(
-                            queryParameters: <String, String>{
-                              'lemma': item.term,
-                              'search_in': item.searchIn,
-                              'miss_id': item.id,
-                            },
-                          ).query;
-                          context.push('/contribute?$q');
-                        },
+                        onPress: () => _openMissActions(context, item),
                       ),
                   ],
                 ),

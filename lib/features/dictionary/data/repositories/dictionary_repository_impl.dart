@@ -130,6 +130,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
               .toList(),
           nextCursor: meta?['next_cursor'] as String?,
           hasMore: meta?['has_more'] as bool? ?? false,
+          searchMissId: meta?['search_miss_id'] as String?,
         ),
       );
     } on DioException catch (error) {

@@ -8223,6 +8223,30 @@ abstract class AppLocalizations {
   /// **'Usul kata ini'**
   String get dictProposeThisWord;
 
+  /// CTA empty-state: buka form koreksi typo jadi varian lemma benar
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi ejaan'**
+  String get dictCorrectSpellingCta;
+
+  /// Judul form usul saat mode koreksi ejaan dari miss
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi ejaan'**
+  String get contributeSpellCorrectTitle;
+
+  /// Label baca-saja term typo di form koreksi
+  ///
+  /// In id, this message translates to:
+  /// **'Yang kamu ketik: {term}'**
+  String contributeSpellTypedLabel(String term);
+
+  /// Hint field ejaan kanonik di mode koreksi
+  ///
+  /// In id, this message translates to:
+  /// **'Ejaan yang benar'**
+  String get contributeSpellCorrectHint;
+
   /// No description provided for @dictRelatedMeaningSubtitle.
   ///
   /// In id, this message translates to:
