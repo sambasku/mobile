@@ -1884,6 +1884,8 @@
   "dictNoTranslation": "Belum ada terjemahan",
   "dictExampleAudio": "Audio contoh",
   "dictCopyMeaning": "Salin makna",
+  "dictSuggestMeaning": "Usulkan perubahan",
+  "dictSuggestMeaningSubtitle": "Makna ini langsung terpilih di form usulan",
   "dictMeaningActionsTitle": "Aksi makna",
   "dictReportMeaning": "Laporkan makna",
   "dictReportMeaningSubtitle": "Kirim ke antrean verifikator",
@@ -2767,17 +2769,23 @@
   "@karyaContributePickSubtitle": {
     "description": "Subjudul sheet pilih jenis usulan karya"
   },
-  "karyaFormQuickHint": "Cukup judul dan nama orang. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.",
+  "karyaFormQuickHint": "Cukup judul dan nama kreator. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.",
   "@karyaFormQuickHint": {
     "description": "Petunjuk form usul karya cepat (2 field)"
   },
   "karyaFormTitleHintMusic": "Judul lagu",
   "karyaFormTitleHintFilm": "Judul film",
   "karyaFormCreditNameMusic": "Nama penyanyi",
-  "karyaFormCreditNameFilm": "Nama sutradara",
+  "karyaFormCreditNameFilm": "Nama kreator",
+  "@karyaFormCreditNameFilm": {
+    "description": "Label field kreator form cepat film (channel, rumah produksi, pembuat, dll.)"
+  },
   "karyaFormCreditNameHintMusic": "Ketik nama, atau pilih dari saran kreator",
-  "karyaFormCreditNameHintFilm": "Ketik nama, atau pilih dari saran kreator",
-  "karyaFormCreditNameRequired": "Nama orang minimal 2 karakter",
+  "karyaFormCreditNameHintFilm": "Channel, rumah produksi, pembuat, atau nama orang - ketik atau pilih saran",
+  "@karyaFormCreditNameHintFilm": {
+    "description": "Hint field kreator form cepat film"
+  },
+  "karyaFormCreditNameRequired": "Nama kreator minimal 2 karakter",
   "karyaFormKreatorSuggestPick": "Pilih kreator ini",
   "@karyaFormKreatorSuggestPick": {
     "description": "Subtitle tile saran kreator di form usul"
@@ -2859,16 +2867,16 @@
   "karyaLemmaLinkFailed": "Gagal menautkan lemma",
   "karyaLemmaLinkNotFoundInText": "Lemma tidak ditemukan di teks cuplikan",
   "karyaLemmaLinkLoginFirst": "Masuk dulu untuk menautkan lemma",
-  "karyaFormInvalid": "Judul dan nama orang wajib diisi",
+  "karyaFormInvalid": "Judul dan nama kreator wajib diisi",
   "karyaFormKindRequired": "Pilih jenis karya dulu",
   "karyaFormTitleRequired": "Judul karya minimal 2 karakter",
   "karyaFormYearInvalid": "Isi tahun rilis yang valid (1800-2100)",
   "karyaFormSambasRequired": "Minimal satu kaitan dengan Sambas wajib diisi",
   "karyaFormCreditRequired": "Minimal satu kredit (nama + peran) wajib diisi",
   "karyaFormCreditVocalRequired": "Untuk musik, minimal satu kredit dengan peran Vokal",
-  "karyaFormCreditFilmRequired": "Untuk film, minimal satu kredit dengan peran Sutradara atau Pemeran",
+  "karyaFormCreditFilmRequired": "Untuk film, minimal satu kredit wajib diisi",
   "karyaFormCreditHintMusic": "Musik wajib punya minimal satu peran Vokal",
-  "karyaFormCreditHintFilm": "Film wajib punya minimal satu peran Sutradara atau Pemeran",
+  "karyaFormCreditHintFilm": "Film wajib punya minimal satu kredit (channel, rumah produksi, sutradara, atau peran lain)",
   "kreatorTitle": "Kreator",
   "kreatorLoadFailed": "Gagal memuat profil kreator",
   "kreatorNotFound": "Profil kreator tidak ditemukan",

@@ -58,6 +58,7 @@ import '../../../word_report/data/word_report_providers.dart';
 import '../../../word_report/presentation/report_word_sheet.dart';
 import '../../data/meaning_moderation_repository.dart';
 import '../../../contribution/presentation/utils/invalidate_word_detail.dart';
+import '../../../suggest_edit/domain/suggest_category.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -1216,8 +1217,10 @@ class _WordBookmarkHeaderAction extends ConsumerWidget {
 Future<void> _openSuggestEdit(
   BuildContext context,
   WidgetRef ref,
-  String wordId,
-) async {
+  String wordId, {
+  String? meaningId,
+  String? category,
+}) async {
   final auth = await ref.read(authStatusProvider.future);
   if (!context.mounted) return;
   if (!auth.isAuth) {
@@ -1228,7 +1231,14 @@ Future<void> _openSuggestEdit(
     context.push('/login');
     return;
   }
-  await context.push('/suggest-edit/$wordId');
+  final q = <String>[
+    if (category != null && category.isNotEmpty) 'category=$category',
+    if (meaningId != null && meaningId.isNotEmpty) 'meaning=$meaningId',
+  ];
+  final path = q.isEmpty
+      ? '/suggest-edit/$wordId'
+      : '/suggest-edit/$wordId?${q.join('&')}';
+  await context.push(path);
   if (context.mounted) {
     ref.invalidate(wordDetailProvider(wordId));
   }
@@ -1357,10 +1367,12 @@ Future<void> _showMeaningActionsSheet(
   required String lemma,
   required WordMeaning meaning,
   required int meaningCount,
+  required bool allowSuggest,
 }) async {
   final l10n = AppLocalizations.of(context);
   final role = ref.read(authStatusProvider).value?.role;
   final canDelete = canReviewQueue(role);
+  final muted = context.theme.colors.mutedForeground;
   final action = await showModalBottomSheet<String>(
     context: context,
     useRootNavigator: true,
@@ -1382,6 +1394,18 @@ Future<void> _showMeaningActionsSheet(
               FTileGroup(
                 label: Text(l10n.dictMeaningActionsTitle),
                 children: [
+                  if (allowSuggest)
+                    FTile(
+                      prefix: const Icon(FLucideIcons.penLine),
+                      title: Text(l10n.dictSuggestMeaning),
+                      subtitle: Text(l10n.dictSuggestMeaningSubtitle),
+                      suffix: Icon(
+                        FLucideIcons.chevronRight,
+                        size: 16,
+                        color: muted,
+                      ),
+                      onPress: () => go('suggest'),
+                    ),
                   FTile(
                     prefix: const Icon(FLucideIcons.copy),
                     title: Text(l10n.dictCopyMeaning),
@@ -1414,6 +1438,14 @@ Future<void> _showMeaningActionsSheet(
   );
   if (!context.mounted || action == null) return;
   switch (action) {
+    case 'suggest':
+      await _openSuggestEdit(
+        context,
+        ref,
+        wordId,
+        meaningId: meaning.id,
+        category: SuggestCategory.changeMeaning.code,
+      );
     case 'copy':
       await copyWordMeaningToClipboard(
         context,
@@ -1650,13 +1682,20 @@ class _MeaningBlock extends ConsumerWidget {
         : null;
     // Vote + progress di luar Row (bukan di Expanded sebelah ⋯) supaya
     // track progress full width kartu makna.
+    // Trust badge + ⋯ sejajar baris label kelas kata (bukan di atas blok
+    // definisi yang membuat ikon terasa melayang).
+    final allowSuggest = !_lemmaUsesLocalCorpus(ref);
+    final labelStyle = theme.typography.body.sm.copyWith(
+      color: theme.colors.mutedForeground,
+      fontWeight: FontWeight.w500,
+    );
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (showIndex)
                 SizedBox(
@@ -1670,114 +1709,12 @@ class _MeaningBlock extends ConsumerWidget {
                   ),
                 ),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (classLabel != null) ...[
-                                Text(
-                                  classLabel,
-                                  style: theme.typography.body.sm.copyWith(
-                                    color: theme.colors.mutedForeground,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const Gap(4),
-                              ],
-                              if (definition != null && definition.isNotEmpty)
-                                Text(
-                                  definition,
-                                  style: theme.typography.body.md.copyWith(
-                                    height: 1.5,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        const Gap(8),
-                        _MeaningTrustBadge(meaning: meaning),
-                      ],
-                    ),
-                    if (meaning.translations.isNotEmpty) ...[
-                      const Gap(6),
-                      ...meaning.translations.map(
-                        (t) => Padding(
-                          padding: const EdgeInsets.only(bottom: 2),
-                          child: Text(
-                            '→ ${t.text}',
-                            style: theme.typography.body.sm.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                    if (meaning.examples.isNotEmpty) ...[
-                      const Gap(8),
-                      ...meaning.examples.map((e) {
-                        final translation = e.targetSentence?.trim();
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                e.sourceSentence,
-                                style: theme.typography.body.sm.copyWith(
-                                  fontStyle: FontStyle.italic,
-                                  height: 1.35,
-                                ),
-                              ),
-                              if (translation != null &&
-                                  translation.isNotEmpty)
-                                Text(
-                                  translation,
-                                  style: theme.typography.body.sm.copyWith(
-                                    color: theme.colors.mutedForeground,
-                                    height: 1.35,
-                                  ),
-                                ),
-                              const Gap(6),
-                              PronunciationSection(
-                                wordId: wordId,
-                                languageId: languageId,
-                                audios: e.audios,
-                                exampleId: e.id,
-                                compact: true,
-                                sectionLabel: l10n.dictExampleAudio,
-                                spokenText: e.sourceSentence,
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                    ],
-                    if (byLabel != null) ...[
-                      const Gap(8),
-                      Semantics(
-                        button: true,
-                        label: byLabel,
-                        child: FTappable(
-                          onPress: () =>
-                              UserProfileRouter.open(context, username!),
-                          child: Text(
-                            byLabel,
-                            style: theme.typography.body.sm.copyWith(
-                              color: theme.colors.mutedForeground,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
+                child: classLabel != null
+                    ? Text(classLabel, style: labelStyle)
+                    : const SizedBox.shrink(),
               ),
+              const Gap(8),
+              _MeaningTrustBadge(meaning: meaning),
               IconButton(
                 visualDensity: VisualDensity.compact,
                 padding: EdgeInsets.zero,
@@ -1790,6 +1727,7 @@ class _MeaningBlock extends ConsumerWidget {
                   lemma: lemma,
                   meaning: meaning,
                   meaningCount: meaningCount,
+                  allowSuggest: allowSuggest,
                 ),
                 icon: Icon(
                   FLucideIcons.ellipsisVertical,
@@ -1799,7 +1737,83 @@ class _MeaningBlock extends ConsumerWidget {
               ),
             ],
           ),
-          if (!_lemmaUsesLocalCorpus(ref)) ...[
+          if (definition != null && definition.isNotEmpty) ...[
+            const Gap(4),
+            Text(
+              definition,
+              style: theme.typography.body.md.copyWith(height: 1.5),
+            ),
+          ],
+          if (meaning.translations.isNotEmpty) ...[
+            const Gap(6),
+            ...meaning.translations.map(
+              (t) => Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: Text(
+                  '→ ${t.text}',
+                  style: theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+          if (meaning.examples.isNotEmpty) ...[
+            const Gap(8),
+            ...meaning.examples.map((e) {
+              final translation = e.targetSentence?.trim();
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      e.sourceSentence,
+                      style: theme.typography.body.sm.copyWith(
+                        fontStyle: FontStyle.italic,
+                        height: 1.35,
+                      ),
+                    ),
+                    if (translation != null && translation.isNotEmpty)
+                      Text(
+                        translation,
+                        style: theme.typography.body.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                          height: 1.35,
+                        ),
+                      ),
+                    const Gap(6),
+                    PronunciationSection(
+                      wordId: wordId,
+                      languageId: languageId,
+                      audios: e.audios,
+                      exampleId: e.id,
+                      compact: true,
+                      sectionLabel: l10n.dictExampleAudio,
+                      spokenText: e.sourceSentence,
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+          if (byLabel != null) ...[
+            const Gap(8),
+            Semantics(
+              button: true,
+              label: byLabel,
+              child: FTappable(
+                onPress: () => UserProfileRouter.open(context, username!),
+                child: Text(
+                  byLabel,
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+              ),
+            ),
+          ],
+          if (allowSuggest) ...[
             const Gap(8),
             MeaningVoteRow(
               meaningId: meaning.id,

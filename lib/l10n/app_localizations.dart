@@ -7989,6 +7989,18 @@ abstract class AppLocalizations {
   /// **'Salin makna'**
   String get dictCopyMeaning;
 
+  /// Tile usul edit dari sheet aksi per makna
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan perubahan'**
+  String get dictSuggestMeaning;
+
+  /// Subtitle tile usul edit per makna
+  ///
+  /// In id, this message translates to:
+  /// **'Makna ini langsung terpilih di form usulan'**
+  String get dictSuggestMeaningSubtitle;
+
   /// Judul sheet aksi per makna di detail kata
   ///
   /// In id, this message translates to:
@@ -12996,7 +13008,7 @@ abstract class AppLocalizations {
   /// Petunjuk form usul karya cepat (2 field)
   ///
   /// In id, this message translates to:
-  /// **'Cukup judul dan nama orang. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.'**
+  /// **'Cukup judul dan nama kreator. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.'**
   String get karyaFormQuickHint;
 
   /// No description provided for @karyaFormTitleHintMusic.
@@ -13017,10 +13029,10 @@ abstract class AppLocalizations {
   /// **'Nama penyanyi'**
   String get karyaFormCreditNameMusic;
 
-  /// No description provided for @karyaFormCreditNameFilm.
+  /// Label field kreator form cepat film (channel, rumah produksi, pembuat, dll.)
   ///
   /// In id, this message translates to:
-  /// **'Nama sutradara'**
+  /// **'Nama kreator'**
   String get karyaFormCreditNameFilm;
 
   /// No description provided for @karyaFormCreditNameHintMusic.
@@ -13029,16 +13041,16 @@ abstract class AppLocalizations {
   /// **'Ketik nama, atau pilih dari saran kreator'**
   String get karyaFormCreditNameHintMusic;
 
-  /// No description provided for @karyaFormCreditNameHintFilm.
+  /// Hint field kreator form cepat film
   ///
   /// In id, this message translates to:
-  /// **'Ketik nama, atau pilih dari saran kreator'**
+  /// **'Channel, rumah produksi, pembuat, atau nama orang - ketik atau pilih saran'**
   String get karyaFormCreditNameHintFilm;
 
   /// No description provided for @karyaFormCreditNameRequired.
   ///
   /// In id, this message translates to:
-  /// **'Nama orang minimal 2 karakter'**
+  /// **'Nama kreator minimal 2 karakter'**
   String get karyaFormCreditNameRequired;
 
   /// Subtitle tile saran kreator di form usul
@@ -13512,7 +13524,7 @@ abstract class AppLocalizations {
   /// No description provided for @karyaFormInvalid.
   ///
   /// In id, this message translates to:
-  /// **'Judul dan nama orang wajib diisi'**
+  /// **'Judul dan nama kreator wajib diisi'**
   String get karyaFormInvalid;
 
   /// No description provided for @karyaFormKindRequired.
@@ -13554,7 +13566,7 @@ abstract class AppLocalizations {
   /// No description provided for @karyaFormCreditFilmRequired.
   ///
   /// In id, this message translates to:
-  /// **'Untuk film, minimal satu kredit dengan peran Sutradara atau Pemeran'**
+  /// **'Untuk film, minimal satu kredit wajib diisi'**
   String get karyaFormCreditFilmRequired;
 
   /// No description provided for @karyaFormCreditHintMusic.
@@ -13566,7 +13578,7 @@ abstract class AppLocalizations {
   /// No description provided for @karyaFormCreditHintFilm.
   ///
   /// In id, this message translates to:
-  /// **'Film wajib punya minimal satu peran Sutradara atau Pemeran'**
+  /// **'Film wajib punya minimal satu kredit (channel, rumah produksi, sutradara, atau peran lain)'**
   String get karyaFormCreditHintFilm;
 
   /// Judul fallback halaman profil kreator

@@ -4548,6 +4548,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictCopyMeaning => 'Salin makna';
 
   @override
+  String get dictSuggestMeaning => 'Usulkan perubahan';
+
+  @override
+  String get dictSuggestMeaningSubtitle =>
+      'Makna ini langsung terpilih di form usulan';
+
+  @override
   String get dictMeaningActionsTitle => 'Aksi makna';
 
   @override
@@ -7261,7 +7268,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get karyaFormQuickHint =>
-      'Cukup judul dan nama orang. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.';
+      'Cukup judul dan nama kreator. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.';
 
   @override
   String get karyaFormTitleHintMusic => 'Judul lagu';
@@ -7273,7 +7280,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get karyaFormCreditNameMusic => 'Nama penyanyi';
 
   @override
-  String get karyaFormCreditNameFilm => 'Nama sutradara';
+  String get karyaFormCreditNameFilm => 'Nama kreator';
 
   @override
   String get karyaFormCreditNameHintMusic =>
@@ -7281,10 +7288,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get karyaFormCreditNameHintFilm =>
-      'Ketik nama, atau pilih dari saran kreator';
+      'Channel, rumah produksi, pembuat, atau nama orang - ketik atau pilih saran';
 
   @override
-  String get karyaFormCreditNameRequired => 'Nama orang minimal 2 karakter';
+  String get karyaFormCreditNameRequired => 'Nama kreator minimal 2 karakter';
 
   @override
   String get karyaFormKreatorSuggestPick => 'Pilih kreator ini';
@@ -7530,7 +7537,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get karyaLemmaLinkLoginFirst => 'Masuk dulu untuk menautkan lemma';
 
   @override
-  String get karyaFormInvalid => 'Judul dan nama orang wajib diisi';
+  String get karyaFormInvalid => 'Judul dan nama kreator wajib diisi';
 
   @override
   String get karyaFormKindRequired => 'Pilih jenis karya dulu';
@@ -7555,7 +7562,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get karyaFormCreditFilmRequired =>
-      'Untuk film, minimal satu kredit dengan peran Sutradara atau Pemeran';
+      'Untuk film, minimal satu kredit wajib diisi';
 
   @override
   String get karyaFormCreditHintMusic =>
@@ -7563,7 +7570,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get karyaFormCreditHintFilm =>
-      'Film wajib punya minimal satu peran Sutradara atau Pemeran';
+      'Film wajib punya minimal satu kredit (channel, rumah produksi, sutradara, atau peran lain)';
 
   @override
   String get kreatorTitle => 'Kreator';
@@ -17394,6 +17401,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictCopyMeaning => 'Salin makna';
 
   @override
+  String get dictSuggestMeaning => 'Usulkan perubahan';
+
+  @override
+  String get dictSuggestMeaningSubtitle =>
+      'Makna ini langsung terpilih di form usulan';
+
+  @override
   String get dictMeaningActionsTitle => 'Aksi makna';
 
   @override
@@ -20107,7 +20121,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get karyaFormQuickHint =>
-      'Cukup judul dan nama orang. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.';
+      'Cukup judul dan nama kreator. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.';
 
   @override
   String get karyaFormTitleHintMusic => 'Judul lagu';
@@ -20119,7 +20133,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get karyaFormCreditNameMusic => 'Nama penyanyi';
 
   @override
-  String get karyaFormCreditNameFilm => 'Nama sutradara';
+  String get karyaFormCreditNameFilm => 'Nama kreator';
 
   @override
   String get karyaFormCreditNameHintMusic =>
@@ -20127,10 +20141,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get karyaFormCreditNameHintFilm =>
-      'Ketik nama, atau pilih dari saran kreator';
+      'Channel, rumah produksi, pembuat, atau nama orang - ketik atau pilih saran';
 
   @override
-  String get karyaFormCreditNameRequired => 'Nama orang minimal 2 karakter';
+  String get karyaFormCreditNameRequired => 'Nama kreator minimal 2 karakter';
 
   @override
   String get karyaFormKreatorSuggestPick => 'Pilih kreator ini';
@@ -20376,7 +20390,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get karyaLemmaLinkLoginFirst => 'Masuk dulu untuk menautkan lemma';
 
   @override
-  String get karyaFormInvalid => 'Judul dan nama orang wajib diisi';
+  String get karyaFormInvalid => 'Judul dan nama kreator wajib diisi';
 
   @override
   String get karyaFormKindRequired => 'Pilih jenis karya dulu';
@@ -20401,7 +20415,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get karyaFormCreditFilmRequired =>
-      'Untuk film, minimal satu kredit dengan peran Sutradara atau Pemeran';
+      'Untuk film, minimal satu kredit wajib diisi';
 
   @override
   String get karyaFormCreditHintMusic =>
@@ -20409,7 +20423,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get karyaFormCreditHintFilm =>
-      'Film wajib punya minimal satu peran Sutradara atau Pemeran';
+      'Film wajib punya minimal satu kredit (channel, rumah produksi, sutradara, atau peran lain)';
 
   @override
   String get kreatorTitle => 'Kreator';

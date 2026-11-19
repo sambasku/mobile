@@ -99,7 +99,8 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
     final prefillKind = widget.prefillKind;
     _kind = prefillKind == 'film' ? 'film' : 'music';
     final credit = _credits.first;
-    credit.role = _kind == 'film' ? 'director' : 'vocal';
+    // Film quick form: role generik `other` (channel / rumah produksi / pembuat).
+    credit.role = _kind == 'film' ? 'other' : 'vocal';
     final prefillName = (widget.prefillCreditName ?? '').trim();
     if (prefillName.isNotEmpty) {
       credit.name.text = prefillName;
@@ -273,11 +274,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
     if (kind == 'music' && !roles.contains('vocal')) {
       return l10n.karyaFormCreditVocalRequired;
     }
-    if (kind == 'film' &&
-        !roles.contains('director') &&
-        !roles.contains('cast')) {
-      return l10n.karyaFormCreditFilmRequired;
-    }
+    // Film: cukup ≥1 kredit (role apa saja yang valid), termasuk other/producer.
     return null;
   }
 
@@ -307,7 +304,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
           kind: safeKind,
           credits: [
             {
-              'role': safeKind == 'film' ? 'director' : 'vocal',
+              'role': safeKind == 'film' ? 'other' : 'vocal',
               'name_text': creditName,
               if ((credit.kreatorId ?? '').isNotEmpty)
                 'kreator_id': credit.kreatorId!,
