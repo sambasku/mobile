@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,6 +37,7 @@ class _RelatedGroupStub extends _StubDictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    CancelToken? cancelToken,
   }) async => Either.right(
     WordSearchPage(
       items: [
@@ -58,6 +60,7 @@ class _StubDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    CancelToken? cancelToken,
   }) async => Either.right(
     WordSearchPage(
       items: [_word('apam'), _word('budu'), _word("'caci")],
@@ -94,6 +97,7 @@ class _StubDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String searchIn = 'lemma',
     bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async => throw UnimplementedError();
 
   @override

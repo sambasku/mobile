@@ -8265,6 +8265,12 @@ abstract class AppLocalizations {
   /// **'Cari atau saring kata Sambas...'**
   String get dictSearchSambasHint;
 
+  /// Hint commit search miss di daftar kata (bukan tiap ketikan)
+  ///
+  /// In id, this message translates to:
+  /// **'Tekan Enter atau Cari untuk mencatat kata yang belum ada.'**
+  String get dictSearchCommitHint;
+
   /// No description provided for @dictCategory.
   ///
   /// In id, this message translates to:

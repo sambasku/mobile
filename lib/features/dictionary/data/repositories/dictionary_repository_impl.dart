@@ -54,6 +54,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     String? cursor,
     String searchIn = 'lemma',
     bool recordMiss = true,
+    CancelToken? cancelToken,
   }) {
     return _gate.read(
       budget: LemmaDatasetConstants.searchTimeout,
@@ -65,6 +66,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         cursor: cursor,
         searchIn: searchIn,
         recordMiss: recordMiss,
+        cancelToken: cancelToken,
       ),
       local: () async {
         final local = _local;
@@ -87,15 +89,19 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     String? cursor,
     String searchIn = 'lemma',
     bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async {
     try {
-      final response = await _remoteDatasource.searchWords({
-        'q': query,
-        'limit': limit,
-        'cursor': ?cursor,
-        'search_in': searchIn,
-        'record_miss': recordMiss ? '1' : '0',
-      });
+      final response = await _remoteDatasource.searchWords(
+        {
+          'q': query,
+          'limit': limit,
+          'cursor': ?cursor,
+          'search_in': searchIn,
+          'record_miss': recordMiss ? '1' : '0',
+        },
+        cancelToken: cancelToken,
+      );
 
       if (response.success == false) {
         return Either.left(
@@ -140,6 +146,11 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         ),
       );
     } on DioException catch (error) {
+      if (CancelToken.isCancel(error)) {
+        return Either.left(
+          const DictionaryFailure('', errorCode: 'REQUEST_CANCELLED'),
+        );
+      }
       return Either.left(
         _mapDio(
           error,
@@ -159,6 +170,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     String? letter,
     bool? isVerified,
     String? category,
+    CancelToken? cancelToken,
   }) {
     return _gate.read(
       budget: LemmaDatasetConstants.searchTimeout,
@@ -169,6 +181,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         letter: letter,
         isVerified: isVerified,
         category: category,
+        cancelToken: cancelToken,
       ),
       local: () async {
         final local = _local;
@@ -194,16 +207,20 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     String? letter,
     bool? isVerified,
     String? category,
+    CancelToken? cancelToken,
   }) async {
     try {
-      final response = await _remoteDatasource.listWords({
-        'q': q,
-        'limit': limit,
-        'cursor': ?cursor,
-        'letter': ?letter,
-        'is_verified': ?isVerified,
-        'category': ?category,
-      });
+      final response = await _remoteDatasource.listWords(
+        {
+          'q': q,
+          'limit': limit,
+          'cursor': ?cursor,
+          'letter': ?letter,
+          'is_verified': ?isVerified,
+          'category': ?category,
+        },
+        cancelToken: cancelToken,
+      );
 
       if (response.success == false) {
         return Either.left(
@@ -246,6 +263,11 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         ),
       );
     } on DioException catch (error) {
+      if (CancelToken.isCancel(error)) {
+        return Either.left(
+          const DictionaryFailure('', errorCode: 'REQUEST_CANCELLED'),
+        );
+      }
       return Either.left(
         _mapDio(
           error,

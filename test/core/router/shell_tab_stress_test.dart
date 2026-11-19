@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -74,6 +75,7 @@ class _EmptyLatestRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    CancelToken? cancelToken,
   }) async => throw UnimplementedError();
 
   @override
@@ -106,6 +108,7 @@ class _EmptyLatestRepository implements DictionaryRepository {
     bool? isVerified,
     String searchIn = 'lemma',
     bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async => throw UnimplementedError();
 
   @override

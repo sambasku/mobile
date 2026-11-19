@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../entities/word_detail.dart';
@@ -15,6 +16,7 @@ abstract interface class DictionaryRepository {
     String searchIn = 'lemma',
     /// false = ketikan/explore (jangan rekam miss). true = commit.
     bool recordMiss = true,
+    CancelToken? cancelToken,
   });
 
   /// Detail kata by id. 404 WORD_NOT_FOUND → Failure.
@@ -47,6 +49,7 @@ abstract interface class DictionaryRepository {
     String? letter,
     bool? isVerified,
     String? category,
+    CancelToken? cancelToken,
   });
 
   /// Feed beranda: kata published urut waktu persetujuan.

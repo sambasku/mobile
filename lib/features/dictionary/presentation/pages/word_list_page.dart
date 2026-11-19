@@ -175,6 +175,16 @@ class WordListPage extends HookConsumerWidget {
                     const Icon(FLucideIcons.search),
                   ),
             ),
+            if (state.q.trim().length >= 3)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(
+                  AppLocalizations.of(context).dictSearchCommitHint,
+                  style: theme.typography.body.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+              ),
             const Gap(10),
             categories.maybeWhen(
               data: (items) {

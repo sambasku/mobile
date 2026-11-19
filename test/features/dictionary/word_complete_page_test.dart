@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -138,6 +139,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String searchIn = 'lemma',
     bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async {
     if (fail) return Either.left(const DictionaryFailure('Gagal memuat kata'));
     return Either.right(
@@ -185,6 +187,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    CancelToken? cancelToken,
   }) => throw UnimplementedError();
 
   @override

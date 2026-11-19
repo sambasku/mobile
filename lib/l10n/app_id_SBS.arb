@@ -1950,6 +1950,10 @@
   "dictLangIndonesia": "Indonesia",
   "dictSearchIndonesianHint": "Cari kata Indonesia...",
   "dictSearchSambasHint": "Cari atau saring kata Sambas...",
+  "dictSearchCommitHint": "Tekan Enter atau Cari untuk mencatat kata yang belum ada.",
+  "@dictSearchCommitHint": {
+    "description": "Hint commit search miss di daftar kata (bukan tiap ketikan)"
+  },
   "dictCategory": "Kategori",
   "dictSearchIndonesianEmpty": "Ketik kata Indonesia untuk mencari terjemahannya di Sambas.",
   "dictNoPublishedWord": "Belum ada kata terbit.",

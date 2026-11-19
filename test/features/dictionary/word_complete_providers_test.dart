@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'dart:async';
 
 import 'package:fpdart/fpdart.dart';
@@ -156,6 +157,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String searchIn = 'lemma',
     bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async {
     calls.add((query: query, limit: limit, searchIn: searchIn));
 
@@ -211,6 +213,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    CancelToken? cancelToken,
   }) => throw UnimplementedError();
 
   @override

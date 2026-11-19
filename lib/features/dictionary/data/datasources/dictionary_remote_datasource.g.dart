@@ -21,11 +21,13 @@ class _DictionaryRemoteDatasource implements DictionaryRemoteDatasource {
 
   @override
   Future<ApiResponse<List<WordSummaryDto>>> searchWords(
-    Map<String, dynamic> query,
-  ) async {
+    Map<String, dynamic> query, {
+    CancelToken? cancelToken,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(query);
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<ApiResponse<List<WordSummaryDto>>>(
@@ -35,6 +37,7 @@ class _DictionaryRemoteDatasource implements DictionaryRemoteDatasource {
             '/api/v1/words/search',
             queryParameters: queryParameters,
             data: _data,
+            cancelToken: cancelToken,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
@@ -60,11 +63,13 @@ class _DictionaryRemoteDatasource implements DictionaryRemoteDatasource {
 
   @override
   Future<ApiResponse<List<WordSummaryDto>>> listWords(
-    Map<String, dynamic> query,
-  ) async {
+    Map<String, dynamic> query, {
+    CancelToken? cancelToken,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(query);
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<ApiResponse<List<WordSummaryDto>>>(
@@ -74,6 +79,7 @@ class _DictionaryRemoteDatasource implements DictionaryRemoteDatasource {
             '/api/v1/words',
             queryParameters: queryParameters,
             data: _data,
+            cancelToken: cancelToken,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );

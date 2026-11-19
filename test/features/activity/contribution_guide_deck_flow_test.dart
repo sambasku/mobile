@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'dart:ui' show Size;
 
 import 'package:material_ui/material_ui.dart' show debugDumpApp;
@@ -72,6 +73,7 @@ class _EmptyLatestRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    CancelToken? cancelToken,
   }) async =>
       const Right(WordSearchPage(items: [], nextCursor: null, hasMore: false));
 
@@ -105,6 +107,7 @@ class _EmptyLatestRepository implements DictionaryRepository {
     bool? isVerified,
     String searchIn = 'lemma',
     bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async => throw UnimplementedError();
 
   @override

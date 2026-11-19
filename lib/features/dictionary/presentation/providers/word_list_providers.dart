@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/services/analytics_service.dart';
@@ -17,6 +18,9 @@ part 'word_list_providers.g.dart';
 /// memicu hit tengah ("sa", "sapa") yang merekam search-miss palsu.
 const _kDebounceMs = 700;
 
+/// Min huruf untuk commit miss (selaras API quality gate).
+const _kMinCommitLen = 3;
+
 /// Notifier halaman Daftar Kata A-Z (18-api-list-words.md). Meniru
 /// DictionarySearchNotifier: debounce, req id guard anti stale response,
 /// sync lock anti double-fire. Bedanya: halaman 1 dimuat sejak build
@@ -31,6 +35,7 @@ const _kDebounceMs = 700;
 @Riverpod(keepAlive: true)
 class WordListNotifier extends _$WordListNotifier {
   Timer? _debounce;
+  CancelToken? _httpCancel;
   int _loadReqId = 0;
   int _loadMoreReqId = 0;
   bool _isLoadingSync = false;
@@ -44,6 +49,8 @@ class WordListNotifier extends _$WordListNotifier {
     ref.onDispose(() {
       _debounce?.cancel();
       _debounce = null;
+      _httpCancel?.cancel('dispose');
+      _httpCancel = null;
     });
 
     // keepAlive: listener hilang saat pop, kembali saat push. Jika state
@@ -66,11 +73,23 @@ class WordListNotifier extends _$WordListNotifier {
   /// Batalkan request yang masih di udara. Dipakai saat mode atau q
   /// berubah supaya jawaban lama tidak menimpa state yang baru.
   void _dropInFlight() {
+    _httpCancel?.cancel('superseded');
+    _httpCancel = null;
     _loadReqId++;
     _loadMoreReqId++;
     _isLoadingSync = false;
     _isLoadingMoreSync = false;
   }
+
+  CancelToken _nextHttpToken() {
+    _httpCancel?.cancel('superseded');
+    final token = CancelToken();
+    _httpCancel = token;
+    return token;
+  }
+
+  bool _isCancelled(DictionaryFailure failure) =>
+      failure.errorCode == 'REQUEST_CANCELLED';
 
   /// Filter q berubah (dari search box halaman list). Debounce 700 ms →
   /// reset + fetch halaman pertama dengan q baru (server-side). q kosong
@@ -133,7 +152,7 @@ class WordListNotifier extends _$WordListNotifier {
   /// Hanya ini yang boleh merekam search-miss di server.
   void commitSearch() {
     final q = state.q.trim();
-    if (q.length < 2) return;
+    if (q.length < _kMinCommitLen) return;
     if (_missCommittedQ == q) return;
     _missCommittedQ = q;
     _debounce?.cancel();
@@ -296,6 +315,7 @@ class WordListNotifier extends _$WordListNotifier {
     final reqId = ++_loadReqId;
     _loadMoreReqId++;
     _isLoadingMoreSync = false;
+    final token = _nextHttpToken();
 
     final q = state.q;
     final searchIn = state.searchIn;
@@ -325,21 +345,29 @@ class WordListNotifier extends _$WordListNotifier {
             query: q,
             searchIn: 'translation',
             recordMiss: recordMiss,
+            cancelToken: token,
           ),
         );
         if (!ref.mounted || reqId != _loadReqId) return;
         result.match(
-          (failure) => state = state.copyWith(
-            isLoading: false,
-            errorMessage: failure.message,
-          ),
+          (failure) {
+            if (_isCancelled(failure)) return;
+            state = state.copyWith(
+              isLoading: false,
+              errorMessage: failure.message,
+            );
+          },
           (page) => _applyPage(page, viaSearch: true),
         );
         return;
       }
 
       final listed = await ref.read(listWordsUseCaseProvider)(
-        ListWordsParams(q: q, category: state.category),
+        ListWordsParams(
+          q: q,
+          category: state.category,
+          cancelToken: token,
+        ),
       );
       if (!ref.mounted || reqId != _loadReqId) return;
 
@@ -348,6 +376,7 @@ class WordListNotifier extends _$WordListNotifier {
       listed.match((error) => failure = error, (value) => page = value);
       final error = failure;
       if (error != null) {
+        if (_isCancelled(error)) return;
         state = state.copyWith(isLoading: false, errorMessage: error.message);
         return;
       }
@@ -362,11 +391,15 @@ class WordListNotifier extends _$WordListNotifier {
             query: q,
             searchIn: 'lemma',
             recordMiss: recordMiss,
+            cancelToken: token,
           ),
         );
         if (!ref.mounted || reqId != _loadReqId) return;
         searched.match(
-          (_) => _applyPage(found, viaSearch: false),
+          (fail) {
+            if (_isCancelled(fail)) return;
+            _applyPage(found, viaSearch: false);
+          },
           (hits) => _applyPage(hits, viaSearch: true),
         );
         return;

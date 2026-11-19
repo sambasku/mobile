@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -36,6 +37,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    CancelToken? cancelToken,
   }) async {
     calls.add((q: q, cursor: cursor));
     if (failNext) {
@@ -93,6 +95,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String searchIn = 'lemma',
     bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async {
     searchCalls.add((
       query: query,

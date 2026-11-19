@@ -4701,6 +4701,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictSearchSambasHint => 'Cari atau saring kata Sambas...';
 
   @override
+  String get dictSearchCommitHint =>
+      'Tekan Enter atau Cari untuk mencatat kata yang belum ada.';
+
+  @override
   String get dictCategory => 'Kategori';
 
   @override
@@ -17569,6 +17573,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get dictSearchSambasHint => 'Cari atau saring kata Sambas...';
+
+  @override
+  String get dictSearchCommitHint =>
+      'Tekan Enter atau Cari untuk mencatat kata yang belum ada.';
 
   @override
   String get dictCategory => 'Kategori';
