@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/chat_providers.dart';
@@ -60,8 +61,9 @@ class ChatTypingController extends Notifier<List<ChatTyper>> {
   Future<void> stopListening() async {
     _listening = false;
     _cancelAllExpiry();
-    state = const [];
     await ref.read(chatRealtimeProvider)?.stopTyping();
+    if (!ref.mounted) return;
+    _setStateSafe(const []);
   }
 
   /// Throttle broadcast saat user mengetik di composer.
@@ -115,7 +117,7 @@ class ChatTypingController extends Notifier<List<ChatTyper>> {
         if (t.userId != userId) t,
       ChatTyper(userId: userId, name: name),
     ];
-    state = next;
+    _setStateSafe(next);
     _expiry[userId]?.cancel();
     _expiry[userId] = Timer(_idleTimeout, () {
       if (!ref.mounted) return;
@@ -126,7 +128,23 @@ class ChatTypingController extends Notifier<List<ChatTyper>> {
   void _remove(String userId) {
     _expiry.remove(userId)?.cancel();
     if (!state.any((t) => t.userId == userId)) return;
-    state = [for (final t in state) if (t.userId != userId) t];
+    _setStateSafe([for (final t in state) if (t.userId != userId) t]);
+  }
+
+  void _setStateSafe(List<ChatTyper> next) {
+    if (!ref.mounted) return;
+    void apply() {
+      if (!ref.mounted) return;
+      state = next;
+    }
+
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    if (phase == SchedulerPhase.idle ||
+        phase == SchedulerPhase.postFrameCallbacks) {
+      apply();
+    } else {
+      SchedulerBinding.instance.addPostFrameCallback((_) => apply());
+    }
   }
 
   void _cancelAllExpiry() {

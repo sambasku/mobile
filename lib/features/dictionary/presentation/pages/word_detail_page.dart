@@ -1648,155 +1648,164 @@ class _MeaningBlock extends ConsumerWidget {
             ),
           )
         : null;
+    // Vote + progress di luar Row (bukan di Expanded sebelah ⋯) supaya
+    // track progress full width kartu makna.
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (showIndex)
-            SizedBox(
-              width: 22,
-              child: Text(
-                '$index.',
-                style: theme.typography.body.sm.copyWith(
-                  fontWeight: FontWeight.w700,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (showIndex)
+                SizedBox(
+                  width: 22,
+                  child: Text(
+                    '$index.',
+                    style: theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (classLabel != null) ...[
+                                Text(
+                                  classLabel,
+                                  style: theme.typography.body.sm.copyWith(
+                                    color: theme.colors.mutedForeground,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const Gap(4),
+                              ],
+                              if (definition != null && definition.isNotEmpty)
+                                Text(
+                                  definition,
+                                  style: theme.typography.body.md.copyWith(
+                                    height: 1.5,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        const Gap(8),
+                        _MeaningTrustBadge(meaning: meaning),
+                      ],
+                    ),
+                    if (meaning.translations.isNotEmpty) ...[
+                      const Gap(6),
+                      ...meaning.translations.map(
+                        (t) => Padding(
+                          padding: const EdgeInsets.only(bottom: 2),
+                          child: Text(
+                            '→ ${t.text}',
+                            style: theme.typography.body.sm.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (meaning.examples.isNotEmpty) ...[
+                      const Gap(8),
+                      ...meaning.examples.map((e) {
+                        final translation = e.targetSentence?.trim();
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                e.sourceSentence,
+                                style: theme.typography.body.sm.copyWith(
+                                  fontStyle: FontStyle.italic,
+                                  height: 1.35,
+                                ),
+                              ),
+                              if (translation != null &&
+                                  translation.isNotEmpty)
+                                Text(
+                                  translation,
+                                  style: theme.typography.body.sm.copyWith(
+                                    color: theme.colors.mutedForeground,
+                                    height: 1.35,
+                                  ),
+                                ),
+                              const Gap(6),
+                              PronunciationSection(
+                                wordId: wordId,
+                                languageId: languageId,
+                                audios: e.audios,
+                                exampleId: e.id,
+                                compact: true,
+                                sectionLabel: l10n.dictExampleAudio,
+                                spokenText: e.sourceSentence,
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ],
+                    if (byLabel != null) ...[
+                      const Gap(8),
+                      Semantics(
+                        button: true,
+                        label: byLabel,
+                        child: FTappable(
+                          onPress: () =>
+                              UserProfileRouter.open(context, username!),
+                          child: Text(
+                            byLabel,
+                            style: theme.typography.body.sm.copyWith(
+                              color: theme.colors.mutedForeground,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                tooltip: l10n.dictMeaningActionsTitle,
+                onPressed: () => _showMeaningActionsSheet(
+                  context,
+                  ref,
+                  wordId: wordId,
+                  lemma: lemma,
+                  meaning: meaning,
+                  meaningCount: meaningCount,
+                ),
+                icon: Icon(
+                  FLucideIcons.ellipsisVertical,
+                  size: 16,
                   color: theme.colors.mutedForeground,
                 ),
               ),
-            ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (classLabel != null) ...[
-                            Text(
-                              classLabel,
-                              style: theme.typography.body.sm.copyWith(
-                                color: theme.colors.mutedForeground,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const Gap(4),
-                          ],
-                          if (definition != null && definition.isNotEmpty)
-                            Text(
-                              definition,
-                              style: theme.typography.body.md.copyWith(
-                                height: 1.5,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    const Gap(8),
-                    _MeaningTrustBadge(meaning: meaning),
-                  ],
-                ),
-                if (meaning.translations.isNotEmpty) ...[
-                  const Gap(6),
-                  ...meaning.translations.map(
-                    (t) => Padding(
-                      padding: const EdgeInsets.only(bottom: 2),
-                      child: Text(
-                        '→ ${t.text}',
-                        style: theme.typography.body.sm.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-                if (meaning.examples.isNotEmpty) ...[
-                  const Gap(8),
-                  ...meaning.examples.map((e) {
-                    final translation = e.targetSentence?.trim();
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            e.sourceSentence,
-                            style: theme.typography.body.sm.copyWith(
-                              fontStyle: FontStyle.italic,
-                              height: 1.35,
-                            ),
-                          ),
-                          if (translation != null && translation.isNotEmpty)
-                            Text(
-                              translation,
-                              style: theme.typography.body.sm.copyWith(
-                                color: theme.colors.mutedForeground,
-                                height: 1.35,
-                              ),
-                            ),
-                          const Gap(6),
-                          PronunciationSection(
-                            wordId: wordId,
-                            languageId: languageId,
-                            audios: e.audios,
-                            exampleId: e.id,
-                            compact: true,
-                            sectionLabel: l10n.dictExampleAudio,
-                            spokenText: e.sourceSentence,
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                ],
-                if (byLabel != null) ...[
-                  const Gap(8),
-                  Semantics(
-                    button: true,
-                    label: byLabel,
-                    child: FTappable(
-                      onPress: () =>
-                          UserProfileRouter.open(context, username!),
-                      child: Text(
-                        byLabel,
-                        style: theme.typography.body.sm.copyWith(
-                          color: theme.colors.mutedForeground,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-                const Gap(8),
-                if (!_lemmaUsesLocalCorpus(ref))
-                  MeaningVoteRow(
-                    meaningId: meaning.id,
-                    isVerified: meaning.isVerified,
-                  ),
-              ],
-            ),
+            ],
           ),
-          IconButton(
-            visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            tooltip: l10n.dictMeaningActionsTitle,
-            onPressed: () => _showMeaningActionsSheet(
-              context,
-              ref,
-              wordId: wordId,
-              lemma: lemma,
-              meaning: meaning,
-              meaningCount: meaningCount,
+          if (!_lemmaUsesLocalCorpus(ref)) ...[
+            const Gap(8),
+            MeaningVoteRow(
+              meaningId: meaning.id,
+              isVerified: meaning.isVerified,
             ),
-            icon: Icon(
-              FLucideIcons.ellipsisVertical,
-              size: 16,
-              color: theme.colors.mutedForeground,
-            ),
-          ),
+          ],
         ],
       ),
     );

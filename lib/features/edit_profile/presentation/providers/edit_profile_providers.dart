@@ -240,5 +240,9 @@ class EditProfileNotifier extends _$EditProfileNotifier {
 }
 
 bool _isValidUsernameFormat(String value) {
-  return RegExp(r'^[a-z0-9._]{6,30}$').hasMatch(value);
+  // Selaras USERNAME_HANDLE_REGEX API: 6-30, mulai/akhir alfanumerik,
+  // tanpa separator beruntun (`..` `__` `._` `_.`). Angka saja boleh.
+  return RegExp(
+    r'^(?=.{6,30}$)(?!.*[._]{2})[a-z0-9][a-z0-9._]*[a-z0-9]$',
+  ).hasMatch(value);
 }

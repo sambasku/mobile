@@ -1,6 +1,7 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../providers/voice_room_provider.dart';
@@ -30,12 +31,12 @@ class _VoiceParticipantsSheet extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 6),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 l10n.voiceParticipantsTitle(room.participantCount),
-                style: theme.typography.body.lg.copyWith(
+                style: theme.typography.body.md.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -43,7 +44,7 @@ class _VoiceParticipantsSheet extends ConsumerWidget {
           ),
           if (room.participants.isEmpty)
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+              padding: const EdgeInsets.fromLTRB(14, 4, 14, 18),
               child: Text(
                 l10n.voiceParticipantsEmpty,
                 style: theme.typography.body.sm.copyWith(
@@ -54,38 +55,73 @@ class _VoiceParticipantsSheet extends ConsumerWidget {
           else
             ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: MediaQuery.sizeOf(context).height * 0.5,
+                maxHeight: MediaQuery.sizeOf(context).height * 0.42,
               ),
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
-                child: FTileGroup(
-                  children: [
-                    for (final p in room.participants)
-                      FTile(
-                        prefix: Icon(
-                          p.muted ? FLucideIcons.micOff : FLucideIcons.mic,
-                          size: 16,
-                          color: p.speaking
-                              ? theme.colors.primary
-                              : theme.colors.mutedForeground,
-                        ),
-                        title: Text(
-                          p.isLocal
-                              ? l10n.voiceParticipantYou(p.name)
-                              : p.name,
-                        ),
-                        subtitle: Text(
-                          p.speaking
-                              ? l10n.voiceParticipantSpeaking
-                              : (p.muted
-                                  ? l10n.voiceParticipantMuted
-                                  : l10n.voiceParticipantListening),
-                        ),
-                      ),
-                  ],
-                ),
+              child: ListView.separated(
+                shrinkWrap: true,
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 12),
+                itemCount: room.participants.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 2),
+                itemBuilder: (context, index) {
+                  final p = room.participants[index];
+                  return _ParticipantRow(participant: p, l10n: l10n);
+                },
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ParticipantRow extends StatelessWidget {
+  const _ParticipantRow({required this.participant, required this.l10n});
+
+  final VoiceRoomParticipant participant;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FTheme.of(context);
+    final p = participant;
+    final status = p.speaking
+        ? l10n.voiceParticipantSpeaking
+        : (p.muted
+            ? l10n.voiceParticipantMuted
+            : l10n.voiceParticipantListening);
+    final iconColor = p.speaking
+        ? theme.colors.primary
+        : theme.colors.mutedForeground;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
+      child: Row(
+        children: [
+          Icon(
+            p.muted ? FLucideIcons.micOff : FLucideIcons.mic,
+            size: 14,
+            color: iconColor,
+          ),
+          const Gap(8),
+          Expanded(
+            child: Text(
+              p.isLocal ? l10n.voiceParticipantYou(p.name) : p.name,
+              style: theme.typography.body.sm.copyWith(
+                fontWeight: p.speaking ? FontWeight.w600 : FontWeight.w500,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const Gap(8),
+          Text(
+            status,
+            style: theme.typography.body.xs2.copyWith(
+              color: p.speaking
+                  ? theme.colors.primary
+                  : theme.colors.mutedForeground,
+            ),
+          ),
         ],
       ),
     );

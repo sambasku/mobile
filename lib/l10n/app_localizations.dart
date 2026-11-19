@@ -2423,6 +2423,18 @@ abstract class AppLocalizations {
   /// **'Menuju verifikasi warga'**
   String get voteTrustProgressLabel;
 
+  /// Isi popover info: penjelasan ambang Voting Warga di progress bar makna
+  ///
+  /// In id, this message translates to:
+  /// **'Makna akan otomatis terverifikasi oleh warga apabila memperoleh net vote minimal +5 dari sedikitnya 5 pemilih.'**
+  String get voteTrustProgressInfo;
+
+  /// semanticsLabel tombol info yang membuka penjelasan Voting Warga
+  ///
+  /// In id, this message translates to:
+  /// **'Info verifikasi warga'**
+  String get voteTrustProgressInfoSemantics;
+
   /// Label tipe inbox: makna auto-verif Voting Warga
   ///
   /// In id, this message translates to:
@@ -3718,6 +3730,30 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Ejaan lain tanpa entri sendiri (tetap di lemma ini)'**
   String get suggestCategorySpellingVariantDesc;
+
+  /// Kategori usulan: tag topik lemma (chip)
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah kategori'**
+  String get suggestCategoryChangeCategories;
+
+  /// No description provided for @suggestCategoryChangeCategoriesDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah atau lepas kategori topik di lemma ini'**
+  String get suggestCategoryChangeCategoriesDesc;
+
+  /// No description provided for @suggestCategoryPickHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori topik'**
+  String get suggestCategoryPickHint;
+
+  /// No description provided for @suggestCategoryNoneSelected.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kategori'**
+  String get suggestCategoryNoneSelected;
 
   /// No description provided for @suggestCategoryLemmaNotes.
   ///
@@ -8223,10 +8259,10 @@ abstract class AppLocalizations {
   /// **'Usul kata ini'**
   String get dictProposeThisWord;
 
-  /// Judul kartu Trending di beranda (G4)
+  /// Judul kartu Sorotan di beranda (G4)
   ///
   /// In id, this message translates to:
-  /// **'Trending hari ini'**
+  /// **'Sorotan hari ini'**
   String get hotTopicsTitle;
 
   /// Tab Hot: search miss 24 jam
@@ -16287,6 +16323,60 @@ abstract class AppLocalizations {
   /// **'Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan berupa frasa; kata tunggal tidak perlu dipilih.'**
   String get contributeKindHint;
 
+  /// Label field kategori topik lemma di form usul kata
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get contributeCategoryLabel;
+
+  /// No description provided for @contributeCategoryHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional. Tag topik lemma (hewan, budaya, buah-buahan). Satu kata boleh lebih dari satu.'**
+  String get contributeCategoryHint;
+
+  /// No description provided for @contributeCategoryPick.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori'**
+  String get contributeCategoryPick;
+
+  /// No description provided for @contributeCategorySheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori'**
+  String get contributeCategorySheetTitle;
+
+  /// No description provided for @contributeCategorySheetSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Boleh lebih dari satu. Chip muncul di atas detail kata.'**
+  String get contributeCategorySheetSubtitle;
+
+  /// No description provided for @contributeCategorySheetDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get contributeCategorySheetDone;
+
+  /// No description provided for @contributeCategorySearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari kategori'**
+  String get contributeCategorySearchHint;
+
+  /// No description provided for @contributeCategoryEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada kategori yang cocok'**
+  String get contributeCategoryEmpty;
+
+  /// No description provided for @contributeCategoryLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat kategori'**
+  String get contributeCategoryLoadFailed;
+
   /// No description provided for @contributeRegisterLabel.
   ///
   /// In id, this message translates to:
@@ -20466,6 +20556,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'perbaikan'**
   String get profileStatCorrections;
+
+  /// Judul default bottom sheet info (bukan error)
+  ///
+  /// In id, this message translates to:
+  /// **'Informasi'**
+  String get infoSheetTitle;
 
   /// No description provided for @infoSheetUnderstood.
   ///

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -9,9 +11,10 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../core/models/external_link.dart';
 import '../../features/auth/presentation/pages/legal_webview_policy.dart';
 import '../../l10n/app_localizations.dart';
+import 'small_button.dart';
 
 /// Bottomsheet pratinjau tautan markdown: WebView (JS off + cookie dibersihkan),
-/// URL asli yang bisa disalin, dan opsi buka di browser eksternal.
+/// URL satu baris (ellipsis) + info full URL, salin & buka browser di kanan.
 Future<void> showMarkdownLinkSheet(
   BuildContext context, {
   required Uri uri,
@@ -91,6 +94,49 @@ class _MarkdownLinkSheetState extends State<_MarkdownLinkSheet> {
     await launchExternalUrl(widget.uri);
   }
 
+  Future<void> _showFullUrlSheet(AppLocalizations l10n) async {
+    final urlText = widget.uri.toString();
+    await showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 12,
+              right: 12,
+              top: 12,
+              bottom: MediaQuery.paddingOf(sheetContext).bottom + 12,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                FAlert(
+                  title: Text(l10n.markdownLinkFullUrlTitle),
+                  subtitle: SelectableText(urlText),
+                ),
+                const Gap(10),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: SmallButton(
+                    label: l10n.notificationCopyLink,
+                    prefixIcon: FLucideIcons.copy,
+                    onPress: () {
+                      unawaited(_copyUrl(l10n));
+                      Navigator.of(sheetContext).pop();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -109,52 +155,87 @@ class _MarkdownLinkSheetState extends State<_MarkdownLinkSheet> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
                 child: Text(
                   l10n.markdownLinkSheetTitle,
-                  style: theme.typography.body.lg.copyWith(
+                  style: theme.typography.body.md.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-              const Gap(8),
+              const Gap(4),
+              // Satu baris: URL terpotong + info full | salin + buka di kanan.
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: SelectableText(
-                  urlText,
-                  style: theme.typography.body.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-              ),
-              const Gap(8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Row(
                   children: [
                     Expanded(
-                      child: FButton(
-                        variant: FButtonVariant.outline,
-                        onPress: () => _copyUrl(l10n),
-                        child: Text(l10n.notificationCopyLink),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: Text(
+                                urlText,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.typography.body.xs.copyWith(
+                                  color: theme.colors.mutedForeground,
+                                ),
+                              ),
+                            ),
+                          ),
+                          FButton.icon(
+                            variant: FButtonVariant.ghost,
+                            size: .sm,
+                            onPress: () => unawaited(_showFullUrlSheet(l10n)),
+                            child: Icon(
+                              FLucideIcons.info,
+                              size: 16,
+                              semanticLabel: l10n.markdownLinkShowFullSemantics,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const Gap(8),
-                    Expanded(
-                      child: FButton(
-                        onPress: _openExternal,
-                        child: Text(l10n.markdownLinkOpenBrowser),
+                    FButton.icon(
+                      variant: FButtonVariant.ghost,
+                      size: .sm,
+                      onPress: () => unawaited(_copyUrl(l10n)),
+                      child: Icon(
+                        FLucideIcons.copy,
+                        size: 16,
+                        semanticLabel: l10n.markdownLinkCopySemantics,
+                      ),
+                    ),
+                    FButton.icon(
+                      variant: FButtonVariant.ghost,
+                      size: .sm,
+                      onPress: () => unawaited(_openExternal()),
+                      child: Icon(
+                        FLucideIcons.externalLink,
+                        size: 16,
+                        semanticLabel: l10n.markdownLinkOpenBrowserSemantics,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Gap(8),
+              const Gap(4),
               Expanded(
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    WebViewWidget(controller: _controller),
+                    // EagerRecognizer: modal bottom sheet default mencuri
+                    // VerticalDrag untuk dismiss, jadi WebView tak bisa scroll.
+                    WebViewWidget(
+                      controller: _controller,
+                      gestureRecognizers: const {
+                        Factory<OneSequenceGestureRecognizer>(
+                          EagerGestureRecognizer.new,
+                        ),
+                      },
+                    ),
                     if (_loading)
                       const Center(child: FCircularProgress()),
                   ],

@@ -89,6 +89,14 @@ class VoiceRepository {
           VoiceFailure(l10n.voiceRoomDisabled, errorCode: code),
         );
       }
+      if (code == 'VOICE_ALREADY_JOINED') {
+        return Either.left(
+          VoiceFailure(
+            l10n.voiceAlreadyJoinedOtherDevice,
+            errorCode: 'VOICE_ALREADY_JOINED',
+          ),
+        );
+      }
       if (status == 409 || code == 'VOICE_ROOM_FULL') {
         return Either.left(
           VoiceFailure(l10n.voiceRoomFull, errorCode: code ?? 'VOICE_ROOM_FULL'),

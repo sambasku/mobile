@@ -8,8 +8,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
-import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
+import '../../../../shared/widgets/pasteable_url_field.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/karya_api.dart';
 import '../../domain/karya.dart';
 import '../../karya_router.dart';
@@ -728,11 +729,10 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
           description: Text(l10n.karyaFormAccessLabelHint),
         ),
         const Gap(8),
-        FTextField(
-          control: FTextFieldControl.managed(controller: _access[i].url),
+        PasteableUrlField(
+          controller: _access[i].url,
           label: Text(l10n.karyaFormAccessUrl),
           description: Text(l10n.karyaFormAccessUrlHint),
-          keyboardType: TextInputType.url,
         ),
       ],
     ];

@@ -17,6 +17,7 @@ import 'package:material_ui/material_ui.dart' show showModalBottomSheet;
 import '../../../l10n/app_localizations.dart';
 import '../../utils/image_sheet_drawer.dart';
 import '../option_picker_sheet.dart';
+import '../pasteable_url_field.dart';
 import '../sambasku_markdown.dart';
 import 'markdown_syntax.dart';
 import 'markdown_toolbar.dart';
@@ -452,14 +453,11 @@ class _LinkSheetState extends State<_LinkSheet> {
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 12),
-              FTextField(
-                control: FTextFieldControl.managed(
-                  controller: _url,
-                  onChange: (_) => setState(() {}),
-                ),
+              PasteableUrlField(
+                controller: _url,
+                onChanged: (_) => setState(() {}),
                 label: Text(l10n.mdEditorLinkUrl),
                 hint: l10n.mdEditorLinkUrlHint,
-                keyboardType: TextInputType.url,
                 textInputAction: TextInputAction.done,
                 autofocus: true,
                 autocorrect: false,

@@ -27,6 +27,7 @@ class ExploreCategory {
     'kuliner' => 'assets/images/explore_covers/kuliner.webp',
     'usaha' => 'assets/images/explore_covers/usaha.webp',
     'acara' => 'assets/images/explore_covers/acara.webp',
+    'pantun' => 'assets/images/explore_covers/pantun.webp',
     'hiburan' => 'assets/images/explore_covers/permainan.webp',
     'ensiklopedia' => 'assets/images/explore_covers/ensiklopedia.webp',
     'layanan' => 'assets/images/explore_covers/layanan.webp',
@@ -43,6 +44,7 @@ class ExploreCategory {
     'layanan' => l10n.exploreCategoryLayanan,
     'karya' => l10n.exploreCategoryKarya,
     'acara' => l10n.exploreCategoryAcara,
+    'pantun' => l10n.exploreCategoryPantun,
     'hiburan' => l10n.exploreCategoryPermainan,
     'ensiklopedia' => l10n.exploreCategoryEnsiklopedia,
     'komunitas' => l10n.exploreCategoryKomunitas,
@@ -58,6 +60,7 @@ class ExploreCategory {
     'layanan' => l10n.exploreCategoryLayananSubtitle,
     'karya' => l10n.exploreCategoryKaryaSubtitle,
     'acara' => l10n.exploreCategoryAcaraSubtitle,
+    'pantun' => l10n.exploreCategoryPantunSubtitle,
     'hiburan' => l10n.exploreCategoryPermainanSubtitle,
     'ensiklopedia' => l10n.exploreCategoryEnsiklopediaSubtitle,
     'komunitas' => l10n.exploreCategoryKomunitasSubtitle,
@@ -92,8 +95,13 @@ class ExploreCategory {
       comingSoon: false,
     ),
     ExploreCategory(
+      id: 'pantun',
+      icon: FLucideIcons.feather,
+      comingSoon: false,
+    ),
+    ExploreCategory(
       id: 'hiburan',
-      icon: FLucideIcons.tv,
+      icon: FLucideIcons.gamepad2,
       comingSoon: false,
     ),
     ExploreCategory(

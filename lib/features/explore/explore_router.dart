@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/router/route_definer.dart';
 import 'presentation/pages/explore_category_page.dart';
+import 'presentation/pages/cuisine_add_photo_page.dart';
 import 'presentation/pages/cuisine_detail_page.dart';
 import 'presentation/pages/cuisine_list_page.dart';
 import 'presentation/pages/culinary_contribute_page.dart';
@@ -75,10 +76,22 @@ class ExploreRouter {
     name: 'ExploreRouter.cuisineLink',
   );
 
+  /// #281: tambah foto kuliner published. Wajib sebelum `cuisineDetail`.
+  static const cuisineAddPhoto = RouteDefiner(
+    path: '/explore/cuisine/:slug/tambah-foto',
+    name: 'ExploreRouter.cuisineAddPhoto',
+  );
+
   static const cuisineDetail = RouteDefiner(
     path: '/explore/cuisine/:slug',
     name: 'ExploreRouter.cuisineDetail',
   );
+
+  static String cuisineDetailPath(String slug) =>
+      cuisineDetail.path.replaceFirst(':slug', slug);
+
+  static String cuisineAddPhotoPath(String slug) =>
+      cuisineAddPhoto.path.replaceFirst(':slug', slug);
 
   /// Peta semua Place (pin, tap ke detail).
   static const pins = RouteDefiner(
@@ -209,6 +222,14 @@ class ExploreRouter {
       path: cuisineProposals.path,
       name: cuisineProposals.name,
       builder: (context, state) => const CulinaryProposalsPage(),
+    ),
+    GoRoute(
+      path: cuisineAddPhoto.path,
+      name: cuisineAddPhoto.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['slug'] ?? '';
+        return CuisineAddPhotoPage(slug: slug);
+      },
     ),
     GoRoute(
       path: cuisineDetail.path,

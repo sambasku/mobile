@@ -35,8 +35,7 @@ import '../../../profile/presentation/crop_profile_photo.dart';
 import '../../domain/entities/public_profile.dart';
 import '../../domain/failures/user_profile_failure.dart';
 import '../../../jinye/data/jinye_providers.dart';
-// TEMP: bubble Jinye disembunyikan (timpa border avatar).
-// import '../../../jinye/presentation/widgets/jinye_profile_preview.dart';
+import '../../../jinye/presentation/widgets/jinye_profile_preview.dart';
 import '../providers/user_profile_providers.dart';
 import '../widgets/profile_activity_section.dart';
 
@@ -298,11 +297,6 @@ class _ProfileBody extends HookConsumerWidget {
                             ? () =>
                                   showImagePreview(context, urls: [avatarSrc])
                             : null,
-                        // TEMP: sembunyikan preview Jinye dulu (overlap border).
-                        // avatarOverlay: JinyeProfilePreview(
-                        //   username: profile.username,
-                        //   isOwnProfile: isOwnProfile,
-                        // ),
                         actions: [
                           if (isOwnProfile)
                             SmallButton(
@@ -312,10 +306,16 @@ class _ProfileBody extends HookConsumerWidget {
                               onPress: () => context.push('/edit-profile'),
                             ),
                         ],
-                        footer: ProfileAchievementTabs(
-                          username: isOwnProfile ? null : profile.username,
-                          showTitle: true,
-                          showAllButton: isOwnProfile,
+                        footer: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            JinyeProfileStatusLine(username: profile.username),
+                            ProfileAchievementTabs(
+                              username: isOwnProfile ? null : profile.username,
+                              showTitle: true,
+                              showAllButton: isOwnProfile,
+                            ),
+                          ],
                         ),
                       ),
                       const Gap(8),

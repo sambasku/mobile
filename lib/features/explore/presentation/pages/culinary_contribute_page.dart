@@ -187,31 +187,31 @@ class _CulinaryContributePageState extends ConsumerState<CulinaryContributePage>
       );
       return;
     }
-    final imageUrl = _images
-        .where((s) => s.isReady && s.uploaded != null)
-        .firstOrNull
-        ?.uploaded!
-        .url;
+    final readyUrls = [
+      for (final s in _images)
+        if (s.isReady && s.uploaded != null) s.uploaded!.url,
+    ];
     setState(() => _submitting = true);
     try {
       // Atribusi otomatis: pemilik = nama tampilan akun (login) atau
       // "Warga SambasKu" (anonim), lisensi selalu CC BY-SA 4.0 (PRD kuliner).
+      // #281: kirim semua foto siap (bukan hanya yang pertama).
       final auth = ref.read(authStatusProvider).value;
       final owner = (auth?.displayName ?? '').trim().isNotEmpty
           ? auth!.displayName!.trim()
           : auth?.username?.trim() ?? '';
-      final images = imageUrl == null || imageUrl.isEmpty
-          ? const <Map<String, dynamic>>[]
-          : [
-              {
-                'url': imageUrl,
-                'is_main': true,
-                'attribution': {
-                  'name': owner.isNotEmpty ? owner : 'Warga SambasKu',
-                  'license': _ccBySa,
-                },
-              },
-            ];
+      final ownerName = owner.isNotEmpty ? owner : 'Warga SambasKu';
+      final images = [
+        for (var i = 0; i < readyUrls.length; i++)
+          {
+            'url': readyUrls[i],
+            'is_main': i == 0,
+            'attribution': {
+              'name': ownerName,
+              'license': _ccBySa,
+            },
+          },
+      ];
 
       if (widget.mode == CulinaryContributeMode.cuisine) {
         await api.submitNewCuisine(
@@ -386,7 +386,7 @@ class _CulinaryContributePageState extends ConsumerState<CulinaryContributePage>
               // kamera/galeri, upload segera, thumbnail + status + hapus.
               AttachmentImagesField(
                 enabled: !_submitting,
-                maxImages: 1,
+                maxImages: 5,
                 maxSizeMb: 5,
                 images: _images,
                 onChanged: (next) => setState(() {

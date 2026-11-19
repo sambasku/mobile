@@ -1,3 +1,4 @@
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/chat_providers.dart';
@@ -17,7 +18,7 @@ class ChatPresenceController extends Notifier<int> {
   }) {
     final rt = ref.read(chatRealtimeProvider);
     if (rt == null) {
-      state = 0;
+      _setCount(0);
       return;
     }
     rt.startPresence(
@@ -26,10 +27,7 @@ class ChatPresenceController extends Notifier<int> {
         'name': name,
         if (userId != null && userId.isNotEmpty) 'user_id': userId,
       },
-      onCount: (count) {
-        if (!ref.mounted) return;
-        state = count;
-      },
+      onCount: _setCount,
     );
   }
 
@@ -37,6 +35,22 @@ class ChatPresenceController extends Notifier<int> {
     final rt = ref.read(chatRealtimeProvider);
     await rt?.stopPresence();
     if (!ref.mounted) return;
-    state = 0;
+    _setCount(0);
+  }
+
+  void _setCount(int count) {
+    if (!ref.mounted) return;
+    void apply() {
+      if (!ref.mounted) return;
+      state = count;
+    }
+
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    if (phase == SchedulerPhase.idle ||
+        phase == SchedulerPhase.postFrameCallbacks) {
+      apply();
+    } else {
+      SchedulerBinding.instance.addPostFrameCallback((_) => apply());
+    }
   }
 }

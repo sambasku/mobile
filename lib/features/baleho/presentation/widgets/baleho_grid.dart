@@ -541,75 +541,119 @@ class _PlacementCellState extends State<_PlacementCell> {
     // Judul/CTA dari parent; child hanya media carousel.
     final copyText =
         parent?.title ?? parent?.ctaLabel ?? l10n.balehoPromoSlide;
+    final titleRaw = parent?.title?.trim();
+    final hasMedia = frame?.mediaUrl != null &&
+        (frame!.mediaType == 'image' || frame.mediaType == 'video');
+    final titleChip = hasMedia &&
+            titleRaw != null &&
+            titleRaw.isNotEmpty
+        ? titleRaw
+        : null;
 
     return GestureDetector(
       onTap: widget.enabled && frame != null
           ? () => widget.onPlacementTap?.call(widget.placement, frame)
           : null,
-      child: Container(
-        margin: const EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: theme.colors.border),
-          color: theme.colors.background,
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            if (frame?.mediaUrl != null &&
-                (frame!.mediaType == 'image' || frame.mediaType == 'video'))
-              Image.network(
-                frame.mediaUrl!,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => const SizedBox.shrink(),
-              )
-            else
-              Padding(
-                padding: const EdgeInsets.all(6),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    copyText,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            if (pending)
-              Positioned(
-                right: 2,
-                top: 2,
-                // Chip compact: FBadge default terlalu besar untuk sel 1x1
-                // (terpotong Clip.antiAlias).
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: theme.colors.secondary,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                      vertical: 1,
-                    ),
+      child: Semantics(
+        label: titleChip ?? copyText,
+        button: widget.enabled && frame != null,
+        child: Container(
+          margin: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: theme.colors.border),
+            color: theme.colors.background,
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              if (hasMedia)
+                Image.network(
+                  frame!.mediaUrl!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
                     child: Text(
-                      l10n.balehoPendingBadge,
-                      maxLines: 1,
+                      copyText,
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.typography.body.xs.copyWith(
-                        color: theme.colors.secondaryForeground,
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w600,
-                        fontSize: 9,
-                        height: 1.1,
                       ),
                     ),
                   ),
                 ),
-              ),
-          ],
+              if (titleChip != null)
+                Positioned(
+                  left: 2,
+                  right: 2,
+                  bottom: 2,
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.55),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 1,
+                        ),
+                        child: Text(
+                          titleChip,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.typography.body.xs.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 9,
+                            height: 1.1,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              if (pending)
+                Positioned(
+                  right: 2,
+                  top: 2,
+                  // Chip compact: FBadge default terlalu besar untuk sel 1x1
+                  // (terpotong Clip.antiAlias).
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: theme.colors.secondary,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 1,
+                      ),
+                      child: Text(
+                        l10n.balehoPendingBadge,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.typography.body.xs.copyWith(
+                          color: theme.colors.secondaryForeground,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 9,
+                          height: 1.1,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

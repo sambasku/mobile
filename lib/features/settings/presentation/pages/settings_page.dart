@@ -37,8 +37,9 @@ class SettingsPage extends ConsumerWidget {
           ),
         ],
       ),
+      // childPad sudah kasih inset horizontal; ListView hanya vertical scroll end.
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(12, 4, 12, 32),
+        padding: const EdgeInsets.fromLTRB(0, 4, 0, 32),
         children: [
           if (FeatureFlags.multiLanguageEnabled) ...[
             FTileGroup(

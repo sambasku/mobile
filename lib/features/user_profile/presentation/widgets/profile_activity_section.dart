@@ -51,7 +51,7 @@ class ProfileActivityChips extends StatelessWidget {
   final ValueChanged<ProfileActivityFilter> onChanged;
 
   /// Tinggi baris chip (dipakai delegate pinned).
-  static const double height = 36;
+  static const double height = 32;
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +65,22 @@ class ProfileActivityChips extends StatelessWidget {
         separatorBuilder: (_, _) => const Gap(6),
         itemBuilder: (context, i) {
           final filter = ProfileActivityFilter.values[i];
-          return FButton(
-            size: .xs,
-            variant: filter == selected
-                ? FButtonVariant.primary
-                : FButtonVariant.outline,
-            mainAxisSize: MainAxisSize.min,
-            onPress: () => onChanged(filter),
-            child: Text(
-            profileActivityFilterLabel(AppLocalizations.of(context), filter),
-          ),
+          final isSelected = filter == selected;
+          // Pill rounded sama chip label Seksual ([FBadge]), bukan FButton.
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => onChanged(filter),
+            child: FBadge(
+              variant: isSelected
+                  ? FBadgeVariant.primary
+                  : FBadgeVariant.secondary,
+              child: Text(
+                profileActivityFilterLabel(
+                  AppLocalizations.of(context),
+                  filter,
+                ),
+              ),
+            ),
           );
         },
       ),

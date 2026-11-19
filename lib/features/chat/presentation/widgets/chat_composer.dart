@@ -7,7 +7,7 @@ import '../../domain/chat_models.dart';
 import 'chat_reply_bar.dart';
 
 /// Composer chat - layout mengikuti [ThreadComposer] (komentar lemma):
-/// chip aksi di atas, field multiline + tombol kirim bulat.
+/// icon aksi di atas, field multiline + tombol kirim bulat.
 ///
 /// Dipasang di **body** Column (bukan [FScaffold.footer]): footer Forui
 /// menaruh anak di bottom absolut sehingga tertutup keyboard.
@@ -19,6 +19,7 @@ class ChatComposer extends StatelessWidget {
     required this.sending,
     required this.replyTarget,
     required this.onClearReply,
+    required this.onJumpToReply,
     required this.onSendText,
     required this.onOpenStickers,
     required this.onRecordVoice,
@@ -30,6 +31,7 @@ class ChatComposer extends StatelessWidget {
   final bool sending;
   final ChatMessage? replyTarget;
   final VoidCallback onClearReply;
+  final VoidCallback onJumpToReply;
   final VoidCallback onSendText;
   final VoidCallback onOpenStickers;
   final VoidCallback onRecordVoice;
@@ -59,28 +61,30 @@ class ChatComposer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (replyTarget != null) ...[
-                ChatReplyBar(target: replyTarget!, onClear: onClearReply),
+                ChatReplyBar(
+                  target: replyTarget!,
+                  onClear: onClearReply,
+                  onJump: onJumpToReply,
+                ),
                 const Gap(6),
               ],
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
+              Row(
                 children: [
-                  _ComposerChip(
+                  _ComposerIconButton(
                     icon: FLucideIcons.smile,
-                    label: l10n.chatStickerSemantics,
+                    semanticsLabel: l10n.chatStickerSemantics,
                     enabled: !sending,
                     onTap: () => _guarded(onOpenStickers),
                   ),
-                  _ComposerChip(
+                  _ComposerIconButton(
                     icon: FLucideIcons.mic,
-                    label: l10n.chatMicSemantics,
+                    semanticsLabel: l10n.chatMicSemantics,
                     enabled: !sending,
                     onTap: () => _guarded(onRecordVoice),
                   ),
                 ],
               ),
-              const Gap(6),
+              const Gap(4),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -95,6 +99,8 @@ class ChatComposer extends StatelessWidget {
                       textInputAction: TextInputAction.newline,
                       maxLines: 3,
                       minLines: 1,
+                      // Selaras BODY_MAX API chat (240).
+                      maxLength: 240,
                     ),
                   ),
                   const Gap(6),
@@ -135,50 +141,39 @@ class ChatComposer extends StatelessWidget {
   }
 }
 
-class _ComposerChip extends StatelessWidget {
-  const _ComposerChip({
+class _ComposerIconButton extends StatelessWidget {
+  const _ComposerIconButton({
     required this.icon,
-    required this.label,
+    required this.semanticsLabel,
     required this.enabled,
     required this.onTap,
   });
 
   final IconData icon;
-  final String label;
+  final String semanticsLabel;
   final bool enabled;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    return Material(
-      color: theme.colors.secondary,
-      borderRadius: BorderRadius.circular(999),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(999),
-        onTap: enabled ? onTap : null,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 14,
-                color: enabled
-                    ? theme.colors.foreground
-                    : theme.colors.mutedForeground,
-              ),
-              const Gap(6),
-              Text(
-                label,
-                style: theme.typography.body.sm.copyWith(
-                  color: enabled
-                      ? theme.colors.foreground
-                      : theme.colors.mutedForeground,
-                ),
-              ),
-            ],
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: enabled ? onTap : null,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Icon(
+              icon,
+              size: 18,
+              color: enabled
+                  ? theme.colors.mutedForeground
+                  : theme.colors.mutedForeground.withValues(alpha: 0.45),
+            ),
           ),
         ),
       ),

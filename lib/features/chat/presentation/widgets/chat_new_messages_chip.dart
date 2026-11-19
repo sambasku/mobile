@@ -26,3 +26,37 @@ class ChatNewMessagesChip extends StatelessWidget {
     );
   }
 }
+
+/// Tombol bulat kecil: kembali ke pesan terakhir saat daftar digulir ke atas.
+class ChatScrollToBottomButton extends StatelessWidget {
+  const ChatScrollToBottomButton({super.key, required this.onPress});
+
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      button: true,
+      label: l10n.chatScrollToLatest,
+      child: Material(
+        color: theme.colors.secondary,
+        elevation: 1,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onPress,
+          child: Padding(
+            padding: const EdgeInsets.all(6),
+            child: Icon(
+              FLucideIcons.chevronDown,
+              size: 16,
+              color: theme.colors.foreground,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

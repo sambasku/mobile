@@ -56,6 +56,8 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   }) {
     return _gate.read(
       budget: LemmaDatasetConstants.searchTimeout,
+      // Search miss = side-effect server; jangan bypass API karena sticky lokal.
+      forceRemote: true,
       remote: () => _searchWordsRemote(
         query: query,
         limit: limit,

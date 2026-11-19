@@ -16,6 +16,9 @@ import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../../shared/widgets/thread_audio_player.dart';
 import '../../../../shared/widgets/thread_edit_sheets.dart';
 import '../../../../shared/widgets/image_crop_page.dart';
+import '../../../../shared/stickers/sticker_providers.dart';
+import '../../../../shared/stickers/sticker_sheet.dart';
+import '../../../../shared/stickers/sticker_view.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
@@ -110,6 +113,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
   final _composerFocus = FocusNode();
   CommentImageStaging? _stagingImage;
   String? _localPreviewPath;
+  String? _stagingStickerId;
   bool _uploadingImage = false;
   ThreadReplyDraft? _replyDraft;
 
@@ -204,12 +208,32 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     });
   }
 
+  void _clearStagingSticker() {
+    setState(() => _stagingStickerId = null);
+  }
+
+  Future<void> _pickCommentSticker() async {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    if (_uploadingImage) return;
+    final stickerId = await showCatalogStickerSheet(context);
+    if (!mounted || stickerId == null) return;
+    setState(() {
+      _stagingStickerId = stickerId;
+      _stagingImage = null;
+      _localPreviewPath = null;
+    });
+  }
+
   Future<void> _pickCommentPhoto() async {
     if (!_isAuth()) {
       _promptLogin();
       return;
     }
     if (_uploadingImage) return;
+    _clearStagingSticker();
     final l10n = AppLocalizations.of(context);
     // Crop generik (Bebas / 1:1 / 4:3 / …, tanpa mask lingkaran). Matikan
     // crop bawaan sheet supaya tidak double-crop.
@@ -281,7 +305,42 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     );
   }
 
-  Widget? _buildPhotoPreview(BuildContext context) {
+  Widget? _buildAttachmentPreview(BuildContext context) {
+    final stickerId = _stagingStickerId;
+    if (stickerId != null) {
+      final l10n = AppLocalizations.of(context);
+      final theme = context.theme;
+      final sticker =
+          ref.watch(stickerLookupProvider(stickerId)).asData?.value;
+      return Row(
+        children: [
+          StickerIdView(
+            stickerId: stickerId,
+            sticker: sticker,
+            size: 56,
+          ),
+          const Gap(8),
+          Expanded(
+            child: Text(
+              l10n.commentAddSticker,
+              style: theme.typography.body.sm.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          ),
+          FButton.icon(
+            variant: FButtonVariant.ghost,
+            onPress: _clearStagingSticker,
+            child: Icon(
+              FLucideIcons.x,
+              size: 16,
+              color: theme.colors.destructive,
+              semanticLabel: l10n.commentRemoveSticker,
+            ),
+          ),
+        ],
+      );
+    }
     if (_localPreviewPath == null && _stagingImage == null) return null;
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
@@ -333,6 +392,22 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     if (comment.hasImage) {
       parts.add(ThreadCommentImage(image: comment.image!));
     }
+    if (comment.hasSticker) {
+      final sticker = ref
+          .watch(stickerLookupProvider(comment.stickerId!))
+          .asData
+          ?.value;
+      parts.add(
+        Align(
+          alignment: Alignment.centerLeft,
+          child: StickerIdView(
+            stickerId: comment.stickerId!,
+            sticker: sticker,
+            size: 96,
+          ),
+        ),
+      );
+    }
     if (parts.isEmpty) return null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -353,14 +428,20 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     if (_uploadingImage) return;
     final l10n = AppLocalizations.of(context);
     final hadPhoto = _stagingImage != null;
+    final stickerId = _stagingStickerId;
     final failure = await ref
         .read(commentListControllerProvider(widget.wordId).notifier)
-        .create(_bodyCtrl.text, image: _stagingImage);
+        .create(
+          _bodyCtrl.text,
+          image: _stagingImage,
+          stickerId: stickerId,
+        );
     if (!mounted) return;
     if (failure == null) {
       _bodyCtrl.clear();
       _dismissReply(clearComposerPrefix: false);
       _clearStagingPhoto();
+      _clearStagingSticker();
       showFToast(
         context: context,
         title: Text(l10n.commentSent),
@@ -671,7 +752,8 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                   onSubmit: _submitText,
                   onRecordAudio: _recordAudioComment,
                   onPickImage: _pickCommentPhoto,
-                  attachmentPreview: _buildPhotoPreview(context),
+                  onPickSticker: _pickCommentSticker,
+                  attachmentPreview: _buildAttachmentPreview(context),
                   replyBanner: _replyDraft == null
                       ? null
                       : ThreadReplyBanner(

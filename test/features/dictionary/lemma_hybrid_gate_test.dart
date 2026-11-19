@@ -95,4 +95,40 @@ void main() {
     );
     expect(remoteCalls, 0);
   });
+
+  test('forceRemote + sticky → tetap panggil remote (search miss)', () async {
+    sticky.activate();
+    var remoteCalls = 0;
+    final result = await gate().read(
+      budget: const Duration(seconds: 1),
+      forceRemote: true,
+      remote: () async {
+        remoteCalls++;
+        return Either.right('remote');
+      },
+      local: () async => 'local',
+      localUnavailableMessage: 'no',
+    );
+    expect(remoteCalls, 1);
+    expect(result.match((_) => null, (v) => v), 'remote');
+    expect(sticky.isActive, isFalse);
+    expect(sources, [LemmaDataSourceKind.remote]);
+  });
+
+  test('forceRemote + offline → tetap lokal', () async {
+    sticky.activate();
+    var remoteCalls = 0;
+    final result = await gate(offline: true).read(
+      budget: const Duration(seconds: 1),
+      forceRemote: true,
+      remote: () async {
+        remoteCalls++;
+        return Either.right('remote');
+      },
+      local: () async => 'local',
+      localUnavailableMessage: 'no',
+    );
+    expect(remoteCalls, 0);
+    expect(result.match((_) => null, (v) => v), 'local');
+  });
 }

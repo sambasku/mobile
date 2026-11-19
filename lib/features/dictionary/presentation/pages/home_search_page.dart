@@ -469,7 +469,7 @@ class _FeedCategoryChips extends StatelessWidget {
   final ValueChanged<FeedCategory>? onChanged;
 
   /// Tinggi baris chip (dipakai delegate pinned).
-  static const double height = 36;
+  static const double height = 32;
 
   @override
   Widget build(BuildContext context) {
@@ -488,14 +488,17 @@ class _FeedCategoryChips extends StatelessWidget {
         itemBuilder: (context, i) {
           final category = FeedCategory.values[i];
           final isSelected = category == selected;
-          return FButton(
-            size: .xs,
-            variant: isSelected
-                ? FButtonVariant.primary
-                : FButtonVariant.outline,
-            onPress: onChanged == null ? null : () => onChanged!(category),
-            child: Text(
-              feedCategoryLabel(AppLocalizations.of(context), category),
+          // Pill rounded sama chip label Seksual ([FBadge]), bukan FButton.
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onChanged == null ? null : () => onChanged!(category),
+            child: FBadge(
+              variant: isSelected
+                  ? FBadgeVariant.primary
+                  : FBadgeVariant.secondary,
+              child: Text(
+                feedCategoryLabel(AppLocalizations.of(context), category),
+              ),
             ),
           );
         },

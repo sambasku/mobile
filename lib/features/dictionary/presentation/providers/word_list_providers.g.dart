@@ -74,7 +74,7 @@ final class WordListNotifierProvider
   }
 }
 
-String _$wordListNotifierHash() => r'1aeed9611f9595a8cfa59948b6f7affdd1ffdf62';
+String _$wordListNotifierHash() => r'aa2f96e79f7822f7bc51bf819ed849b8a04e9cca';
 
 /// Notifier halaman Daftar Kata A-Z (18-api-list-words.md). Meniru
 /// DictionarySearchNotifier: debounce, req id guard anti stale response,

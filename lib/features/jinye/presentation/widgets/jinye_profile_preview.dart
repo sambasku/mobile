@@ -13,7 +13,95 @@ import '../../data/jinye_providers.dart';
 import '../../domain/jinye_models.dart';
 import '../../jinye_router.dart';
 
+String _jinyePreviewLabel(JinyeItem item, AppLocalizations l10n) {
+  final body = item.body.trim();
+  if (body.isNotEmpty) return jinyeProfilePreviewText(body);
+  if (item.hasAudio) return l10n.jinyePreviewVoiceOnly;
+  if (item.images.isNotEmpty) return l10n.jinyePreviewPhotoOnly;
+  return l10n.jinyePreviewEmpty;
+}
+
+/// Baris status Jinye di profil: teks kecil, tanpa bubble overlay.
+///
+/// Pin profil bila ada, else Jinye published terbaru. Kosong =
+/// [emptyChild] (mis. CTA buat Jinye di tab Profil) atau tidak dirender.
+class JinyeProfileStatusLine extends ConsumerWidget {
+  const JinyeProfileStatusLine({
+    super.key,
+    required this.username,
+    this.emptyChild,
+  });
+
+  final String username;
+
+  /// Ditampilkan bila user belum punya Jinye published.
+  final Widget? emptyChild;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final async = ref.watch(latestJinyeByUsernameProvider(username));
+    final theme = context.theme;
+
+    return async.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, _) => emptyChild ?? const SizedBox.shrink(),
+      data: (item) {
+        if (item == null) return emptyChild ?? const SizedBox.shrink();
+        final preview = _jinyePreviewLabel(item, l10n);
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: FTappable(
+            onPress: () => context.push(JinyeRouter.detailPath(item.id)),
+            child: Semantics(
+              button: true,
+              label: l10n.jinyeProfilePreviewSemantics,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 1),
+                    child: Icon(
+                      item.isPinned
+                          ? FLucideIcons.pin
+                          : item.hasAudio
+                          ? FLucideIcons.mic
+                          : item.images.isNotEmpty
+                          ? FLucideIcons.image
+                          : FLucideIcons.quote,
+                      size: 12,
+                      color: item.isPinned
+                          ? theme.colors.primary
+                          : theme.colors.mutedForeground,
+                    ),
+                  ),
+                  const Gap(6),
+                  Expanded(
+                    child: Text(
+                      preview,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.body.xs.copyWith(
+                        color: theme.colors.mutedForeground,
+                        fontStyle: FontStyle.italic,
+                        height: 1.3,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 /// Bubble chat preview Jinye di kanan atas avatar+border (max 32 char / label media).
+///
+/// Saat ini tidak dipasang di header (overlap bingkai). Pakai
+/// [JinyeProfileStatusLine] di profil publik.
 class JinyeProfilePreview extends ConsumerWidget {
   const JinyeProfilePreview({
     super.key,
@@ -51,7 +139,7 @@ class JinyeProfilePreview extends ConsumerWidget {
           );
         }
 
-        final preview = _previewLabel(item, l10n);
+        final preview = _jinyePreviewLabel(item, l10n);
         return _ChatBubble(
           onTap: () => _openSheet(context, item),
           semanticsLabel: l10n.jinyeProfilePreviewSemantics,
@@ -92,14 +180,6 @@ class JinyeProfilePreview extends ConsumerWidget {
         );
       },
     );
-  }
-
-  String _previewLabel(JinyeItem item, AppLocalizations l10n) {
-    final body = item.body.trim();
-    if (body.isNotEmpty) return jinyeProfilePreviewText(body);
-    if (item.hasAudio) return l10n.jinyePreviewVoiceOnly;
-    if (item.images.isNotEmpty) return l10n.jinyePreviewPhotoOnly;
-    return l10n.jinyePreviewEmpty;
   }
 
   Future<void> _openSheet(BuildContext context, JinyeItem item) async {

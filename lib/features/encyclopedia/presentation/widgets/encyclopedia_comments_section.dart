@@ -334,10 +334,15 @@ class _EncyclopediaCommentsSectionState
               ),
             ),
           ),
-          FButton(
+          FButton.icon(
             variant: FButtonVariant.ghost,
             onPress: _clearStagingSticker,
-            child: Text(l10n.commentRemoveSticker),
+            child: Icon(
+              FLucideIcons.x,
+              size: 16,
+              color: theme.colors.destructive,
+              semanticLabel: l10n.commentRemoveSticker,
+            ),
           ),
         ],
       );

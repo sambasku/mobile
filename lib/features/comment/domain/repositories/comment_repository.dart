@@ -26,6 +26,7 @@ abstract interface class CommentRepository {
     required String wordId,
     required String body,
     CommentImageStaging? image,
+    String? stickerId,
   });
 
   /// Komentar suara (login) - multipart; caption opsional.

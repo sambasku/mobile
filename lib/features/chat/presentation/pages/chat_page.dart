@@ -161,12 +161,14 @@ class ChatPage extends HookConsumerWidget {
         if (visible.isEmpty) break;
         final pos = scroll.position;
         if (!pos.hasContentDimensions) break;
-        final up = index < visible.first;
+        // reverse:true → pesan lama di pixels lebih besar (visual atas).
+        final towardOlder = index < visible.first;
         final delta = pos.viewportDimension * 0.85;
-        final next = (up ? pos.pixels - delta : pos.pixels + delta).clamp(
-          pos.minScrollExtent,
-          pos.maxScrollExtent,
-        );
+        final next =
+            (towardOlder ? pos.pixels + delta : pos.pixels - delta).clamp(
+              pos.minScrollExtent,
+              pos.maxScrollExtent,
+            );
         if ((next - pos.pixels).abs() < 1) break;
         scroll.jumpTo(next);
         await SchedulerBinding.instance.endOfFrame;
@@ -187,7 +189,8 @@ class ChatPage extends HookConsumerWidget {
       // Geometry sliver belum siap → jump memicu crash semantics
       // (viewport.dart visitChildrenForSemantics geometry!).
       if (!position.hasContentDimensions) return;
-      final target = position.maxScrollExtent;
+      // reverse:true → bawah chat = offset 0.
+      const target = 0.0;
       if (animate) {
         await scroll.animateTo(
           target,
@@ -205,7 +208,8 @@ class ChatPage extends HookConsumerWidget {
     void updateNearBottom() {
       if (!scroll.hasClients) return;
       final pos = scroll.position;
-      final atBottom = pos.maxScrollExtent - pos.pixels <= _nearBottomPx;
+      // reverse:true → dekat bawah = pixels kecil.
+      final atBottom = pos.pixels <= _nearBottomPx;
       nearBottom.value = atBottom;
       pinnedBottom.value = atBottom;
       if (atBottom) newCount.value = 0;
@@ -277,44 +281,17 @@ class ChatPage extends HookConsumerWidget {
       return () => scroll.removeListener(listener);
     }, [scroll]);
 
-    // Loncat ke bawah saat histori pertama siap. Ulang sampai benar-benar
-    // di bawah: dua frame saja sering gagal (VN/stiker/font masih layout).
+    // reverse:true sudah menempel di pesan terbaru (offset 0) - tanpa
+    // jumpTo berulang yang terasa "tiba-tiba scroll" saat masuk.
     useEffect(() {
       final items = async.asData?.value.items;
       if (didInitialScroll.value) return null;
       if (items == null || items.isEmpty) return null;
-
-      var cancelled = false;
-      Future<void> pinBottom() async {
-        for (var attempt = 0; attempt < 16; attempt++) {
-          if (cancelled || !context.mounted) return;
-          await SchedulerBinding.instance.endOfFrame;
-          if (!scroll.hasClients) continue;
-          final pos = scroll.position;
-          if (!pos.hasContentDimensions) continue;
-          final target = pos.maxScrollExtent;
-          if ((pos.pixels - target).abs() > 1) {
-            scroll.jumpTo(target);
-          }
-          // Frame berikutnya: extent bisa naik lagi setelah item tinggi final.
-          await SchedulerBinding.instance.endOfFrame;
-          if (cancelled || !scroll.hasClients) continue;
-          final after = scroll.position;
-          if (!after.hasContentDimensions) continue;
-          if (after.maxScrollExtent - after.pixels <= 2) {
-            didInitialScroll.value = true;
-            nearBottom.value = true;
-            pinnedBottom.value = true;
-            newCount.value = 0;
-            return;
-          }
-        }
-        // Best-effort: jangan biarkan loop tiap rebuild.
-        didInitialScroll.value = true;
-      }
-
-      unawaited(pinBottom());
-      return () => cancelled = true;
+      didInitialScroll.value = true;
+      nearBottom.value = true;
+      pinnedBottom.value = true;
+      newCount.value = 0;
+      return null;
     }, [async.asData?.value.items.length]);
 
     useEffect(() {
@@ -666,93 +643,91 @@ class ChatPage extends HookConsumerWidget {
                         );
                       }
 
-                      return RefreshIndicator(
-                        onRefresh: () async {
-                          await ref
-                              .read(chatMessagesProvider.notifier)
-                              .refresh();
-                          if (context.mounted) {
-                            await scrollToBottom(animate: false);
+                      // reverse:true = pesan baru di bawah tanpa jump awal.
+                      // Pull-to-refresh dihilangkan: reverse membuat gesture
+                      // di sisi composer; histori lama lewat scroll ke atas.
+                      return NotificationListener<ScrollNotification>(
+                        onNotification: (n) {
+                          final metrics = n.metrics;
+                          final nearOldest =
+                              metrics.maxScrollExtent - metrics.pixels <= 80;
+                          if (nearOldest &&
+                              state.hasMoreOlder &&
+                              !state.isLoadingOlder) {
+                            ref
+                                .read(chatMessagesProvider.notifier)
+                                .loadOlder();
                           }
+                          return false;
                         },
-                        child: NotificationListener<ScrollNotification>(
-                          onNotification: (n) {
-                            if (n.metrics.pixels <= 80 &&
-                                state.hasMoreOlder &&
-                                !state.isLoadingOlder) {
-                              ref
-                                  .read(chatMessagesProvider.notifier)
-                                  .loadOlder();
-                            }
-                            return false;
-                          },
-                          child: ListView.builder(
-                            controller: scroll,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            padding: const EdgeInsets.fromLTRB(0, 8, 0, 12),
-                            itemCount:
-                                state.items.length +
-                                (state.isLoadingOlder ? 1 : 0),
-                            itemBuilder: (context, index) {
-                              if (state.isLoadingOlder && index == 0) {
-                                return const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 12),
-                                  child: Center(
-                                    child: FCircularProgress(size: .sm),
-                                  ),
-                                );
-                              }
-                              final itemIndex = state.isLoadingOlder
-                                  ? index - 1
-                                  : index;
-                              final items = state.items;
-                              final message = items[itemIndex];
-                              final prev = itemIndex > 0
-                                  ? items[itemIndex - 1]
-                                  : null;
-                              final next = itemIndex < items.length - 1
-                                  ? items[itemIndex + 1]
-                                  : null;
-                              final mine =
-                                  myUserId != null &&
-                                  myUserId.isNotEmpty &&
-                                  message.userId == myUserId;
-                              final sameAuthorAsPrev =
-                                  prev != null && prev.userId == message.userId;
-                              final sameAuthorAsNext =
-                                  next != null && next.userId == message.userId;
-                              final sameMinuteAsNext =
-                                  next != null &&
-                                  _sameLocalMinute(
-                                    message.createdAt,
-                                    next.createdAt,
-                                  );
-                              // Jam hanya di akhir run: orang sama + menit sama.
-                              final showTime =
-                                  message.pending ||
-                                  !(sameAuthorAsNext && sameMinuteAsNext);
-                              final showName = !mine && !sameAuthorAsPrev;
-                              final clustered =
-                                  sameAuthorAsPrev ||
-                                  (sameAuthorAsNext && sameMinuteAsNext);
-                              return ChatBubble(
-                                key: keyFor(message.id),
-                                message: message,
-                                mine: mine,
-                                showName: showName,
-                                showTime: showTime,
-                                clustered: clustered,
-                                highlighted: highlightId.value == message.id,
-                                onReply: () => startReply(message),
-                                onJumpToReply: message.replyToId == null
-                                    ? null
-                                    : () => jumpToMessage(message.replyToId!),
-                                onDelete: mine && !message.isDeleted
-                                    ? () => confirmDelete(message)
-                                    : null,
+                        child: ListView.builder(
+                          controller: scroll,
+                          reverse: true,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          // reverse membalik padding: top → sisi composer.
+                          padding: const EdgeInsets.fromLTRB(0, 12, 0, 8),
+                          itemCount:
+                              state.items.length +
+                              (state.isLoadingOlder ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            final items = state.items;
+                            // index 0 = terbaru (bawah). Spinner lama di ujung.
+                            if (state.isLoadingOlder &&
+                                index == items.length) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                child: Center(
+                                  child: FCircularProgress(size: .sm),
+                                ),
                               );
-                            },
-                          ),
+                            }
+                            final itemIndex = items.length - 1 - index;
+                            final message = items[itemIndex];
+                            final prev = itemIndex > 0
+                                ? items[itemIndex - 1]
+                                : null;
+                            final next = itemIndex < items.length - 1
+                                ? items[itemIndex + 1]
+                                : null;
+                            final mine =
+                                myUserId != null &&
+                                myUserId.isNotEmpty &&
+                                message.userId == myUserId;
+                            final sameAuthorAsPrev =
+                                prev != null && prev.userId == message.userId;
+                            final sameAuthorAsNext =
+                                next != null && next.userId == message.userId;
+                            final sameMinuteAsNext =
+                                next != null &&
+                                _sameLocalMinute(
+                                  message.createdAt,
+                                  next.createdAt,
+                                );
+                            // Jam hanya di akhir run: orang sama + menit sama.
+                            final showTime =
+                                message.pending ||
+                                !(sameAuthorAsNext && sameMinuteAsNext);
+                            final showName = !mine && !sameAuthorAsPrev;
+                            final clustered =
+                                sameAuthorAsPrev ||
+                                (sameAuthorAsNext && sameMinuteAsNext);
+                            return ChatBubble(
+                              key: keyFor(message.id),
+                              message: message,
+                              mine: mine,
+                              showName: showName,
+                              showTime: showTime,
+                              clustered: clustered,
+                              highlighted: highlightId.value == message.id,
+                              onReply: () => startReply(message),
+                              onJumpToReply: message.replyToId == null
+                                  ? null
+                                  : () => jumpToMessage(message.replyToId!),
+                              onDelete: mine && !message.isDeleted
+                                  ? () => confirmDelete(message)
+                                  : null,
+                            );
+                          },
                         ),
                       );
                     },

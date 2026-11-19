@@ -25,7 +25,7 @@ class LanguageSettingsPage extends ConsumerWidget {
         prefixes: [FHeaderAction.back(onPress: context.pop)],
       ),
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(12, 4, 12, 32),
+        padding: const EdgeInsets.fromLTRB(0, 4, 0, 32),
         children: [
           FTileGroup(
             children: [

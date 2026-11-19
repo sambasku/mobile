@@ -19,7 +19,7 @@ import '../widgets/pantun_card.dart';
 import '../widgets/pantun_delete_sheet.dart';
 import '../widgets/pantun_report_sheet.dart';
 
-/// Feed pantun 4 baris (kategori Hiburan) + kolom cari isi pantun.
+/// Feed pantun 4 baris (kategori Eksplorasi Pantun) + kolom cari isi pantun.
 class PantunFeedPage extends HookConsumerWidget {
   const PantunFeedPage({super.key});
 

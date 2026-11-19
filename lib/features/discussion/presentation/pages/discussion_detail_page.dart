@@ -36,7 +36,6 @@ import '../widgets/record_discussion_reply_sheet.dart';
 import '../../../comment/presentation/providers/mention_suggest_providers.dart';
 import '../../../comment/presentation/widgets/mention_suggest_overlay.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../shared/utils/toast.dart';
 
 /// Detail diskusi + thread balasan.
 class DiscussionDetailPage extends ConsumerStatefulWidget {
@@ -260,10 +259,15 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
             ),
           ),
         ),
-        FButton(
+        FButton.icon(
           variant: FButtonVariant.ghost,
           onPress: _clearStagingSticker,
-          child: Text(l10n.commentRemoveSticker),
+          child: Icon(
+            FLucideIcons.x,
+            size: 16,
+            color: theme.colors.destructive,
+            semanticLabel: l10n.commentRemoveSticker,
+          ),
         ),
       ],
     );

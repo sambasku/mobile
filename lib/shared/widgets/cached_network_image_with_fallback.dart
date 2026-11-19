@@ -137,19 +137,26 @@ class _CachedNetworkImageWithFallbackState
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _advance();
       });
-      return const Skeletonizer(child: Bone());
+      return _slot(const Skeletonizer(child: Bone()));
     }
-    return widget.fallback;
+    return _slot(widget.fallback);
   }
 
   void _onLoaded() {
     _timeout?.cancel();
   }
 
+  /// Placeholder/fallback sering `height: infinity` atau Bone expand.
+  /// Di flow markdown (ListView, tinggi unbounded) itu harus dibatasi.
+  Widget _slot(Widget child) {
+    if (widget.expand) return child;
+    return AspectRatio(aspectRatio: 16 / 9, child: child);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_activeUrl.isEmpty) {
-      return widget.fallback;
+      return _slot(widget.fallback);
     }
 
     if (isSvgNetworkUrl(_activeUrl)) {
@@ -158,7 +165,7 @@ class _CachedNetworkImageWithFallbackState
         fit: BoxFit.contain,
         width: widget.expand ? double.infinity : null,
         height: widget.expand ? double.infinity : null,
-        placeholderBuilder: (_) => const Skeletonizer(child: Bone()),
+        placeholderBuilder: (_) => _slot(const Skeletonizer(child: Bone())),
         errorBuilder: (_, _, _) => _errorChild(),
       );
     }
@@ -169,7 +176,7 @@ class _CachedNetworkImageWithFallbackState
       alignment: widget.alignment,
       width: widget.expand ? double.infinity : null,
       height: widget.expand ? double.infinity : null,
-      placeholder: (_, _) => const Skeletonizer(child: Bone()),
+      placeholder: (_, _) => _slot(const Skeletonizer(child: Bone())),
       // imageBuilder = frame sudah jadi. Batalkan timeout di frame
       // berikutnya (jangan side-effect langsung di build).
       imageBuilder: (context, imageProvider) {

@@ -39,6 +39,9 @@ class LemmaHybridGate {
     required Future<T?> Function() local,
     required String localUnavailableMessage,
     String localUnavailableCode = 'LOCAL_UNAVAILABLE',
+    /// true = abaikan sticky lokal, tetap coba API dulu (online).
+    /// Dipakai `words/search`: hasil kosong harus tercatat search-miss di server.
+    bool forceRemote = false,
   }) async {
     Future<Either<DictionaryFailure, T>> fromLocal() async {
       try {
@@ -63,7 +66,12 @@ class LemmaHybridGate {
       }
     }
 
-    if (isOffline() || sticky.isActive) {
+    // Offline: tidak ada jalan ke server. Sticky saja + forceRemote → tetap
+    // coba API (search miss / analytics butuh side-effect tulis).
+    if (isOffline()) {
+      return fromLocal();
+    }
+    if (!forceRemote && sticky.isActive) {
       return fromLocal();
     }
 

@@ -14,6 +14,7 @@ import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
+import '../../../../shared/widgets/pasteable_url_field.dart';
 import '../../../explore/domain/sambas_map_config.dart';
 import '../../../explore/presentation/pages/place_pin_picker_page.dart';
 import '../../../explore/presentation/widgets/sambas_map_view.dart';
@@ -646,8 +647,8 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
             ),
           ),
           const Gap(12),
-          FTextField(
-            control: FTextFieldControl.managed(controller: _sourceUrl),
+          PasteableUrlField(
+            controller: _sourceUrl,
             label: Text(AppLocalizations.of(context).eventFormSourceLinkLabel),
             hint: AppLocalizations.of(context).eventFormSourceLinkHint,
           ),

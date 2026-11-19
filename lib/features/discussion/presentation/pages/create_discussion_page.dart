@@ -13,6 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
 
 import '../../../../shared/widgets/attachment_images_field.dart';
+import '../../../../shared/widgets/pasteable_url_field.dart';
 import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -373,12 +374,11 @@ class CreateDiscussionPage extends HookConsumerWidget {
           ),
           if (shareSocialLink.value) ...[
             const Gap(8),
-            FTextField(
-              control: FTextFieldControl.managed(controller: link),
+            PasteableUrlField(
+              controller: link,
               enabled: !submitting.value && isAuth,
               label: Text(l10n.discussionCreateLinkLabel),
-            hint: l10n.discussionCreateLinkHint,
-              keyboardType: TextInputType.url,
+              hint: l10n.discussionCreateLinkHint,
               textInputAction: TextInputAction.done,
             ),
           ],

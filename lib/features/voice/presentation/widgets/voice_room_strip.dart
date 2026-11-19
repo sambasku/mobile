@@ -34,16 +34,17 @@ class VoiceRoomStrip extends ConsumerWidget {
 
     ref.listen(voiceRoomProvider.select((s) => s.errorMessage), (_, msg) {
       if (msg == null || !context.mounted) return;
+      final clearError = ref.read(voiceRoomProvider.notifier).clearError;
       showAppErrorSheet(context, message: msg).whenComplete(() {
-        if (context.mounted) ref.read(voiceRoomProvider.notifier).clearError();
+        if (context.mounted) clearError();
       });
     });
 
     final colors = FTheme.of(context).colors;
 
     return Padding(
-      // Jarak ke list chat; jarak ke tab ditangani parent (padding top).
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+      // Jarak ke peringatan privasi di bawah. Jarak ke list chat ada di parent.
+      padding: const EdgeInsets.only(bottom: 4),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.secondary.withValues(alpha: 0.55),
@@ -150,79 +151,171 @@ class _ActiveStrip extends StatelessWidget {
     final reconnecting = room.phase == VoiceRoomPhase.reconnecting;
     final theme = FTheme.of(context);
     final mutedFg = theme.colors.mutedForeground;
+    final incoming = inSession && room.hasIncomingVoice;
+    final micSending = inSession && room.isMicSending;
+    final speaker = room.incomingSpeakerName;
 
     final title = reconnecting
         ? l10n.voiceReconnecting
-        : inSession
-            ? l10n.voiceStripInRoom(room.participantCount)
-            : l10n.voiceStripTitle;
+        : incoming && speaker != null
+            ? l10n.voiceStripHearing(speaker)
+            : inSession
+                ? l10n.voiceStripInRoom(room.participantCount)
+                : l10n.voiceStripTitle;
 
-    return Row(
-      children: [
-        Icon(
-          inSession ? FLucideIcons.radio : FLucideIcons.audioLines,
-          size: 14,
-          color: inSession ? theme.colors.primary : mutedFg,
-        ),
-        const Gap(6),
-        Expanded(
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: inSession ? onShowParticipants : null,
-            child: Text(
-              title,
-              style: theme.typography.body.xs.copyWith(
-                fontWeight: FontWeight.w600,
+    // Tinggi tetap: indikator bicara jangan mengubah layout strip.
+    return SizedBox(
+      height: 28,
+      child: Row(
+        children: [
+          Icon(
+            inSession ? FLucideIcons.radio : FLucideIcons.audioLines,
+            size: 14,
+            color: inSession ? theme.colors.primary : mutedFg,
+          ),
+          const Gap(6),
+          Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: inSession ? onShowParticipants : null,
+              child: Text(
+                title,
+                style: theme.typography.body.xs.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: incoming ? theme.colors.primary : null,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          if (inSession) ...[
+            _IconAction(
+              icon: FLucideIcons.users,
+              semanticsLabel: l10n.voiceShowParticipants,
+              onTap: onShowParticipants,
+            ),
+            if (incoming)
+              Semantics(
+                label: l10n.voiceStripIncomingHint,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 2),
+                  child: Icon(
+                    FLucideIcons.volume2,
+                    size: 13,
+                    color: theme.colors.primary,
+                  ),
+                ),
+              ),
+            _MicAction(
+              muted: room.muted,
+              sending: micSending,
+              muteLabel: l10n.voiceMute,
+              unmuteLabel: l10n.voiceUnmute,
+              sendingLabel: l10n.voiceStripMicSending,
+              onTap: busy || reconnecting ? null : onMute,
+            ),
+            _IconAction(
+              icon: FLucideIcons.phoneOff,
+              semanticsLabel: l10n.voiceLeave,
+              color: theme.colors.destructive,
+              onTap: busy ? null : onLeave,
+            ),
+          ] else
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: busy
+                  ? null
+                  : () {
+                      if (!isAuth) {
+                        onLogin();
+                        return;
+                      }
+                      onJoin();
+                    },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: busy
+                    ? const FCircularProgress(size: .xs)
+                    : Text(
+                        l10n.voiceJoin,
+                        style: theme.typography.body.xs2.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: theme.colors.primary,
+                        ),
+                      ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Tombol mic ukuran tetap; ring kirim digambar di dalam kotak 28×28.
+class _MicAction extends StatelessWidget {
+  const _MicAction({
+    required this.muted,
+    required this.sending,
+    required this.muteLabel,
+    required this.unmuteLabel,
+    required this.sendingLabel,
+    required this.onTap,
+  });
+
+  final bool muted;
+  final bool sending;
+  final String muteLabel;
+  final String unmuteLabel;
+  final String sendingLabel;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FTheme.of(context);
+    final disabled = onTap == null;
+    final live = sending && !muted;
+    final Color color;
+    if (disabled) {
+      color = theme.colors.mutedForeground.withValues(alpha: 0.4);
+    } else if (muted) {
+      color = theme.colors.mutedForeground;
+    } else if (live) {
+      color = theme.colors.primary;
+    } else {
+      color = theme.colors.foreground;
+    }
+
+    return Semantics(
+      button: true,
+      label: muted ? unmuteLabel : (live ? sendingLabel : muteLabel),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: SizedBox(
+          width: 28,
+          height: 28,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: live
+                  ? theme.colors.primary.withValues(alpha: 0.18)
+                  : null,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: live
+                    ? theme.colors.primary.withValues(alpha: 0.7)
+                    : const Color(0x00000000),
+                width: 1,
+              ),
+            ),
+            child: Icon(
+              muted ? FLucideIcons.micOff : FLucideIcons.mic,
+              size: 15,
+              color: color,
             ),
           ),
         ),
-        if (inSession) ...[
-          _IconAction(
-            icon: FLucideIcons.users,
-            semanticsLabel: l10n.voiceShowParticipants,
-            onTap: onShowParticipants,
-          ),
-          _IconAction(
-            icon: room.muted ? FLucideIcons.micOff : FLucideIcons.mic,
-            semanticsLabel:
-                room.muted ? l10n.voiceUnmute : l10n.voiceMute,
-            onTap: busy || reconnecting ? null : onMute,
-          ),
-          _IconAction(
-            icon: FLucideIcons.phoneOff,
-            semanticsLabel: l10n.voiceLeave,
-            color: theme.colors.destructive,
-            onTap: busy ? null : onLeave,
-          ),
-        ] else
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: busy
-                ? null
-                : () {
-                    if (!isAuth) {
-                      onLogin();
-                      return;
-                    }
-                    onJoin();
-                  },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: busy
-                  ? const FCircularProgress(size: .xs)
-                  : Text(
-                      l10n.voiceJoin,
-                      style: theme.typography.body.xs2.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: theme.colors.primary,
-                      ),
-                    ),
-            ),
-          ),
-      ],
+      ),
     );
   }
 }
@@ -249,8 +342,9 @@ class _IconAction extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+        child: SizedBox(
+          width: 28,
+          height: 28,
           child: Icon(
             icon,
             size: 15,

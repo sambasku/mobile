@@ -34,6 +34,7 @@ import '../models/submit_word_state.dart';
 import '../providers/lemma_check_providers.dart';
 import '../providers/submit_word_providers.dart';
 import '../utils/invalidate_word_detail.dart';
+import '../widgets/category_multi_picker_sheet.dart';
 import '../widgets/contribute_images_field.dart';
 import '../widgets/contribute_relations_sheet.dart';
 import '../widgets/dialect_picker_sheet.dart';
@@ -43,6 +44,7 @@ import '../widgets/kbbi_translation_field.dart';
 import '../widgets/knowledge_toggles.dart';
 import '../widgets/word_class_picker_sheet.dart';
 import '../../data/providers/contribution_data_providers.dart';
+import '../../../dictionary/presentation/providers/categories_provider.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/message_dialog.dart';
 import '../../../../shared/widgets/kbbi_source_notice.dart';
@@ -119,6 +121,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
 
   /// Register & peringatan (`usage_labels`). Default kosong.
   final Set<String> _usageLabels = {};
+
+  /// Kategori topik lemma (`category_ids`). Chip di atas detail kata.
+  final Set<String> _categoryIds = {};
 
   ContributeRelationsDraft _relations = const ContributeRelationsDraft();
   List<ContributeImageSlot> _images = const [];
@@ -342,6 +347,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       _applyingKbbiPick = false;
       _wordType = 'word';
       _usageLabels.clear();
+      _categoryIds.clear();
       _relations = const ContributeRelationsDraft();
       _images = const [];
     });
@@ -731,6 +737,13 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               onToggle: _toggleUsageLabel,
             ),
             _inlineError(notifier.errorFor('usage_labels')),
+            const Gap(16),
+            _FieldCaption(
+              l10n.contributeCategoryLabel,
+              info: l10n.contributeCategoryHint,
+            ),
+            _categorySelectField(l10n),
+            _inlineError(notifier.errorFor('category_ids')),
           ] else ...[
             const Gap(16),
             _FieldCaption(l10n.contributeKindLabel),
@@ -763,6 +776,13 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               onToggle: _toggleUsageLabel,
             ),
             _inlineError(notifier.errorFor('usage_labels')),
+            const Gap(16),
+            _FieldCaption(
+              l10n.contributeCategoryLabel,
+              info: l10n.contributeCategoryHint,
+            ),
+            _categorySelectField(l10n),
+            _inlineError(notifier.errorFor('category_ids')),
             const Gap(16),
             _FieldCaption(l10n.contributeDialectLabel),
             if (sambasLanguageId == null)
@@ -915,6 +935,47 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       return;
     }
     setState(() => _usageLabels.remove(code));
+  }
+
+  Widget _categorySelectField(AppLocalizations l10n) {
+    final categoriesAsync = ref.watch(categoriesProvider);
+    return categoriesAsync.when(
+      loading: () => const _SelectFieldSkeleton(),
+      error: (_, _) => _BuildReferenceError(
+        message: l10n.contributeCategoryLoadFailed,
+        onRetry: () => ref.invalidate(categoriesProvider),
+      ),
+      data: (items) {
+        final selectedNames = [
+          for (final c in items)
+            if (_categoryIds.contains(c.id)) c.name,
+        ];
+        return _SelectField(
+          selectedLabel: selectedNames.isEmpty
+              ? null
+              : selectedNames.join(', '),
+          hint: items.isEmpty ? '-' : l10n.contributeCategoryPick,
+          onTap: items.isEmpty
+              ? null
+              : () => _openCategorySheet(items),
+        );
+      },
+    );
+  }
+
+  Future<void> _openCategorySheet(List<WordCategory> items) async {
+    final picked = await showCategoryMultiPickerSheet(
+      context,
+      items: categoryPickItemsFrom(items),
+      selectedIds: _categoryIds,
+    );
+    if (!mounted || picked == null) return;
+    _onFieldEdited();
+    setState(() {
+      _categoryIds
+        ..clear()
+        ..addAll(picked);
+    });
   }
 
   Future<void> _openDialectSheet(List<_OptionItem> items) async {
@@ -1193,7 +1254,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       meanings: meanings,
       dialectId: dialectId,
       wordType: _advanced ? _wordType : 'word',
-      categoryIds: [],
+      categoryIds: _categoryIds.toList(growable: false),
       usageLabels: _usageLabels.toList(growable: false),
       notes: _advanced && notes.isNotEmpty ? notes : null,
       spellingVariants: spellingVariants,

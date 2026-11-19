@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:livekit_client/livekit_client.dart';
 import 'package:livekit_noise_filter/livekit_noise_filter.dart';
@@ -11,6 +13,7 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/providers/thread_audio_player_provider.dart';
 import '../../data/voice_repository.dart';
+import '../voice_room_sfx.dart';
 
 enum VoiceRoomPhase { idle, connecting, connected, reconnecting, error }
 
@@ -51,6 +54,22 @@ class VoiceRoomState {
   bool get isInSession =>
       phase == VoiceRoomPhase.connected ||
       phase == VoiceRoomPhase.reconnecting;
+
+  /// Ada peserta remote yang deteksi bicara (suara masuk).
+  bool get hasIncomingVoice =>
+      participants.any((p) => !p.isLocal && p.speaking);
+
+  /// Mic lokal aktif mengirim (tidak mute + VAD bicara).
+  bool get isMicSending =>
+      !muted && participants.any((p) => p.isLocal && p.speaking);
+
+  /// Nama remote yang sedang bicara (pertama), untuk label strip.
+  String? get incomingSpeakerName {
+    for (final p in participants) {
+      if (!p.isLocal && p.speaking) return p.name;
+    }
+    return null;
+  }
 
   VoiceRoomState copyWith({
     VoiceRoomPhase? phase,
@@ -97,17 +116,74 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
   LiveKitNoiseFilter? _noiseFilter;
   var _lkReady = false;
   var _intentionalLeave = false;
+  /// User ingin tetap di room (bukan leave manual) - recover saat resume.
+  var _sessionDesired = false;
   String? _msgDisconnected;
   String? _msgConnectTimeout;
   String _roomName = 'sambasku-global';
+  /// Identity remote yang sudah diketahui - deteksi join orang lain.
+  Set<String> _knownRemoteIds = {};
+  AppLocalizations? _l10n;
+  _VoiceLifecycleObserver? _lifecycle;
+  var _resumeRecoverInFlight = false;
 
   @override
   VoiceRoomState build() {
+    final life = _VoiceLifecycleObserver(onResumed: () {
+      unawaited(_onAppResumed());
+    });
+    _lifecycle = life;
+    WidgetsBinding.instance.addObserver(life);
     ref.onDispose(() {
+      final obs = _lifecycle;
+      _lifecycle = null;
+      if (obs != null) {
+        WidgetsBinding.instance.removeObserver(obs);
+      }
       _intentionalLeave = true;
+      _sessionDesired = false;
       _disconnectSilent();
     });
     return const VoiceRoomState();
+  }
+
+  /// Minimize → buka lagi: remint kalau masih sesi, join ulang kalau putus.
+  Future<void> _onAppResumed() async {
+    if (!ref.mounted || _intentionalLeave || !_sessionDesired) return;
+    if (_resumeRecoverInFlight) return;
+    if (state.phase == VoiceRoomPhase.connecting) return;
+
+    _resumeRecoverInFlight = true;
+    try {
+      if (state.isInSession) {
+        unawaited(_refreshSessionToken(reason: 'app_resume'));
+        await _ensureMicPublishing();
+        return;
+      }
+      final l10n = _l10n;
+      if (l10n == null) return;
+      debugPrint('VoiceRoom resume: rejoining after drop');
+      await join(l10n);
+    } finally {
+      _resumeRecoverInFlight = false;
+    }
+  }
+
+  Future<void> _ensureMicPublishing() async {
+    if (!ref.mounted || state.muted) return;
+    final lp = _room?.localParticipant;
+    if (lp == null) return;
+    try {
+      if (!lp.isMicrophoneEnabled()) {
+        await lp.setMicrophoneEnabled(true).timeout(
+          const Duration(seconds: 5),
+        );
+      }
+    } catch (e, st) {
+      debugPrint('VoiceRoom resume mic restore failed: $e\n$st');
+      return;
+    }
+    if (ref.mounted) _syncParticipants();
   }
 
   Future<void> _ensureLiveKit() async {
@@ -119,8 +195,10 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
   Future<void> join(AppLocalizations l10n) async {
     if (state.phase == VoiceRoomPhase.connecting || state.isInSession) return;
 
+    _l10n = l10n;
     final mic = await Permission.microphone.request();
     if (!mic.isGranted) {
+      _sessionDesired = false;
       state = state.copyWith(
         phase: VoiceRoomPhase.error,
         errorMessage: l10n.voiceMicDenied,
@@ -139,6 +217,7 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
     _msgDisconnected = l10n.voiceDisconnected;
     _msgConnectTimeout = l10n.voiceConnectTimeout;
     _intentionalLeave = false;
+    _sessionDesired = true;
 
     state = state.copyWith(
       phase: VoiceRoomPhase.connecting,
@@ -249,9 +328,10 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
       }
 
       _applySessionToken(jwt);
-      _syncParticipants(forceConnected: true);
+      _syncParticipants(forceConnected: true, seedPresence: true);
       _scheduleTokenRefresh(jwt);
       _trackVoiceEvent(VoiceRoomEventKind.joined);
+      unawaited(VoiceRoomSfx.joinSelf());
     } catch (e, st) {
       debugPrint('VoiceRoom join failed: $e\n$st');
       await _disconnectSilent();
@@ -273,15 +353,17 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
     String? errorCode,
     String? detail,
   }) {
+    if (!ref.mounted) return;
     final platform = defaultTargetPlatform.name;
+    final repo = ref.read(voiceRepositoryProvider);
     unawaited(
-      ref.read(voiceRepositoryProvider).reportEvent(
-            kind: kind,
-            room: _roomName,
-            errorCode: errorCode,
-            detail: detail,
-            platform: platform,
-          ),
+      repo.reportEvent(
+        kind: kind,
+        room: _roomName,
+        errorCode: errorCode,
+        detail: detail,
+        platform: platform,
+      ),
     );
     final analytics = AnalyticsService.instance;
     switch (kind) {
@@ -307,6 +389,7 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
   Future<void> _onUnexpectedDisconnect() async {
     if (_intentionalLeave) return;
     _trackVoiceEvent(VoiceRoomEventKind.disconnect);
+    unawaited(VoiceRoomSfx.leaveSelf());
     await _disconnectSilent();
     if (!ref.mounted) return;
     state = VoiceRoomState(
@@ -409,7 +492,9 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
 
   Future<void> leave() async {
     _intentionalLeave = true;
+    _sessionDesired = false;
     _trackVoiceEvent(VoiceRoomEventKind.left);
+    unawaited(VoiceRoomSfx.leaveSelf());
     await _disconnectSilent();
     if (!ref.mounted) return;
     state = const VoiceRoomState();
@@ -433,10 +518,15 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
   }
 
   void clearError() {
+    // Tutup sheet error = user tidak minta auto-rejoin sampai Gabung lagi.
+    _sessionDesired = false;
     state = state.copyWith(clearError: true, phase: VoiceRoomPhase.idle);
   }
 
-  void _syncParticipants({bool forceConnected = false}) {
+  void _syncParticipants({
+    bool forceConnected = false,
+    bool seedPresence = false,
+  }) {
     final room = _room;
     if (!ref.mounted || room == null) return;
 
@@ -463,9 +553,18 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
     if (local != null) {
       list.add(mapParticipant(local, isLocal: true));
     }
+    final remoteIds = <String>{};
     for (final p in room.remoteParticipants.values) {
+      remoteIds.add(p.identity);
       list.add(mapParticipant(p, isLocal: false));
     }
+
+    if (!seedPresence &&
+        state.isInSession &&
+        remoteIds.difference(_knownRemoteIds).isNotEmpty) {
+      unawaited(VoiceRoomSfx.joinOther());
+    }
+    _knownRemoteIds = remoteIds;
 
     list.sort((a, b) {
       if (a.speaking != b.speaking) return a.speaking ? -1 : 1;
@@ -473,19 +572,32 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
       return a.name.toLowerCase().compareTo(b.name.toLowerCase());
     });
 
-    state = state.copyWith(
-      phase: forceConnected ? VoiceRoomPhase.connected : null,
-      muted: local != null ? !local.isMicrophoneEnabled() : state.muted,
-      participants: list,
-      participantCount: list.length,
-      clearError: forceConnected,
-    );
+    void apply() {
+      if (!ref.mounted) return;
+      state = state.copyWith(
+        phase: forceConnected ? VoiceRoomPhase.connected : null,
+        muted: local != null ? !local.isMicrophoneEnabled() : state.muted,
+        participants: list,
+        participantCount: list.length,
+        clearError: forceConnected,
+      );
+    }
+
+    // LiveKit event bisa datang di tengah rebuild (pop diskusi + mini bar).
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    if (phase == SchedulerPhase.idle ||
+        phase == SchedulerPhase.postFrameCallbacks) {
+      apply();
+    } else {
+      SchedulerBinding.instance.addPostFrameCallback((_) => apply());
+    }
   }
 
   Future<void> _disconnectSilent() async {
     _tokenRefreshTimer?.cancel();
     _tokenRefreshTimer = null;
     _tokenRefreshInFlight = false;
+    _knownRemoteIds = {};
     final listener = _listener;
     _listener = null;
     final room = _room;
@@ -501,5 +613,16 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
     } catch (e, st) {
       debugPrint('VoiceRoom disconnect: $e\n$st');
     }
+  }
+}
+
+class _VoiceLifecycleObserver with WidgetsBindingObserver {
+  _VoiceLifecycleObserver({required this.onResumed});
+
+  final VoidCallback onResumed;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) onResumed();
   }
 }

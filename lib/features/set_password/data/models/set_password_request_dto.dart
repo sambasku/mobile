@@ -7,11 +7,12 @@ part 'set_password_request_dto.g.dart';
 abstract class SetPasswordRequestDto with _$SetPasswordRequestDto {
   const factory SetPasswordRequestDto({
     required String provider,
-    @JsonKey(name: 'id_token') String? idToken,
-    @JsonKey(name: 'access_token') String? accessToken,
-    String? code,
-    @JsonKey(name: 'redirect_uri') String? redirectUri,
-    @JsonKey(name: 'code_verifier') String? codeVerifier,
+    // null jangan ikut body: Zod .optional() menolak null (#98 pola sama).
+    @JsonKey(name: 'id_token', includeIfNull: false) String? idToken,
+    @JsonKey(name: 'access_token', includeIfNull: false) String? accessToken,
+    @JsonKey(includeIfNull: false) String? code,
+    @JsonKey(name: 'redirect_uri', includeIfNull: false) String? redirectUri,
+    @JsonKey(name: 'code_verifier', includeIfNull: false) String? codeVerifier,
     @JsonKey(name: 'new_password') required String newPassword,
     @JsonKey(name: 'confirm_password') required String confirmPassword,
   }) = _SetPasswordRequestDto;

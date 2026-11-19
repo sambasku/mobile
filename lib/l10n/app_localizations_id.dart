@@ -1312,6 +1312,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get voteTrustProgressLabel => 'Menuju verifikasi warga';
 
   @override
+  String get voteTrustProgressInfo =>
+      'Makna akan otomatis terverifikasi oleh warga apabila memperoleh net vote minimal +5 dari sedikitnya 5 pemilih.';
+
+  @override
+  String get voteTrustProgressInfoSemantics => 'Info verifikasi warga';
+
+  @override
   String get notificationTypeMeaningAutoVerified => 'Makna terverifikasi warga';
 
   @override
@@ -2026,6 +2033,19 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get suggestCategorySpellingVariantDesc =>
       'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
+
+  @override
+  String get suggestCategoryChangeCategories => 'Ubah kategori';
+
+  @override
+  String get suggestCategoryChangeCategoriesDesc =>
+      'Tambah atau lepas kategori topik di lemma ini';
+
+  @override
+  String get suggestCategoryPickHint => 'Pilih kategori topik';
+
+  @override
+  String get suggestCategoryNoneSelected => 'Belum ada kategori';
 
   @override
   String get suggestCategoryLemmaNotes => 'Lainnya';
@@ -4679,7 +4699,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictProposeThisWord => 'Usul kata ini';
 
   @override
-  String get hotTopicsTitle => 'Trending hari ini';
+  String get hotTopicsTitle => 'Sorotan hari ini';
 
   @override
   String get hotTopicsTabSearched => 'Dicari';
@@ -9052,6 +9072,35 @@ class AppLocalizationsId extends AppLocalizations {
       'Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan berupa frasa; kata tunggal tidak perlu dipilih.';
 
   @override
+  String get contributeCategoryLabel => 'Kategori';
+
+  @override
+  String get contributeCategoryHint =>
+      'Opsional. Tag topik lemma (hewan, budaya, buah-buahan). Satu kata boleh lebih dari satu.';
+
+  @override
+  String get contributeCategoryPick => 'Pilih kategori';
+
+  @override
+  String get contributeCategorySheetTitle => 'Pilih kategori';
+
+  @override
+  String get contributeCategorySheetSubtitle =>
+      'Boleh lebih dari satu. Chip muncul di atas detail kata.';
+
+  @override
+  String get contributeCategorySheetDone => 'Simpan';
+
+  @override
+  String get contributeCategorySearchHint => 'Cari kategori';
+
+  @override
+  String get contributeCategoryEmpty => 'Tidak ada kategori yang cocok';
+
+  @override
+  String get contributeCategoryLoadFailed => 'Gagal memuat kategori';
+
+  @override
   String get contributeRegisterLabel => 'Register';
 
   @override
@@ -11589,6 +11638,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get profileStatCorrections => 'perbaikan';
+
+  @override
+  String get infoSheetTitle => 'Informasi';
 
   @override
   String get infoSheetUnderstood => 'Mengerti';
@@ -14106,6 +14158,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get voteTrustProgressLabel => 'Menuju verifikasi warga';
 
   @override
+  String get voteTrustProgressInfo =>
+      'Makna akan otomatis terverifikasi oleh warga apabila memperoleh net vote minimal +5 dari sedikitnya 5 pemilih.';
+
+  @override
+  String get voteTrustProgressInfoSemantics => 'Info verifikasi warga';
+
+  @override
   String get notificationTypeMeaningAutoVerified => 'Makna terverifikasi warga';
 
   @override
@@ -14820,6 +14879,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get suggestCategorySpellingVariantDesc =>
       'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
+
+  @override
+  String get suggestCategoryChangeCategories => 'Ubah kategori';
+
+  @override
+  String get suggestCategoryChangeCategoriesDesc =>
+      'Tambah atau lepas kategori topik di lemma ini';
+
+  @override
+  String get suggestCategoryPickHint => 'Pilih kategori topik';
+
+  @override
+  String get suggestCategoryNoneSelected => 'Belum ada kategori';
 
   @override
   String get suggestCategoryLemmaNotes => 'Lainnya';
@@ -17473,7 +17545,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictProposeThisWord => 'Usul kata ini';
 
   @override
-  String get hotTopicsTitle => 'Trending hari ini';
+  String get hotTopicsTitle => 'Sorotan hari ini';
 
   @override
   String get hotTopicsTabSearched => 'Dicari';
@@ -21846,6 +21918,35 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan berupa frasa; kata tunggal tidak perlu dipilih.';
 
   @override
+  String get contributeCategoryLabel => 'Kategori';
+
+  @override
+  String get contributeCategoryHint =>
+      'Opsional. Tag topik lemma (hewan, budaya, buah-buahan). Satu kata boleh lebih dari satu.';
+
+  @override
+  String get contributeCategoryPick => 'Pilih kategori';
+
+  @override
+  String get contributeCategorySheetTitle => 'Pilih kategori';
+
+  @override
+  String get contributeCategorySheetSubtitle =>
+      'Boleh lebih dari satu. Chip muncul di atas detail kata.';
+
+  @override
+  String get contributeCategorySheetDone => 'Simpan';
+
+  @override
+  String get contributeCategorySearchHint => 'Cari kategori';
+
+  @override
+  String get contributeCategoryEmpty => 'Tidak ada kategori yang cocok';
+
+  @override
+  String get contributeCategoryLoadFailed => 'Gagal memuat kategori';
+
+  @override
   String get contributeRegisterLabel => 'Register';
 
   @override
@@ -24383,6 +24484,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get profileStatCorrections => 'perbaikan';
+
+  @override
+  String get infoSheetTitle => 'Informasi';
 
   @override
   String get infoSheetUnderstood => 'Mengerti';

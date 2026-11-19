@@ -15,8 +15,13 @@ _CreateCommentRequestDto _$CreateCommentRequestDtoFromJson(
       : CreateCommentImageInputDto.fromJson(
           json['image'] as Map<String, dynamic>,
         ),
+  stickerId: json['sticker_id'] as String?,
 );
 
 Map<String, dynamic> _$CreateCommentRequestDtoToJson(
   _CreateCommentRequestDto instance,
-) => <String, dynamic>{'body': instance.body, 'image': ?instance.image};
+) => <String, dynamic>{
+  'body': instance.body,
+  'image': ?instance.image,
+  'sticker_id': ?instance.stickerId,
+};

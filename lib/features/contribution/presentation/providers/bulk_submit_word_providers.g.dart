@@ -42,7 +42,7 @@ final class BulkSubmitWordNotifierProvider
 }
 
 String _$bulkSubmitWordNotifierHash() =>
-    r'bfef2b38beef57fa6bb004569a61b91a590f1d70';
+    r'fe6a8eb7faf4a73da9f909523b3fdbd301da1329';
 
 abstract class _$BulkSubmitWordNotifier extends $Notifier<BulkSubmitWordState> {
   BulkSubmitWordState build();

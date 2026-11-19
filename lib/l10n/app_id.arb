@@ -1030,6 +1030,14 @@
   "@voteTrustProgressLabel": {
     "description": "Label progress bar vote makna menuju ambang Voting Warga (+5)"
   },
+  "voteTrustProgressInfo": "Makna akan otomatis terverifikasi oleh warga apabila memperoleh net vote minimal +5 dari sedikitnya 5 pemilih.",
+  "@voteTrustProgressInfo": {
+    "description": "Isi popover info: penjelasan ambang Voting Warga di progress bar makna"
+  },
+  "voteTrustProgressInfoSemantics": "Info verifikasi warga",
+  "@voteTrustProgressInfoSemantics": {
+    "description": "semanticsLabel tombol info yang membuka penjelasan Voting Warga"
+  },
   "notificationTypeMeaningAutoVerified": "Makna terverifikasi warga",
   "@notificationTypeMeaningAutoVerified": {
     "description": "Label tipe inbox: makna auto-verif Voting Warga"
@@ -1409,6 +1417,13 @@
   "suggestCategoryMeaningGroupDesc": "Gabungkan kata bermakna sama dalam satu kelompok",
   "suggestCategorySpellingVariant": "Variasi penulisan",
   "suggestCategorySpellingVariantDesc": "Ejaan lain tanpa entri sendiri (tetap di lemma ini)",
+  "suggestCategoryChangeCategories": "Ubah kategori",
+  "@suggestCategoryChangeCategories": {
+    "description": "Kategori usulan: tag topik lemma (chip)"
+  },
+  "suggestCategoryChangeCategoriesDesc": "Tambah atau lepas kategori topik di lemma ini",
+  "suggestCategoryPickHint": "Pilih kategori topik",
+  "suggestCategoryNoneSelected": "Belum ada kategori",
   "suggestCategoryLemmaNotes": "Lainnya",
   "suggestCategoryLemmaNotesDesc": "Ejaan lemma atau catatan",
   "suggestEntryTileVerifierTitle": "Perbaiki/lengkapi kata",
@@ -2928,9 +2943,9 @@
   },
   "dictNotInDictionary": "Belum ada di kamus. Usulkan supaya bisa dicari orang lain.",
   "dictProposeThisWord": "Usul kata ini",
-  "hotTopicsTitle": "Trending hari ini",
+  "hotTopicsTitle": "Sorotan hari ini",
   "@hotTopicsTitle": {
-    "description": "Judul kartu Trending di beranda (G4)"
+    "description": "Judul kartu Sorotan di beranda (G4)"
   },
   "hotTopicsTabSearched": "Dicari",
   "@hotTopicsTabSearched": {
@@ -6322,6 +6337,18 @@
   "contributeDefinitionHint": "Muncul setelah satu makna dipilih dari KBBI. Tetap jika terjemahan dikosongkan; hilang jika terjemahan diganti kata lain.",
   "contributeKindLabel": "Jenis",
   "contributeKindHint": "Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan berupa frasa; kata tunggal tidak perlu dipilih.",
+  "contributeCategoryLabel": "Kategori",
+  "@contributeCategoryLabel": {
+    "description": "Label field kategori topik lemma di form usul kata"
+  },
+  "contributeCategoryHint": "Opsional. Tag topik lemma (hewan, budaya, buah-buahan). Satu kata boleh lebih dari satu.",
+  "contributeCategoryPick": "Pilih kategori",
+  "contributeCategorySheetTitle": "Pilih kategori",
+  "contributeCategorySheetSubtitle": "Boleh lebih dari satu. Chip muncul di atas detail kata.",
+  "contributeCategorySheetDone": "Simpan",
+  "contributeCategorySearchHint": "Cari kategori",
+  "contributeCategoryEmpty": "Tidak ada kategori yang cocok",
+  "contributeCategoryLoadFailed": "Gagal memuat kategori",
   "contributeRegisterLabel": "Register",
   "contributeRegisterHint": "Opsional. Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa dipilih bersamaan.",
   "contributeWarningLabel": "Peringatan",
@@ -8200,6 +8227,10 @@
   "@profileStatWords": {},
   "profileStatCorrections": "perbaikan",
   "@profileStatCorrections": {},
+  "infoSheetTitle": "Informasi",
+  "@infoSheetTitle": {
+    "description": "Judul default bottom sheet info (bukan error)"
+  },
   "infoSheetUnderstood": "Mengerti",
   "@infoSheetUnderstood": {},
   "phoneCountrySearchHint": "Cari nama atau kode",

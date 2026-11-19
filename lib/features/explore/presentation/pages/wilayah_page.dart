@@ -222,8 +222,22 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
   }
 
   /// Load (atau ganti) desa polygons untuk kecamatan yang dipilih.
+  ///
+  /// Kunci = slug geojson (bukan ULID katalog). Dipanggil dari tap peta
+  /// langsung supaya ADM4 tidak tergantung `selected` dari API.
   Future<void> _loadDesaGeoJson(String kecSlug) async {
-    if (_desaShownForKec == kecSlug) return;
+    // Sudah selesai untuk kecamatan ini (layer ada, atau memang 0 desa).
+    if (_desaShownForKec == kecSlug &&
+        (_desaLayersAdded || _desaRings.isEmpty)) {
+      return;
+    }
+    // Rings sudah di-cache, tinggal sync (mis. style baru siap / retry).
+    if (_desaShownForKec == kecSlug && _desaRings.isNotEmpty) {
+      if (_styleReady && !_desaLayersAdded) {
+        await _syncDesaLayers(kecSlug, _desaLoadToken);
+      }
+      return;
+    }
     final token = ++_desaLoadToken;
     try {
       final geojson = await _loadAdm4();
@@ -241,7 +255,47 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
       await _syncDesaLayers(kecSlug, token);
     } catch (_) {
       // Asset hilang/korup: tampilkan list saja tanpa polygon desa.
+      if (mounted && token == _desaLoadToken && _desaShownForKec == kecSlug) {
+        setState(() => _desaShownForKec = null);
+      }
     }
+  }
+
+  /// Buang layer desa + batalkan request in-flight (saat unselect kecamatan).
+  Future<void> _clearDesaLayers() async {
+    _desaLoadToken++;
+    final controller = _controller;
+    if (controller == null || !_desaLayersAdded) {
+      _desaLayersAdded = false;
+      return;
+    }
+    try {
+      await controller.removeLayer(_desaFillLayerId);
+      await controller.removeLayer(_desaLineLayerId);
+      await controller.removeLayer(_desaLabelLayerId);
+    } catch (_) {}
+    try {
+      await controller.removeSource(_desaSourceId);
+    } catch (_) {}
+    _desaLayersAdded = false;
+  }
+
+  /// Fokus kamera ke centroid ring kecamatan (offline, tanpa katalog API).
+  Future<void> _focusKecamatan(String kecSlug) async {
+    final rings = _kecRings[kecSlug];
+    if (rings == null || rings.isEmpty || rings.first.isEmpty) return;
+    var latSum = 0.0, lngSum = 0.0;
+    for (final p in rings.first) {
+      lngSum += p[0];
+      latSum += p[1];
+    }
+    final n = rings.first.length.toDouble();
+    await _controller?.animateCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(latSum / n, lngSum / n),
+        SambasMapConfig.kecamatanZoom,
+      ),
+    );
   }
 
   /// Decode ADM4 sekali - dipakai _loadDesaGeoJson & _syncDesaLayers.
@@ -321,29 +375,30 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
         const LineLayerProperties(lineColor: '#ffffff', lineWidth: 0.8),
         enableInteraction: false,
       );
-      await controller.addSymbolLayer(
-        _desaSourceId,
-        _desaLabelLayerId,
-        // Label nama desa di centroid tiap polygon. Font wajib font yang
-        // di-serve OpenFreeMap (lihat komentar _addKecLabelLayer).
-        SymbolLayerProperties(
-          textField: ['get', 'name'],
-          textFont: ['Noto Sans Regular'],
-          textSize: 9,
-          textColor: isDark ? '#f9fafb' : '#1f2937',
-          textHaloColor: isDark ? '#111827' : '#ffffff',
-          textHaloWidth: 1.1,
-          textAllowOverlap: false,
-        ),
-        enableInteraction: false,
-      );
-      // Flag true hanya setelah semua layer sukses: gagal di tengah ->
-      // outer catch membuang layer setengah jadi (#106).
+      // Fill+line cukup untuk "desa tampil". Label terpisah: gagal font/
+      // symbol tidak boleh menghapus polygon (pola sama _addKecLabelLayer).
       _desaLayersAdded = true;
+      try {
+        await controller.addSymbolLayer(
+          _desaSourceId,
+          _desaLabelLayerId,
+          SymbolLayerProperties(
+            textField: ['get', 'name'],
+            textFont: ['Noto Sans Regular'],
+            textSize: 9,
+            textColor: isDark ? '#f9fafb' : '#1f2937',
+            textHaloColor: isDark ? '#111827' : '#ffffff',
+            textHaloWidth: 1.1,
+            textAllowOverlap: false,
+          ),
+          enableInteraction: false,
+        );
+      } catch (_) {}
       await _applyDesaSelection();
     } catch (_) {
       // Gagal di tengah: buang layer setengah jadi supaya state selalu
-      // konsisten dengan peta (#106).
+      // konsisten dengan peta (#106). Lepas _desaShownForKec supaya
+      // tap/build bisa retry (bukan stuck selamanya).
       try {
         await controller.removeLayer(_desaFillLayerId);
         await controller.removeLayer(_desaLineLayerId);
@@ -353,6 +408,11 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
         await controller.removeSource(_desaSourceId);
       } catch (_) {}
       _desaLayersAdded = false;
+      if (token == _desaLoadToken &&
+          _desaShownForKec == kecSlug &&
+          mounted) {
+        setState(() => _desaShownForKec = null);
+      }
     }
   }
 
@@ -444,11 +504,25 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
     if (hit == _selectedKecId) return;
     if (hit != null) {
       unawaited(AnalyticsService.instance.logWilayahKecSelect(kecId: hit));
+      setState(() {
+        _selectedKecId = hit;
+        _selectedDesaId = null;
+      });
+      unawaited(_applyKecColors());
+      // Load ADM4 dari slug geojson langsung - jangan tunggu katalog API
+      // resolve `selected` (regresi setelah id=ULID / slug split).
+      unawaited(_loadDesaGeoJson(hit));
+      unawaited(_focusKecamatan(hit));
+      return;
     }
+    // Tap di luar semua polygon: lepas seleksi + layer desa.
     setState(() {
-      _selectedKecId = hit;
+      _selectedKecId = null;
       _selectedDesaId = null;
+      _desaShownForKec = null;
+      _desaRings.clear();
     });
+    unawaited(_clearDesaLayers());
     unawaited(_applyKecColors());
   }
 
@@ -497,8 +571,18 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
               .toList();
 
     // Load / ganti desa polygons saat kecamatan berubah.
-    if (selected != null && _desaShownForKec != selected.slug) {
-      _loadDesaGeoJson(selected.slug);
+    // Pakai slug dari tap/geojson (`_selectedKecId`), bukan `selected` API -
+    // katalog soft-fail / belum siap tidak boleh menahan render ADM4.
+    final kecSlug = _selectedKecId;
+    if (kecSlug != null && _desaShownForKec != kecSlug) {
+      unawaited(_loadDesaGeoJson(kecSlug));
+    } else if (kecSlug != null &&
+        _desaShownForKec == kecSlug &&
+        !_desaLayersAdded &&
+        _desaRings.isNotEmpty &&
+        _styleReady) {
+      // Retry sync setelah style siap / setelah gagal sync sebelumnya.
+      unawaited(_loadDesaGeoJson(kecSlug));
     }
 
     return FScaffold(

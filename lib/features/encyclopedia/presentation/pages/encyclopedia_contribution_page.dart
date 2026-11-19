@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart' hide State;
@@ -15,6 +14,7 @@ import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/content_related_picker_sheet.dart';
 import '../../../../shared/widgets/image_crop_page.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
+import '../../../../shared/widgets/pasteable_url_field.dart';
 import '../../data/encyclopedia_markdown_upload.dart';
 import '../../data/encyclopedia_providers.dart';
 import '../../domain/encyclopedia.entity.dart';
@@ -204,27 +204,6 @@ class _EncyclopediaContributionPageState
     );
     if (!mounted || result == null) return;
     setState(() => _bodyMd = result);
-  }
-
-  /// Tempel clipboard ke field link sumber (lebih cepat di HP daripada long-press).
-  Future<void> _pasteSourceUrl() async {
-    if (_submitting) return;
-    final l10n = AppLocalizations.of(context);
-    final data = await Clipboard.getData(Clipboard.kTextPlain);
-    final text = data?.text?.trim() ?? '';
-    if (!mounted) return;
-    if (text.isEmpty) {
-      showFToast(
-        context: context,
-        title: Text(l10n.encyclopediaSourceUrlClipboardEmpty),
-      );
-      return;
-    }
-    setState(() {
-      _sourceUrlController
-        ..text = text
-        ..selection = TextSelection.collapsed(offset: text.length);
-    });
   }
 
   void _applyArticle(EncyclopediaArticle article) {
@@ -523,30 +502,12 @@ class _EncyclopediaContributionPageState
               hint: l10n.encyclopediaFieldTagsPlaceholder,
             ),
             const Gap(12),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: FTextField(
-                    control: FTextFieldControl.managed(
-                      controller: _sourceUrlController,
-                    ),
-                    label: Text(l10n.encyclopediaFieldSourceUrl),
-                    hint: l10n.encyclopediaFieldSourceUrlHint,
-                    keyboardType: TextInputType.url,
-                    textInputAction: TextInputAction.next,
-                  ),
-                ),
-                const Gap(6),
-                FButton(
-                  variant: FButtonVariant.outline,
-                  onPress: _submitting ? null : _pasteSourceUrl,
-                  child: Semantics(
-                    label: l10n.encyclopediaSourceUrlPaste,
-                    child: const Icon(FLucideIcons.clipboardPaste),
-                  ),
-                ),
-              ],
+            PasteableUrlField(
+              controller: _sourceUrlController,
+              enabled: !_submitting,
+              label: Text(l10n.encyclopediaFieldSourceUrl),
+              hint: l10n.encyclopediaFieldSourceUrlHint,
+              textInputAction: TextInputAction.next,
             ),
             const Gap(12),
             Text(

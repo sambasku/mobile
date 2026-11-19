@@ -20,6 +20,7 @@ import '../../../review/presentation/providers/review_suggestions_providers.dart
 import '../../../notification/presentation/providers/notification_providers.dart';
 import '../../../settings/settings_router.dart';
 import '../../../jinye/data/jinye_providers.dart';
+import '../../../jinye/presentation/widgets/jinye_profile_preview.dart';
 import '../../../user_profile/presentation/providers/user_profile_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../achievement/presentation/providers/achievement_providers.dart';
@@ -458,9 +459,83 @@ class _IdentitySection extends ConsumerWidget {
                 child: Text(l10n.profileViewPublic),
               ),
           ],
-          footer: isAuth ? const ProfileAchievementTabs() : null,
+          footer: isAuth && username != null && username.isNotEmpty
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    JinyeProfileStatusLine(
+                      username: username,
+                      emptyChild: Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: _JinyeComposeQuoteCta(
+                          onPress: () => context.push('/jinye/create'),
+                        ),
+                      ),
+                    ),
+                    const ProfileAchievementTabs(),
+                  ],
+                )
+              : null,
         ),
       ],
+    );
+  }
+}
+
+/// CTA buat Jinye di tab Profil: tampilan quote (garis kiri + italic).
+class _JinyeComposeQuoteCta extends StatelessWidget {
+  const _JinyeComposeQuoteCta({required this.onPress});
+
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
+    return FTappable(
+      onPress: onPress,
+      child: Semantics(
+        button: true,
+        label: l10n.profileJinyeComposeQuote,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: theme.colors.secondary,
+            borderRadius: BorderRadius.circular(8),
+            border: Border(
+              left: BorderSide(color: theme.colors.primary, width: 3),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 10, 12),
+            child: Row(
+              children: [
+                Icon(
+                  FLucideIcons.quote,
+                  size: 16,
+                  color: theme.colors.primary,
+                ),
+                const Gap(10),
+                Expanded(
+                  child: Text(
+                    l10n.profileJinyeComposeQuote,
+                    style: theme.typography.body.sm.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: theme.colors.mutedForeground,
+                      height: 1.35,
+                    ),
+                  ),
+                ),
+                const Gap(8),
+                Icon(
+                  FLucideIcons.chevronRight,
+                  size: 16,
+                  color: theme.colors.mutedForeground,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

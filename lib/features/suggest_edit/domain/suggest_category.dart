@@ -20,6 +20,8 @@ enum SuggestCategory {
   derivedFrom('derived_from'),
   meaningGroup('meaning_group'),
   spellingVariant('spelling_variant'),
+  /// Tag topik lemma (chip di atas detail) - N:M lewat word_categories.
+  changeCategories('change_categories'),
   lemmaNotes('lemma_notes');
 
   const SuggestCategory(this.code);
@@ -270,6 +272,26 @@ Map<String, dynamic>? buildLemmaNotes({
     if (n != originalNotes.trim()) 'notes': n,
   };
   return out.isEmpty ? null : out;
+}
+
+/// Diff kategori topik lemma → `category_ids_to_add` / `category_ids_to_remove`.
+Map<String, dynamic>? buildChangeCategories({
+  required Set<String> originalIds,
+  required Set<String> selectedIds,
+}) {
+  final toAdd = [
+    for (final id in selectedIds)
+      if (!originalIds.contains(id)) id,
+  ];
+  final toRemove = [
+    for (final id in originalIds)
+      if (!selectedIds.contains(id)) id,
+  ];
+  if (toAdd.isEmpty && toRemove.isEmpty) return null;
+  return {
+    if (toAdd.isNotEmpty) 'category_ids_to_add': toAdd,
+    if (toRemove.isNotEmpty) 'category_ids_to_remove': toRemove,
+  };
 }
 
 List<String> splitCsv(String raw) =>

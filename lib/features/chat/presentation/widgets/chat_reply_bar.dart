@@ -6,10 +6,16 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/chat_models.dart';
 
 class ChatReplyBar extends StatelessWidget {
-  const ChatReplyBar({super.key, required this.target, required this.onClear});
+  const ChatReplyBar({
+    super.key,
+    required this.target,
+    required this.onClear,
+    required this.onJump,
+  });
 
   final ChatMessage target;
   final VoidCallback onClear;
+  final VoidCallback onJump;
 
   @override
   Widget build(BuildContext context) {
@@ -40,26 +46,35 @@ class ChatReplyBar extends StatelessWidget {
             ),
             const Gap(10),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.chatReplyBar(handle),
-                    style: theme.typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+              child: Semantics(
+                button: true,
+                hint: l10n.chatReplyJumpSemantics,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onJump,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.chatReplyBar(handle),
+                        style: theme.typography.body.sm.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: theme.colors.primary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        snippet.isEmpty ? l10n.chatTombstone : snippet,
+                        style: theme.typography.body.xs.copyWith(
+                          color: theme.colors.foreground,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
-                  Text(
-                    snippet.isEmpty ? l10n.chatTombstone : snippet,
-                    style: theme.typography.body.xs.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                ),
               ),
             ),
             FButton.icon(

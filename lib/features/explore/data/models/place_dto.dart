@@ -30,6 +30,8 @@ class PlaceDto {
     required this.contact,
     required this.related,
     required this.sources,
+    this.visitCount = 0,
+    this.viewerVisited = false,
   });
 
   final String id;
@@ -49,6 +51,8 @@ class PlaceDto {
   final PlaceContact? contact;
   final List<PlaceRelated> related;
   final List<PlaceSource> sources;
+  final int visitCount;
+  final bool viewerVisited;
 
   /// Null = field wajib absen/tidak valid → item di-skip.
   static PlaceDto? fromJson(Map<String, dynamic> json) {
@@ -157,6 +161,8 @@ class PlaceDto {
       contact: parsePlaceContact(json['contact']),
       related: related,
       sources: sources,
+      visitCount: (json['visitCount'] as num?)?.toInt() ?? 0,
+      viewerVisited: json['viewerVisited'] == true,
     );
   }
 
@@ -209,6 +215,8 @@ class PlaceDto {
     contact: contact,
     related: related,
     sources: sources,
+    visitCount: visitCount,
+    viewerVisited: viewerVisited,
   );
 }
 

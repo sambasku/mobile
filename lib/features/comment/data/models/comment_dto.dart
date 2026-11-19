@@ -22,6 +22,7 @@ abstract class CommentDto with _$CommentDto {
     @JsonKey(name: 'audio_mime_type') String? audioMimeType,
     @JsonKey(name: 'audio_duration_ms') int? audioDurationMs,
     CommentImageDto? image,
+    @JsonKey(name: 'sticker_id') String? stickerId,
     @JsonKey(name: 'created_at') String? createdAt,
     @Default(0) int upvotes,
     @Default(0) int downvotes,

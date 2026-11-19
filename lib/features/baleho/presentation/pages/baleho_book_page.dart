@@ -9,6 +9,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/widgets/image_crop_page.dart';
+import '../../../../shared/widgets/pasteable_url_field.dart';
 import '../../data/baleho_api.dart';
 import '../../domain/baleho_models.dart';
 import '../providers/baleho_board_provider.dart';
@@ -587,19 +588,22 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
               ),
               const Gap(8),
             ],
-            FTextField(
-              control: FTextFieldControl.managed(controller: _actionPayload),
-              label: Text(
-                _actionType == 'external'
-                    ? l10n.balehoActionUrlLabel
-                    : l10n.balehoActionPathLabel,
+            if (_actionType == 'external')
+              PasteableUrlField(
+                controller: _actionPayload,
+                label: Text(l10n.balehoActionUrlLabel),
+                hint: l10n.balehoActionUrlHint,
+                enabled: !_busy,
+                maxLines: 4,
+              )
+            else
+              FTextField(
+                control: FTextFieldControl.managed(controller: _actionPayload),
+                label: Text(l10n.balehoActionPathLabel),
+                hint: l10n.balehoActionPathHint,
+                enabled: !_busy,
+                maxLines: 4,
               ),
-              hint: _actionType == 'external'
-                  ? l10n.balehoActionUrlHint
-                  : l10n.balehoActionPathHint,
-              enabled: !_busy,
-              maxLines: 4,
-            ),
             const Gap(16),
             for (var i = 0; i < _frames.length; i++) ...[
               if (i > 0) const Gap(12),

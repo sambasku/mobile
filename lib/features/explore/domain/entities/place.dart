@@ -78,6 +78,8 @@ class Place {
     required this.contact,
     required this.related,
     required this.sources,
+    this.visitCount = 0,
+    this.viewerVisited = false,
   });
 
   final String id;
@@ -120,6 +122,12 @@ class Place {
   final PlaceContact? contact;
   final List<PlaceRelated> related;
   final List<PlaceSource> sources;
+
+  /// Jumlah user yang menandai pernah singgah (dari API detail/list).
+  final int visitCount;
+
+  /// Viewer login sudah menandai pernah singgah.
+  final bool viewerVisited;
 
   /// Cover list/peta/detail. List kosong → null (placeholder).
   PlaceImage? get cover {

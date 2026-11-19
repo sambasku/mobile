@@ -96,11 +96,14 @@ class CommentListController extends _$CommentListController {
   Future<CommentFailure?> create(
     String body, {
     CommentImageStaging? image,
+    String? stickerId,
   }) async {
     final current = state.value;
     if (current == null) return null;
     if (current.isSubmitting) return null;
-    if (body.trim().isEmpty && image == null) {
+    final sticker = stickerId?.trim();
+    final hasSticker = sticker != null && sticker.isNotEmpty;
+    if (body.trim().isEmpty && image == null && !hasSticker) {
       return CommentFailure(l10n.commentBodyOrPhotoRequired);
     }
 
@@ -110,7 +113,9 @@ class CommentListController extends _$CommentListController {
       wordId: wordId,
       body: body,
       image: image,
+      stickerId: hasSticker ? sticker : null,
     );
+    if (!ref.mounted) return null;
     return result.match(
       (failure) {
         final s = state.value ?? current;
@@ -125,6 +130,7 @@ class CommentListController extends _$CommentListController {
           params: {
             'word_id': wordId,
             if (image != null) 'has_image': '1',
+            if (hasSticker) 'has_sticker': '1',
           },
         );
         return null;

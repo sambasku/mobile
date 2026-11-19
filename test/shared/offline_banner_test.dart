@@ -44,21 +44,21 @@ void main() {
       ),
     );
 
+    const offlineCopy =
+        'Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.';
+
     // Frame pertama: belum ada event, dianggap online (banner hilang).
-    expect(find.text('Kamu lagi offline. Nampilin data tersimpan.'),
-        findsNothing);
+    expect(find.text(offlineCopy), findsNothing);
 
     // Offline event -> banner muncul (setelah debounce 2s).
     controller.add([ConnectivityResult.none]);
     await tester.pump(const Duration(seconds: 3));
-    expect(find.text('Kamu lagi offline. Nampilin data tersimpan.'),
-        findsOneWidget);
+    expect(find.text(offlineCopy), findsOneWidget);
 
     // Online lagi -> banner hilang tanpa debounce.
     controller.add([ConnectivityResult.wifi]);
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.text('Kamu lagi offline. Nampilin data tersimpan.'),
-        findsNothing);
+    expect(find.text(offlineCopy), findsNothing);
 
     await controller.close();
   });
