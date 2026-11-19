@@ -5624,6 +5624,48 @@ class AppLocalizationsId extends AppLocalizations {
       'Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.';
 
   @override
+  String get periksaKataLoginPrompt => 'Masuk dulu untuk memeriksa kata';
+
+  @override
+  String get periksaKataSearchHint => 'Cari lemma…';
+
+  @override
+  String get periksaKataEmpty => 'Belum ada makna menunggu pengecekan';
+
+  @override
+  String get periksaKataSearchEmpty => 'Tidak ketemu lemma itu';
+
+  @override
+  String get periksaKataAgree => 'Masuk akal';
+
+  @override
+  String get periksaKataDisagree => 'Kurang pas';
+
+  @override
+  String get periksaKataVotedAgree => 'Sudah memilih Masuk akal';
+
+  @override
+  String get periksaKataVotedDisagree => 'Sudah memilih Kurang pas';
+
+  @override
+  String get periksaKataHistoryTitle => 'Riwayat pemeriksaan';
+
+  @override
+  String get periksaKataHistoryEmpty => 'Belum ada riwayat pemeriksaan';
+
+  @override
+  String get periksaKataFilterAll => 'Semua';
+
+  @override
+  String get periksaKataFilterPending => 'Menunggu';
+
+  @override
+  String get periksaKataFilterVerified => 'Terverifikasi';
+
+  @override
+  String get periksaKataFilterRejected => 'Ditolak';
+
+  @override
   String get feedContributeSearchMissSubtitle =>
       'Kata yang dicari warga tapi belum ketemu. Bantu isi artinya';
 
@@ -18523,6 +18565,48 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get feedPeriksaKataStubBody =>
       'Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.';
+
+  @override
+  String get periksaKataLoginPrompt => 'Masuk dulu untuk memeriksa kata';
+
+  @override
+  String get periksaKataSearchHint => 'Cari lemma…';
+
+  @override
+  String get periksaKataEmpty => 'Belum ada makna menunggu pengecekan';
+
+  @override
+  String get periksaKataSearchEmpty => 'Tidak ketemu lemma itu';
+
+  @override
+  String get periksaKataAgree => 'Masuk akal';
+
+  @override
+  String get periksaKataDisagree => 'Kurang pas';
+
+  @override
+  String get periksaKataVotedAgree => 'Sudah memilih Masuk akal';
+
+  @override
+  String get periksaKataVotedDisagree => 'Sudah memilih Kurang pas';
+
+  @override
+  String get periksaKataHistoryTitle => 'Riwayat pemeriksaan';
+
+  @override
+  String get periksaKataHistoryEmpty => 'Belum ada riwayat pemeriksaan';
+
+  @override
+  String get periksaKataFilterAll => 'Semua';
+
+  @override
+  String get periksaKataFilterPending => 'Menunggu';
+
+  @override
+  String get periksaKataFilterVerified => 'Terverifikasi';
+
+  @override
+  String get periksaKataFilterRejected => 'Ditolak';
 
   @override
   String get feedContributeSearchMissSubtitle =>

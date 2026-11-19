@@ -9885,6 +9885,90 @@ abstract class AppLocalizations {
   /// **'Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.'**
   String get feedPeriksaKataStubBody;
 
+  /// Gate login halaman Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk memeriksa kata'**
+  String get periksaKataLoginPrompt;
+
+  /// Hint field cari di feed/riwayat Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Cari lemma…'**
+  String get periksaKataSearchHint;
+
+  /// Empty state feed Periksa Kata tanpa query
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada makna menunggu pengecekan'**
+  String get periksaKataEmpty;
+
+  /// Empty state setelah cari di Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ketemu lemma itu'**
+  String get periksaKataSearchEmpty;
+
+  /// Label upvote Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk akal'**
+  String get periksaKataAgree;
+
+  /// Label downvote Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Kurang pas'**
+  String get periksaKataDisagree;
+
+  /// Status sesi setelah upvote di feed
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah memilih Masuk akal'**
+  String get periksaKataVotedAgree;
+
+  /// Status sesi setelah downvote di feed
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah memilih Kurang pas'**
+  String get periksaKataVotedDisagree;
+
+  /// Judul halaman riwayat Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat pemeriksaan'**
+  String get periksaKataHistoryTitle;
+
+  /// Empty state riwayat Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada riwayat pemeriksaan'**
+  String get periksaKataHistoryEmpty;
+
+  /// Tab filter riwayat - semua status
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get periksaKataFilterAll;
+
+  /// Tab filter riwayat - pending
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get periksaKataFilterPending;
+
+  /// Tab filter riwayat - verified
+  ///
+  /// In id, this message translates to:
+  /// **'Terverifikasi'**
+  String get periksaKataFilterVerified;
+
+  /// Tab filter riwayat - rejected
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get periksaKataFilterRejected;
+
   /// Keterangan item daftar pencarian tanpa hasil
   ///
   /// In id, this message translates to:

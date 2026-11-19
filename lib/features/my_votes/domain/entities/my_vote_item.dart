@@ -20,6 +20,7 @@ class MyVoteItem {
     required this.value,
     required this.votedAt,
     required this.word,
+    this.communityStatus,
   });
 
   final String id;
@@ -28,6 +29,9 @@ class MyVoteItem {
   final int value;
   final String votedAt;
   final MyVoteWord? word;
+
+  /// pending | verified | rejected - hanya target meaning (Periksa Kata).
+  final String? communityStatus;
 
   bool get canOpen => word != null;
 }

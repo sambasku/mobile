@@ -3952,6 +3952,62 @@
   "@feedPeriksaKataStubBody": {
     "description": "Placeholder body /periksa-kata sebelum Phase 4"
   },
+  "periksaKataLoginPrompt": "Masuk dulu untuk memeriksa kata",
+  "@periksaKataLoginPrompt": {
+    "description": "Gate login halaman Periksa Kata"
+  },
+  "periksaKataSearchHint": "Cari lemma…",
+  "@periksaKataSearchHint": {
+    "description": "Hint field cari di feed/riwayat Periksa Kata"
+  },
+  "periksaKataEmpty": "Belum ada makna menunggu pengecekan",
+  "@periksaKataEmpty": {
+    "description": "Empty state feed Periksa Kata tanpa query"
+  },
+  "periksaKataSearchEmpty": "Tidak ketemu lemma itu",
+  "@periksaKataSearchEmpty": {
+    "description": "Empty state setelah cari di Periksa Kata"
+  },
+  "periksaKataAgree": "Masuk akal",
+  "@periksaKataAgree": {
+    "description": "Label upvote Periksa Kata"
+  },
+  "periksaKataDisagree": "Kurang pas",
+  "@periksaKataDisagree": {
+    "description": "Label downvote Periksa Kata"
+  },
+  "periksaKataVotedAgree": "Sudah memilih Masuk akal",
+  "@periksaKataVotedAgree": {
+    "description": "Status sesi setelah upvote di feed"
+  },
+  "periksaKataVotedDisagree": "Sudah memilih Kurang pas",
+  "@periksaKataVotedDisagree": {
+    "description": "Status sesi setelah downvote di feed"
+  },
+  "periksaKataHistoryTitle": "Riwayat pemeriksaan",
+  "@periksaKataHistoryTitle": {
+    "description": "Judul halaman riwayat Periksa Kata"
+  },
+  "periksaKataHistoryEmpty": "Belum ada riwayat pemeriksaan",
+  "@periksaKataHistoryEmpty": {
+    "description": "Empty state riwayat Periksa Kata"
+  },
+  "periksaKataFilterAll": "Semua",
+  "@periksaKataFilterAll": {
+    "description": "Tab filter riwayat - semua status"
+  },
+  "periksaKataFilterPending": "Menunggu",
+  "@periksaKataFilterPending": {
+    "description": "Tab filter riwayat - pending"
+  },
+  "periksaKataFilterVerified": "Terverifikasi",
+  "@periksaKataFilterVerified": {
+    "description": "Tab filter riwayat - verified"
+  },
+  "periksaKataFilterRejected": "Ditolak",
+  "@periksaKataFilterRejected": {
+    "description": "Tab filter riwayat - rejected"
+  },
   "feedContributeSearchMissSubtitle": "Kata yang dicari warga tapi belum ketemu. Bantu isi artinya",
   "@feedContributeSearchMissSubtitle": {
     "description": "Keterangan item daftar pencarian tanpa hasil"

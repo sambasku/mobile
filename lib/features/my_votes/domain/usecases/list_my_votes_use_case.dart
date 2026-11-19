@@ -12,7 +12,16 @@ class ListMyVotesUseCase {
   Future<Either<MyVoteFailure, MyVotePage>> call({
     int limit = 20,
     String? cursor,
+    String? targetType,
+    String? communityStatus,
+    String? q,
   }) {
-    return _repo.listHistory(limit: limit, cursor: cursor);
+    return _repo.listHistory(
+      limit: limit,
+      cursor: cursor,
+      targetType: targetType,
+      communityStatus: communityStatus,
+      q: q,
+    );
   }
 }
