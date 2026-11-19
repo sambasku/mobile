@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -28,6 +30,16 @@ class EncyclopediaArticleDetailPage extends ConsumerStatefulWidget {
 
 class _EncyclopediaArticleDetailPageState
     extends ConsumerState<EncyclopediaArticleDetailPage> {
+  bool _viewRecorded = false;
+
+  Future<void> _recordView(String slug) async {
+    try {
+      await ref.read(encyclopediaRepositoryProvider).recordView(slug);
+    } catch (_) {
+      // best-effort
+    }
+  }
+
   bool? _bookmarked;
   String? _bookmarkedForId;
   bool _busyBookmark = false;
@@ -87,6 +99,10 @@ class _EncyclopediaArticleDetailPageState
 
     if (article != null) {
       _syncBookmarkFrom(article);
+      if (!_viewRecorded) {
+        _viewRecorded = true;
+        unawaited(_recordView(article.slug));
+      }
     }
 
     if (article == null) {

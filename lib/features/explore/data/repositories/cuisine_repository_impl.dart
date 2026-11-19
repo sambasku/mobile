@@ -23,6 +23,8 @@ class CuisineRepositoryImpl {
 
   Future<CuisineDtoItem?> getBySlug(String slug) => _datasource.fetchBySlug(slug);
 
+  Future<void> recordView(String slug) => _datasource.recordView(slug);
+
   Future<CulinaryPlacePage> places({
     int limit = cuisinesPageSize,
     String? before,

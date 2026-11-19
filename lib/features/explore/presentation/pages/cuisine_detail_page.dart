@@ -125,6 +125,25 @@ class _Body extends ConsumerStatefulWidget {
 }
 
 class _BodyState extends ConsumerState<_Body> {
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.microtask(() {
+      if (!mounted) return;
+      unawaited(_recordView());
+    });
+  }
+
+  Future<void> _recordView() async {
+    try {
+      await ref
+          .read(cuisineRepositoryProvider)
+          .recordView(widget.item.slug);
+    } catch (_) {
+      // best-effort
+    }
+  }
+
   Future<void> _report() async {
     if (await culinaryNeedsAuth(context, ref)) return;
     if (!mounted) return;

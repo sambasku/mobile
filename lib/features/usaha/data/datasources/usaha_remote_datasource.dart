@@ -51,6 +51,13 @@ class UsahaRemoteDatasource {
     );
   }
 
+  Future<void> recordView(String slug) async {
+    await _dio.post<dynamic>(
+      '/api/v1/usaha/${Uri.encodeComponent(slug)}/view',
+      options: Options(sendTimeout: const Duration(seconds: 5)),
+    );
+  }
+
   Future<Usaha?> fetchBySlug(String slug) async {
     try {
       final res = await _dio.get<dynamic>(
@@ -138,6 +145,20 @@ class UsahaRemoteDatasource {
       items: items,
       total: (data['total'] as num?)?.toInt() ?? items.length,
       nextOffset: next is num ? next.toInt() : null,
+    );
+  }
+
+  /// Tandai pernah bertransaksi (login). Path pakai usaha id.
+  Future<void> markVisit(String usahaId) async {
+    await _dio.post<dynamic>(
+      '/api/v1/usaha/${Uri.encodeComponent(usahaId)}/visits',
+    );
+  }
+
+  /// Batalkan tandai pernah bertransaksi.
+  Future<void> unmarkVisit(String usahaId) async {
+    await _dio.delete<dynamic>(
+      '/api/v1/usaha/${Uri.encodeComponent(usahaId)}/visits',
     );
   }
 

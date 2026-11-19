@@ -42,6 +42,13 @@ class CuisineRemoteDatasource {
     );
   }
 
+  Future<void> recordView(String slug) async {
+    await _dio.post<dynamic>(
+      '/api/v1/culinary/cuisines/${Uri.encodeComponent(slug)}/view',
+      options: Options(sendTimeout: const Duration(seconds: 5)),
+    );
+  }
+
   /// Detail by slug + `places[]` (JOIN relasi). Null bila 404.
   Future<CuisineDtoItem?> fetchBySlug(String slug) async {
     try {

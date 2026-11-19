@@ -230,7 +230,18 @@ class _BodyState extends ConsumerState<_Body> {
       unawaited(
         AnalyticsService.instance.logUsahaOpen(slug: widget.usaha.slug),
       );
+      unawaited(_recordView());
     });
+  }
+
+  Future<void> _recordView() async {
+    try {
+      await ref
+          .read(usahaRepositoryProvider)
+          .recordView(widget.usaha.slug);
+    } catch (_) {
+      // best-effort
+    }
   }
 
   Future<void> _toggleVisit() async {

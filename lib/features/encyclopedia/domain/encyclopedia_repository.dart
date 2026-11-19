@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import '../../../core/models/api_response.dart';
 import '../data/encyclopedia_remote_datasource.dart';
 import 'encyclopedia.entity.dart';
@@ -37,11 +39,13 @@ abstract interface class EncyclopediaRepository {
   Future<ApiResponse<MyContributionPage>> getMyContributions(
     Map<String, dynamic> query,
   );
+  Future<void> recordView(String slug);
 }
 
 class EncyclopediaRepositoryImpl implements EncyclopediaRepository {
-  EncyclopediaRepositoryImpl(this._remote);
+  EncyclopediaRepositoryImpl(this._remote, this._dio);
   final EncyclopediaRemoteDatasource _remote;
+  final Dio _dio;
 
   @override
   Future<ApiResponse<EncyclopediaArticlePage>> listArticles(
@@ -106,4 +110,12 @@ class EncyclopediaRepositoryImpl implements EncyclopediaRepository {
   Future<ApiResponse<MyContributionPage>> getMyContributions(
     Map<String, dynamic> query,
   ) => _remote.getMyContributions(query);
+
+  @override
+  Future<void> recordView(String slug) async {
+    await _dio.post<void>(
+      '/api/v1/encyclopedia/articles/${Uri.encodeComponent(slug)}/view',
+      options: Options(sendTimeout: const Duration(seconds: 5)),
+    );
+  }
 }

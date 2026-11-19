@@ -131,6 +131,8 @@ this.manager,
     this.pendingChanges = 0,
     this.items = const [],
     this.images = const [],
+    this.visitCount = 0,
+    this.viewerVisited = false,
   });
 
   final String id;
@@ -169,6 +171,12 @@ final UsahaAuthorRef? manager;
 
   /// Foto singgah (halaman pertama dari detail).
   final List<UsahaImage> images;
+
+  /// Jumlah user yang menandai pernah bertransaksi.
+  final int visitCount;
+
+  /// Viewer login sudah menandai pernah bertransaksi.
+  final bool viewerVisited;
 
   bool get hasCoordinates => lat != null && lng != null;
 
