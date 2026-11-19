@@ -43,6 +43,7 @@ manager: _authorRef(json['manager']),
       images: _images(json['images']),
       visitCount: _int(json['visit_count']) ?? 0,
       viewerVisited: json['viewer_visited'] == true,
+      sponsorTier: _str(json['sponsor_tier']),
     );
   }
 

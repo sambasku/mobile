@@ -133,6 +133,7 @@ this.manager,
     this.images = const [],
     this.visitCount = 0,
     this.viewerVisited = false,
+    this.sponsorTier,
   });
 
   final String id;
@@ -177,6 +178,9 @@ final UsahaAuthorRef? manager;
 
   /// Viewer login sudah menandai pernah bertransaksi.
   final bool viewerVisited;
+
+  /// Tier sponsorship aktif (perak|emas|intan|mustika); null = bukan sponsor.
+  final String? sponsorTier;
 
   bool get hasCoordinates => lat != null && lng != null;
 

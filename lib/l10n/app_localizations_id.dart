@@ -12877,6 +12877,26 @@ class AppLocalizationsId extends AppLocalizations {
   String chatTypingMany(int count) {
     return '$count orang sedang mengetik…';
   }
+
+  @override
+  String get usahaSponsorBadge => 'Sponsor';
+
+  @override
+  String usahaSponsorBadgeTier(String tier) {
+    return 'Sponsor $tier';
+  }
+
+  @override
+  String get usahaSponsorTierPerak => 'Perak';
+
+  @override
+  String get usahaSponsorTierEmas => 'Emas';
+
+  @override
+  String get usahaSponsorTierIntan => 'Intan';
+
+  @override
+  String get usahaSponsorTierMustika => 'Mustika';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -25751,4 +25771,24 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String chatTypingMany(int count) {
     return '$count orang sedang mengetik…';
   }
+
+  @override
+  String get usahaSponsorBadge => 'Sponsor';
+
+  @override
+  String usahaSponsorBadgeTier(String tier) {
+    return 'Sponsor $tier';
+  }
+
+  @override
+  String get usahaSponsorTierPerak => 'Perak';
+
+  @override
+  String get usahaSponsorTierEmas => 'Emas';
+
+  @override
+  String get usahaSponsorTierIntan => 'Intan';
+
+  @override
+  String get usahaSponsorTierMustika => 'Mustika';
 }

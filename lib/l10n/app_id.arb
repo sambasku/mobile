@@ -3006,7 +3006,9 @@
   "@hotTopicsNearNet": {
     "description": "Subtitle skor vote net di tab Dekati ambang",
     "placeholders": {
-      "net": { "type": "String" }
+      "net": {
+        "type": "String"
+      }
     }
   },
   "dictCorrectSpellingCta": "Koreksi ejaan",
@@ -3021,7 +3023,9 @@
   "@contributeSpellTypedLabel": {
     "description": "Label baca-saja term typo di form koreksi",
     "placeholders": {
-      "term": { "type": "String" }
+      "term": {
+        "type": "String"
+      }
     }
   },
   "contributeSpellCorrectHint": "Ejaan yang benar",
@@ -9591,5 +9595,34 @@
         "type": "int"
       }
     }
+  },
+  "usahaSponsorBadge": "Sponsor",
+  "@usahaSponsorBadge": {
+    "description": "Lencana singkat di kartu listing usaha yang jadi sponsor"
+  },
+  "usahaSponsorBadgeTier": "Sponsor {tier}",
+  "@usahaSponsorBadgeTier": {
+    "description": "Lencana detail usaha dengan nama tingkat dukungan",
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
+  "usahaSponsorTierPerak": "Perak",
+  "@usahaSponsorTierPerak": {
+    "description": "Nama tingkat sponsor Perak"
+  },
+  "usahaSponsorTierEmas": "Emas",
+  "@usahaSponsorTierEmas": {
+    "description": "Nama tingkat sponsor Emas"
+  },
+  "usahaSponsorTierIntan": "Intan",
+  "@usahaSponsorTierIntan": {
+    "description": "Nama tingkat sponsor Intan"
+  },
+  "usahaSponsorTierMustika": "Mustika",
+  "@usahaSponsorTierMustika": {
+    "description": "Nama tingkat sponsor Mustika"
   }
 }

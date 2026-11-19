@@ -15,8 +15,8 @@ import '../../data/datasources/about_api_datasource.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../providers/about_api_providers.dart';
 
-/// Halaman About: identitas app + blok info & fitur. Data Sponsor/Mitra
-/// dan Tim Kami pindah ke [SponsorshipTeamPage] supaya tidak duplikat.
+/// Halaman About: identitas app + blok info & fitur (murni info app).
+/// Daftar Sponsor/Tim pindah ke halaman Komunitas (Phase 5).
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
@@ -73,13 +73,6 @@ class AboutPage extends StatelessWidget {
               _AboutBlock(
                 title: l10n.aboutWhatTitle,
                 body: l10n.aboutWhatBody,
-              ),
-              const Gap(16),
-              _AboutLinkBlock(
-                title: l10n.aboutSponsorTitle,
-                body: l10n.aboutSponsorBody,
-                actionLabel: l10n.aboutSponsorAction,
-                onPress: () => context.push('/about/sponsorship'),
               ),
               const Gap(16),
               _AboutLinkBlock(

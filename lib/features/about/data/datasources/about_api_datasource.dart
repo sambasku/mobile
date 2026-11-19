@@ -99,6 +99,8 @@ class AboutSponsorship {
     this.description,
     this.logoUrl,
     this.url,
+    this.tier,
+    this.usahaId,
   });
 
   final String id;
@@ -109,6 +111,9 @@ class AboutSponsorship {
   final String? description;
   final String? logoUrl;
   final String? url;
+  /// perak | emas | intan | mustika
+  final String? tier;
+  final String? usahaId;
 
   static AboutSponsorship? fromJson(Map<String, dynamic> json) {
     final id = json['id'];
@@ -128,6 +133,8 @@ class AboutSponsorship {
           : null,
       logoUrl: json['logo_url'] is String ? json['logo_url'] as String : null,
       url: _cleanUrl(json['url']),
+      tier: json['tier'] is String ? json['tier'] as String : null,
+      usahaId: json['usaha_id'] is String ? json['usaha_id'] as String : null,
     );
   }
 }
@@ -158,6 +165,11 @@ class AboutApiDatasource {
 
   Future<List<AboutSponsorship>> fetchSponsorships() async {
     final resp = await _dio.get<dynamic>('/api/v1/about/sponsorships');
+    return _parseItems(resp.data, 'items', AboutSponsorship.fromJson);
+  }
+
+  Future<List<AboutSponsorship>> fetchSplashSponsorships() async {
+    final resp = await _dio.get<dynamic>('/api/v1/about/sponsorships/splash');
     return _parseItems(resp.data, 'items', AboutSponsorship.fromJson);
   }
 

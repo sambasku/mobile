@@ -6143,5 +6143,34 @@
         "type": "int"
       }
     }
+  },
+  "usahaSponsorBadge": "Sponsor",
+  "@usahaSponsorBadge": {
+    "description": "Lencana singkat di kartu listing usaha yang jadi sponsor"
+  },
+  "usahaSponsorBadgeTier": "Sponsor {tier}",
+  "@usahaSponsorBadgeTier": {
+    "description": "Lencana detail usaha dengan nama tingkat dukungan",
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
+  "usahaSponsorTierPerak": "Perak",
+  "@usahaSponsorTierPerak": {
+    "description": "Nama tingkat sponsor Perak"
+  },
+  "usahaSponsorTierEmas": "Emas",
+  "@usahaSponsorTierEmas": {
+    "description": "Nama tingkat sponsor Emas"
+  },
+  "usahaSponsorTierIntan": "Intan",
+  "@usahaSponsorTierIntan": {
+    "description": "Nama tingkat sponsor Intan"
+  },
+  "usahaSponsorTierMustika": "Mustika",
+  "@usahaSponsorTierMustika": {
+    "description": "Nama tingkat sponsor Mustika"
   }
 }

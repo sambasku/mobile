@@ -329,6 +329,7 @@ class _BodyState extends ConsumerState<_Body> {
           runSpacing: 6,
           children: [
             ?badge,
+            ?usahaSponsorDetailBadge(l10n, usaha.sponsorTier),
             if (usaha.category case final category?)
               FBadge(
                 variant: FBadgeVariant.secondary,

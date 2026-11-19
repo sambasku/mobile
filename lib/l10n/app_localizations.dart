@@ -22716,6 +22716,42 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{count} orang sedang mengetik…'**
   String chatTypingMany(int count);
+
+  /// Lencana singkat di kartu listing usaha yang jadi sponsor
+  ///
+  /// In id, this message translates to:
+  /// **'Sponsor'**
+  String get usahaSponsorBadge;
+
+  /// Lencana detail usaha dengan nama tingkat dukungan
+  ///
+  /// In id, this message translates to:
+  /// **'Sponsor {tier}'**
+  String usahaSponsorBadgeTier(String tier);
+
+  /// Nama tingkat sponsor Perak
+  ///
+  /// In id, this message translates to:
+  /// **'Perak'**
+  String get usahaSponsorTierPerak;
+
+  /// Nama tingkat sponsor Emas
+  ///
+  /// In id, this message translates to:
+  /// **'Emas'**
+  String get usahaSponsorTierEmas;
+
+  /// Nama tingkat sponsor Intan
+  ///
+  /// In id, this message translates to:
+  /// **'Intan'**
+  String get usahaSponsorTierIntan;
+
+  /// Nama tingkat sponsor Mustika
+  ///
+  /// In id, this message translates to:
+  /// **'Mustika'**
+  String get usahaSponsorTierMustika;
 }
 
 class _AppLocalizationsDelegate
