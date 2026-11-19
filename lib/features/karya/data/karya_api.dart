@@ -94,7 +94,7 @@ class KaryaApi {
       slug: '${raw['slug']}',
       title: '${raw['title']}',
       kind: '${raw['kind']}',
-      year: (raw['year'] as num?)?.toInt() ?? 0,
+      year: (raw['year'] as num?)?.toInt(),
       language: raw['language'] as String?,
       description: raw['description'] as String?,
       coverUrl: raw['cover_url'] as String?,
@@ -187,7 +187,7 @@ class KaryaApi {
                   slug: '${row['slug']}',
                   title: '${row['title']}',
                   kind: '${row['kind']}',
-                  year: (row['year'] as num?)?.toInt() ?? 0,
+                  year: (row['year'] as num?)?.toInt(),
                   role: '${row['role'] ?? ''}',
                 ),
               )
@@ -349,7 +349,7 @@ String karyaErrorMessage(Object error) {
 }
 
 /// Payload wire untuk usulan baru / edit.
-/// Usulan `new` boleh tanpa `year` / sambas (dilengkapi saat approve).
+/// `year` dan sambas opsional (bukan syarat approve).
 Map<String, dynamic> karyaPayloadWire({
   required String title,
   required String kind,

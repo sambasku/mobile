@@ -265,9 +265,15 @@ class _KreatorProfileBodyState extends ConsumerState<_KreatorProfileBody> {
                   FTile(
                     title: Text(karya.title),
                     subtitle: Text(
-                      '${karya.kind == 'music' ? l10n.karyaKindMusic : l10n.karyaKindFilm}'
-                      ' · ${l10n.karyaYearLabel(karya.year)}'
-                      '${karya.role.isEmpty ? '' : ' · ${_roleLabel(l10n, karya.kind, karya.role)}'}',
+                      [
+                        karya.kind == 'music'
+                            ? l10n.karyaKindMusic
+                            : l10n.karyaKindFilm,
+                        if (karya.year != null)
+                          l10n.karyaYearLabel(karya.year!),
+                        if (karya.role.isNotEmpty)
+                          _roleLabel(l10n, karya.kind, karya.role),
+                      ].join(' · '),
                     ),
                     suffix: Icon(
                       FLucideIcons.chevronRight,

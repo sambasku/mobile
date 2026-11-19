@@ -114,10 +114,11 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
                 variant: FBadgeVariant.secondary,
                 child: Text(kindLabel),
               ),
-              FBadge(
-                variant: FBadgeVariant.outline,
-                child: Text(l10n.karyaYearLabel(item.year)),
-              ),
+              if (item.year != null)
+                FBadge(
+                  variant: FBadgeVariant.outline,
+                  child: Text(l10n.karyaYearLabel(item.year!)),
+                ),
             ],
           ),
           if (description.isNotEmpty) ...[

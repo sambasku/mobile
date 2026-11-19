@@ -64,7 +64,7 @@ class KreatorKaryaSummary {
     required this.slug,
     required this.title,
     required this.kind,
-    required this.year,
+    this.year,
     required this.role,
   });
 
@@ -72,7 +72,7 @@ class KreatorKaryaSummary {
   final String slug;
   final String title;
   final String kind;
-  final int year;
+  final int? year;
   final String role;
 }
 
@@ -179,7 +179,7 @@ class KaryaEntry {
     required this.slug,
     required this.title,
     required this.kind,
-    required this.year,
+    this.year,
     required this.sambasConnections,
     required this.accessLinks,
     required this.credits,
@@ -200,7 +200,7 @@ class KaryaEntry {
   final String slug;
   final String title;
   final String kind;
-  final int year;
+  final int? year;
   final String? language;
   final String? description;
   final String? coverUrl;

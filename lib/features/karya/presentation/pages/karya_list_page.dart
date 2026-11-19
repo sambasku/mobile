@@ -243,9 +243,11 @@ class _KaryaListTile extends StatelessWidget {
     final theme = context.theme;
     final kindLabel =
         item.isMusic ? l10n.karyaKindMusic : l10n.karyaKindFilm;
+    final yearLabel =
+        item.year == null ? null : l10n.karyaYearLabel(item.year!);
     final subtitle = showKind
-        ? '$kindLabel · ${l10n.karyaYearLabel(item.year)}'
-        : l10n.karyaYearLabel(item.year);
+        ? (yearLabel == null ? kindLabel : '$kindLabel · $yearLabel')
+        : (yearLabel ?? kindLabel);
 
     return FTappable(
       onPress: () => context.push(KaryaRouter.detailPath(item.slug)),

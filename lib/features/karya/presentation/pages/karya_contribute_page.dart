@@ -184,7 +184,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
     if (_prefilled) return;
     _prefilled = true;
     _title.text = entry.title;
-    _year.text = '${entry.year}';
+    _year.text = entry.year?.toString() ?? '';
     _kind = entry.kind;
     if ((entry.description ?? '').isNotEmpty) {
       _description.text = entry.description!;
@@ -259,16 +259,17 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
     required AppLocalizations l10n,
     required String? kind,
     required String title,
-    required int? year,
-    required List<Map<String, String>> sambasRows,
+    required String yearRaw,
     required List<Map<String, String>> creditRows,
   }) {
     if (kind == null) return l10n.karyaFormKindRequired;
     if (title.length < 2) return l10n.karyaFormTitleRequired;
-    if (year == null || year < 1800 || year > 2100) {
-      return l10n.karyaFormYearInvalid;
+    if (yearRaw.isNotEmpty) {
+      final year = int.tryParse(yearRaw);
+      if (year == null || year < 1800 || year > 2100) {
+        return l10n.karyaFormYearInvalid;
+      }
     }
-    if (sambasRows.isEmpty) return l10n.karyaFormSambasRequired;
     if (creditRows.isEmpty) return l10n.karyaFormCreditRequired;
     final roles = creditRows.map((c) => c['role']).whereType<String>().toSet();
     if (kind == 'music' && !roles.contains('vocal')) {
@@ -330,7 +331,8 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
       return;
     }
 
-    final year = int.tryParse(_year.text.trim());
+    final yearRaw = _year.text.trim();
+    final year = yearRaw.isEmpty ? null : int.tryParse(yearRaw);
     final sambasRows = <Map<String, String>>[];
     for (final row in _sambas) {
       final note = row.note.text.trim();
@@ -363,8 +365,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
       l10n: l10n,
       kind: kind,
       title: title,
-      year: year,
-      sambasRows: sambasRows,
+      yearRaw: yearRaw,
       creditRows: creditRows,
     );
     if (clientError != null) {
@@ -372,12 +373,11 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
       return;
     }
     final safeKind = kind!;
-    final safeYear = year!;
     setState(() => _busy = true);
     try {
       final payload = karyaPayloadWire(
         title: title,
-        year: safeYear,
+        year: year,
         kind: safeKind,
         sambasConnections: sambasRows,
         credits: creditRows,
