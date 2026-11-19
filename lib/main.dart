@@ -97,6 +97,7 @@ Future<void> main() async {
   await ForuiPaletteController.preload(prefs);
   await FontScaleController.preload(prefs);
   await LocalePrefs.preload(prefs);
+  // #296: hapus sisa key disk lama; riwayat pencarian hanya in-memory.
   await SearchHistoryController.preload(prefs);
   await OnboardingPrefs.preload(prefs);
   await SpeakerStatusPrefs.preload(prefs);

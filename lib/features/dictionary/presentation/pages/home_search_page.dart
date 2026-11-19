@@ -29,6 +29,7 @@ import '../../../discussion/discussion_router.dart';
 import '../../../encyclopedia/encyclopedia_router.dart';
 import '../../../entertainment/entertainment_router.dart';
 import '../../dictionary_router.dart';
+import '../providers/word_list_providers.dart';
 import '../providers/word_of_day_providers.dart';
 import '../widgets/word_of_day_card.dart';
 
@@ -305,7 +306,7 @@ class HomeSearchPage extends HookConsumerWidget {
 
 /// Satu baris tile aksi beranda (Cari / A-Z / Usulkan / Diskusi / Pantun /
 /// Ensiklopedia). Scroll horizontal; kotak ikon 1:1; label di bawahnya.
-class _HomeActionChips extends StatelessWidget {
+class _HomeActionChips extends ConsumerWidget {
   const _HomeActionChips();
 
   /// Lebar kotak ikon (= tinggi, rasio 1:1). Sama dengan lebar kolom
@@ -319,14 +320,18 @@ class _HomeActionChips extends StatelessWidget {
   static const double height = _tileSize + 6 + _labelSlot;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final items = <_HomeActionChip>[
       _HomeActionChip(
         icon: FLucideIcons.search,
         label: l10n.dictSearchChip,
         semanticsLabel: l10n.dictSearchHint,
-        onPress: () => context.push('${DictionaryRouter.list.path}?focus=1'),
+        onPress: () {
+          // #296: jangan bawa query keepAlive / riwayat disk ke field baru.
+          ref.read(wordListProvider.notifier).clearSearchSession();
+          context.push('${DictionaryRouter.list.path}?focus=1');
+        },
       ),
       _HomeActionChip(
         icon: FLucideIcons.aLargeSmall,

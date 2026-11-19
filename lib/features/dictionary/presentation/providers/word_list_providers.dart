@@ -132,6 +132,16 @@ class WordListNotifier extends _$WordListNotifier {
     scheduleMicrotask(load);
   }
 
+  /// Bersihkan field pencarian + reset ke A-Z (issue mobile#296).
+  /// Dipanggil sebelum buka `/words` dari beranda supaya query lama di
+  /// keepAlive tidak ikut tampil lagi.
+  void clearSearchSession() {
+    _debounce?.cancel();
+    _dropInFlight();
+    state = const WordListState(isLoading: true);
+    scheduleMicrotask(load);
+  }
+
   /// Sambas (`lemma`) atau Indonesia (`translation`).
   void onSearchInChanged(String searchIn) {
     if (searchIn == state.searchIn) return;

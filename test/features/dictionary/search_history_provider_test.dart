@@ -49,31 +49,30 @@ void main() {
   });
 
   test('remove: hapus satu entri', () async {
-    final c = await pump(
-      values: {
-        SearchHistoryController.prefKey: ['ange', 'sabak'],
-      },
-    );
-    await c.read(searchHistoryControllerProvider.notifier).remove('sabak');
+    final c = await pump();
+    final n = c.read(searchHistoryControllerProvider.notifier);
+    await n.record('ange');
+    await n.record('sabak');
+    await n.remove('sabak');
     expect(c.read(searchHistoryControllerProvider), ['ange']);
   });
 
   test('clear: kosongkan semua', () async {
-    final c = await pump(
-      values: {
-        SearchHistoryController.prefKey: ['ange', 'sabak'],
-      },
-    );
-    await c.read(searchHistoryControllerProvider.notifier).clear();
+    final c = await pump();
+    final n = c.read(searchHistoryControllerProvider.notifier);
+    await n.record('ange');
+    await n.clear();
     expect(c.read(searchHistoryControllerProvider), isEmpty);
   });
 
-  test('preload: seed dari SharedPreferences', () async {
+  test('preload: tidak seed dari SharedPreferences (#296)', () async {
     final c = await pump(
       values: {
         SearchHistoryController.prefKey: ['ange', 'sabak'],
       },
     );
-    expect(c.read(searchHistoryControllerProvider), ['ange', 'sabak']);
+    expect(c.read(searchHistoryControllerProvider), isEmpty);
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getStringList(SearchHistoryController.prefKey), isNull);
   });
 }
