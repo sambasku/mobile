@@ -23,6 +23,7 @@ import 'shared/dev_tool/api_host/api_host_inspector.dart';
 import 'shared/dev_tool/dev_tool.dart';
 import 'shared/dev_tool/exception_log/exception_log_inspector.dart';
 import 'shared/dev_tool/onboarding/onboarding_inspector.dart';
+import 'shared/dev_tool/splash_sponsor/splash_sponsor_inspector.dart';
 import 'shared/dev_tool/storage_inspector/response_cache_inspector.dart';
 import 'shared/dev_tool/storage_inspector/secure_storage_inspector.dart';
 import 'shared/dev_tool/storage_inspector/shared_pref_inspector.dart';
@@ -140,7 +141,10 @@ class App extends ConsumerWidget {
                               ).devToolOtherUi,
                               icon: FLucideIcons.layoutDashboard,
                               color: const Color(0xFF7C3AED),
-                              children: [OnboardingInspector()],
+                              children: [
+                                OnboardingInspector(),
+                                SplashSponsorInspector(),
+                              ],
                             ),
                           ],
                           child: child ?? const SizedBox.shrink(),

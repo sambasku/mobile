@@ -126,7 +126,7 @@ class _SplashPageState extends State<SplashPage>
                   opacity: _logoFade,
                   child: ScaleTransition(
                     scale: _logoScale,
-                    child: const BrandMark(size: 200),
+                    child: const BrandMark(size: 248),
                   ),
                 ),
                 const Spacer(),

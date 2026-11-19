@@ -154,3 +154,5 @@ flutter:
     - assets/data/
     - assets/gif/
     - assets/sounds/
+    # Sample logo PNG transparan untuk DevTool splash sponsor.
+    - assets/dev/splash_sponsors/
