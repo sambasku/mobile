@@ -100,8 +100,8 @@ class JinyeProfileStatusLine extends ConsumerWidget {
 
 /// Bubble chat preview Jinye di kanan atas avatar+border (max 32 char / label media).
 ///
-/// Saat ini tidak dipasang di header (overlap bingkai). Pakai
-/// [JinyeProfileStatusLine] di profil publik.
+/// Dipasang lewat [ProfileIdentityHeader.avatarOverlay] di profil publik.
+/// Tab Profil pribadi pakai [JinyeProfileStatusLine] + CTA quote, bukan bubble.
 class JinyeProfilePreview extends ConsumerWidget {
   const JinyeProfilePreview({
     super.key,

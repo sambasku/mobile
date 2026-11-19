@@ -306,16 +306,16 @@ class _ProfileBody extends HookConsumerWidget {
                               onPress: () => context.push('/edit-profile'),
                             ),
                         ],
-                        footer: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            JinyeProfileStatusLine(username: profile.username),
-                            ProfileAchievementTabs(
-                              username: isOwnProfile ? null : profile.username,
-                              showTitle: true,
-                              showAllButton: isOwnProfile,
-                            ),
-                          ],
+                        // Bubble Jinye di bahu avatar (bukan status line /
+                        // quote CTA - itu khusus tab Profil pribadi).
+                        avatarOverlay: JinyeProfilePreview(
+                          username: profile.username,
+                          isOwnProfile: isOwnProfile,
+                        ),
+                        footer: ProfileAchievementTabs(
+                          username: isOwnProfile ? null : profile.username,
+                          showTitle: true,
+                          showAllButton: isOwnProfile,
                         ),
                       ),
                       const Gap(8),

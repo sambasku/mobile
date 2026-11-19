@@ -10,8 +10,7 @@ import '../../domain/hot_topics.dart';
 import '../providers/hot_topics_providers.dart';
 
 /// Kartu Sorotan di Home (G4): tab Dicari / Diusulkan / Dekati ambang.
-/// Layout compact - pill tab pakai [FBadge] (sama chip label Seksual),
-/// baris padat, max 5 item.
+/// Layout padat - pill [FBadge], baris 1 baris, max 3 item (hemat ruang home).
 class HotTopicsCard extends ConsumerStatefulWidget {
   const HotTopicsCard({super.key});
 
@@ -20,7 +19,7 @@ class HotTopicsCard extends ConsumerStatefulWidget {
 }
 
 class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
-  static const _maxItems = 5;
+  static const _maxItems = 3;
 
   int _tab = 0;
 
@@ -73,22 +72,36 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(12, 2, 12, 0),
-          child: Text(
-            l10n.hotTopicsTitle,
-            style: theme.typography.body.sm.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.hotTopicsTitle,
+                  style: theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              if (active.meta.backfillUsed)
+                Text(
+                  l10n.hotTopicsBackfillHint,
+                  style: theme.typography.body.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                    fontSize: 10,
+                  ),
+                ),
+            ],
           ),
         ),
-        const Gap(6),
+        const Gap(4),
         SizedBox(
-          height: 32,
+          height: 28,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.fromLTRB(12, 2, 12, 2),
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
             itemCount: visibleTabs.length,
-            separatorBuilder: (_, _) => const Gap(6),
+            separatorBuilder: (_, _) => const Gap(4),
             itemBuilder: (context, i) {
               final tab = visibleTabs[i];
               final selected = safeTab == tab.index;
@@ -106,14 +119,10 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (items.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.fromLTRB(12, 2, 12, 2),
+          child: items.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Text(
                     l10n.hotTopicsTabEmpty,
                     style: theme.typography.body.xs.copyWith(
@@ -121,30 +130,18 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
                     ),
                   ),
                 )
-              else
-                Column(
+              : Column(
                   children: [
                     for (var i = 0; i < items.length; i++) ...[
                       if (i > 0)
                         Container(
                           height: 0.5,
-                          color: theme.colors.border.withValues(alpha: 0.45),
+                          color: theme.colors.border.withValues(alpha: 0.4),
                         ),
                       _CompactRow(l10n: l10n, item: items[i]),
                     ],
                   ],
                 ),
-              if (active.meta.backfillUsed) ...[
-                const Gap(2),
-                Text(
-                  l10n.hotTopicsBackfillHint,
-                  style: theme.typography.body.xs.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-              ],
-            ],
-          ),
         ),
       ],
     );
@@ -208,35 +205,34 @@ class _CompactRow extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: onPress,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 5),
         child: Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w500,
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: title,
+                      style: theme.typography.body.sm.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  Text(
-                    meta,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.typography.body.xs.copyWith(
-                      color: theme.colors.mutedForeground,
+                    TextSpan(
+                      text: ' · $meta',
+                      style: theme.typography.body.xs.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             Icon(
               FLucideIcons.chevronRight,
-              size: 16,
+              size: 14,
               color: theme.colors.mutedForeground,
             ),
           ],
@@ -266,14 +262,14 @@ class _HotTopicsSkeleton extends StatelessWidget {
             ),
           ),
         ),
-        const Gap(6),
+        const Gap(4),
         Padding(
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 2),
           child: Container(
-            height: 56,
+            height: 40,
             decoration: BoxDecoration(
               color: theme.colors.secondary,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(6),
             ),
           ),
         ),
