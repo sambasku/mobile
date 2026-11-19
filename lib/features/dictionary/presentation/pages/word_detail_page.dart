@@ -338,6 +338,67 @@ Future<void> _refreshDetailAfterDecision(WidgetRef ref, String wordId) async {
   await ref.read(wordDetailProvider(wordId).future);
 }
 
+/// Chip ringkas trust lemma: semua / sebagian / menunggu.
+class _LemmaTrustChip extends StatelessWidget {
+  const _LemmaTrustChip({
+    required this.summary,
+    required this.onVerifiedTap,
+    required this.pendingBadge,
+  });
+
+  final LemmaTrustSummary summary;
+  final VoidCallback onVerifiedTap;
+  final Widget pendingBadge;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    switch (summary) {
+      case LemmaTrustSummary.allVerified:
+        return Semantics(
+          button: true,
+          label: l10n.dictSeeVerifiers,
+          child: GestureDetector(
+            onTap: onVerifiedTap,
+            child: FBadge(
+              variant: FBadgeVariant.secondary,
+              child: Text(l10n.dictLemmaTrustVerified),
+            ),
+          ),
+        );
+      case LemmaTrustSummary.partial:
+        return FBadge(
+          variant: FBadgeVariant.secondary,
+          child: Text(l10n.dictLemmaTrustPartial),
+        );
+      case LemmaTrustSummary.pending:
+        return pendingBadge;
+    }
+  }
+}
+
+/// Centang / menunggu di tiap baris makna.
+class _MeaningTrustBadge extends StatelessWidget {
+  const _MeaningTrustBadge({required this.meaning});
+
+  final WordMeaning meaning;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    if (meaning.isVerified) {
+      return Semantics(
+        label: l10n.dictMeaningVerified,
+        child: const WordApprovedBadgeIcon(size: 16),
+      );
+    }
+    return Semantics(
+      label: l10n.dictMeaningPendingCheck,
+      child: const PendingReviewBadgeIcon(size: 16),
+    );
+  }
+}
+
 /// Ikon menunggu pengecekan. Untuk verifikator, aksi Tinjau ada di bottom
 /// sheet yang sama polanya dengan [showVerifierAttributionSheet].
 class _PendingStatusBadge extends StatelessWidget {
@@ -628,23 +689,16 @@ class _DetailBody extends HookConsumerWidget {
                                             ),
                                       ),
                                     ),
-                                    if (detail.isVerified)
-                                      Semantics(
-                                        button: true,
-                                        label: AppLocalizations.of(
-                                          context,
-                                        ).dictSeeVerifiers,
-                                        child: GestureDetector(
-                                          onTap: () =>
-                                              showVerifierAttributionSheet(
-                                                context,
-                                                detail,
-                                              ),
-                                          child: const WordApprovedBadgeIcon(),
-                                        ),
-                                      )
-                                    else
-                                      _PendingStatusBadge(
+                                    _LemmaTrustChip(
+                                      summary: lemmaTrustSummary(
+                                        detail.meanings,
+                                      ),
+                                      onVerifiedTap: () =>
+                                          showVerifierAttributionSheet(
+                                            context,
+                                            detail,
+                                          ),
+                                      pendingBadge: _PendingStatusBadge(
                                         offerReview:
                                             detail.status == 'published' &&
                                             canReviewQueue(
@@ -669,6 +723,7 @@ class _DetailBody extends HookConsumerWidget {
                                           wordId,
                                         ),
                                       ),
+                                    ),
                                   ],
                                 ),
                                 const Gap(4),
@@ -1592,21 +1647,37 @@ class _MeaningBlock extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (classLabel != null) ...[
-                  Text(
-                    classLabel,
-                    style: theme.typography.body.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                      fontWeight: FontWeight.w500,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (classLabel != null) ...[
+                            Text(
+                              classLabel,
+                              style: theme.typography.body.sm.copyWith(
+                                color: theme.colors.mutedForeground,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const Gap(4),
+                          ],
+                          if (definition != null && definition.isNotEmpty)
+                            Text(
+                              definition,
+                              style: theme.typography.body.md.copyWith(
+                                height: 1.5,
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const Gap(4),
-                ],
-                if (definition != null && definition.isNotEmpty)
-                  Text(
-                    definition,
-                    style: theme.typography.body.md.copyWith(height: 1.5),
-                  ),
+                    const Gap(8),
+                    _MeaningTrustBadge(meaning: meaning),
+                  ],
+                ),
                 if (meaning.translations.isNotEmpty) ...[
                   const Gap(6),
                   ...meaning.translations.map(

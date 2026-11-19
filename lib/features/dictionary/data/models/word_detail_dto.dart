@@ -71,6 +71,11 @@ abstract class MeaningDto with _$MeaningDto {
     @JsonKey(name: 'inherited_from_meaning_id') String? inheritedFromMeaningId,
     String? definition,
     @JsonKey(name: 'order_index') @Default(0) int orderIndex,
+    // Trust per makna (G1): default true agar payload lama / lokal aman.
+    @JsonKey(name: 'is_verified') @Default(true) bool isVerified,
+    @JsonKey(name: 'needs_review') @Default(false) bool needsReview,
+    @JsonKey(name: 'verified_at') String? verifiedAt,
+    @JsonKey(name: 'verified_by') WordVerifierDto? verifiedBy,
     // WIP review-flow: kontributor per makna (belum di-commit).
     @JsonKey(name: 'created_by') WordVerifierDto? createdBy,
     @Default([]) List<TranslationDto> translations,

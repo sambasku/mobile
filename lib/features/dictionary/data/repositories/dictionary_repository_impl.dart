@@ -762,6 +762,20 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
                 : '${m.wordClass!.name} (${m.wordClass!.alias})',
             definition: m.definition,
             orderIndex: m.orderIndex,
+            isVerified: m.isVerified,
+            needsReview: m.needsReview,
+            verifiedAt: m.verifiedAt,
+            verifiedBy: m.verifiedBy == null
+                ? null
+                : WordVerifier(
+                    username: m.verifiedBy!.username,
+                    displayName:
+                        (m.verifiedBy!.displayName?.trim().isNotEmpty == true)
+                        ? m.verifiedBy!.displayName!.trim()
+                        : m.verifiedBy!.username,
+                    avatarUrl: m.verifiedBy!.avatarUrl,
+                    role: m.verifiedBy!.role,
+                  ),
             // WIP review-flow: kontributor per makna (belum di-commit).
             createdBy: m.createdBy == null
                 ? null

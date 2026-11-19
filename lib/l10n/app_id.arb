@@ -2729,6 +2729,22 @@
   "dictLoginToReportPhoto": "Masuk dulu untuk melaporkan foto",
   "dictPhotoReportSent": "Laporan terkirim. Foto tetap tayang sampai ditinjau.",
   "dictSeeVerifiers": "Lihat verifikator",
+  "dictLemmaTrustVerified": "Terverifikasi",
+  "@dictLemmaTrustVerified": {
+    "description": "Chip lemma: semua makna published sudah terverifikasi"
+  },
+  "dictLemmaTrustPartial": "Sebagian dicek",
+  "@dictLemmaTrustPartial": {
+    "description": "Chip lemma: hanya sebagian makna yang terverifikasi"
+  },
+  "dictMeaningVerified": "Makna terverifikasi",
+  "@dictMeaningVerified": {
+    "description": "Semantics label ikon centang per baris makna"
+  },
+  "dictMeaningPendingCheck": "Makna menunggu pengecekan",
+  "@dictMeaningPendingCheck": {
+    "description": "Semantics label ikon menunggu per baris makna"
+  },
   "dictPronunciationLine": "{notation} {value}",
   "@dictPronunciationLine": {
     "placeholders": {
@@ -3937,7 +3953,7 @@
   "@profileUsernameLabel": {
     "description": "Label kolom username"
   },
-  "profileUsernameHint": "a-z, 0-9, titik, underscore (6-30 karakter)",
+  "profileUsernameHint": "a-z, 0-9, titik, underscore (6-30; tanpa beruntun)",
   "@profileUsernameHint": {
     "description": "Aturan penulisan username"
   },
@@ -3957,7 +3973,7 @@
   "@profileUsernameReserved": {
     "description": "Label username reserved"
   },
-  "profileUsernameInvalid": "Username belum memenuhi aturan (6-30, a-z, 0-9, titik, underscore)",
+  "profileUsernameInvalid": "Username belum memenuhi aturan (6-30, a-z/0-9/titik/underscore, tanpa beruntun)",
   "@profileUsernameInvalid": {
     "description": "Label username format salah"
   },

@@ -7701,6 +7701,30 @@ abstract class AppLocalizations {
   /// **'Lihat verifikator'**
   String get dictSeeVerifiers;
 
+  /// Chip lemma: semua makna published sudah terverifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Terverifikasi'**
+  String get dictLemmaTrustVerified;
+
+  /// Chip lemma: hanya sebagian makna yang terverifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Sebagian dicek'**
+  String get dictLemmaTrustPartial;
+
+  /// Semantics label ikon centang per baris makna
+  ///
+  /// In id, this message translates to:
+  /// **'Makna terverifikasi'**
+  String get dictMeaningVerified;
+
+  /// Semantics label ikon menunggu per baris makna
+  ///
+  /// In id, this message translates to:
+  /// **'Makna menunggu pengecekan'**
+  String get dictMeaningPendingCheck;
+
   /// No description provided for @dictPronunciationLine.
   ///
   /// In id, this message translates to:
@@ -9858,7 +9882,7 @@ abstract class AppLocalizations {
   /// Aturan penulisan username
   ///
   /// In id, this message translates to:
-  /// **'a-z, 0-9, titik, underscore (6-30 karakter)'**
+  /// **'a-z, 0-9, titik, underscore (6-30; tanpa beruntun)'**
   String get profileUsernameHint;
 
   /// Label saat cek username sedang jalan
@@ -9888,7 +9912,7 @@ abstract class AppLocalizations {
   /// Label username format salah
   ///
   /// In id, this message translates to:
-  /// **'Username belum memenuhi aturan (6-30, a-z, 0-9, titik, underscore)'**
+  /// **'Username belum memenuhi aturan (6-30, a-z/0-9/titik/underscore, tanpa beruntun)'**
   String get profileUsernameInvalid;
 
   /// Error saat GET username-availability gagal

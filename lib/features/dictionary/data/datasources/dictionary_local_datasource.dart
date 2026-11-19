@@ -338,6 +338,10 @@ class DictionaryLocalDatasource {
           wordClassName: wordClassName,
           definition: m['definition']?.toString(),
           orderIndex: (m['order_index'] as int?) ?? 0,
+          // Pack lokal: ikut kolom bila ada; default true (data lama).
+          isVerified: (m['is_verified'] as int? ?? 1) == 1,
+          needsReview: (m['needs_review'] as int? ?? 0) == 1,
+          verifiedAt: m['verified_at']?.toString(),
           translations: [
             for (final t in translations)
               WordTranslation(

@@ -155,6 +155,10 @@ class WordMeaning {
     this.wordClassName,
     this.definition,
     required this.orderIndex,
+    this.isVerified = true,
+    this.needsReview = false,
+    this.verifiedAt,
+    this.verifiedBy,
     // WIP review-flow: kontributor per makna (belum di-commit).
     this.createdBy,
     this.translations = const [],
@@ -170,6 +174,12 @@ class WordMeaning {
   final String? definition;
   final int orderIndex;
 
+  /// Trust per makna (G1). Default true untuk data lokal / payload lama.
+  final bool isVerified;
+  final bool needsReview;
+  final String? verifiedAt;
+  final WordVerifier? verifiedBy;
+
   /// Kontributor makna ini (WIP review-flow, belum di-commit).
   final WordVerifier? createdBy;
   final List<WordTranslation> translations;
@@ -181,6 +191,17 @@ class WordMeaning {
     if (code == null || code.isEmpty) return null;
     return '[${code.toLowerCase()}]';
   }
+}
+
+/// Ringkasan trust di tingkat lemma dari daftar makna published.
+enum LemmaTrustSummary { allVerified, partial, pending }
+
+LemmaTrustSummary lemmaTrustSummary(List<WordMeaning> meanings) {
+  if (meanings.isEmpty) return LemmaTrustSummary.pending;
+  final verified = meanings.where((m) => m.isVerified).length;
+  if (verified == meanings.length) return LemmaTrustSummary.allVerified;
+  if (verified > 0) return LemmaTrustSummary.partial;
+  return LemmaTrustSummary.pending;
 }
 
 class WordTranslation {

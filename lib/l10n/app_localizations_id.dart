@@ -4380,6 +4380,18 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictSeeVerifiers => 'Lihat verifikator';
 
   @override
+  String get dictLemmaTrustVerified => 'Terverifikasi';
+
+  @override
+  String get dictLemmaTrustPartial => 'Sebagian dicek';
+
+  @override
+  String get dictMeaningVerified => 'Makna terverifikasi';
+
+  @override
+  String get dictMeaningPendingCheck => 'Makna menunggu pengecekan';
+
+  @override
   String dictPronunciationLine(String notation, String value) {
     return '$notation $value';
   }
@@ -5605,7 +5617,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get profileUsernameHint =>
-      'a-z, 0-9, titik, underscore (6-30 karakter)';
+      'a-z, 0-9, titik, underscore (6-30; tanpa beruntun)';
 
   @override
   String get profileUsernameChecking => 'Memeriksa ketersediaan…';
@@ -5621,7 +5633,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get profileUsernameInvalid =>
-      'Username belum memenuhi aturan (6-30, a-z, 0-9, titik, underscore)';
+      'Username belum memenuhi aturan (6-30, a-z/0-9/titik/underscore, tanpa beruntun)';
 
   @override
   String get profileUsernameCheckFailed => 'Gagal memeriksa username';
@@ -17113,6 +17125,18 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictSeeVerifiers => 'Lihat verifikator';
 
   @override
+  String get dictLemmaTrustVerified => 'Terverifikasi';
+
+  @override
+  String get dictLemmaTrustPartial => 'Sebagian dicek';
+
+  @override
+  String get dictMeaningVerified => 'Makna terverifikasi';
+
+  @override
+  String get dictMeaningPendingCheck => 'Makna menunggu pengecekan';
+
+  @override
   String dictPronunciationLine(String notation, String value) {
     return '$notation $value';
   }
@@ -18338,7 +18362,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get profileUsernameHint =>
-      'a-z, 0-9, titik, underscore (6-30 karakter)';
+      'a-z, 0-9, titik, underscore (6-30; tanpa beruntun)';
 
   @override
   String get profileUsernameChecking => 'Memeriksa ketersediaan…';
@@ -18354,7 +18378,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get profileUsernameInvalid =>
-      'Username belum memenuhi aturan (6-30, a-z, 0-9, titik, underscore)';
+      'Username belum memenuhi aturan (6-30, a-z/0-9/titik/underscore, tanpa beruntun)';
 
   @override
   String get profileUsernameCheckFailed => 'Gagal memeriksa username';
