@@ -48,6 +48,7 @@ import '../../features/report_bug/report_bug_router.dart';
 import '../../features/review/presentation/providers/review_suggestions_providers.dart';
 import '../../features/review/review_router.dart';
 import '../../features/search_miss/search_miss_router.dart';
+import '../../features/vote/periksa_kata_router.dart';
 import '../../features/activity/activity_router.dart';
 import '../../features/discussion/discussion_router.dart';
 import '../../features/jinye/jinye_router.dart';
@@ -105,6 +106,7 @@ class AppRouter {
       ...ReviewRouter.routes,
       ...AdminAnalyticsRouter.routes,
       ...SearchMissRouter.routes,
+      ...PeriksaKataRouter.routes,
       ...ExploreRouter.routes,
       ...EventRouter.routes,
       ...UsahaRouter.routes,

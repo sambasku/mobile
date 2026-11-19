@@ -2240,6 +2240,8 @@
   "voteDeckPronunciationNoCard": "Belum ada kartu nilai. Cari kata lewat Lengkapi kata dulu.",
   "feedContributeSearchMiss": "Dicari warga",
   "feedContributeSearchMissSubtitle": "Kata yang dicari warga tapi belum ketemu. Bantu isi artinya",
+  "feedContributePeriksaKata": "Periksa kata",
+  "feedPeriksaKataStubBody": "Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.",
   "feedContributeDiscussion": "Ruang diskusi",
   "feedContributeDiscussionSubtitle": "Tanya arti atau bahas kata Sambas bareng warga",
   "feedVoteDeckHint": "Bantu nilai agar arti kata lebih akurat",

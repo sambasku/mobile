@@ -5617,6 +5617,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get feedContributeSearchMiss => 'Dicari warga';
 
   @override
+  String get feedContributePeriksaKata => 'Periksa kata';
+
+  @override
+  String get feedPeriksaKataStubBody =>
+      'Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.';
+
+  @override
   String get feedContributeSearchMissSubtitle =>
       'Kata yang dicari warga tapi belum ketemu. Bantu isi artinya';
 
@@ -18509,6 +18516,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get feedContributeSearchMiss => 'Dicari warga';
+
+  @override
+  String get feedContributePeriksaKata => 'Periksa kata';
+
+  @override
+  String get feedPeriksaKataStubBody =>
+      'Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.';
 
   @override
   String get feedContributeSearchMissSubtitle =>

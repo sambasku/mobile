@@ -9873,6 +9873,18 @@ abstract class AppLocalizations {
   /// **'Dicari warga'**
   String get feedContributeSearchMiss;
 
+  /// Tile hub Kontribusi - feed makna belum verified
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa kata'**
+  String get feedContributePeriksaKata;
+
+  /// Placeholder body /periksa-kata sebelum Phase 4
+  ///
+  /// In id, this message translates to:
+  /// **'Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.'**
+  String get feedPeriksaKataStubBody;
+
   /// Keterangan item daftar pencarian tanpa hasil
   ///
   /// In id, this message translates to:
