@@ -9,8 +9,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/hot_topics.dart';
 import '../providers/hot_topics_providers.dart';
 
-/// Kartu Sorotan di Home (G4): tab Dicari / Diusulkan / Dekati ambang.
-/// Layout padat - pill [FBadge], baris 1 baris, max 3 item (hemat ruang home).
+/// Kartu Sorotan di Home: tab Hits / Usulan / Dicari.
+/// Tinggi list tetap 10 slot supaya kontainer tidak loncat saat ganti tab.
 class HotTopicsCard extends ConsumerStatefulWidget {
   const HotTopicsCard({super.key});
 
@@ -19,7 +19,37 @@ class HotTopicsCard extends ConsumerStatefulWidget {
 }
 
 class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
-  static const _maxItems = 3;
+  static const _slotCount = 10;
+  static const _columnCount = 2;
+  /// Judul + subtitle + badge + chevron; row rapat supaya container compact.
+  static const _cellHeight = 36.0;
+  static const _rowGap = 1.0;
+  static const _colGap = 8.0;
+
+  static int get _rowCount => (_slotCount / _columnCount).ceil();
+
+  static double get _listHeight =>
+      _rowCount * _cellHeight + (_rowCount - 1) * _rowGap;
+
+  /// Urutan kolom-mayor: kiri 1-5, kanan 6-10. Slot tanpa data = item null.
+  static List<List<({int rank, HotTopicItem? item})>> _columnMajorChunks(
+    List<HotTopicItem> items,
+  ) {
+    // Selalu 5 baris × 2 kolom; sisa diisi placeholder rank + "-".
+    const perCol = 5; // == _rowCount
+    assert(perCol == _rowCount);
+    return List.generate(_columnCount, (col) {
+      return [
+        for (var r = 0; r < perCol; r++)
+          (
+            rank: col * perCol + r + 1,
+            item: col * perCol + r < items.length
+                ? items[col * perCol + r]
+                : null,
+          ),
+      ];
+    });
+  }
 
   int _tab = 0;
 
@@ -31,41 +61,39 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
     if (async.isLoading && bundle == null) {
       return const _HotTopicsSkeleton();
     }
-    if (bundle == null || bundle.isEmpty) {
+    // Error / belum ada data sama sekali: gagal senyap, jangan block feed.
+    if (bundle == null) {
       return const SizedBox.shrink();
     }
 
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final tabs = [
-      (l10n.hotTopicsTabSearched, bundle.searched),
-      (l10n.hotTopicsTabProposed, bundle.proposed),
-      (l10n.hotTopicsTabNearThreshold, bundle.nearThreshold),
+      (
+        label: l10n.hotTopicsTabNearThreshold,
+        tab: bundle.viewed,
+        emptyIcon: FLucideIcons.chartNoAxesColumn,
+        emptyBody: l10n.hotTopicsTabEmptyNearBody,
+      ),
+      (
+        label: l10n.hotTopicsTabProposed,
+        tab: bundle.proposed,
+        emptyIcon: FLucideIcons.inbox,
+        emptyBody: l10n.hotTopicsTabEmptyProposedBody,
+      ),
+      (
+        label: l10n.hotTopicsTabSearched,
+        tab: bundle.searched,
+        emptyIcon: FLucideIcons.searchX,
+        emptyBody: l10n.hotTopicsTabEmptySearchedBody,
+      ),
     ];
-    // Skip ke tab pertama yang punya item.
-    final safeTab = () {
-      if (tabs[_tab].$2.items.isNotEmpty) return _tab;
-      for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].$2.items.isNotEmpty) return i;
-      }
-      return 0;
-    }();
-    if (safeTab != _tab) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) setState(() => _tab = safeTab);
-      });
-    }
-
-    final active = tabs[safeTab].$2;
-    final items = active.items.take(_maxItems).toList(growable: false);
-
-    // Pill sejajar chip "Aktivitas terbaru": ListView full-bleed + padding
-    // 12 (bukan Padding luar + Row). Gap hanya antar tab yang tampil -
-    // jangan pakai index asli (tab kosong di kiri = pill pertama menjorok).
-    final visibleTabs = <({int index, String label})>[
-      for (var i = 0; i < tabs.length; i++)
-        if (tabs[i].$2.items.isNotEmpty) (index: i, label: tabs[i].$1),
-    ];
+    final safeTab = _tab.clamp(0, tabs.length - 1);
+    final active = tabs[safeTab];
+    final items = active.tab.items.take(_slotCount).toList(growable: false);
+    final columns = items.isEmpty
+        ? const <List<({int rank, HotTopicItem? item})>>[]
+        : _columnMajorChunks(items);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -83,7 +111,7 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
                   ),
                 ),
               ),
-              if (active.meta.backfillUsed)
+              if (active.tab.meta.backfillUsed)
                 Text(
                   l10n.hotTopicsBackfillHint,
                   style: theme.typography.body.xs.copyWith(
@@ -100,64 +128,132 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-            itemCount: visibleTabs.length,
+            itemCount: tabs.length,
             separatorBuilder: (_, _) => const Gap(4),
             itemBuilder: (context, i) {
-              final tab = visibleTabs[i];
-              final selected = safeTab == tab.index;
+              final selected = safeTab == i;
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () => setState(() => _tab = tab.index),
+                onTap: () => setState(() => _tab = i),
                 child: FBadge(
                   variant: selected
                       ? FBadgeVariant.primary
                       : FBadgeVariant.secondary,
-                  child: Text(tab.label),
+                  child: Text(tabs[i].label),
                 ),
               );
             },
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(12, 2, 12, 2),
-          child: items.isEmpty
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Text(
-                    l10n.hotTopicsTabEmpty,
-                    style: theme.typography.body.xs.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-                )
-              : Column(
-                  children: [
-                    for (var i = 0; i < items.length; i++) ...[
-                      if (i > 0)
-                        Container(
-                          height: 0.5,
-                          color: theme.colors.border.withValues(alpha: 0.4),
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+          child: SizedBox(
+            height: _listHeight,
+            child: items.isEmpty
+                ? _HotTopicsEmpty(
+                    icon: active.emptyIcon,
+                    title: l10n.hotTopicsTabEmpty,
+                    body: active.emptyBody,
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (var c = 0; c < columns.length; c++) ...[
+                        if (c > 0) const Gap(_colGap),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              for (var r = 0; r < columns[c].length; r++) ...[
+                                if (r > 0) const Gap(_rowGap),
+                                SizedBox(
+                                  height: _cellHeight,
+                                  child: _CompactCell(
+                                    l10n: l10n,
+                                    rank: columns[c][r].rank,
+                                    item: columns[c][r].item,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
-                      _CompactRow(l10n: l10n, item: items[i]),
+                      ],
                     ],
-                  ],
-                ),
+                  ),
+          ),
         ),
       ],
     );
   }
 }
 
-class _CompactRow extends StatelessWidget {
-  const _CompactRow({required this.l10n, required this.item});
+class _HotTopicsEmpty extends StatelessWidget {
+  const _HotTopicsEmpty({
+    required this.icon,
+    required this.title,
+    required this.body,
+  });
 
-  final AppLocalizations l10n;
-  final HotTopicItem item;
+  final IconData icon;
+  final String title;
+  final String body;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 36, color: theme.colors.mutedForeground),
+            const Gap(10),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: theme.typography.body.sm.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Gap(4),
+            Text(
+              body,
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: theme.typography.body.xs.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CompactCell extends StatelessWidget {
+  const _CompactCell({
+    required this.l10n,
+    required this.rank,
+    required this.item,
+  });
+
+  final AppLocalizations l10n;
+  final int rank;
+  final HotTopicItem? item;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final empty = item == null;
     final (:title, :meta, :onPress) = switch (item) {
+      null => (
+        title: l10n.hotTopicsEmptySlot,
+        meta: '',
+        onPress: null as void Function()?,
+      ),
       HotSearchedItem(
         :final id,
         :final term,
@@ -185,55 +281,87 @@ class _CompactRow extends StatelessWidget {
         meta: l10n.hotTopicsProposedSubtitle,
         onPress: () => context.push('/words/$wordId'),
       ),
-      HotNearThresholdItem(
-        :final wordId,
-        :final meaningId,
-        :final lemma,
-        :final net,
-        :final definitionPreview,
-      ) =>
-        (
-          title: lemma,
-          meta: definitionPreview == null || definitionPreview.isEmpty
-              ? l10n.hotTopicsNearNet('$net')
-              : '${l10n.hotTopicsNearNet('$net')} · $definitionPreview',
-          onPress: () => context.push('/words/$wordId?meaning_id=$meaningId'),
-        ),
+      HotViewedItem(:final wordId, :final lemma, :final viewCount) => (
+        title: lemma,
+        meta: l10n.hotTopicsViewCount(formatRibuan(viewCount)),
+        onPress: () => context.push('/words/$wordId'),
+      ),
     };
+
+    final rankStyle = theme.typography.body.xs.copyWith(
+      color: empty ? theme.colors.mutedForeground : theme.colors.primary,
+      fontWeight: FontWeight.w700,
+      fontSize: 11,
+      fontFeatures: const [FontFeature.tabularFigures()],
+      height: 1,
+    );
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onPress,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Opacity(
+        opacity: empty ? 0.55 : 1,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: theme.colors.secondary,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: SizedBox(
+                width: 22,
+                height: 22,
+                child: Center(
+                  child: Text(
+                    '$rank',
+                    textAlign: TextAlign.center,
+                    style: rankStyle,
+                  ),
+                ),
+              ),
+            ),
+            const Gap(6),
             Expanded(
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: title,
-                      style: theme.typography.body.sm.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                      height: 1.15,
+                      color: empty ? theme.colors.mutedForeground : null,
                     ),
-                    TextSpan(
-                      text: ' · $meta',
+                  ),
+                  if (!empty) ...[
+                    const Gap(1),
+                    Text(
+                      meta,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis,
                       style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
+                        fontSize: 10,
+                        height: 1.1,
                       ),
                     ),
                   ],
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                ],
               ),
             ),
             Icon(
               FLucideIcons.chevronRight,
               size: 14,
-              color: theme.colors.mutedForeground,
+              color: theme.colors.mutedForeground.withValues(
+                alpha: empty ? 0.35 : 1,
+              ),
             ),
           ],
         ),
@@ -266,7 +394,18 @@ class _HotTopicsSkeleton extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 2),
           child: Container(
-            height: 40,
+            height: 28,
+            decoration: BoxDecoration(
+              color: theme.colors.secondary,
+              borderRadius: BorderRadius.circular(6),
+            ),
+          ),
+        ),
+        const Gap(2),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 2),
+          child: Container(
+            height: _HotTopicsCardState._listHeight,
             decoration: BoxDecoration(
               color: theme.colors.secondary,
               borderRadius: BorderRadius.circular(6),

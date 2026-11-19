@@ -250,7 +250,7 @@ Future<void> pumpHome(
       items: [],
       meta: HotTopicTabMeta(inWindow: 0, backfilled: 0, backfillUsed: false),
     ),
-    nearThreshold: HotTopicTab(
+    viewed: HotTopicTab(
       items: [],
       meta: HotTopicTabMeta(inWindow: 0, backfilled: 0, backfillUsed: false),
     ),

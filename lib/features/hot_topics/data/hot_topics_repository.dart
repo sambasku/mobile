@@ -25,7 +25,7 @@ class HotTopicsRepository {
     return HotTopicsBundle(
       searched: _parseSearched(data['searched']),
       proposed: _parseProposed(data['proposed']),
-      nearThreshold: _parseNear(data['near_threshold']),
+      viewed: _parseViewed(data['viewed']),
     );
   }
 
@@ -79,7 +79,7 @@ class HotTopicsRepository {
     return HotTopicTab(items: items, meta: _meta(map['meta']));
   }
 
-  HotTopicTab _parseNear(Object? raw) {
+  HotTopicTab _parseViewed(Object? raw) {
     final map = raw is Map ? raw : const {};
     final list = map['items'];
     final items = <HotTopicItem>[];
@@ -87,14 +87,11 @@ class HotTopicsRepository {
       for (final row in list) {
         if (row is! Map) continue;
         items.add(
-          HotNearThresholdItem(
-            meaningId: row['meaning_id'] as String? ?? '',
+          HotViewedItem(
             wordId: row['word_id'] as String? ?? '',
             lemma: row['lemma'] as String? ?? '',
-            definitionPreview: row['definition_preview'] as String?,
-            net: (row['net'] as num?)?.toInt() ?? 0,
-            upvotes: (row['upvotes'] as num?)?.toInt() ?? 0,
-            downvotes: (row['downvotes'] as num?)?.toInt() ?? 0,
+            viewCount: (row['view_count'] as num?)?.toInt() ?? 0,
+            lastViewedDay: row['last_viewed_day'] as String? ?? '',
             inWindow: row['in_window'] == true,
           ),
         );

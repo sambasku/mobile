@@ -1,19 +1,17 @@
-/// Respons `GET /api/v1/hot-topics` (G4).
+/// Respons `GET /api/v1/hot-topics` (G4/G6).
 class HotTopicsBundle {
   const HotTopicsBundle({
     required this.searched,
     required this.proposed,
-    required this.nearThreshold,
+    required this.viewed,
   });
 
   final HotTopicTab searched;
   final HotTopicTab proposed;
-  final HotTopicTab nearThreshold;
+  final HotTopicTab viewed;
 
   bool get isEmpty =>
-      searched.items.isEmpty &&
-      proposed.items.isEmpty &&
-      nearThreshold.items.isEmpty;
+      searched.items.isEmpty && proposed.items.isEmpty && viewed.items.isEmpty;
 }
 
 class HotTopicTabMeta {
@@ -68,23 +66,17 @@ class HotProposedItem extends HotTopicItem {
   final String lemma;
 }
 
-class HotNearThresholdItem extends HotTopicItem {
-  const HotNearThresholdItem({
-    required this.meaningId,
+class HotViewedItem extends HotTopicItem {
+  const HotViewedItem({
     required this.wordId,
     required this.lemma,
-    required this.definitionPreview,
-    required this.net,
-    required this.upvotes,
-    required this.downvotes,
+    required this.viewCount,
+    required this.lastViewedDay,
     required super.inWindow,
   });
 
-  final String meaningId;
   final String wordId;
   final String lemma;
-  final String? definitionPreview;
-  final int net;
-  final int upvotes;
-  final int downvotes;
+  final int viewCount;
+  final String lastViewedDay;
 }
