@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show BuildContext;
+import 'package:material_ui/material_ui.dart' show BuildContext;
 import 'package:go_router/go_router.dart';
 import '../../core/router/route_definer.dart';
 import 'presentation/pages/onboarding_page.dart';

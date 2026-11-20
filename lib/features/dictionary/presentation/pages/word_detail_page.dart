@@ -127,7 +127,7 @@ class WordDetailPage extends HookConsumerWidget {
       recordedView.value = detail.id;
       unawaited(_recordWordView(ref, detail.id));
       return null;
-    }, [async.asData?.value?.id]);
+    }, [async.asData?.value.id]);
 
     // Deep link lemma → ganti URL ke ULID kanonis supaya history/bookmark
     // dan navigasi internal selalu pakai id.

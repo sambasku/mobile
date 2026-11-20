@@ -143,7 +143,7 @@ class OverlapAboveBox extends SingleChildRenderObjectWidget {
 
 /// Layout = tinggi anak − [overlap]; paint/hit-test anak digeser ke atas.
 class RenderOverlapAboveBox extends RenderProxyBox {
-  RenderOverlapAboveBox({required double overlap}) : _overlap = overlap;
+  RenderOverlapAboveBox({required this._overlap});
 
   double _overlap;
   double get overlap => _overlap;

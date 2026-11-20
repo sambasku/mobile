@@ -10,14 +10,11 @@ import 'device_id_service.dart';
 /// Sync FCM token ke backend saat login / token refresh (pola jnn_mobile).
 class DeviceRegistrationService {
   DeviceRegistrationService({
-    required DeviceRepository repository,
-    required AuthTokenStorage tokenStorage,
-    required DeviceIdService deviceIdService,
+    required this._repository,
+    required this._tokenStorage,
+    required this._deviceIdService,
     required String initialFcmToken,
-  }) : _repository = repository,
-       _tokenStorage = tokenStorage,
-       _deviceIdService = deviceIdService,
-       _lastFcmToken = initialFcmToken;
+  }) : _lastFcmToken = initialFcmToken;
 
   final DeviceRepository _repository;
   final AuthTokenStorage _tokenStorage;

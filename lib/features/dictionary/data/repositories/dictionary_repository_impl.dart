@@ -27,16 +27,13 @@ import '../../../../core/i18n/l10n.dart';
 class DictionaryRepositoryImpl implements DictionaryRepository {
   DictionaryRepositoryImpl(
     this._remoteDatasource, {
-    Dio? dio,
-    CachedJsonClient? cache,
-    DictionaryLocalDatasource? local,
+    this._dio,
+    this._cache,
+    this._local,
     LemmaStickyStore? sticky,
     bool Function()? isOffline,
     void Function(LemmaDataSourceKind kind)? onSource,
-  }) : _dio = dio,
-       _cache = cache,
-       _local = local,
-       _gate = LemmaHybridGate(
+  }) : _gate = LemmaHybridGate(
          sticky: sticky ?? LemmaStickyStore(),
          isOffline: isOffline ?? () => false,
          onSource: onSource,

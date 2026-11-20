@@ -6,9 +6,7 @@ import '../../../shared/dev_tool/network_monitor/data/models/network_request_rec
 import '../../../shared/dev_tool/network_monitor/domain/repositories/network_monitor_repository.dart';
 
 class NetworkMonitorInterceptor extends Interceptor {
-  NetworkMonitorInterceptor({required NetworkMonitorRepository repository})
-    : _repository = repository;
-
+  NetworkMonitorInterceptor({required this._repository});
   final NetworkMonitorRepository _repository;
 
   static const _recordKey = 'network_monitor_record';

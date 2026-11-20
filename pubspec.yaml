@@ -22,6 +22,8 @@ dependencies:
   # forui 0.26+ migrasi internal ke material_ui (fork Material). Kode app ikut
   # pakai ini supaya ThemeData/Material widget satu tipe dengan forui.
   material_ui: ^1.11.1
+  # Pasangan cupertino_ui untuk GlobalCupertinoLocalizations non-deprecated.
+  cupertino_ui: ^1.0.2
   skeletonizer: ^3.0.0
   cached_network_image_ce: ^4.13.1
   flutter_svg: ^2.2.3

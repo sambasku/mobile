@@ -391,15 +391,10 @@ class _ThreadProgressBar extends StatelessWidget {
 }
 
 class _PlayingBars extends StatefulWidget {
-  const _PlayingBars({
-    required this.active,
-    required this.color,
-    this.compact = false,
-  });
+  const _PlayingBars({required this.active, required this.color});
 
   final bool active;
   final Color color;
-  final bool compact;
 
   @override
   State<_PlayingBars> createState() => _PlayingBarsState();
@@ -439,29 +434,28 @@ class _PlayingBarsState extends State<_PlayingBars>
 
   @override
   Widget build(BuildContext context) {
-    final compact = widget.compact;
     return SizedBox(
-      width: compact ? 18 : 28,
-      height: compact ? 14 : 22,
+      width: 28,
+      height: 22,
       child: AnimatedBuilder(
         animation: _ctrl,
         builder: (context, _) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: List.generate(compact ? 3 : 4, (i) {
+            children: List.generate(4, (i) {
               final wave = math.sin((_ctrl.value * 2 * math.pi) + i * 0.9);
               final h = widget.active
-                  ? (compact ? 4.0 : 6.0) + (wave.abs() * (compact ? 8.0 : 14.0))
-                  : (compact ? 4.0 : 6.0);
+                  ? 6.0 + (wave.abs() * 14.0)
+                  : 6.0;
               return Container(
-                width: compact ? 2.5 : 4,
+                width: 4,
                 height: h,
                 decoration: BoxDecoration(
                   color: widget.color.withValues(
                     alpha: widget.active ? 0.9 : 0.35,
                   ),
-                  borderRadius: BorderRadius.circular(compact ? 1 : 2),
+                  borderRadius: BorderRadius.circular(2),
                 ),
               );
             }),

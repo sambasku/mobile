@@ -19,7 +19,7 @@ abstract final class ChatPingSfx {
         await player.seek(Duration.zero);
         unawaited(player.play());
       } catch (e, st) {
-        debugPrint('ChatPingSfx failed: ' + e.toString() + String.fromCharCode(10) + st.toString());
+        debugPrint('ChatPingSfx failed: $e\n$st');
       }
     }();
     _chain = next;

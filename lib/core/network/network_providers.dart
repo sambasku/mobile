@@ -38,7 +38,7 @@ Dio dio(Ref ref) {
   );
   // failover paling depan: `onRequest`-nya menulis baseUrl + timeout tier aktif,
   // jadi network monitor di bawahnya mencatat host yang BENAR-BENAR dipakai.
-  dio.interceptors.add(FailoverInterceptor(resolver: resolver));
+    dio.interceptors.add(FailoverInterceptor(resolver: resolver));
   // network monitor dulu supaya AuthInterceptor refresh juga terekam
   dio.interceptors.add(
     NetworkMonitorInterceptor(

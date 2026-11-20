@@ -542,8 +542,9 @@ class _PlacementCellState extends State<_PlacementCell> {
     final copyText =
         parent?.title ?? parent?.ctaLabel ?? l10n.balehoPromoSlide;
     final titleRaw = parent?.title?.trim();
-    final hasMedia = frame?.mediaUrl != null &&
-        (frame!.mediaType == 'image' || frame.mediaType == 'video');
+    final mediaUrl = frame?.mediaUrl;
+    final hasMedia = mediaUrl != null &&
+        (frame?.mediaType == 'image' || frame?.mediaType == 'video');
     final titleChip = hasMedia &&
             titleRaw != null &&
             titleRaw.isNotEmpty
@@ -570,7 +571,7 @@ class _PlacementCellState extends State<_PlacementCell> {
             children: [
               if (hasMedia)
                 Image.network(
-                  frame!.mediaUrl!,
+                  mediaUrl,
                   fit: BoxFit.cover,
                   errorBuilder: (_, _, _) => const SizedBox.shrink(),
                 )

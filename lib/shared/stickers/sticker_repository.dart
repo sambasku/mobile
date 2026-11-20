@@ -34,7 +34,7 @@ class StickerRepository {
       final data = res.data?['data'];
       final meta = res.data?['meta'];
       if (data is! List) {
-        return _offlinePage();
+        return await _offlinePage();
       }
       final items = data
           .whereType<Map>()

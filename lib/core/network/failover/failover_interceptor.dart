@@ -19,11 +19,10 @@ const kColdGatedExtra = 'coldHostGated';
 /// mentah sekaligus - tidak ada satu pun file fitur yang perlu tahu.
 class FailoverInterceptor extends Interceptor {
   FailoverInterceptor({
-    required ApiHostResolver resolver,
+    required this._resolver,
     Dio? probeDio,
     ColdHostGate? coldGate,
-  })  : _resolver = resolver,
-        _coldGate = coldGate ?? ColdHostGate(),
+  })  : _coldGate = coldGate ?? ColdHostGate(),
         _probeDio = probeDio ??
             Dio(
               BaseOptions(

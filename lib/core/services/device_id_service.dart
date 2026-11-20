@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Identitas perangkat stabil untuk register FCM (pola jnn_mobile).
 /// Berbeda dari X-Device-Id ULID rate-limit - jangan digabung.
 class DeviceIdService {
-  DeviceIdService({SharedPreferences? prefs}) : _prefs = prefs;
+  DeviceIdService({this._prefs});
 
   final SharedPreferences? _prefs;
   SharedPreferences? _resolvedPrefs;

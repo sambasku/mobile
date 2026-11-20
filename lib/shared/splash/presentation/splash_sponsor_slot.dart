@@ -1,5 +1,4 @@
 import 'package:cached_network_image_ce/cached_network_image.dart';
-import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -312,7 +311,7 @@ class _SponsorLogoImage extends StatelessWidget {
         height: height,
         base: holderColor,
       ),
-      errorWidget: (_, _, _) => _LogoSkeleton(
+      errorBuilder: (_, _, _) => _LogoSkeleton(
         width: width,
         height: height,
         base: holderColor,

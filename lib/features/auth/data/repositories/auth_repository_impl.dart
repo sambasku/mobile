@@ -24,8 +24,8 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(
     this._remoteDatasource,
     this._tokenStorage, {
-    ResponseCacheStore? responseCache,
-  }) : _responseCache = responseCache;
+    this._responseCache,
+  });
 
   final AuthRemoteDatasource _remoteDatasource;
   final AuthTokenStorage _tokenStorage;

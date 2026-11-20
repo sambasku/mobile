@@ -1,9 +1,8 @@
-import 'package:material_ui/material_ui.dart' hide GlobalMaterialLocalizations;
+import 'package:material_ui/material_ui.dart';
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show GlobalCupertinoLocalizations;
 import 'package:flutter_localizations/flutter_localizations.dart'
-    show
-        GlobalMaterialLocalizations,
-        GlobalWidgetsLocalizations,
-        GlobalCupertinoLocalizations;
+    show GlobalWidgetsLocalizations;
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart'
+import 'package:material_ui/material_ui.dart'
     show FontWeight, Icon, Locale, MaterialApp, Scaffold, Text, Widget;
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';

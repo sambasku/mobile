@@ -26,10 +26,9 @@ class LemmaDatabaseHandle {
 /// Copy asset → documents, buka read-only, siap untuk query lokal.
 class LemmaDatabaseOpener {
   LemmaDatabaseOpener({
-    SharedPreferences? prefs,
+    this._prefs,
     AssetBundle? bundle,
-  })  : _prefs = prefs,
-        _bundle = bundle ?? rootBundle;
+  }) : _bundle = bundle ?? rootBundle;
 
   final SharedPreferences? _prefs;
   final AssetBundle _bundle;
