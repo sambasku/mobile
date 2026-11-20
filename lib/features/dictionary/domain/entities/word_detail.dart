@@ -129,6 +129,38 @@ class WordDetail {
         role == 'root' ||
         role == 'reviewer';
   }
+
+  /// Salin detail dengan daftar makna berbeda (filter publik verified-only).
+  WordDetail withMeanings(List<WordMeaning> nextMeanings) {
+    if (identical(nextMeanings, meanings)) return this;
+    return WordDetail(
+      id: id,
+      lemma: lemma,
+      languageId: languageId,
+      wordType: wordType,
+      status: status,
+      isVerified: isVerified,
+      isCorrected: isCorrected,
+      selfVerified: selfVerified,
+      notes: notes,
+      verifiedAt: verifiedAt,
+      verifiedBy: verifiedBy,
+      createdBy: createdBy,
+      meanings: nextMeanings,
+      categories: categories,
+      usageLabels: usageLabels,
+      pronunciations: pronunciations,
+      audios: audios,
+      images: images,
+      relatedWords: relatedWords,
+      appearsIn: appearsIn,
+      appearsInKarya: appearsInKarya,
+      meaningGroups: meaningGroups,
+      variants: variants,
+      related: related,
+    );
+  }
+
 }
 
 class WordVerifier {

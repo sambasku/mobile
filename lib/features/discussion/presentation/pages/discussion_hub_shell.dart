@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../chat/presentation/widgets/chat_ping_action.dart';
 import '../../../chat/presentation/widgets/discussion_hub_segment.dart';
 import '../../discussion_router.dart';
 import '../utils/discussion_hub_back.dart';
@@ -41,6 +42,7 @@ class DiscussionHubShell extends StatelessWidget {
             ),
           ],
           suffixes: [
+            if (isChat) const ChatPingAction(),
             if (!isChat)
               FHeaderAction(
                 icon: const Icon(FLucideIcons.history),

@@ -14,6 +14,7 @@ Future<PhoneCountry?> showPhoneCountryPickerSheet(
 }) {
   return showModalBottomSheet<PhoneCountry>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) {

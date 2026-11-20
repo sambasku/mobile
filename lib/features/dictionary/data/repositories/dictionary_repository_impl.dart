@@ -8,6 +8,7 @@ import '../../../../core/models/api_response.dart';
 import '../../../../core/models/image_attribution.dart';
 import '../../../../shared/models/content_related_link.dart';
 import '../../domain/entities/word_detail.dart';
+import '../../domain/entities/meaning_visibility.dart';
 import '../../domain/entities/word_of_day.dart';
 import '../../domain/entities/word_summary.dart';
 import '../../domain/failures/dictionary_failure.dart';
@@ -411,14 +412,27 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) {
     return _gate.read(
       budget: LemmaDatasetConstants.detailTimeout,
-      remote: () => _getWordByIdRemote(id, forceRefresh: forceRefresh),
+      remote: () => _getWordByIdRemote(
+        id,
+        forceRefresh: forceRefresh,
+        focusMeaningId: focusMeaningId,
+        includeUnverified: includeUnverified,
+      ),
       local: () async {
         final local = _local;
         if (local == null) return null;
-        return local.getWordById(id);
+        final detail = await local.getWordById(id);
+        if (detail == null) return null;
+        return _withPublicMeaningVisibility(
+          detail,
+          focusMeaningId: focusMeaningId,
+          includeUnverified: includeUnverified,
+        );
       },
       localUnavailableMessage: 'Kata tidak tersedia di kamus lokal',
       localUnavailableCode: 'WORD_NOT_FOUND',
@@ -428,6 +442,8 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> _getWordByIdRemote(
     String id, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async {
     try {
       final cache = _cache;
@@ -436,16 +452,29 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       String? errorMessage;
       String? errorCode;
       var success = true;
+      final focus = focusMeaningId?.trim();
+      final query = <String, dynamic>{
+        if (focus != null && focus.isNotEmpty) 'meaning': focus,
+        if (includeUnverified) 'include_unverified': '1',
+      };
 
       var relatedRaw = const <ContentRelatedLink>[];
       if (cache != null && dio != null) {
-        final key = buildCacheKey(method: 'GET', path: '/api/v1/words/$id');
+        final key = buildCacheKey(
+          method: 'GET',
+          path: '/api/v1/words/$id',
+          query: query.isEmpty ? null : query,
+        );
         final envelope = await cache.getOrFetch(
           key: key,
           cacheClass: CacheClass.dictionaryDetail,
-          forceRefresh: forceRefresh,
+          // Fokus makna = payload beda; jangan pakai cache verified-only.
+          forceRefresh: forceRefresh || query.isNotEmpty,
           fetch: () async {
-            final resp = await dio.get<dynamic>('/api/v1/words/$id');
+            final resp = await dio.get<dynamic>(
+              '/api/v1/words/$id',
+              queryParameters: query.isEmpty ? null : query,
+            );
             final body = resp.data;
             if (body is! Map) {
               throw StateError('Envelope detail kata tidak valid');
@@ -488,7 +517,13 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         );
       }
 
-      return Either.right(_mapDetail(dto, related: relatedRaw));
+      return Either.right(
+        _withPublicMeaningVisibility(
+          _mapDetail(dto, related: relatedRaw),
+          focusMeaningId: focus,
+          includeUnverified: includeUnverified,
+        ),
+      );
     } on DioException catch (error) {
       return Either.left(
         _mapDio(
@@ -506,14 +541,27 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) {
     return _gate.read(
       budget: LemmaDatasetConstants.detailTimeout,
-      remote: () => _getWordByLemmaRemote(lemma, forceRefresh: forceRefresh),
+      remote: () => _getWordByLemmaRemote(
+        lemma,
+        forceRefresh: forceRefresh,
+        focusMeaningId: focusMeaningId,
+        includeUnverified: includeUnverified,
+      ),
       local: () async {
         final local = _local;
         if (local == null) return null;
-        return local.getWordByLemma(lemma);
+        final detail = await local.getWordByLemma(lemma);
+        if (detail == null) return null;
+        return _withPublicMeaningVisibility(
+          detail,
+          focusMeaningId: focusMeaningId,
+          includeUnverified: includeUnverified,
+        );
       },
       localUnavailableMessage: 'Kata tidak tersedia di kamus lokal',
       localUnavailableCode: 'WORD_NOT_FOUND',
@@ -523,6 +571,8 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> _getWordByLemmaRemote(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async {
     try {
       final encoded = Uri.encodeComponent(lemma);
@@ -532,19 +582,28 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       String? errorMessage;
       String? errorCode;
       var success = true;
+      final focus = focusMeaningId?.trim();
+      final query = <String, dynamic>{
+        if (focus != null && focus.isNotEmpty) 'meaning': focus,
+        if (includeUnverified) 'include_unverified': '1',
+      };
       var relatedRaw = const <ContentRelatedLink>[];
 
       if (cache != null && dio != null) {
         final key = buildCacheKey(
           method: 'GET',
           path: '/api/v1/words/lemma/$encoded',
+          query: query.isEmpty ? null : query,
         );
         final envelope = await cache.getOrFetch(
           key: key,
           cacheClass: CacheClass.dictionaryDetail,
-          forceRefresh: forceRefresh,
+          forceRefresh: forceRefresh || query.isNotEmpty,
           fetch: () async {
-            final resp = await dio.get<dynamic>('/api/v1/words/lemma/$encoded');
+            final resp = await dio.get<dynamic>(
+              '/api/v1/words/lemma/$encoded',
+              queryParameters: query.isEmpty ? null : query,
+            );
             final body = resp.data;
             if (body is! Map) {
               throw StateError('Envelope detail lemma tidak valid');
@@ -587,7 +646,13 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         );
       }
 
-      return Either.right(_mapDetail(dto, related: relatedRaw));
+      return Either.right(
+        _withPublicMeaningVisibility(
+          _mapDetail(dto, related: relatedRaw),
+          focusMeaningId: focus,
+          includeUnverified: includeUnverified,
+        ),
+      );
     } on DioException catch (error) {
       return Either.left(
         _mapDio(
@@ -744,7 +809,22 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     }
   }
 
-  WordDetail _mapDetail(
+  WordDetail _withPublicMeaningVisibility(
+    WordDetail detail, {
+    String? focusMeaningId,
+    bool includeUnverified = false,
+  }) {
+    final visible = visibleMeaningsForPublicDetail(
+      detail.meanings,
+      viewerIsVerifier: false,
+      focusMeaningId: focusMeaningId,
+      includeUnverified: includeUnverified,
+    );
+    if (visible.length == detail.meanings.length) return detail;
+    return detail.withMeanings(visible);
+  }
+
+    WordDetail _mapDetail(
     WordDetailDto dto, {
     List<ContentRelatedLink> related = const [],
   }) => WordDetail(

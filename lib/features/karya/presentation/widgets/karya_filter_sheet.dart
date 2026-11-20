@@ -26,6 +26,7 @@ Future<KaryaFilterSelection?> showKaryaFilterSheet(
 }) {
   return showFSheet<KaryaFilterSelection>(
     context: context,
+    useRootNavigator: true,
     side: FLayout.rtl,
     mainAxisMaxRatio: 0.86,
     useSafeArea: true,

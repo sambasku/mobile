@@ -100,9 +100,17 @@ class DictionaryRouter {
       path: detail.path,
       name: detail.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
-      builder: (context, state) => WordDetailPage(
-        wordId: state.pathParameters['id']!,
-      ),
+      builder: (context, state) {
+        final q = state.uri.queryParameters;
+        final raw = (q['include_unverified'] ?? '').toLowerCase();
+        final includeUnverified =
+            raw == '1' || raw == 'true' || raw == 'yes';
+        return WordDetailPage(
+          wordId: state.pathParameters['id']!,
+          initialMeaningId: q['meaning'],
+          includeUnverified: includeUnverified,
+        );
+      },
     ),
     GoRoute(
       path: suggestEdit.path,
@@ -129,4 +137,20 @@ SuggestCategory? parseSuggestCategory(String? raw) {
     if (category.code == raw) return category;
   }
   return null;
+}
+
+/// Path detail kata + query komunitas (feed usulan / Periksa Kata).
+String wordDetailPath(
+  String wordId, {
+  String? meaningId,
+  bool includeUnverified = false,
+}) {
+  final params = <String, String>{
+    if (meaningId != null && meaningId.trim().isNotEmpty)
+      'meaning': meaningId.trim(),
+    if (includeUnverified) 'include_unverified': '1',
+  };
+  final base = DictionaryRouter.detail.path.replaceFirst(':id', wordId);
+  if (params.isEmpty) return base;
+  return '$base?${Uri(queryParameters: params).query}';
 }

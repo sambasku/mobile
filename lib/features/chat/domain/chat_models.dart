@@ -1,10 +1,18 @@
 /// Model domain + wire mapping untuk chat publik (channel tunggal).
 library;
 
+/// Body system untuk jejak ping (wire). UI: ikon radio + nama : PING!!!
+const kChatPingBody = 'PING!!!';
+
+/// Body system voice join/leave (mirror API VOICE_PRESENCE_BODY).
+const kChatVoiceJoinBody = 'bergabung ke voice room';
+const kChatVoiceLeaveBody = 'keluar dari voice room';
+
 enum ChatMessageKind {
   text,
   sticker,
-  voiceNote;
+  voiceNote,
+  system;
 
   static ChatMessageKind fromWire(String? raw) {
     switch (raw) {
@@ -12,6 +20,8 @@ enum ChatMessageKind {
         return ChatMessageKind.sticker;
       case 'voice_note':
         return ChatMessageKind.voiceNote;
+      case 'system':
+        return ChatMessageKind.system;
       default:
         return ChatMessageKind.text;
     }
@@ -21,6 +31,7 @@ enum ChatMessageKind {
     ChatMessageKind.text => 'text',
     ChatMessageKind.sticker => 'sticker',
     ChatMessageKind.voiceNote => 'voice_note',
+    ChatMessageKind.system => 'system',
   };
 }
 
@@ -170,4 +181,44 @@ class ChatFailure implements Exception {
 
   @override
   String toString() => message;
+}
+
+bool isChatPingMessage(ChatMessage message) =>
+    message.kind == ChatMessageKind.system &&
+    (message.body ?? '').trim() == kChatPingBody;
+
+class ChatPingStatus {
+  const ChatPingStatus({
+    required this.cooldownSeconds,
+    this.availableAt,
+    this.lastPingAt,
+  });
+
+  final String? availableAt;
+  final int cooldownSeconds;
+  final String? lastPingAt;
+
+  factory ChatPingStatus.fromJson(Map<String, dynamic> json) {
+    return ChatPingStatus(
+      availableAt: json['available_at']?.toString(),
+      cooldownSeconds: (json['cooldown_seconds'] as num?)?.toInt() ?? 300,
+      lastPingAt: json['last_ping_at']?.toString(),
+    );
+  }
+
+  DateTime? get availableAtDate =>
+      availableAt == null ? null : DateTime.tryParse(availableAt!);
+
+  bool get isReady {
+    final at = availableAtDate;
+    if (at == null) return true;
+    return !at.toUtc().isAfter(DateTime.now().toUtc());
+  }
+
+  Duration get remaining {
+    final at = availableAtDate;
+    if (at == null) return Duration.zero;
+    final diff = at.toUtc().difference(DateTime.now().toUtc());
+    return diff.isNegative ? Duration.zero : diff;
+  }
 }

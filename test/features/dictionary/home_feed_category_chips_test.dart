@@ -254,6 +254,10 @@ Future<void> pumpHome(
       items: [],
       meta: HotTopicTabMeta(inWindow: 0, backfilled: 0, backfillUsed: false),
     ),
+    check: HotTopicTab(
+      items: [],
+      meta: HotTopicTabMeta(inWindow: 0, backfilled: 0, backfillUsed: false),
+    ),
   );
 
   await tester.pumpWidget(

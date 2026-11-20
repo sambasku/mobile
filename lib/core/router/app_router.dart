@@ -331,11 +331,34 @@ class AppRouter {
   }
 }
 
-/// Buka tab Profil: cek token storage (sama seperti redirect), baru goBranch.
+/// Buka tab Profil: tunggu hydrate auth bila masih loading, lalu gate
+/// storage (sama seperti redirect). Jangan treat AsyncLoading sebagai tamu.
 Future<void> _openProfileBranch(
   BuildContext context,
+  WidgetRef ref,
   StatefulNavigationShell navigationShell,
 ) async {
+  final async = ref.read(authStatusProvider);
+  if (async.isLoading) {
+    try {
+      final status = await ref
+          .read(authStatusProvider.future)
+          .timeout(const Duration(seconds: 5));
+      if (!context.mounted) return;
+      if (status.isAuth) {
+        navigationShell.goBranch(4);
+        return;
+      }
+    } on TimeoutException {
+      tfLog('profile authStatus timeout');
+    } catch (_) {
+      // Fall through ke gate storage.
+    }
+  } else if (async.value?.isAuth == true) {
+    navigationShell.goBranch(4);
+    return;
+  }
+
   final ok = await AppRouter._tokenStorage.getIsAuthForGate();
   if (!context.mounted) return;
   if (!ok) {
@@ -402,16 +425,15 @@ class _HomeShell extends ConsumerWidget {
               // IndexedStack menyimpan fokus search → keyboard ikut "nempel"
               // saat ganti tab / setelah hot reload. Unfocus dulu.
               FocusManager.instance.primaryFocus?.unfocus();
-              // Tamu ketuk Profil → login. Jangan andalkan authStatus.value saja:
-              // saat AsyncLoading value bisa null → salah kirim ke login / tab macet.
+              // Tamu ketuk Profil → login. AsyncLoading ≠ tamu: tunggu
+              // hydrate / gate di _openProfileBranch (#301).
               if (index == 4) {
-                final authed =
-                    ref.read(authStatusProvider).value?.isAuth ?? false;
-                if (authed) {
+                final async = ref.read(authStatusProvider);
+                if (async case AsyncData(:final value) when value.isAuth) {
                   navigationShell.goBranch(4);
                   return;
                 }
-                unawaited(_openProfileBranch(context, navigationShell));
+                unawaited(_openProfileBranch(context, ref, navigationShell));
                 return;
               }
               final openingHome =
@@ -451,17 +473,24 @@ class _HomeShell extends ConsumerWidget {
               ),
             ],
           ),
-          child: Stack(
-            children: [
-              navigationShell,
-              if (voiceConnected)
-                const Positioned(
-                  left: 12,
-                  right: 12,
-                  bottom: 8,
-                  child: VoiceRoomMiniBar(),
-                ),
-            ],
+          child: Builder(
+            builder: (context) {
+              final onChatTab =
+                  GoRouterState.of(context).uri.path ==
+                  DiscussionRouter.chat.path;
+              return Stack(
+                children: [
+                  navigationShell,
+                  if (voiceConnected && !onChatTab)
+                    const Positioned(
+                      left: 12,
+                      right: 12,
+                      bottom: 8,
+                      child: VoiceRoomMiniBar(),
+                    ),
+                ],
+              );
+            },
           ),
         ),
       ),

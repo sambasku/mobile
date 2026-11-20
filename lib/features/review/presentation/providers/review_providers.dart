@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/network_providers.dart';
@@ -145,6 +146,16 @@ final reviewDetailProvider = FutureProvider.autoDispose.family<ReviewDetail, Str
   ref,
   id,
 ) async {
+  // Keep cache ~2 menit supaya swipe cepat tidak kena cold fetch / flash kosong.
+  final link = ref.keepAlive();
+  Timer? disposeTimer;
+  ref.onCancel(() {
+    disposeTimer?.cancel();
+    disposeTimer = Timer(const Duration(minutes: 2), link.close);
+  });
+  ref.onResume(() => disposeTimer?.cancel());
+  ref.onDispose(() => disposeTimer?.cancel());
+
   final result = await ref.watch(reviewRepositoryProvider).detail(id);
   return result.match((failure) => throw failure, (detail) => detail);
 });

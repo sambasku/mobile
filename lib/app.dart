@@ -6,6 +6,8 @@ import 'package:flutter_localizations/flutter_localizations.dart'
         GlobalCupertinoLocalizations;
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import 'features/chat/presentation/providers/chat_ping_provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'core/i18n/app_locale.dart';
@@ -48,6 +50,8 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Bel ping in-app (listener realtime keep-alive).
+    ref.watch(chatPingBellProvider);
     final themeMode = ref.watch(themeModeControllerProvider);
     // Palet warna pilihan user (SharedPreferences) - default zinc
     final palette =

@@ -118,7 +118,7 @@ class _HistoryDetailBodyState extends ConsumerState<_HistoryDetailBody> {
     return ListView(
       children: [
         Text(
-          detail.contribution.title,
+          reviewDetailTitle(detail, AppLocalizations.of(context)),
           style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
         ),
         Gap(4),

@@ -86,12 +86,16 @@ class _EmptyLatestRepository implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => throw UnimplementedError();
 
   @override
@@ -213,40 +217,33 @@ void main() {
     // Animasi exit route terakhir sebelum menyentuh tombol menu.
     await tester.pump(const Duration(milliseconds: 300));
 
-    // 2. Menu kontribusi 10x: pilih tile -> route -> system back.
+    // 2. Hub Kontribusi 10x: tile Dicari warga -> route -> system back.
     //    Iterasi genap double-tap tile (masih hidup saat animasi pop).
     for (var i = 0; i < 10; i++) {
-      await tester.tap(find.text('Menu kontribusi'));
-      await settle();
-      final tile = find.text('Usul kata baru');
+      expect(find.text('Dicari warga'), findsOneWidget, reason: 'iterasi $i');
+      final tile = find.text('Dicari warga');
       await tester.tap(tile);
       if (i.isEven) {
         await tester.pump(const Duration(milliseconds: 50));
         await tester.tap(tile, warnIfMissed: false);
       }
       await settle();
-      expect(pushedPath(), '/contribute', reason: 'menu iterasi $i');
+      expect(pushedPath(), '/search-misses', reason: 'hub iterasi $i');
       expect(await tester.binding.handlePopRoute(), isTrue);
       await settle();
       await tester.pump(const Duration(milliseconds: 300));
-      expect(path(), '/action', reason: 'menu iterasi $i: back ke shell');
-      expect(find.text('Menu kontribusi'), findsOneWidget);
+      expect(path(), '/action', reason: 'hub iterasi $i: back ke shell');
+      expect(find.text('Dicari warga'), findsOneWidget);
+      expect(find.text('Periksa kata'), findsOneWidget);
     }
 
     // 3. Race: pilih tile lalu langsung ketuk tab Home tanpa menunggu.
-    //    Tap saat animasi exit sheet tertelan AbsorbPointer modal route
-    //    (perilaku framework, ~250ms) dan shell tertutup route push - yang
-    //    diuji anti-freeze: push tidak hilang, back pulih, tab hidup lagi.
-    await tester.tap(find.text('Menu kontribusi'));
-    await settle();
-    // Tile bawah ("Ruang diskusi") di luar viewport test setelah #260
-    // menambah 2 tile IPA - pakai tile atas yang selalu terlihat.
-    await tester.tap(find.text('Usul kata baru'));
+    await tester.tap(find.text('Dicari warga'));
     await tester.pump();
     await tester.tap(tabItem('Home'), warnIfMissed: false);
     await settle();
     await settle();
-    expect(pushedPath(), '/contribute', reason: 'push tile tetap jalan');
+    expect(pushedPath(), '/search-misses', reason: 'push tile tetap jalan');
 
     expect(await tester.binding.handlePopRoute(), isTrue);
     await settle();

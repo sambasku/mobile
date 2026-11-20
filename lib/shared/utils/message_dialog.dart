@@ -20,6 +20,7 @@ Future<T?> showFMessageDialog<T>({
   bool barrierDismissible = true,
 }) => showModalBottomSheet<T>(
   context: context,
+  useRootNavigator: true,
   isScrollControlled: true,
   useSafeArea: true,
   isDismissible: barrierDismissible,

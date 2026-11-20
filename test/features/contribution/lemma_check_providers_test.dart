@@ -8,7 +8,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/core/cache/cache_entry.dart';
 import 'package:sambasku_mobile/core/cache/cache_providers.dart';
 import 'package:sambasku_mobile/core/cache/response_cache_store.dart';
+import 'package:sambasku_mobile/core/network/connectivity_provider.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
+import 'package:sambasku_mobile/features/dictionary/data/dataset/lemma_dataset_providers.dart';
 import 'package:sambasku_mobile/features/contribution/presentation/providers/lemma_check_providers.dart';
 
 /// Adapter meniru server:
@@ -82,6 +84,8 @@ ProviderContainer _container(_LemmaAdapter adapter) => ProviderContainer(
   overrides: [
     dioProvider.overrideWithValue(Dio()..httpClientAdapter = adapter),
     responseCacheStoreProvider.overrideWithValue(_MemoryCacheStore()),
+    isOfflineProvider.overrideWith((ref) => Stream.value(false)),
+    dictionaryLocalDatasourceProvider.overrideWith((ref) async => null),
   ],
 );
 

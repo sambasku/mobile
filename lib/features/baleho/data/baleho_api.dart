@@ -54,6 +54,29 @@ class BalehoCreativeSummary {
   }
 }
 
+class BalehoPlacementDailyBucket {
+  const BalehoPlacementDailyBucket({
+    required this.date,
+    required this.impressions,
+    required this.taps,
+    required this.actions,
+  });
+
+  final String date;
+  final int impressions;
+  final int taps;
+  final int actions;
+
+  factory BalehoPlacementDailyBucket.fromJson(Map<String, dynamic> json) {
+    return BalehoPlacementDailyBucket(
+      date: '${json['date'] ?? ''}',
+      impressions: (json['impressions'] as num?)?.toInt() ?? 0,
+      taps: (json['taps'] as num?)?.toInt() ?? 0,
+      actions: (json['actions'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
+
 class BalehoPlacementHistoryItem {
   const BalehoPlacementHistoryItem({
     required this.id,
@@ -70,7 +93,15 @@ class BalehoPlacementHistoryItem {
     this.impressions = 0,
     this.taps = 0,
     this.actions = 0,
+    this.actionSuccess = 0,
+    this.actionFail = 0,
     this.ctrPercent = 0,
+    this.actionRatePercent = 0,
+    this.successRatePercent = 0,
+    this.quotedAmount,
+    this.cpmIdr,
+    this.cpcIdr,
+    this.daily = const [],
   });
 
   final String id;
@@ -94,10 +125,35 @@ class BalehoPlacementHistoryItem {
   /// Klik tombol CTA di sheet.
   final int actions;
 
+  final int actionSuccess;
+  final int actionFail;
+
   /// CTR tap/impresi (%), 1 desimal dari API.
   final double ctrPercent;
 
+  /// Action-rate actions/taps (%).
+  final double actionRatePercent;
+
+  /// Success-rate action_success/actions (%).
+  final double successRatePercent;
+
+  final int? quotedAmount;
+  final int? cpmIdr;
+  final int? cpcIdr;
+  final List<BalehoPlacementDailyBucket> daily;
+
   factory BalehoPlacementHistoryItem.fromJson(Map<String, dynamic> json) {
+    final dailyRaw = json['daily'];
+    final daily = dailyRaw is List
+        ? dailyRaw
+            .whereType<Map>()
+            .map(
+              (e) => BalehoPlacementDailyBucket.fromJson(
+                Map<String, dynamic>.from(e),
+              ),
+            )
+            .toList()
+        : const <BalehoPlacementDailyBucket>[];
     return BalehoPlacementHistoryItem(
       id: '${json['id']}',
       slide: (json['slide'] as num?)?.toInt() ?? 1,
@@ -116,7 +172,17 @@ class BalehoPlacementHistoryItem {
       impressions: (json['impressions'] as num?)?.toInt() ?? 0,
       taps: (json['taps'] as num?)?.toInt() ?? 0,
       actions: (json['actions'] as num?)?.toInt() ?? 0,
+      actionSuccess: (json['action_success'] as num?)?.toInt() ?? 0,
+      actionFail: (json['action_fail'] as num?)?.toInt() ?? 0,
       ctrPercent: (json['ctr_percent'] as num?)?.toDouble() ?? 0,
+      actionRatePercent:
+          (json['action_rate_percent'] as num?)?.toDouble() ?? 0,
+      successRatePercent:
+          (json['success_rate_percent'] as num?)?.toDouble() ?? 0,
+      quotedAmount: (json['quoted_amount'] as num?)?.toInt(),
+      cpmIdr: (json['cpm_idr'] as num?)?.toInt(),
+      cpcIdr: (json['cpc_idr'] as num?)?.toInt(),
+      daily: daily,
     );
   }
 }

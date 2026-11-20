@@ -307,10 +307,11 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   }
 
   Future<void> _pickMeaning(WordDetail detail) async {
-    final picked = await showModalBottomSheet<WordMeaning>(
+    final picked = await showModalBottomSheet<WordMeaning>((
       context: context,
+      useRootNavigator: true,
       useSafeArea: true,
-      builder: (sheetContext) => SafeArea(
+      uilder: (sheetContext) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
           child: FTileGroup(

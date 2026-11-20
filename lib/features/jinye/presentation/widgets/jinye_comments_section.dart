@@ -33,11 +33,12 @@ import 'jinye_word_picker_sheet.dart';
 
 /// Buka thread komentar Jinye (pola sama [showWordCommentsSheet]).
 Future<void> showJinyeCommentsSheet(BuildContext context, String jinyeId) {
-  return showModalBottomSheet<void>(
+  return showModalBottomSheet<void>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (sheetContext) {
+    uilder: (sheetContext) {
       final media = MediaQuery.of(sheetContext);
       final height = (media.size.height - media.viewInsets.bottom) * 0.88;
       return Padding(

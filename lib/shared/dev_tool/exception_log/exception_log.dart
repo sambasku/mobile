@@ -168,11 +168,12 @@ Future<void> _showExceptionSheet(
   required String message,
   required String stack,
 }) {
-  return showModalBottomSheet<void>(
+  return showModalBottomSheet<void>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (sheetContext) {
+    uilder: (sheetContext) {
       return _ExceptionSheet(message: message, stack: stack);
     },
   );

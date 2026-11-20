@@ -125,9 +125,9 @@ void main() {
   });
 }
 
-/// Tunggu jendela debounce (400ms) + microtask completion.
+/// Tunggu jendela debounce (700ms) + microtask completion.
 Future<void> _settle() async {
-  await Future<void>.delayed(const Duration(milliseconds: 500));
+  await Future<void>.delayed(const Duration(milliseconds: 850));
 }
 
 class _FakeDictionaryRepository implements DictionaryRepository {
@@ -192,12 +192,16 @@ class _FakeDictionaryRepository implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) => throw UnimplementedError();
 
   @override

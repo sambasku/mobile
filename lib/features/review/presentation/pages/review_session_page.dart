@@ -50,6 +50,9 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
   bool _correctMode = false;
   bool _bootstrapped = false;
   String? _formKeyId;
+  final Set<String> _autoSkippedBrokenIds = <String>{};
+  int _consecutiveBrokenSkips = 0;
+  static const int _maxConsecutiveBrokenSkips = 12;
 
   bool get _busy => _pendingAction != null;
 
@@ -205,6 +208,10 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
   /// `true` = kartu keluar / advance; `false` = kembalikan kartu.
   Future<bool> _approve(ReviewDetail detail) async {
     if (_busy || _correctMode) return false;
+    if (reviewEntityPayloadMissing(detail)) {
+      await _autoSkipBrokenIfNeeded(detail);
+      return true;
+    }
     final id = detail.contribution.id;
     AnalyticsService.instance.log(
       AnalyticsEvents.reviewApprove,
@@ -225,6 +232,10 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
   /// `true` = ditolak / advance; `false` = batal alasan.
   Future<bool> _reject(ReviewDetail detail) async {
     if (_busy || _correctMode) return false;
+    if (reviewEntityPayloadMissing(detail)) {
+      await _autoSkipBrokenIfNeeded(detail);
+      return true;
+    }
     final comment = await _askRejectReason();
     if (comment == null || !mounted) return false;
     final id = detail.contribution.id;
@@ -237,6 +248,50 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
         .enqueueReject(id, comment: comment);
     _afterDecision(AppLocalizations.of(context).reviewSessionRejectedToast, id);
     return true;
+  }
+
+
+  /// Kartu tanpa payload entity (orphan / soft-delete race): lewati otomatis.
+  /// Jangan pernah tampilkan judul kode mentah atau preview kosong ke user.
+  Future<void> _autoSkipBrokenIfNeeded(ReviewDetail detail) async {
+    if (!detail.contribution.isPending) return;
+    if (!reviewEntityPayloadMissing(detail)) {
+      _consecutiveBrokenSkips = 0;
+      return;
+    }
+    final id = detail.contribution.id;
+    if (_autoSkippedBrokenIds.contains(id)) {
+      // Skip sebelumnya belum memindah index - coba lagi tanpa toast.
+      if (ref.read(reviewSessionProvider)?.currentId == id) {
+        await ref.read(reviewSessionProvider.notifier).skipCurrent();
+      }
+      return;
+    }
+    if (_consecutiveBrokenSkips >= _maxConsecutiveBrokenSkips) {
+      if (!mounted) return;
+      showFToast(
+        context: context,
+        title: Text(
+          AppLocalizations.of(context).reviewSessionEntityMissingFlood,
+        ),
+        variant: FToastVariant.destructive,
+      );
+      _exitToQueue(refresh: true);
+      return;
+    }
+    _autoSkippedBrokenIds.add(id);
+    _consecutiveBrokenSkips += 1;
+    if (!mounted) return;
+    // Lewati diam-diam; toast sekali tiap lompatan beruntun pertama saja.
+    if (_consecutiveBrokenSkips == 1) {
+      showFToast(
+        context: context,
+        title: Text(
+          AppLocalizations.of(context).reviewSessionEntityMissingSkipped,
+        ),
+      );
+    }
+    await ref.read(reviewSessionProvider.notifier).skipCurrent();
   }
 
   Future<bool> _onSwiped(ReviewDetail detail, ReviewSwipeDirection direction) {
@@ -408,6 +463,15 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
       _onSubmitQueueFailure(next);
     });
 
+    ref.listen(reviewDetailProvider(currentId), (prev, next) {
+      final detail = next.asData?.value;
+      if (detail == null) return;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _autoSkipBrokenIfNeeded(detail);
+      });
+    });
+
     // Prefetch 1-2 kartu ke depan tetap di-watch supaya autoDispose tidak
     // membuang hasil sebelum advance (ganti kartu tanpa cold loading).
     final nextId = session.nextId;
@@ -428,7 +492,9 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
         ),
         footer: pending && !_correctMode
             ? detailAsync.maybeWhen(
-                data: (detail) => ReviewSessionActionBar(
+                data: (detail) => reviewEntityPayloadMissing(detail)
+                    ? null
+                    : ReviewSessionActionBar(
                   pendingAction: _pendingAction,
                   canCorrect: correctableEntityTypes.contains(
                     detail.contribution.entityType,
@@ -463,6 +529,13 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
               ),
             ),
             data: (detail) {
+              // Jangan render kartu rusak - skeleton sambil auto-skip.
+              if (reviewEntityPayloadMissing(detail) &&
+                  detail.contribution.isPending) {
+                return const _ReviewCardPlaceholder(
+                  key: ValueKey('broken-skipping'),
+                );
+              }
               if (_correctMode) {
                 return ReviewCorrectForm(
                   key: ValueKey(_formKeyId ?? detail.contribution.id),
@@ -581,7 +654,7 @@ class _ReviewViewBody extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  item.title,
+                  reviewDetailTitle(detail, l10n),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: context.theme.typography.body.xl.copyWith(

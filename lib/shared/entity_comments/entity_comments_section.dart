@@ -68,11 +68,12 @@ Future<void> showEntityCommentsSheet(
   required EntityCommentTarget target,
   required String entityId,
 }) {
-  return showModalBottomSheet<void>(
+  return showModalBottomSheet<void>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (sheetContext) {
+    uilder: (sheetContext) {
       final media = MediaQuery.of(sheetContext);
       final height = (media.size.height - media.viewInsets.bottom) * 0.88;
       return Padding(
@@ -128,10 +129,14 @@ class EntityCommentEntryBar extends ConsumerWidget {
                   color: theme.colors.foreground,
                 ),
                 const Gap(8),
-                Text(
-                  '${copy.title(count)} ($count)',
-                  style: theme.typography.body.sm.copyWith(
-                    fontWeight: FontWeight.w600,
+                Expanded(
+                  child: Text(
+                    '${copy.title(count)} ($count)',
+                    style: theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const Gap(8),

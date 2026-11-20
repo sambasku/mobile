@@ -704,6 +704,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoStatusLive => 'Tayang';
 
   @override
+  String get balehoStatusPaused => 'Ditahan';
+
+  @override
   String get balehoStatusRejected => 'Ditolak';
 
   @override
@@ -741,10 +744,45 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String balehoHistoryStatActionRate(String percent) {
+    return 'Action-rate $percent%';
+  }
+
+  @override
+  String balehoHistoryStatSuccessRate(String percent) {
+    return 'Sukses CTA $percent%';
+  }
+
+  @override
+  String balehoHistoryStatQuoted(String amount) {
+    return 'Biaya Rp $amount';
+  }
+
+  @override
+  String balehoHistoryStatCpm(String amount) {
+    return 'CPM Rp $amount';
+  }
+
+  @override
+  String balehoHistoryStatCpc(String amount) {
+    return 'CPC Rp $amount';
+  }
+
+  @override
+  String balehoHistoryStatDaily7(
+    String impressions,
+    String taps,
+    String actions,
+  ) {
+    return '7 hari: $impressions tayang · $taps buka · $actions klik';
+  }
+
+  @override
   String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';
 
   @override
-  String get balehoValidationVideoSize => 'Video hanya untuk ukuran 4x2';
+  String get balehoValidationVideoSize =>
+      'Video hanya untuk ukuran 4x2 atau 2x4';
 
   @override
   String get balehoValidationVideoMax => 'Maksimal satu video per pesanan';
@@ -1330,7 +1368,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get voteTrustProgressInfo =>
-      'Makna akan otomatis terverifikasi oleh warga apabila memperoleh net vote minimal +5 dari sedikitnya 5 pemilih.';
+      'Bar kiri hijau (setuju) vs kanan merah (kurang setuju), saling merebut proporsi suara. Terverifikasi otomatis bila net minimal +5 dari sedikitnya 5 pemilih; ditolak otomatis bila net maksimal -5 dari sedikitnya 5 pemilih.';
 
   @override
   String get voteTrustProgressInfoSemantics => 'Info verifikasi warga';
@@ -2973,6 +3011,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get reviewSessionSkipped => 'Dilewati.';
 
   @override
+  String get reviewSessionEntityMissingSkipped => 'Usulan tanpa isi dilewati.';
+
+  @override
+  String get reviewSessionEntityMissingFlood =>
+      'Banyak usulan tanpa isi. Kembali ke antrean dulu.';
+
+  @override
   String get reviewSessionApprovedToast => 'Usulan disetujui';
 
   @override
@@ -3437,6 +3482,10 @@ class AppLocalizationsId extends AppLocalizations {
   String reviewPreviewNotation(String notation) {
     return 'Notasi: $notation';
   }
+
+  @override
+  String get reviewPreviewEntityMissing =>
+      'Isi usulan tidak bisa dimuat. Lewati kartu ini atau coba lagi nanti.';
 
   @override
   String get reviewPreviewProposedMeaning => 'Makna yang diusulkan';
@@ -4759,13 +4808,21 @@ class AppLocalizationsId extends AppLocalizations {
       'Belum ada usulan kata yang menunggu peninjauan.';
 
   @override
-  String get hotTopicsTabEmptyNearBody => 'Belum ada hits hari ini.';
+  String get hotTopicsTabEmptyNearBody =>
+      'Belum ada hits dalam 2 hari terakhir.';
+
+  @override
+  String get hotTopicsTabCheck => 'Cek';
+
+  @override
+  String get hotTopicsTabEmptyCheckBody =>
+      'Belum ada makna yang perlu dicek hari ini.';
 
   @override
   String get hotTopicsBackfillHint => 'Sebagian dari 7 hari terakhir.';
 
   @override
-  String get hotTopicsProposedSubtitle => 'Usulan menunggu peninjauan';
+  String get hotTopicsProposedSubtitle => 'Usulan baru';
 
   @override
   String get hotTopicsEmptySlot => '-';
@@ -4773,6 +4830,11 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String hotTopicsViewCount(String count) {
     return '$count× dibuka';
+  }
+
+  @override
+  String hotTopicsDownvoteCount(String count) {
+    return '$count× perlu di cek';
   }
 
   @override
@@ -5659,16 +5721,25 @@ class AppLocalizationsId extends AppLocalizations {
   String get periksaKataSearchEmpty => 'Tidak ketemu lemma itu';
 
   @override
-  String get periksaKataAgree => 'Masuk akal';
+  String get periksaKataAgree => 'Sudah pas';
 
   @override
-  String get periksaKataDisagree => 'Kurang pas';
+  String get periksaKataDisagree => 'Perlu dicek ulang';
 
   @override
-  String get periksaKataVotedAgree => 'Sudah memilih Masuk akal';
+  String get periksaKataVotedAgree => 'Voting kamu sudah tercatat';
 
   @override
-  String get periksaKataVotedDisagree => 'Sudah memilih Kurang pas';
+  String get periksaKataVotedDisagree => 'Voting kamu sudah tercatat';
+
+  @override
+  String get periksaKataSkip => 'Lewati';
+
+  @override
+  String get periksaKataSkipSemantics => 'Lewati, saya tidak tahu';
+
+  @override
+  String get periksaKataSkipSwipeHint => 'Geser kiri untuk lewati';
 
   @override
   String get periksaKataHistoryTitle => 'Riwayat pemeriksaan';
@@ -9115,7 +9186,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get contributeSentGuest =>
-      'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.';
+      'Dikirim sebagai tamu. Katanya sudah tayang, menunggu pengecekan warga.';
 
   @override
   String get contributeBulkTitle => 'Usulkan banyak sekaligus';
@@ -9459,7 +9530,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get contributeBulkSentGuest =>
-      'Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.';
+      'Dikirim sebagai tamu. Kata sudah tayang, menunggu pengecekan warga.';
 
   @override
   String contributeBulkMaxRowsHint(int max) {
@@ -12705,6 +12776,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get discussionTabChat => 'Chat';
 
   @override
+  String discussionTabChatWithCount(int count) {
+    return 'Chat ($count)';
+  }
+
+  @override
   String get chatLoadFailed => 'Gagal memuat chat';
 
   @override
@@ -12824,6 +12900,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get chatReplySnippetVoice => '[voice note]';
 
   @override
+  String get chatReplySnippetSystem => '[sistem]';
+
+  @override
   String get chatLongPressReply => 'Balas';
 
   @override
@@ -12935,6 +13014,17 @@ class AppLocalizationsId extends AppLocalizations {
   String get chatPresenceGuestName => 'Tamu';
 
   @override
+  String get chatPingAction => 'Ping';
+
+  @override
+  String chatPingCooldown(String minutes, String seconds) {
+    return '$minutes:$seconds';
+  }
+
+  @override
+  String get chatPingSent => 'Ping terkirim';
+
+  @override
   String get voiceRoomFull =>
       'Voice room penuh (maks 15 orang). Coba lagi nanti ya.';
 
@@ -12956,6 +13046,34 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get voiceWsFailed =>
       'Voice server tidak menerima koneksi WebSocket. Cek proxy/Cloudflare (Upgrade) di homelab.';
+
+  @override
+  String get chatPingCooldownTitle => 'Ping sedang cooldown';
+
+  @override
+  String chatPingCooldownBody(String clock) {
+    return 'Ping baru saja dipakai. Coba lagi dalam $clock.';
+  }
+
+  @override
+  String get chatPingCooldownBodyGeneric =>
+      'Ping baru saja dipakai. Tunggu sebentar lalu coba lagi ya.';
+
+  @override
+  String chatPingCooldownSemantics(String clock) {
+    return 'Ping cooldown $clock';
+  }
+
+  @override
+  String get chatSystemVoiceJoinAction => 'bergabung';
+
+  @override
+  String get chatSystemVoiceLeaveAction => 'keluar';
+
+  @override
+  String chatPingSystemLine(String name) {
+    return '$name : PING!!!';
+  }
 
   @override
   String chatTypingOne(String name) {
@@ -12991,6 +13109,76 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get usahaSponsorTierMustika => 'Mustika';
+
+  @override
+  String get periksaKataVoted => 'Voting kamu sudah tercatat';
+
+  @override
+  String voteTrustProgressDetailNeedUp(
+    int need,
+    String netLabel,
+    int unique,
+    int threshold,
+  ) {
+    return 'Butuh +$need poin lagi · net $netLabel · $unique/$threshold pemilih';
+  }
+
+  @override
+  String voteTrustProgressDetailNeedDown(
+    int need,
+    String netLabel,
+    int unique,
+    int threshold,
+  ) {
+    return 'Butuh -$need poin lagi ke penolakan · net $netLabel · $unique/$threshold pemilih';
+  }
+
+  @override
+  String voteTrustProgressDetailNeedVoters(
+    int need,
+    int unique,
+    int threshold,
+  ) {
+    return 'Net sudah cukup · butuh $need pemilih lagi ($unique/$threshold)';
+  }
+
+  @override
+  String get dictCommunityVoteFooterTitle => 'Bantu periksa makna menunggu';
+
+  @override
+  String get periksaKataUnvoteTitle => 'Batalkan vote?';
+
+  @override
+  String get periksaKataUnvoteBody =>
+      'Vote kamu akan dihapus dari riwayat pemeriksaan untuk kata ini.';
+
+  @override
+  String get periksaKataUnvoteConfirm => 'Batalkan vote';
+
+  @override
+  String get periksaKataVoteLockedMeta =>
+      'Tidak bisa diubah - makna sudah selesai dicek';
+
+  @override
+  String get periksaKataVoteLockedTitle => 'Vote tidak bisa diubah';
+
+  @override
+  String get periksaKataVoteLockedBody =>
+      'Makna ini sudah terverifikasi atau ditolak. Vote lama kamu tetap tercatat dan tidak bisa dibatalkan atau diganti.';
+
+  @override
+  String get periksaKataPriorVoteMeta =>
+      'Vote sebelumnya masih aktif - tap tombol yang sama untuk batal';
+
+  @override
+  String get periksaKataUnvoteDone => 'Vote dibatalkan';
+
+  @override
+  String get dictCommunityVoteOpenPeriksa => 'Buka Periksa Kata';
+
+  @override
+  String get dictCommunityVoteNoPendingBody =>
+      'Makna menunggu tidak tampil di sini. Lanjut di Periksa Kata untuk vote.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -13692,6 +13880,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoStatusLive => 'Tayang';
 
   @override
+  String get balehoStatusPaused => 'Ditahan';
+
+  @override
   String get balehoStatusRejected => 'Ditolak';
 
   @override
@@ -13729,10 +13920,45 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
+  String balehoHistoryStatActionRate(String percent) {
+    return 'Action-rate $percent%';
+  }
+
+  @override
+  String balehoHistoryStatSuccessRate(String percent) {
+    return 'Sukses CTA $percent%';
+  }
+
+  @override
+  String balehoHistoryStatQuoted(String amount) {
+    return 'Biaya Rp $amount';
+  }
+
+  @override
+  String balehoHistoryStatCpm(String amount) {
+    return 'CPM Rp $amount';
+  }
+
+  @override
+  String balehoHistoryStatCpc(String amount) {
+    return 'CPC Rp $amount';
+  }
+
+  @override
+  String balehoHistoryStatDaily7(
+    String impressions,
+    String taps,
+    String actions,
+  ) {
+    return '7 hari: $impressions tayang · $taps buka · $actions klik';
+  }
+
+  @override
   String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';
 
   @override
-  String get balehoValidationVideoSize => 'Video hanya untuk ukuran 4x2';
+  String get balehoValidationVideoSize =>
+      'Video hanya untuk ukuran 4x2 atau 2x4';
 
   @override
   String get balehoValidationVideoMax => 'Maksimal satu video per pesanan';
@@ -14318,7 +14544,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get voteTrustProgressInfo =>
-      'Makna akan otomatis terverifikasi oleh warga apabila memperoleh net vote minimal +5 dari sedikitnya 5 pemilih.';
+      'Bar kiri hijau (setuju) vs kanan merah (kurang setuju), saling merebut proporsi suara. Terverifikasi otomatis bila net minimal +5 dari sedikitnya 5 pemilih; ditolak otomatis bila net maksimal -5 dari sedikitnya 5 pemilih.';
 
   @override
   String get voteTrustProgressInfoSemantics => 'Info verifikasi warga';
@@ -15961,6 +16187,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reviewSessionSkipped => 'Dilewati.';
 
   @override
+  String get reviewSessionEntityMissingSkipped => 'Usulan tanpa isi dilewati.';
+
+  @override
+  String get reviewSessionEntityMissingFlood =>
+      'Banyak usulan tanpa isi. Kembali ke antrean dulu.';
+
+  @override
   String get reviewSessionApprovedToast => 'Usulan disetujui';
 
   @override
@@ -16425,6 +16658,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String reviewPreviewNotation(String notation) {
     return 'Notasi: $notation';
   }
+
+  @override
+  String get reviewPreviewEntityMissing =>
+      'Isi usulan tidak bisa dimuat. Lewati kartu ini atau coba lagi nanti.';
 
   @override
   String get reviewPreviewProposedMeaning => 'Makna yang diusulkan';
@@ -17747,13 +17984,21 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Belum ada usulan kata yang menunggu peninjauan.';
 
   @override
-  String get hotTopicsTabEmptyNearBody => 'Belum ada hits hari ini.';
+  String get hotTopicsTabEmptyNearBody =>
+      'Belum ada hits dalam 2 hari terakhir.';
+
+  @override
+  String get hotTopicsTabCheck => 'Cek';
+
+  @override
+  String get hotTopicsTabEmptyCheckBody =>
+      'Belum ada makna yang perlu dicek hari ini.';
 
   @override
   String get hotTopicsBackfillHint => 'Sebagian dari 7 hari terakhir.';
 
   @override
-  String get hotTopicsProposedSubtitle => 'Usulan menunggu peninjauan';
+  String get hotTopicsProposedSubtitle => 'Usulan baru';
 
   @override
   String get hotTopicsEmptySlot => '-';
@@ -17761,6 +18006,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String hotTopicsViewCount(String count) {
     return '$count× dibuka';
+  }
+
+  @override
+  String hotTopicsDownvoteCount(String count) {
+    return '$count× perlu di cek';
   }
 
   @override
@@ -18563,16 +18813,25 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get periksaKataSearchEmpty => 'Tidak ketemu lemma itu';
 
   @override
-  String get periksaKataAgree => 'Masuk akal';
+  String get periksaKataAgree => 'Sudah pas';
 
   @override
-  String get periksaKataDisagree => 'Kurang pas';
+  String get periksaKataDisagree => 'Perlu dicek ulang';
 
   @override
-  String get periksaKataVotedAgree => 'Sudah memilih Masuk akal';
+  String get periksaKataVotedAgree => 'Voting kamu sudah tercatat';
 
   @override
-  String get periksaKataVotedDisagree => 'Sudah memilih Kurang pas';
+  String get periksaKataVotedDisagree => 'Voting kamu sudah tercatat';
+
+  @override
+  String get periksaKataSkip => 'Lewati';
+
+  @override
+  String get periksaKataSkipSemantics => 'Lewati, saya tidak tahu';
+
+  @override
+  String get periksaKataSkipSwipeHint => 'Geser kiri untuk lewati';
 
   @override
   String get periksaKataHistoryTitle => 'Riwayat pemeriksaan';
@@ -22019,7 +22278,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get contributeSentGuest =>
-      'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.';
+      'Dikirim sebagai tamu. Katanya sudah tayang, menunggu pengecekan warga.';
 
   @override
   String get contributeBulkTitle => 'Usulkan banyak sekaligus';
@@ -22363,7 +22622,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get contributeBulkSentGuest =>
-      'Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.';
+      'Dikirim sebagai tamu. Kata sudah tayang, menunggu pengecekan warga.';
 
   @override
   String contributeBulkMaxRowsHint(int max) {
@@ -25609,6 +25868,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get discussionTabChat => 'Chat';
 
   @override
+  String discussionTabChatWithCount(int count) {
+    return 'Chat ($count)';
+  }
+
+  @override
   String get chatLoadFailed => 'Gagal memuat chat';
 
   @override
@@ -25728,6 +25992,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get chatReplySnippetVoice => '[voice note]';
 
   @override
+  String get chatReplySnippetSystem => '[sistem]';
+
+  @override
   String get chatLongPressReply => 'Balas';
 
   @override
@@ -25839,6 +26106,17 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get chatPresenceGuestName => 'Tamu';
 
   @override
+  String get chatPingAction => 'Ping';
+
+  @override
+  String chatPingCooldown(String minutes, String seconds) {
+    return '$minutes:$seconds';
+  }
+
+  @override
+  String get chatPingSent => 'Ping terkirim';
+
+  @override
   String get voiceRoomFull =>
       'Voice room penuh (maks 15 orang). Coba lagi nanti ya.';
 
@@ -25860,6 +26138,34 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get voiceWsFailed =>
       'Voice server tidak menerima koneksi WebSocket. Cek proxy/Cloudflare (Upgrade) di homelab.';
+
+  @override
+  String get chatPingCooldownTitle => 'Ping sedang cooldown';
+
+  @override
+  String chatPingCooldownBody(String clock) {
+    return 'Ping baru saja dipakai. Coba lagi dalam $clock.';
+  }
+
+  @override
+  String get chatPingCooldownBodyGeneric =>
+      'Ping baru saja dipakai. Tunggu sebentar lalu coba lagi ya.';
+
+  @override
+  String chatPingCooldownSemantics(String clock) {
+    return 'Ping cooldown $clock';
+  }
+
+  @override
+  String get chatSystemVoiceJoinAction => 'bergabung';
+
+  @override
+  String get chatSystemVoiceLeaveAction => 'keluar';
+
+  @override
+  String chatPingSystemLine(String name) {
+    return '$name : PING!!!';
+  }
 
   @override
   String chatTypingOne(String name) {
@@ -25895,4 +26201,74 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get usahaSponsorTierMustika => 'Mustika';
+
+  @override
+  String get periksaKataVoted => 'Voting kamu sudah tercatat';
+
+  @override
+  String voteTrustProgressDetailNeedUp(
+    int need,
+    String netLabel,
+    int unique,
+    int threshold,
+  ) {
+    return 'Butuh +$need poin lagi · net $netLabel · $unique/$threshold pemilih';
+  }
+
+  @override
+  String voteTrustProgressDetailNeedDown(
+    int need,
+    String netLabel,
+    int unique,
+    int threshold,
+  ) {
+    return 'Butuh -$need poin lagi ke penolakan · net $netLabel · $unique/$threshold pemilih';
+  }
+
+  @override
+  String voteTrustProgressDetailNeedVoters(
+    int need,
+    int unique,
+    int threshold,
+  ) {
+    return 'Net sudah cukup · butuh $need pemilih lagi ($unique/$threshold)';
+  }
+
+  @override
+  String get dictCommunityVoteFooterTitle => 'Bantu periksa makna menunggu';
+
+  @override
+  String get periksaKataUnvoteTitle => 'Batalkan vote?';
+
+  @override
+  String get periksaKataUnvoteBody =>
+      'Vote kamu akan dihapus dari riwayat pemeriksaan untuk kata ini.';
+
+  @override
+  String get periksaKataUnvoteConfirm => 'Batalkan vote';
+
+  @override
+  String get periksaKataVoteLockedMeta =>
+      'Tidak bisa diubah - makna sudah selesai dicek';
+
+  @override
+  String get periksaKataVoteLockedTitle => 'Vote tidak bisa diubah';
+
+  @override
+  String get periksaKataVoteLockedBody =>
+      'Makna ini sudah terverifikasi atau ditolak. Vote lama kamu tetap tercatat dan tidak bisa dibatalkan atau diganti.';
+
+  @override
+  String get periksaKataPriorVoteMeta =>
+      'Vote sebelumnya masih aktif - tap tombol yang sama untuk batal';
+
+  @override
+  String get periksaKataUnvoteDone => 'Vote dibatalkan';
+
+  @override
+  String get dictCommunityVoteOpenPeriksa => 'Buka Periksa Kata';
+
+  @override
+  String get dictCommunityVoteNoPendingBody =>
+      'Makna menunggu tidak tampil di sini. Lanjut di Periksa Kata untuk vote.';
 }

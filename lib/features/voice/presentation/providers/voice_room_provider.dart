@@ -305,12 +305,29 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
           unawaited(_onUnexpectedDisconnect());
         });
 
+      final turn = await ref.read(voiceRepositoryProvider).resolveIceServers();
+      if (!ref.mounted) return;
+      final connectOptions = ConnectOptions(
+        autoSubscribe: true,
+        rtcConfiguration: RTCConfiguration(
+          iceServers: turn == null
+              ? null
+              : [
+                  RTCIceServer(
+                    urls: turn.urls,
+                    username: turn.username,
+                    credential: turn.credential,
+                  ),
+                ],
+        ),
+      );
+
       await room.prepareConnection(url, jwt);
       await room
           .connect(
             url,
             jwt,
-            connectOptions: const ConnectOptions(autoSubscribe: true),
+            connectOptions: connectOptions,
             fastConnectOptions: FastConnectOptions(
               microphone: const TrackOption(enabled: true),
             ),
@@ -486,8 +503,13 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
         lower.contains('failed host lookup')) {
       return l10n.voiceWsFailed;
     }
-    final detail = raw.length > 160 ? '${raw.substring(0, 160)}…' : raw;
-    return '${l10n.voiceJoinFailed}\n$detail';
+    // MediaConnect / PeerConnection timeout - jangan dump exception SDK.
+    if (lower.contains('mediaconnect') ||
+        lower.contains('peerconnection') ||
+        lower.contains('timed out waiting')) {
+      return l10n.voiceConnectTimeout;
+    }
+    return l10n.voiceJoinFailed;
   }
 
   Future<void> leave() async {

@@ -695,10 +695,11 @@ class _SocialRowState extends ConsumerState<_SocialRow> {
   }
 
   Future<void> _pickPlatform() async {
-    final selected = await showModalBottomSheet<String>(
+    final selected = await showModalBottomSheet<String>((
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
-      builder: (sheetContext) {
+      uilder: (sheetContext) {
         final theme = sheetContext.theme;
         return Material(
           color: Theme.of(sheetContext).colorScheme.surface,

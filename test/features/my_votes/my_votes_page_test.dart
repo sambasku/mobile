@@ -27,6 +27,9 @@ class _FakeVotes implements MyVoteRepository {
   Future<Either<MyVoteFailure, MyVotePage>> listHistory({
     int limit = 20,
     String? cursor,
+    String? targetType,
+    String? communityStatus,
+    String? q,
   }) async {
     calls++;
     return _result;

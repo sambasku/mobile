@@ -69,6 +69,7 @@ void showImageSheetDrawer(
 
   showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     builder: (sheetContext) {
       // ponytail: Forui root sering tanpa Material; InkWell/IconButton butuhnya.

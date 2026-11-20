@@ -37,11 +37,12 @@ Future<KbbiSuggestion?> showKbbiDefinitionSheet(
   required Dio dio,
   String initialLemma = '',
 }) {
-  return showModalBottomSheet<KbbiSuggestion>(
+  return showModalBottomSheet<KbbiSuggestion>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (sheetContext) {
+    uilder: (sheetContext) {
       return _KbbiDefinitionSheetBody(dio: dio, initialLemma: initialLemma);
     },
   );

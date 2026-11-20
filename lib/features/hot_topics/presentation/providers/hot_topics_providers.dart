@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/network/network_providers.dart';
@@ -13,8 +15,9 @@ final hotTopicsProvider = FutureProvider.autoDispose<HotTopicsBundle>((
   ref,
 ) async {
   final link = ref.keepAlive();
-  final timer = Future<void>.delayed(const Duration(seconds: 90));
-  timer.whenComplete(link.close);
-  ref.onDispose(() {});
+  // Timer (bukan Future.delayed) supaya bisa di-cancel saat provider dispose -
+  // kalau tidak, flutter_test gagal dengan "Timer is still pending".
+  final timer = Timer(const Duration(seconds: 90), link.close);
+  ref.onDispose(timer.cancel);
   return ref.watch(hotTopicsRepositoryProvider).fetch();
 });

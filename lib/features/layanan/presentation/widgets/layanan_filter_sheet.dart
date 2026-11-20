@@ -22,6 +22,7 @@ Future<LayananFilterSelection?> showLayananFilterSheet(
 }) {
   return showFSheet<LayananFilterSelection>(
     context: context,
+    useRootNavigator: true,
     side: FLayout.rtl,
     mainAxisMaxRatio: 0.86,
     useSafeArea: true,

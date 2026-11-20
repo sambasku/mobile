@@ -337,7 +337,9 @@ class ActivityFeedTile extends ConsumerWidget {
             target.status == 'pending_review') {
           return null;
         }
-        return DictionaryRouter.detail.path.replaceFirst(':id', target.id);
+        // Lemma/makna baru dari feed: buka detail dengan makna menunggu
+        // + panel vote jempol (include_unverified=1).
+        return wordDetailPath(target.id, includeUnverified: true);
       case 'announcement':
         // #102: payload beku diteruskan via extra - detail tanpa fetch ulang.
         return ActivityRouter.announcementDetail.path.replaceFirst(

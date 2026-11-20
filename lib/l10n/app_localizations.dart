@@ -1307,6 +1307,12 @@ abstract class AppLocalizations {
   /// **'Tayang'**
   String get balehoStatusLive;
 
+  /// No description provided for @balehoStatusPaused.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditahan'**
+  String get balehoStatusPaused;
+
   /// No description provided for @balehoStatusRejected.
   ///
   /// In id, this message translates to:
@@ -1373,6 +1379,46 @@ abstract class AppLocalizations {
   /// **'CTR {percent}%'**
   String balehoHistoryStatCtr(String percent);
 
+  /// Rasio klik CTA per buka detail di riwayat Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Action-rate {percent}%'**
+  String balehoHistoryStatActionRate(String percent);
+
+  /// Rasio action_success per klik CTA di riwayat Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Sukses CTA {percent}%'**
+  String balehoHistoryStatSuccessRate(String percent);
+
+  /// Snapshot biaya pesanan di blok performa
+  ///
+  /// In id, this message translates to:
+  /// **'Biaya Rp {amount}'**
+  String balehoHistoryStatQuoted(String amount);
+
+  /// Biaya per 1000 tayang di riwayat Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'CPM Rp {amount}'**
+  String balehoHistoryStatCpm(String amount);
+
+  /// Biaya per buka detail di riwayat Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'CPC Rp {amount}'**
+  String balehoHistoryStatCpc(String amount);
+
+  /// Ringkas tren 7 hari terakhir di riwayat Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'7 hari: {impressions} tayang · {taps} buka · {actions} klik'**
+  String balehoHistoryStatDaily7(
+    String impressions,
+    String taps,
+    String actions,
+  );
+
   /// No description provided for @balehoValidationNeedFrame.
   ///
   /// In id, this message translates to:
@@ -1382,7 +1428,7 @@ abstract class AppLocalizations {
   /// No description provided for @balehoValidationVideoSize.
   ///
   /// In id, this message translates to:
-  /// **'Video hanya untuk ukuran 4x2'**
+  /// **'Video hanya untuk ukuran 4x2 atau 2x4'**
   String get balehoValidationVideoSize;
 
   /// No description provided for @balehoValidationVideoMax.
@@ -2456,7 +2502,7 @@ abstract class AppLocalizations {
   /// Isi popover info: penjelasan ambang Voting Warga di progress bar makna
   ///
   /// In id, this message translates to:
-  /// **'Makna akan otomatis terverifikasi oleh warga apabila memperoleh net vote minimal +5 dari sedikitnya 5 pemilih.'**
+  /// **'Bar kiri hijau (setuju) vs kanan merah (kurang setuju), saling merebut proporsi suara. Terverifikasi otomatis bila net minimal +5 dari sedikitnya 5 pemilih; ditolak otomatis bila net maksimal -5 dari sedikitnya 5 pemilih.'**
   String get voteTrustProgressInfo;
 
   /// semanticsLabel tombol info yang membuka penjelasan Voting Warga
@@ -5387,6 +5433,18 @@ abstract class AppLocalizations {
   /// **'Dilewati.'**
   String get reviewSessionSkipped;
 
+  /// Toast saat sesi tinjau auto-skip kartu entity kosong/orphan
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan tanpa isi dilewati.'**
+  String get reviewSessionEntityMissingSkipped;
+
+  /// Toast + keluar sesi jika terlalu banyak kartu rusak beruntun
+  ///
+  /// In id, this message translates to:
+  /// **'Banyak usulan tanpa isi. Kembali ke antrean dulu.'**
+  String get reviewSessionEntityMissingFlood;
+
   /// No description provided for @reviewSessionApprovedToast.
   ///
   /// In id, this message translates to:
@@ -6130,6 +6188,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Notasi: {notation}'**
   String reviewPreviewNotation(String notation);
+
+  /// Preview kosong saat entity kontribusi null/hilang di sesi tinjau
+  ///
+  /// In id, this message translates to:
+  /// **'Isi usulan tidak bisa dimuat. Lewati kartu ini atau coba lagi nanti.'**
+  String get reviewPreviewEntityMissing;
 
   /// No description provided for @reviewPreviewProposedMeaning.
   ///
@@ -8370,8 +8434,20 @@ abstract class AppLocalizations {
   /// Subtitle empty tab Hits
   ///
   /// In id, this message translates to:
-  /// **'Belum ada hits hari ini.'**
+  /// **'Belum ada hits dalam 2 hari terakhir.'**
   String get hotTopicsTabEmptyNearBody;
+
+  /// Tab Sorotan: makna yang dapat downvote
+  ///
+  /// In id, this message translates to:
+  /// **'Cek'**
+  String get hotTopicsTabCheck;
+
+  /// Subtitle empty tab Cek
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada makna yang perlu dicek hari ini.'**
+  String get hotTopicsTabEmptyCheckBody;
 
   /// Hint saat tab Hot memakai backfill di luar 24 jam
   ///
@@ -8382,7 +8458,7 @@ abstract class AppLocalizations {
   /// No description provided for @hotTopicsProposedSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Usulan menunggu peninjauan'**
+  /// **'Usulan baru'**
   String get hotTopicsProposedSubtitle;
 
   /// Placeholder judul slot Sorotan yang belum terisi
@@ -8396,6 +8472,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{count}× dibuka'**
   String hotTopicsViewCount(String count);
+
+  /// Subtitle jumlah downvote di tab Cek
+  ///
+  /// In id, this message translates to:
+  /// **'{count}× perlu di cek'**
+  String hotTopicsDownvoteCount(String count);
 
   /// CTA empty-state: buka form koreksi typo jadi varian lemma benar
   ///
@@ -9954,26 +10036,44 @@ abstract class AppLocalizations {
   /// Label upvote Periksa Kata
   ///
   /// In id, this message translates to:
-  /// **'Masuk akal'**
+  /// **'Sudah pas'**
   String get periksaKataAgree;
 
   /// Label downvote Periksa Kata
   ///
   /// In id, this message translates to:
-  /// **'Kurang pas'**
+  /// **'Perlu dicek ulang'**
   String get periksaKataDisagree;
 
-  /// Status sesi setelah upvote di feed
+  /// Status sesi setelah upvote di feed Periksa Kata
   ///
   /// In id, this message translates to:
-  /// **'Sudah memilih Masuk akal'**
+  /// **'Voting kamu sudah tercatat'**
   String get periksaKataVotedAgree;
 
-  /// Status sesi setelah downvote di feed
+  /// Status sesi setelah downvote di feed Periksa Kata
   ///
   /// In id, this message translates to:
-  /// **'Sudah memilih Kurang pas'**
+  /// **'Voting kamu sudah tercatat'**
   String get periksaKataVotedDisagree;
+
+  /// Tombol skip Periksa Kata - user tidak tahu, kartu tidak muncul lagi
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati'**
+  String get periksaKataSkip;
+
+  /// Semantics tombol skip Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati, saya tidak tahu'**
+  String get periksaKataSkipSemantics;
+
+  /// Hint di kartu Periksa Kata: lewati lewat swipe kiri, bukan tombol
+  ///
+  /// In id, this message translates to:
+  /// **'Geser kiri untuk lewati'**
+  String get periksaKataSkipSwipeHint;
 
   /// Judul halaman riwayat Periksa Kata
   ///
@@ -16410,7 +16510,7 @@ abstract class AppLocalizations {
   /// No description provided for @contributeSentGuest.
   ///
   /// In id, this message translates to:
-  /// **'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.'**
+  /// **'Dikirim sebagai tamu. Katanya sudah tayang, menunggu pengecekan warga.'**
   String get contributeSentGuest;
 
   /// No description provided for @contributeBulkTitle.
@@ -16944,7 +17044,7 @@ abstract class AppLocalizations {
   /// No description provided for @contributeBulkSentGuest.
   ///
   /// In id, this message translates to:
-  /// **'Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.'**
+  /// **'Dikirim sebagai tamu. Kata sudah tayang, menunggu pengecekan warga.'**
   String get contributeBulkSentGuest;
 
   /// No description provided for @contributeBulkMaxRowsHint.
@@ -22423,6 +22523,12 @@ abstract class AppLocalizations {
   /// **'Chat'**
   String get discussionTabChat;
 
+  /// Tab Chat dengan jumlah orang presence; (count) hanya jika > 0
+  ///
+  /// In id, this message translates to:
+  /// **'Chat ({count})'**
+  String discussionTabChatWithCount(int count);
+
   /// No description provided for @chatLoadFailed.
   ///
   /// In id, this message translates to:
@@ -22645,6 +22751,12 @@ abstract class AppLocalizations {
   /// **'[voice note]'**
   String get chatReplySnippetVoice;
 
+  /// Cuplikan reply untuk pesan system (voice join/leave)
+  ///
+  /// In id, this message translates to:
+  /// **'[sistem]'**
+  String get chatReplySnippetSystem;
+
   /// No description provided for @chatLongPressReply.
   ///
   /// In id, this message translates to:
@@ -22843,6 +22955,24 @@ abstract class AppLocalizations {
   /// **'Tamu'**
   String get chatPresenceGuestName;
 
+  /// Label tombol ping di baris presence chat
+  ///
+  /// In id, this message translates to:
+  /// **'Ping'**
+  String get chatPingAction;
+
+  /// Countdown cooldown ping global (m:ss)
+  ///
+  /// In id, this message translates to:
+  /// **'{minutes}:{seconds}'**
+  String chatPingCooldown(String minutes, String seconds);
+
+  /// Toast setelah berhasil kirim ping
+  ///
+  /// In id, this message translates to:
+  /// **'Ping terkirim'**
+  String get chatPingSent;
+
   /// Error saat room LiveKit sudah mencapai 15 peserta
   ///
   /// In id, this message translates to:
@@ -22878,6 +23008,48 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Voice server tidak menerima koneksi WebSocket. Cek proxy/Cloudflare (Upgrade) di homelab.'**
   String get voiceWsFailed;
+
+  /// Judul sheet saat tap ping abu-abu
+  ///
+  /// In id, this message translates to:
+  /// **'Ping sedang cooldown'**
+  String get chatPingCooldownTitle;
+
+  /// Isi sheet cooldown ping dengan sisa waktu
+  ///
+  /// In id, this message translates to:
+  /// **'Ping baru saja dipakai. Coba lagi dalam {clock}.'**
+  String chatPingCooldownBody(String clock);
+
+  /// Isi sheet cooldown ping tanpa sisa waktu
+  ///
+  /// In id, this message translates to:
+  /// **'Ping baru saja dipakai. Tunggu sebentar lalu coba lagi ya.'**
+  String get chatPingCooldownBodyGeneric;
+
+  /// SemanticsLabel ikon ping saat cooldown
+  ///
+  /// In id, this message translates to:
+  /// **'Ping cooldown {clock}'**
+  String chatPingCooldownSemantics(String clock);
+
+  /// Aksi setelah nama di baris system join voice
+  ///
+  /// In id, this message translates to:
+  /// **'bergabung'**
+  String get chatSystemVoiceJoinAction;
+
+  /// Aksi setelah nama di baris system leave voice
+  ///
+  /// In id, this message translates to:
+  /// **'keluar'**
+  String get chatSystemVoiceLeaveAction;
+
+  /// Legacy/opsional; UI system line pakai ikon + nama : PING!!!
+  ///
+  /// In id, this message translates to:
+  /// **'{name} : PING!!!'**
+  String chatPingSystemLine(String name);
 
   /// Satu orang sedang mengetik di chat
   ///
@@ -22932,6 +23104,106 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Mustika'**
   String get usahaSponsorTierMustika;
+
+  /// Status sesi setelah vote di feed Periksa Kata (arah terlihat di indikator ↑/↓)
+  ///
+  /// In id, this message translates to:
+  /// **'Voting kamu sudah tercatat'**
+  String get periksaKataVoted;
+
+  /// Progress Voting Warga saat net >= 0: sisa poin ke verifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Butuh +{need} poin lagi · net {netLabel} · {unique}/{threshold} pemilih'**
+  String voteTrustProgressDetailNeedUp(
+    int need,
+    String netLabel,
+    int unique,
+    int threshold,
+  );
+
+  /// Progress Voting Warga saat net < 0: sisa poin ke auto-tolak
+  ///
+  /// In id, this message translates to:
+  /// **'Butuh -{need} poin lagi ke penolakan · net {netLabel} · {unique}/{threshold} pemilih'**
+  String voteTrustProgressDetailNeedDown(
+    int need,
+    String netLabel,
+    int unique,
+    int threshold,
+  );
+
+  /// Net sudah >= ambang tapi unique voters masih kurang
+  ///
+  /// In id, this message translates to:
+  /// **'Net sudah cukup · butuh {need} pemilih lagi ({unique}/{threshold})'**
+  String voteTrustProgressDetailNeedVoters(int need, int unique, int threshold);
+
+  /// Judul panel vote bawah di detail kata dari feed usulan / Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Bantu periksa makna menunggu'**
+  String get dictCommunityVoteFooterTitle;
+
+  /// Judul konfirmasi batal vote di riwayat Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan vote?'**
+  String get periksaKataUnvoteTitle;
+
+  /// Isi konfirmasi batal vote di riwayat Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Vote kamu akan dihapus dari riwayat pemeriksaan untuk kata ini.'**
+  String get periksaKataUnvoteBody;
+
+  /// CTA konfirmasi batal vote di riwayat Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan vote'**
+  String get periksaKataUnvoteConfirm;
+
+  /// periksaKataVoteLockedMeta
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak bisa diubah - makna sudah selesai dicek'**
+  String get periksaKataVoteLockedMeta;
+
+  /// periksaKataVoteLockedTitle
+  ///
+  /// In id, this message translates to:
+  /// **'Vote tidak bisa diubah'**
+  String get periksaKataVoteLockedTitle;
+
+  /// periksaKataVoteLockedBody
+  ///
+  /// In id, this message translates to:
+  /// **'Makna ini sudah terverifikasi atau ditolak. Vote lama kamu tetap tercatat dan tidak bisa dibatalkan atau diganti.'**
+  String get periksaKataVoteLockedBody;
+
+  /// periksaKataPriorVoteMeta
+  ///
+  /// In id, this message translates to:
+  /// **'Vote sebelumnya masih aktif - tap tombol yang sama untuk batal'**
+  String get periksaKataPriorVoteMeta;
+
+  /// periksaKataUnvoteDone
+  ///
+  /// In id, this message translates to:
+  /// **'Vote dibatalkan'**
+  String get periksaKataUnvoteDone;
+
+  /// CTA fallback ke Periksa Kata dari detail lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Buka Periksa Kata'**
+  String get dictCommunityVoteOpenPeriksa;
+
+  /// Penjelasan fallback CTA vote di detail lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Makna menunggu tidak tampil di sini. Lanjut di Periksa Kata untuk vote.'**
+  String get dictCommunityVoteNoPendingBody;
 }
 
 class _AppLocalizationsDelegate

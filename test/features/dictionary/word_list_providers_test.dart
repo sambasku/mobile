@@ -75,12 +75,16 @@ class _FakeDictionaryRepository implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => throw UnimplementedError();
 
   @override
@@ -381,7 +385,7 @@ void main() {
     sub.close();
   });
 
-  test('explore tidak record miss; commitSearch merekam', () async {
+  test('debounce settle merekam miss; commitSearch idempoten', () async {
     final repo = _FakeDictionaryRepository()..empty = true;
     final container = ProviderContainer(
       overrides: [dictionaryRepositoryProvider.overrideWithValue(repo)],
@@ -396,14 +400,16 @@ void main() {
     await Future<void>.delayed(const Duration(milliseconds: 800));
 
     expect(repo.searchCalls, isNotEmpty);
-    expect(repo.searchCalls.last.recordMiss, isFalse);
+    expect(repo.searchCalls.last.recordMiss, isTrue);
+    expect(repo.searchCalls.last.query, 'sapaka');
+    final callsAfterDebounce = repo.searchCalls.length;
 
+    // Debounce sudah commit miss untuk q yang sama → commitSearch no-op.
     notifier.commitSearch();
     await _flush();
     await Future<void>.delayed(const Duration(milliseconds: 50));
 
-    expect(repo.searchCalls.last.recordMiss, isTrue);
-    expect(repo.searchCalls.last.query, 'sapaka');
+    expect(repo.searchCalls.length, callsAfterDebounce);
     sub.close();
   });
 }

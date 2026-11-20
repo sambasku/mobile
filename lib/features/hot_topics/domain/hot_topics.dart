@@ -4,14 +4,19 @@ class HotTopicsBundle {
     required this.searched,
     required this.proposed,
     required this.viewed,
+    required this.check,
   });
 
   final HotTopicTab searched;
   final HotTopicTab proposed;
   final HotTopicTab viewed;
+  final HotTopicTab check;
 
   bool get isEmpty =>
-      searched.items.isEmpty && proposed.items.isEmpty && viewed.items.isEmpty;
+      searched.items.isEmpty &&
+      proposed.items.isEmpty &&
+      viewed.items.isEmpty &&
+      check.items.isEmpty;
 }
 
 class HotTopicTabMeta {
@@ -79,4 +84,21 @@ class HotViewedItem extends HotTopicItem {
   final String lemma;
   final int viewCount;
   final String lastViewedDay;
+}
+
+class HotCheckItem extends HotTopicItem {
+  const HotCheckItem({
+    required this.meaningId,
+    required this.wordId,
+    required this.lemma,
+    required this.downvotes,
+    this.definitionPreview,
+    required super.inWindow,
+  });
+
+  final String meaningId;
+  final String wordId;
+  final String lemma;
+  final int downvotes;
+  final String? definitionPreview;
 }

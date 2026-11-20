@@ -37,12 +37,13 @@ Future<void> showWordShareSheet(
     AnalyticsEvents.shareStart,
     params: {'word_id': detail.id},
   );
-  return showModalBottomSheet<void>(
+  return showModalBottomSheet<void>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     clipBehavior: Clip.none,
-    builder: (sheetContext) {
+    uilder: (sheetContext) {
       return _WordShareSheetBody(
         detail: detail,
         backgrounds: backgrounds,
@@ -418,9 +419,10 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
         return;
       }
 
-      final choice = await showModalBottomSheet<String>(
+      final choice = await showModalBottomSheet<String>((
         context: context,
-        builder: (ctx) {
+        useRootNavigator: true,
+        uilder: (ctx) {
           return SafeArea(
             child: Column(
               mainAxisSize: MainAxisSize.min,

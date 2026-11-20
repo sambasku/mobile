@@ -9,6 +9,9 @@ const kBrandMarkLightAsset = 'assets/icons/logo_alpha_light.png';
 const kBrandWordmarkDarkAsset = 'assets/svg/sambasku_header_dark.svg';
 const kBrandWordmarkLightAsset = 'assets/svg/sambasku_header_light.svg';
 
+/// Ukuran BrandMark hero (splash custom + halaman login).
+const kBrandMarkHeroSize = 248.0;
+
 /// Logo stacked (perisai + wordmark) adaptif terang/gelap.
 /// Login, onboarding, about. Teks "SambasKu" sudah di aset.
 /// Gelap: [kBrandMarkDarkAsset]. Terang: [kBrandMarkLightAsset].

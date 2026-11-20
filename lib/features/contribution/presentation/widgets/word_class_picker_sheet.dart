@@ -27,11 +27,12 @@ Future<WordClassPickItem?> showWordClassPickerSheet(
   required List<WordClassPickItem> items,
   String? selectedId,
 }) {
-  return showModalBottomSheet<WordClassPickItem>(
+  return showModalBottomSheet<WordClassPickItem>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (sheetContext) {
+    uilder: (sheetContext) {
       return _WordClassPickerSheetBody(items: items, selectedId: selectedId);
     },
   );

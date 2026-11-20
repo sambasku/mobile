@@ -159,10 +159,11 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
 
     final m = _censoredByIndex.where((e) => e != null && e.isNotEmpty).length;
     final k = _violenceByIndex.where((e) => e).length;
-    final confirmed = await showModalBottomSheet<bool>(
+    final confirmed = await showModalBottomSheet<bool>((
       context: context,
+      useRootNavigator: true,
       showDragHandle: true,
-      builder: (sheetContext) {
+      uilder: (sheetContext) {
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),

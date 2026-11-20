@@ -45,7 +45,7 @@ class ReviewSwipeCard extends StatelessWidget {
       enabled: enabled,
       allowNestedVerticalScroll: false,
       fallbackHeight: MediaQuery.sizeOf(context).height * 0.6,
-      hintId: 'review-session',
+      hintId: null, // tidak auto-play nudge (meresahkan)
       positiveLabel:
           positiveLabel ?? AppLocalizations.of(context).reviewSwipeApprove,
       negativeLabel: AppLocalizations.of(context).reviewSwipeReject,

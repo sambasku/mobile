@@ -20,10 +20,10 @@ import '../providers/chat_typing_provider.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/chat_composer.dart';
 import '../widgets/chat_new_messages_chip.dart';
-import '../widgets/chat_presence_badge.dart';
+import '../widgets/chat_ping_action.dart';
 import '../widgets/chat_privacy_warning.dart';
 import '../widgets/chat_sticker_sheet.dart';
-import '../widgets/chat_typing_indicator.dart';
+import '../widgets/chat_system_line.dart';
 import '../widgets/discussion_hub_segment.dart';
 import '../../../voice/presentation/widgets/voice_room_strip.dart';
 
@@ -34,11 +34,15 @@ class ChatPage extends HookConsumerWidget {
   const ChatPage({
     super.key,
     this.embeddedInHub = false,
+    this.embeddedInSheet = false,
     this.onSelectRoomsTab,
   });
 
   /// Bila true, tanpa FScaffold/header/segment (shell hub yang punya).
   final bool embeddedInHub;
+
+  /// Bottom sheet dari VoiceRoomMiniBar - body chat tanpa strip voice.
+  final bool embeddedInSheet;
 
   /// Dipakai hanya jika [embeddedInHub] false (standalone).
   final VoidCallback? onSelectRoomsTab;
@@ -87,6 +91,7 @@ class ChatPage extends HookConsumerWidget {
     }
 
     void startReply(ChatMessage message) {
+      if (message.kind == ChatMessageKind.system) return;
       stripReplyMention();
       replyTarget.value = message;
       final me = auth?.username;
@@ -438,6 +443,8 @@ class ChatPage extends HookConsumerWidget {
                             l10n.chatReplySnippetSticker,
                           ChatMessageKind.voiceNote =>
                             l10n.chatReplySnippetVoice,
+                          ChatMessageKind.system =>
+                            l10n.chatReplySnippetSystem,
                           ChatMessageKind.text => reply.body,
                         }),
             replyUsername: reply?.username,
@@ -477,6 +484,8 @@ class ChatPage extends HookConsumerWidget {
                             l10n.chatReplySnippetSticker,
                           ChatMessageKind.voiceNote =>
                             l10n.chatReplySnippetVoice,
+                          ChatMessageKind.system =>
+                            l10n.chatReplySnippetSystem,
                           ChatMessageKind.text => reply.body,
                         }),
             replyUsername: reply?.username,
@@ -524,6 +533,8 @@ class ChatPage extends HookConsumerWidget {
                             l10n.chatReplySnippetSticker,
                           ChatMessageKind.voiceNote =>
                             l10n.chatReplySnippetVoice,
+                          ChatMessageKind.system =>
+                            l10n.chatReplySnippetSystem,
                           ChatMessageKind.text => reply.body,
                         }),
             replyUsername: reply?.username,
@@ -551,26 +562,45 @@ class ChatPage extends HookConsumerWidget {
       return null;
     }, [keyboardInset]);
 
+    final presenceCount = ref.watch(chatPresenceCountProvider);
+    final chatChromeTitle = presenceCount > 0
+        ? l10n.discussionTabChatWithCount(presenceCount)
+        : l10n.discussionTabChat;
+
     final body = Padding(
       padding: EdgeInsets.only(bottom: keyboardInset),
       child: Column(
         children: [
-          if (!embeddedInHub)
+          if (embeddedInSheet)
+            _ChatSheetHeader(
+              title: chatChromeTitle,
+              closeLabel: l10n.commonClose,
+              onClose: () => Navigator.of(context).pop(),
+            ),
+          if (!embeddedInHub && !embeddedInSheet)
             DiscussionHubSegment(
               index: 1,
               onChanged: (i) {
                 if (i == 0) onSelectRoomsTab?.call();
               },
             ),
-          // Jarak dari chrome tab supaya strip voice tidak nempel.
-          const Padding(
-            padding: EdgeInsets.only(top: 10, bottom: 4),
+          // Warning publik paling atas, lalu voice room.
+          // Horizontal: di hub ikut childPad scaffold (sejajar tab);
+          // di sheet pakai 12 sama header sheet. Jangan +12 lagi di hub.
+          Padding(
+            // Hub: 4 = sama FTabs.padding default (.all(4)) supaya sejajar track tab.
+            // Sheet: 12 = sama padding header sheet.
+            padding: EdgeInsets.fromLTRB(
+              embeddedInSheet ? 12 : 4,
+              8,
+              embeddedInSheet ? 12 : 4,
+              4,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ChatPresenceBadge(),
-                VoiceRoomStrip(),
-                ChatPrivacyWarning(),
+                const ChatPrivacyWarning(),
+                if (!embeddedInSheet) const VoiceRoomStrip(),
               ],
             ),
           ),
@@ -693,12 +723,31 @@ class ChatPage extends HookConsumerWidget {
                                 myUserId != null &&
                                 myUserId.isNotEmpty &&
                                 message.userId == myUserId;
+                            if (message.kind == ChatMessageKind.system) {
+                              final sameMinuteAsNext =
+                                  next != null &&
+                                  next.kind == ChatMessageKind.system &&
+                                  _sameLocalMinute(
+                                    message.createdAt,
+                                    next.createdAt,
+                                  );
+                              return ChatSystemLine(
+                                key: keyFor(message.id),
+                                message: message,
+                                showTime: !sameMinuteAsNext,
+                              );
+                            }
                             final sameAuthorAsPrev =
-                                prev != null && prev.userId == message.userId;
+                                prev != null &&
+                                prev.kind != ChatMessageKind.system &&
+                                prev.userId == message.userId;
                             final sameAuthorAsNext =
-                                next != null && next.userId == message.userId;
+                                next != null &&
+                                next.kind != ChatMessageKind.system &&
+                                next.userId == message.userId;
                             final sameMinuteAsNext =
                                 next != null &&
+                                next.kind != ChatMessageKind.system &&
                                 _sameLocalMinute(
                                   message.createdAt,
                                   next.createdAt,
@@ -752,7 +801,6 @@ class ChatPage extends HookConsumerWidget {
                 ],
               ),
             ),
-            const ChatTypingIndicator(),
             ChatComposer(
               controller: textController,
               enabled: isAuth,
@@ -772,7 +820,7 @@ class ChatPage extends HookConsumerWidget {
         ),
       );
 
-    if (embeddedInHub) {
+    if (embeddedInHub || embeddedInSheet) {
       return body;
     }
 
@@ -780,10 +828,62 @@ class ChatPage extends HookConsumerWidget {
       childPad: true,
       resizeToAvoidBottomInset: false,
       header: FHeader.nested(
-        title: Text(l10n.discussionHubTitle),
+        title: Text(chatChromeTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
+        suffixes: const [ChatPingAction()],
       ),
       child: body,
+    );
+  }
+}
+
+
+class _ChatSheetHeader extends StatelessWidget {
+  const _ChatSheetHeader({
+    required this.title,
+    required this.closeLabel,
+    required this.onClose,
+  });
+
+  final String title;
+  final String closeLabel;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 10, 4, 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const ChatPingAction(),
+          Semantics(
+            button: true,
+            label: closeLabel,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: onClose,
+              child: SizedBox(
+                width: 36,
+                height: 36,
+                child: Icon(
+                  FLucideIcons.x,
+                  size: 18,
+                  color: theme.colors.mutedForeground,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

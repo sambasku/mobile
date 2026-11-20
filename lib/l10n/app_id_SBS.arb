@@ -643,6 +643,7 @@
   "balehoStatusPendingReview": "Menunggu cek",
   "balehoStatusAwaitingPayment": "Menunggu bayar",
   "balehoStatusLive": "Tayang",
+  "balehoStatusPaused": "Ditahan",
   "balehoStatusRejected": "Ditolak",
   "balehoStatusCancelled": "Dibatalkan",
   "balehoStatusExpired": "Selesai",
@@ -674,8 +675,68 @@
       }
     }
   },
+  "balehoHistoryStatActionRate": "Action-rate {percent}%",
+  "@balehoHistoryStatActionRate": {
+    "description": "Rasio klik CTA per buka detail di riwayat Baleho",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoHistoryStatSuccessRate": "Sukses CTA {percent}%",
+  "@balehoHistoryStatSuccessRate": {
+    "description": "Rasio action_success per klik CTA di riwayat Baleho",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoHistoryStatQuoted": "Biaya Rp {amount}",
+  "@balehoHistoryStatQuoted": {
+    "description": "Snapshot biaya pesanan di blok performa",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoHistoryStatCpm": "CPM Rp {amount}",
+  "@balehoHistoryStatCpm": {
+    "description": "Biaya per 1000 tayang di riwayat Baleho",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoHistoryStatCpc": "CPC Rp {amount}",
+  "@balehoHistoryStatCpc": {
+    "description": "Biaya per buka detail di riwayat Baleho",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoHistoryStatDaily7": "7 hari: {impressions} tayang · {taps} buka · {actions} klik",
+  "@balehoHistoryStatDaily7": {
+    "description": "Ringkas tren 7 hari terakhir di riwayat Baleho",
+    "placeholders": {
+      "impressions": {
+        "type": "String"
+      },
+      "taps": {
+        "type": "String"
+      },
+      "actions": {
+        "type": "String"
+      }
+    }
+  },
   "balehoValidationNeedFrame": "Isi minimal satu slide Baleho",
-  "balehoValidationVideoSize": "Video hanya untuk ukuran 4x2",
+  "balehoValidationVideoSize": "Video hanya untuk ukuran 4x2 atau 2x4",
   "balehoValidationVideoMax": "Maksimal satu video per pesanan",
   "balehoValidationMediaUrl": "Alamat media wajib diisi",
   "balehoValidationAction": "Isi tujuan saat Baleho diketuk",
@@ -886,7 +947,7 @@
   "searchMissHitCount": "{count}× dicari",
   "voteLoginPrompt": "Masuk dulu untuk memberi vote",
   "voteTrustProgressLabel": "Menuju verifikasi warga",
-  "voteTrustProgressInfo": "Makna akan otomatis terverifikasi oleh warga apabila memperoleh net vote minimal +5 dari sedikitnya 5 pemilih.",
+  "voteTrustProgressInfo": "Bar kiri hijau (setuju) vs kanan merah (kurang setuju), saling merebut proporsi suara. Terverifikasi otomatis bila net minimal +5 dari sedikitnya 5 pemilih; ditolak otomatis bila net maksimal -5 dari sedikitnya 5 pemilih.",
   "@voteTrustProgressInfo": {
     "description": "Isi popover info: penjelasan ambang Voting Warga di progress bar makna"
   },
@@ -1450,6 +1511,15 @@
   "reviewHistorySkeletonMeta": "Disetujui · 21 Sep 2026 00:00",
   "reviewSessionQueueDone": "Antrean selesai",
   "reviewSessionSkipped": "Dilewati.",
+  "reviewSessionEntityMissingSkipped": "Usulan tanpa isi dilewati.",
+  "@reviewSessionEntityMissingSkipped": {
+    "description": "Toast saat sesi tinjau auto-skip kartu entity kosong/orphan"
+  },
+  "reviewSessionEntityMissingFlood": "Banyak usulan tanpa isi. Kembali ke antrean dulu.",
+  "@reviewSessionEntityMissingFlood": {
+    "description": "Toast + keluar sesi jika terlalu banyak kartu rusak beruntun"
+  },
+
   "reviewSessionApprovedToast": "Usulan disetujui",
   "reviewSessionRejectedToast": "Usulan ditolak",
   "reviewSessionAlreadyProcessed": "Usulan ini sudah diproses.",
@@ -1586,6 +1656,10 @@
   "reviewPreviewTipe": "Tipe",
   "reviewPreviewProposedPronunciation": "Pelafalan yang diusulkan",
   "reviewPreviewNotation": "Notasi: {notation}",
+  "reviewPreviewEntityMissing": "Isi usulan tidak bisa dimuat. Lewati kartu ini atau coba lagi nanti.",
+  "@reviewPreviewEntityMissing": {
+    "description": "Preview kosong saat entity kontribusi null/hilang di sesi tinjau"
+  },
   "reviewPreviewProposedMeaning": "Makna yang diusulkan",
   "reviewPreviewSourceOfMeaning": "Sumber makna",
   "reviewPreviewTranslationSection": "Terjemahan",
@@ -1988,12 +2062,20 @@
   "@hotTopicsTabEmptyProposedBody": {
     "description": "Subtitle empty tab Usulan"
   },
-  "hotTopicsTabEmptyNearBody": "Belum ada hits hari ini.",
+  "hotTopicsTabEmptyNearBody": "Belum ada hits dalam 2 hari terakhir.",
   "@hotTopicsTabEmptyNearBody": {
     "description": "Subtitle empty tab Hits"
   },
+  "hotTopicsTabCheck": "Cek",
+  "@hotTopicsTabCheck": {
+    "description": "Tab Sorotan: makna yang dapat downvote"
+  },
+  "hotTopicsTabEmptyCheckBody": "Belum ada makna yang perlu dicek hari ini.",
+  "@hotTopicsTabEmptyCheckBody": {
+    "description": "Subtitle empty tab Cek"
+  },
   "hotTopicsBackfillHint": "Sebagian dari 7 hari terakhir.",
-  "hotTopicsProposedSubtitle": "Usulan menunggu peninjauan",
+  "hotTopicsProposedSubtitle": "Usulan baru",
   "hotTopicsEmptySlot": "-",
   "hotTopicsViewCount": "{count}× dibuka",
   "@hotTopicsViewCount": {
@@ -2004,7 +2086,16 @@
       }
     }
   },
-  "dictAddPronunciationTitle": "Tambah pelafalan",
+  "hotTopicsDownvoteCount": "{count}× perlu di cek",
+  "@hotTopicsDownvoteCount": {
+    "description": "Subtitle jumlah downvote di tab Cek",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+"dictAddPronunciationTitle": "Tambah pelafalan",
   "@dictAddPronunciationTitle": {
     "description": "Judul sheet tambah pelafalan tertulis"
   },
@@ -2254,15 +2345,20 @@
   "feedContributeSearchMissSubtitle": "Kata yang dicari warga tapi belum ketemu. Bantu isi artinya",
   "feedContributePeriksaKata": "Periksa kata",
   "feedPeriksaKataStubBody": "Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.",
-
   "periksaKataLoginPrompt": "Masuk dulu untuk memeriksa kata",
   "periksaKataSearchHint": "Cari lemma…",
   "periksaKataEmpty": "Belum ada makna menunggu pengecekan",
   "periksaKataSearchEmpty": "Tidak ketemu lemma itu",
-  "periksaKataAgree": "Masuk akal",
-  "periksaKataDisagree": "Kurang pas",
-  "periksaKataVotedAgree": "Sudah memilih Masuk akal",
-  "periksaKataVotedDisagree": "Sudah memilih Kurang pas",
+  "periksaKataAgree": "Sudah pas",
+  "periksaKataDisagree": "Perlu dicek ulang",
+  "periksaKataVotedAgree": "Voting kamu sudah tercatat",
+  "periksaKataVotedDisagree": "Voting kamu sudah tercatat",
+  "periksaKataSkip": "Lewati",
+  "periksaKataSkipSemantics": "Lewati, saya tidak tahu",
+  "periksaKataSkipSwipeHint": "Geser kiri untuk lewati",
+  "@periksaKataSkipSwipeHint": {
+    "description": "Hint di kartu Periksa Kata: lewati lewat swipe kiri, bukan tombol"
+  },
   "periksaKataHistoryTitle": "Riwayat pemeriksaan",
   "periksaKataHistoryEmpty": "Belum ada riwayat pemeriksaan",
   "periksaKataFilterAll": "Semua",
@@ -3445,7 +3541,7 @@
   "contributeSubmitting": "Mengirim...",
   "contributeSubmitCta": "Kirim Usulan",
   "contributeSentPending": "Katanya langsung tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.",
-  "contributeSentGuest": "Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.",
+  "contributeSentGuest": "Dikirim sebagai tamu. Katanya sudah tayang, menunggu pengecekan warga.",
   "contributeBulkTitle": "Usulkan banyak sekaligus",
   "contributeBulkSubtitle": "Isi beberapa kata dan terjemahan dalam satu layar",
   "contributeHowToFill": "Cara mengisi",
@@ -3607,7 +3703,7 @@
   "contributeBulkSendAll": "Kirim semua",
   "contributeBulkHeader": "Usulkan banyak",
   "contributeBulkSentPending": "Tiap kata langsung tayang dengan label Menunggu pengecekan.",
-  "contributeBulkSentGuest": "Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.",
+  "contributeBulkSentGuest": "Dikirim sebagai tamu. Kata sudah tayang, menunggu pengecekan warga.",
   "contributeBulkMaxRowsHint": "Maksimal {max} kata. Isi kata Sambas dan terjemahan Indonesia.",
   "@contributeBulkMaxRowsHint": {
     "placeholders": {
@@ -5958,6 +6054,13 @@
   "@discussionTabChat": {
     "description": "Label tab chat publik"
   },
+  "discussionTabChatWithCount": "Chat ({count})",
+  "@discussionTabChatWithCount": {
+    "description": "Tab Chat dengan jumlah orang presence; (count) hanya jika > 0",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "chatLoadFailed": "Gagal memuat chat",
   "chatRetry": "Coba lagi",
   "chatEmpty": "Belum ada pesan",
@@ -6035,6 +6138,7 @@
   "chatSending": "Mengirim…",
   "chatReplySnippetSticker": "[stiker]",
   "chatReplySnippetVoice": "[voice note]",
+  "chatReplySnippetSystem": "[sistem]",
   "chatLongPressReply": "Balas",
   "chatLongPressDelete": "Hapus",
   "chatConnectionFailed": "Koneksi terputus. Coba lagi ya.",
@@ -6126,6 +6230,22 @@
   "@chatPresenceGuestName": {
     "description": "Nama presence untuk pengunjung belum login di Chat"
   },
+  "chatPingAction": "Ping",
+  "@chatPingAction": {
+    "description": "Label tombol ping di baris presence chat"
+  },
+  "chatPingCooldown": "{minutes}:{seconds}",
+  "@chatPingCooldown": {
+    "description": "Countdown cooldown ping global (m:ss)",
+    "placeholders": {
+      "minutes": { "type": "String" },
+      "seconds": { "type": "String" }
+    }
+  },
+  "chatPingSent": "Ping terkirim",
+  "@chatPingSent": {
+    "description": "Toast setelah berhasil kirim ping"
+  },
   "voiceRoomFull": "Voice room penuh (maks 15 orang). Coba lagi nanti ya.",
   "@voiceRoomFull": {
     "description": "Error saat room LiveKit sudah mencapai 15 peserta"
@@ -6149,6 +6269,43 @@
   "voiceWsFailed": "Voice server tidak menerima koneksi WebSocket. Cek proxy/Cloudflare (Upgrade) di homelab.",
   "@voiceWsFailed": {
     "description": "WebSocketException / upgrade gagal ke LIVEKIT_URL"
+  },
+  "chatPingCooldownTitle": "Ping sedang cooldown",
+  "@chatPingCooldownTitle": {
+    "description": "Judul sheet saat tap ping abu-abu"
+  },
+  "chatPingCooldownBody": "Ping baru saja dipakai. Coba lagi dalam {clock}.",
+  "@chatPingCooldownBody": {
+    "description": "Isi sheet cooldown ping dengan sisa waktu",
+    "placeholders": {
+      "clock": { "type": "String", "example": "4:32" }
+    }
+  },
+  "chatPingCooldownBodyGeneric": "Ping baru saja dipakai. Tunggu sebentar lalu coba lagi ya.",
+  "@chatPingCooldownBodyGeneric": {
+    "description": "Isi sheet cooldown ping tanpa sisa waktu"
+  },
+  "chatPingCooldownSemantics": "Ping cooldown {clock}",
+  "@chatPingCooldownSemantics": {
+    "description": "SemanticsLabel ikon ping saat cooldown",
+    "placeholders": {
+      "clock": { "type": "String", "example": "4:32" }
+    }
+  },
+  "chatSystemVoiceJoinAction": "bergabung",
+  "@chatSystemVoiceJoinAction": {
+    "description": "Aksi setelah nama di baris system join voice"
+  },
+  "chatSystemVoiceLeaveAction": "keluar",
+  "@chatSystemVoiceLeaveAction": {
+    "description": "Aksi setelah nama di baris system leave voice"
+  },
+  "chatPingSystemLine": "{name} : PING!!!",
+  "@chatPingSystemLine": {
+    "description": "Legacy/opsional; UI system line pakai ikon + nama : PING!!!",
+    "placeholders": {
+      "name": { "type": "String", "example": "Budi" }
+    }
   },
   "chatTypingOne": "{name} sedang mengetik…",
   "@chatTypingOne": {
@@ -6208,5 +6365,21 @@
   "usahaSponsorTierMustika": "Mustika",
   "@usahaSponsorTierMustika": {
     "description": "Nama tingkat sponsor Mustika"
-  }
+  },
+  "periksaKataVoted": "Voting kamu sudah tercatat",
+  "voteTrustProgressDetailNeedUp": "Butuh +{need} poin lagi · net {netLabel} · {unique}/{threshold} pemilih",
+  "voteTrustProgressDetailNeedDown": "Butuh -{need} poin lagi ke penolakan · net {netLabel} · {unique}/{threshold} pemilih",
+  "voteTrustProgressDetailNeedVoters": "Net sudah cukup · butuh {need} pemilih lagi ({unique}/{threshold})",
+  "dictCommunityVoteFooterTitle": "Bantu periksa makna menunggu",
+  "periksaKataUnvoteTitle": "Batalkan vote?",
+  "periksaKataUnvoteBody": "Vote kamu akan dihapus dari riwayat pemeriksaan untuk kata ini.",
+  "periksaKataUnvoteConfirm": "Batalkan vote",
+  "periksaKataVoteLockedMeta": "Tidak bisa diubah - makna sudah selesai dicek",
+  "periksaKataVoteLockedTitle": "Vote tidak bisa diubah",
+  "periksaKataVoteLockedBody": "Makna ini sudah terverifikasi atau ditolak. Vote lama kamu tetap tercatat dan tidak bisa dibatalkan atau diganti.",
+  "periksaKataPriorVoteMeta": "Vote sebelumnya masih aktif - tap tombol yang sama untuk batal",
+  "periksaKataUnvoteDone": "Vote dibatalkan",
+  "dictCommunityVoteOpenPeriksa": "Buka Periksa Kata",
+  "dictCommunityVoteNoPendingBody": "Makna menunggu tidak tampil di sini. Lanjut di Periksa Kata untuk vote."
+
 }

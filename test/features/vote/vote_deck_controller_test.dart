@@ -77,6 +77,18 @@ class _FakeDeckRepo implements VoteRepository {
   }
 
   @override
+  Future<Either<VoteFailure, VoteDeckPage>> getCheckDeck({
+    int limit = 20,
+    String? cursor,
+    String? q,
+    bool randomize = false,
+  }) async {
+    return Either.right(
+      VoteDeckPage(items: List.of(deckItems), hasMore: false),
+    );
+  }
+
+  @override
   Future<Either<VoteFailure, Unit>> skipMeaning(String meaningId) async {
     skipped.add(meaningId);
     return Either.right(unit);

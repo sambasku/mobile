@@ -31,6 +31,7 @@ class ChatRealtime {
   RealtimeChannel? _channel;
   RealtimeChannel? _presenceChannel;
   RealtimeChannel? _typingChannel;
+  final _messageListeners = <void Function(ChatRealtimeEvent event)>{};
 
   static ChatRealtime? tryCreate() {
     final url = Env.supabaseUrl;
@@ -159,20 +160,48 @@ class ChatRealtime {
     }
   }
 
-  /// Mulai listen channel public. Panggil [stop] saat dispose.
+  /// Tambah listener channel public. Multi-listener aman (shell + chat page).
+  void addMessageListener(void Function(ChatRealtimeEvent event) onEvent) {
+    _messageListeners.add(onEvent);
+    if (_channel == null) {
+      _subscribeMessages();
+    }
+  }
+
+  void removeMessageListener(void Function(ChatRealtimeEvent event) onEvent) {
+    _messageListeners.remove(onEvent);
+    if (_messageListeners.isEmpty) {
+      // ignore: discarded_futures
+      stop();
+    }
+  }
+
+  /// Kompat: satu listener (ganti semua). Prefer [addMessageListener].
   void start(void Function(ChatRealtimeEvent event) onEvent) {
+    _messageListeners
+      ..clear()
+      ..add(onEvent);
+    if (_channel == null) {
+      _subscribeMessages();
+    } else {
+      // Channel sudah hidup - biarkan listener set baru.
+    }
+  }
+
+  void _subscribeMessages() {
     void emit(ChatRealtimeEventType type, Map<String, dynamic> row) {
       try {
         final message = ChatMessage.fromJson(row);
         if (message.id.isEmpty) return;
         if (message.channel != 'public') return;
-        onEvent(ChatRealtimeEvent(type: type, message: message));
+        final event = ChatRealtimeEvent(type: type, message: message);
+        for (final listener in List.of(_messageListeners)) {
+          listener(event);
+        }
       } catch (e, st) {
         debugPrint('ChatRealtime map failed: $e\n$st');
       }
     }
-
-    stop();
     _channel = _client
         .channel('chat-public')
         .onPostgresChanges(
@@ -225,6 +254,7 @@ class ChatRealtime {
           },
         )
         .subscribe();
+
   }
 
   /// Hanya channel postgres messages - presence/typing channel terpisah.

@@ -52,14 +52,15 @@ Future<bool?> showRecordPronunciationSheet(
     ref.read(wordDetailAudioPlayerProvider(wordId).notifier).stop();
   } catch (_) {}
 
-  return showModalBottomSheet<bool>(
+  return showModalBottomSheet<bool>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     // Dismiss dikontrol PopScope di dalam sheet saat merekam/mengirim.
     isDismissible: true,
     enableDrag: true,
-    builder: (ctx) => _RecordPronunciationSheet(
+    uilder: (ctx) => _RecordPronunciationSheet(
       wordId: wordId,
       languageId: languageId,
       exampleId: exampleId,
@@ -606,11 +607,12 @@ class _RecordPronunciationSheetState
   /// Sheet persetujuan publikasi + lisensi (PDP Pasal 8). Hasil true = setuju.
   Future<bool> _showConsentSheet() async {
     final theme = FTheme.of(context);
-    final agreed = await showModalBottomSheet<bool>(
+    final agreed = await showModalBottomSheet<bool>((
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (sheetCtx) => Padding(
+      uilder: (sheetCtx) => Padding(
         padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
         child: Column(
           mainAxisSize: MainAxisSize.min,

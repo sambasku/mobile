@@ -5,9 +5,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../providers/chat_typing_provider.dart';
 
-/// Indikator "X sedang mengetik…" di atas composer.
+/// Indikator "X sedang mengetik…" di samping ikon mic composer.
 class ChatTypingIndicator extends ConsumerWidget {
   const ChatTypingIndicator({super.key});
+
+  static const _green = Color(0xFF16A34A);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,17 +24,15 @@ class ChatTypingIndicator extends ConsumerWidget {
       _ => l10n.chatTypingMany(typers.length),
     };
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 0, 4, 6),
-      child: Text(
-        label,
-        style: theme.typography.body.xs.copyWith(
-          color: theme.colors.mutedForeground,
-          fontStyle: FontStyle.italic,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+    return Text(
+      label,
+      style: theme.typography.body.xs3.copyWith(
+        color: _green,
+        fontWeight: FontWeight.w600,
+        height: 1.1,
       ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

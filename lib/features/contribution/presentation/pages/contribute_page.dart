@@ -19,6 +19,7 @@ import '../../../../core/network/network_providers.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/in_app_review_service.dart';
 import '../../../../core/theme/f_colors_x.dart';
+import '../../../../shared/utils/info_bottom_sheet.dart';
 import '../../../activity/data/activity_feed_repository.dart' show FeedCategory;
 import '../../../activity/presentation/providers/activity_feed_providers.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -1797,8 +1798,7 @@ class _FieldCaption extends StatelessWidget {
   }
 }
 
-/// Ikon ⓘ - tap buka penjelasan singkat (FPopover, lebih jelas di touch
-/// daripada FTooltip long-press).
+/// Ikon ⓘ - tap buka penjelasan via bottom sheet (bukan tooltip/popover).
 class _InfoTip extends StatelessWidget {
   const _InfoTip({required this.message});
 
@@ -1807,20 +1807,9 @@ class _InfoTip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    return FPopover(
-      constraints: const FPortalConstraints(maxWidth: 280),
-      popoverBuilder: (context, _) => Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Text(
-          message,
-          style: theme.typography.body.sm.copyWith(height: 1.35),
-        ),
-      ),
-      builder: (context, controller, child) => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: controller.toggle,
-        child: child,
-      ),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => showAppInfoSheet(context, message: message),
       child: Padding(
         padding: const EdgeInsets.all(2),
         child: Icon(

@@ -27,6 +27,7 @@ class ChatReplyBar extends StatelessWidget {
         : switch (target.kind) {
             ChatMessageKind.sticker => l10n.chatReplySnippetSticker,
             ChatMessageKind.voiceNote => l10n.chatReplySnippetVoice,
+            ChatMessageKind.system => l10n.chatReplySnippetSystem,
             ChatMessageKind.text => (target.body ?? '').trim(),
           };
 

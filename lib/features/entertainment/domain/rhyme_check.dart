@@ -81,7 +81,9 @@ RhymeCheckResult detectRhyme(List<String> lines, RhymeScheme scheme) {
     lastWords.add(w);
   }
   final pairs = <(int, int)>[];
-  var minMatchLen = 0x7FFFFFFFFFFFFFFF;
+  // Sentinel "tak terbatas" - JS Number hanya aman sampai 2^53-1;
+  // 0x7FFFFFFFFFFFFFFF (2^63-1) gagal compile di Flutter web.
+  var minMatchLen = 1 << 30;
   for (final (i, j) in _schemePairs[scheme] ?? const <(int, int)>[]) {
     if (!suffixRhymes(lastWords[i], lastWords[j])) {
       pairs.add((i + 1, j + 1));

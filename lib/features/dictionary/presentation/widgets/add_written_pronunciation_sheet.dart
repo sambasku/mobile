@@ -18,11 +18,12 @@ Future<String?> showAddWrittenPronunciationSheet(
   required String wordId,
   required String lemma,
 }) {
-  return showModalBottomSheet<String>(
+  return showModalBottomSheet<String>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (sheetContext) => Padding(
+    uilder: (sheetContext) => Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.viewInsetsOf(sheetContext).bottom,
       ),

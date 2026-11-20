@@ -26,6 +26,7 @@ class HotTopicsRepository {
       searched: _parseSearched(data['searched']),
       proposed: _parseProposed(data['proposed']),
       viewed: _parseViewed(data['viewed']),
+      check: _parseCheck(data['check']),
     );
   }
 
@@ -92,6 +93,29 @@ class HotTopicsRepository {
             lemma: row['lemma'] as String? ?? '',
             viewCount: (row['view_count'] as num?)?.toInt() ?? 0,
             lastViewedDay: row['last_viewed_day'] as String? ?? '',
+            inWindow: row['in_window'] == true,
+          ),
+        );
+      }
+    }
+    return HotTopicTab(items: items, meta: _meta(map['meta']));
+  }
+
+  HotTopicTab _parseCheck(Object? raw) {
+    final map = raw is Map ? raw : const {};
+    final list = map['items'];
+    final items = <HotTopicItem>[];
+    if (list is List) {
+      for (final row in list) {
+        if (row is! Map) continue;
+        final preview = row['definition_preview'];
+        items.add(
+          HotCheckItem(
+            meaningId: row['meaning_id'] as String? ?? '',
+            wordId: row['word_id'] as String? ?? '',
+            lemma: row['lemma'] as String? ?? '',
+            downvotes: (row['downvotes'] as num?)?.toInt() ?? 0,
+            definitionPreview: preview is String ? preview : null,
             inWindow: row['in_window'] == true,
           ),
         );

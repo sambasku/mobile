@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/chat_models.dart';
 import 'chat_reply_bar.dart';
+import 'chat_typing_indicator.dart';
 
 /// Composer chat - layout mengikuti [ThreadComposer] (komentar lemma):
 /// icon aksi di atas, field multiline + tombol kirim bulat.
@@ -82,6 +83,8 @@ class ChatComposer extends StatelessWidget {
                     enabled: !sending,
                     onTap: () => _guarded(onRecordVoice),
                   ),
+                  const Gap(4),
+                  const Expanded(child: ChatTypingIndicator()),
                 ],
               ),
               const Gap(4),

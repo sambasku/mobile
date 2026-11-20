@@ -20,11 +20,12 @@ Future<ExplorationRejectResult?> showExplorationRejectSheet(
   BuildContext context, {
   required ExplorationReviewDomain domain,
 }) {
-  return showModalBottomSheet<ExplorationRejectResult>(
+  return showModalBottomSheet<ExplorationRejectResult>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (sheetContext) => _ExplorationRejectSheet(domain: domain),
+    uilder: (sheetContext) => _ExplorationRejectSheet(domain: domain),
   );
 }
 

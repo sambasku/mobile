@@ -1,14 +1,17 @@
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../providers/chat_presence_provider.dart';
 
 /// Tab bar hub Diskusi - visual [FTabs] Forui (sama Tentang / Baleho).
 ///
 /// Konten di [DiscussionHubShell] via `StatefulNavigationShell`; di sini
 /// hanya chrome tab supaya tidak dobel scaffold.
-class DiscussionHubSegment extends StatelessWidget {
+/// Label Chat menampilkan `Chat (x)` jika ada orang di presence (x > 0).
+class DiscussionHubSegment extends ConsumerWidget {
   const DiscussionHubSegment({
     super.key,
     required this.index,
@@ -20,14 +23,16 @@ class DiscussionHubSegment extends StatelessWidget {
   final ValueChanged<int> onChanged;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
+    final presence = ref.watch(chatPresenceCountProvider);
+    final chatLabel = presence > 0
+        ? l10n.discussionTabChatWithCount(presence)
+        : l10n.discussionTabChat;
 
     return FTabs(
       expands: false,
-      // Hub hanya pakai chrome tab; konten di parent - hilangkan jarak
-      // default 10px antara tab bar dan child shrink.
       style: .delta(spacing: 0),
       control: .lifted(index: index, onChange: onChanged),
       children: [
@@ -43,7 +48,7 @@ class DiscussionHubSegment extends StatelessWidget {
         FTabEntry.entry(
           label: _HubTabLabel(
             icon: FLucideIcons.messageCircle,
-            text: l10n.discussionTabChat,
+            text: chatLabel,
             selected: index == 1,
             theme: theme,
           ),

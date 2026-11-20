@@ -18,6 +18,7 @@ import '../../../contribution/domain/meaning_source.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../../shared/domain/word_type_options.dart';
 import '../../domain/entities/review_contribution.dart';
+import '../review_labels.dart';
 import 'review_inline_type_editor.dart';
 
 /// Preview baca-saja isi usulan - per jenis entity, bukan dump key:value.
@@ -39,18 +40,20 @@ class ReviewEntityPreview extends ConsumerWidget {
     // dengan banyak makna atau definisi panjang akan lebih tinggi dari
     // kartu. Column telanjang meluap jadi error di dalam stack, bukan sekadar
     // terpotong.
-    final content = switch (type) {
-      'word' => _WordPreview(detail: detail),
-      'word_image' => _ImagePreview(entity: detail.entity),
-      'word_audio' => _AudioPreview(
-        entity: detail.entity,
-        label: AppLocalizations.of(context).reviewPreviewAudioProposal,
-      ),
-      'pronunciation' => _PronunciationPreview(entity: detail.entity),
-      'example' => _ExamplePreview(entity: detail.entity),
-      'meaning' => _MeaningPreview(entity: detail.entity),
-      _ => _FieldPreview(entity: detail.entity),
-    };
+    final content = reviewEntityPayloadMissing(detail)
+        ? _MissingEntityPreview(entityType: type)
+        : switch (type) {
+            'word' => _WordPreview(detail: detail),
+            'word_image' => _ImagePreview(entity: detail.entity),
+            'word_audio' => _AudioPreview(
+              entity: detail.entity,
+              label: AppLocalizations.of(context).reviewPreviewAudioProposal,
+            ),
+            'pronunciation' => _PronunciationPreview(entity: detail.entity),
+            'example' => _ExamplePreview(entity: detail.entity),
+            'meaning' => _MeaningPreview(entity: detail.entity),
+            _ => _FieldPreview(entity: detail.entity),
+          };
 
     if (scrollable) {
       return SingleChildScrollView(child: content);
@@ -63,11 +66,12 @@ class ReviewEntityPreview extends ConsumerWidget {
   }
 
   void _showPreviewSheet(BuildContext context, Widget content) {
-    showModalBottomSheet(
+    showModalBottomSheet((
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (sheetContext) {
+      uilder: (sheetContext) {
         final theme = sheetContext.theme;
         return Material(
           color: theme.colors.background,
@@ -243,6 +247,14 @@ class _Skeletonized extends StatelessWidget {
   }
 }
 
+
+String? _entityLemma(Map<String, dynamic> entity) {
+  for (final key in const ['wordLemma', 'word_lemma', 'lemma']) {
+    final raw = entity[key]?.toString().trim();
+    if (raw != null && raw.isNotEmpty) return raw;
+  }
+  return null;
+}
 Map<String, dynamic>? _childData(Map<String, dynamic> entity) {
   final data = entity['data'];
   if (data is Map<String, dynamic>) return data;
@@ -585,7 +597,7 @@ class _ImagePreview extends StatelessWidget {
     final url = _str(data, 'url');
     final alt = _str(data, 'alt_text');
     final primary = _bool(data, 'is_primary');
-    final lemma = entity['wordLemma']?.toString();
+    final lemma = _entityLemma(entity);
 
     return _SectionCard(
       title: AppLocalizations.of(context).reviewPreviewProposedImage,
@@ -675,7 +687,7 @@ class _AudioPreview extends StatelessWidget {
     );
     final mime = _str(data, 'mime_type');
     final primary = _bool(data, 'is_primary');
-    final lemma = entity['wordLemma']?.toString();
+    final lemma = _entityLemma(entity);
 
     return _SectionCard(
       title: label,
@@ -749,7 +761,7 @@ class _PronunciationPreview extends StatelessWidget {
     final speaker = _str(data, 'speaker_name');
     final notes = _str(data, 'notes');
     final audioUrl = _str(data, 'audio_url');
-    final lemma = entity['wordLemma']?.toString();
+    final lemma = _entityLemma(entity);
 
     return _SectionCard(
       title: AppLocalizations.of(context).reviewPreviewProposedPronunciation,
@@ -890,7 +902,7 @@ class _MeaningPreview extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _LemmaHeader(entity['wordLemma']?.toString()),
+          _LemmaHeader(_entityLemma(entity)),
           _MetaRow(
             label: AppLocalizations.of(context).suggestDefinitionLabel,
             value: definitionMissing
@@ -1053,7 +1065,7 @@ class _ExamplePreview extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _LemmaHeader(entity['wordLemma']?.toString()),
+          _LemmaHeader(_entityLemma(entity)),
           if (source == null)
             _MetaRow(
               label: AppLocalizations.of(context).reviewPreviewSambasSentence,
@@ -1150,6 +1162,27 @@ class _SentenceBlock extends StatelessWidget {
   }
 }
 
+class _MissingEntityPreview extends StatelessWidget {
+  const _MissingEntityPreview({required this.entityType});
+
+  final String entityType;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    return _SectionCard(
+      title: reviewEntityLabel(entityType, l10n),
+      child: Text(
+        l10n.reviewPreviewEntityMissing,
+        style: theme.typography.body.sm.copyWith(
+          color: theme.colors.mutedForeground,
+        ),
+      ),
+    );
+  }
+}
+
 /// Fallback untuk entity tanpa preview khusus (dan untuk tipe baru dari server).
 ///
 /// Prinsipnya ketat agar bug lama tidak kembali diam-diam:
@@ -1228,7 +1261,7 @@ class _FieldPreview extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _LemmaHeader(entity['wordLemma']?.toString()),
+          _LemmaHeader(_entityLemma(entity)),
           if (rows.isEmpty)
             Text(
               AppLocalizations.of(context).commonNoDetail,

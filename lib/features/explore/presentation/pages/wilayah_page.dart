@@ -537,6 +537,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
     unawaited(
       showFSheet<void>(
         context: context,
+        useRootNavigator: true,
         side: FLayout.btt,
         // null tanpa batas ratio: child scrollable -> sheet ikut isi
         // (pola forui untuk sheet berisi scrollable).

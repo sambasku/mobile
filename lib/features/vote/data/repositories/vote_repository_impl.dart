@@ -25,6 +25,8 @@ VoteDeckItem parseVoteDeckItem(Map<String, dynamic> map) {
     isVerified: map['is_verified'] == true,
     approvedAt: map['approved_at']?.toString() ?? '',
     sense: map['sense']?.toString(),
+    definition: _parseOptionalText(map['definition']),
+    translation: _parseOptionalText(map['translation']),
     orderIndex: map['order_index'] is int
         ? map['order_index'] as int
         : int.tryParse('${map['order_index']}') ?? 1,
@@ -43,9 +45,11 @@ VoteDeckItem parseVoteDeckItem(Map<String, dynamic> map) {
   );
 }
 
-String? _parsePronunciationValue(Object? raw) {
+String? _parsePronunciationValue(Object? raw) => _parseOptionalText(raw);
+
+String? _parseOptionalText(Object? raw) {
   final text = raw?.toString().trim();
-  if (text == null || text.isEmpty) return null;
+  if (text == null || text.isEmpty || text == 'null') return null;
   return text;
 }
 

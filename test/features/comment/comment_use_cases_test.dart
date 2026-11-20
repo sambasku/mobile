@@ -58,6 +58,7 @@ class _FakeCommentRepository implements CommentRepository {
     required String wordId,
     required String body,
     CommentImageStaging? image,
+    String? stickerId,
   }) async {
     receivedWordId = wordId;
     receivedBody = body;

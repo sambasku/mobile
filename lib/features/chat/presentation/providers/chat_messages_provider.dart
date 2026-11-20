@@ -59,9 +59,9 @@ class ChatMessagesController extends AsyncNotifier<ChatMessagesState> {
 
     final realtime = ref.watch(chatRealtimeProvider);
     if (realtime != null) {
-      realtime.start(_onRealtime);
+      realtime.addMessageListener(_onRealtime);
       ref.onDispose(() {
-        realtime.stop();
+        realtime.removeMessageListener(_onRealtime);
       });
     }
 
@@ -100,6 +100,7 @@ class ChatMessagesController extends AsyncNotifier<ChatMessagesState> {
         ChatMessageKind.sticker => m.stickerId != message.stickerId,
         // VN: biarkan REST replace local-*; realtime bisa datang belakangan.
         ChatMessageKind.voiceNote => true,
+        ChatMessageKind.system => m.body != message.body,
       };
     }).toList();
 

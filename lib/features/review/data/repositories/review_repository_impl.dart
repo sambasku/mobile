@@ -50,6 +50,33 @@ List<ReviewPriorDecision> parsePriorReviews(Object? raw) {
   return out;
 }
 
+
+ReviewItem _withLemmaFallback(ReviewItem item, Map<String, dynamic> entity) {
+  final existing = item.wordLemma?.trim();
+  if (existing != null && existing.isNotEmpty) return item;
+  for (final key in const ['wordLemma', 'word_lemma', 'lemma']) {
+    final raw = entity[key]?.toString().trim();
+    if (raw != null && raw.isNotEmpty) {
+      return ReviewItem(
+        id: item.id,
+        contributorUsername: item.contributorUsername,
+        contributorDisplayName: item.contributorDisplayName,
+        entityType: item.entityType,
+        entityId: item.entityId,
+        action: item.action,
+        status: item.status,
+        createdAt: item.createdAt,
+        wordLemma: raw,
+        reopenedBy: item.reopenedBy,
+        reviewStatus: item.reviewStatus,
+        reviewComment: item.reviewComment,
+        reviewedAt: item.reviewedAt,
+      );
+    }
+  }
+  return item;
+}
+
 class ReviewRepositoryImpl implements ReviewRepository {
   ReviewRepositoryImpl(this._dio);
 
@@ -110,11 +137,14 @@ class ReviewRepositoryImpl implements ReviewRepository {
       final res = await _dio.get<Map<String, dynamic>>('$_base/$id');
       final data = asStringKeyMap(res.data?['data']);
       final contribution = parseReviewItem(asStringKeyMap(data['contribution']));
+      final entity = asStringKeyMap(data['entity']);
       final review = data['review'];
+      // Lemma antrean kadang null; entity anak biasanya punya wordLemma.
+      final enriched = _withLemmaFallback(contribution, entity);
       return Either.right(
         ReviewDetail(
-          contribution: contribution,
-          entity: asStringKeyMap(data['entity']),
+          contribution: enriched,
+          entity: entity,
           reviewComment: review is Map ? review['comment']?.toString() : null,
           priorReviews: parsePriorReviews(data['prior_reviews']),
         ),

@@ -8,7 +8,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/core/cache/cache_entry.dart';
 import 'package:sambasku_mobile/core/cache/cache_providers.dart';
 import 'package:sambasku_mobile/core/cache/response_cache_store.dart';
+import 'package:sambasku_mobile/core/network/connectivity_provider.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
+import 'package:sambasku_mobile/features/dictionary/data/dataset/lemma_dataset_providers.dart';
 import 'package:sambasku_mobile/features/contribution/presentation/providers/bulk_lemma_check_provider.dart';
 import 'package:sambasku_mobile/features/contribution/presentation/providers/bulk_submit_word_providers.dart';
 
@@ -119,6 +121,8 @@ class _MemoryCacheStore implements ResponseCacheStore {
 
 ProviderContainer _container(_LemmaAdapter adapter) => ProviderContainer(
   overrides: [
+    isOfflineProvider.overrideWith((ref) => Stream.value(false)),
+    dictionaryLocalDatasourceProvider.overrideWith((ref) async => null),
     dioProvider.overrideWithValue(Dio()..httpClientAdapter = adapter),
     responseCacheStoreProvider.overrideWithValue(_MemoryCacheStore()),
   ],

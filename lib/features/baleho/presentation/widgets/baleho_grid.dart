@@ -20,6 +20,7 @@ List<(int, int)> balehoValidSizes({
   final out = <(int, int)>[];
   for (var h = 1; h <= BalehoBoard.maxH; h++) {
     for (var w = 1; w <= BalehoBoard.maxW; w++) {
+      if (!BalehoBoard.isAllowedSize(w, h)) continue;
       if (col + w > board.cols || row + h > board.rows) continue;
       var ok = true;
       for (var r = row; r < row + h && ok; r++) {
@@ -95,8 +96,7 @@ class _BalehoGridState extends State<BalehoGrid> {
     var row = r0 < r1 ? r0 : r1;
     var w = (c0 - c1).abs() + 1;
     var h = (r0 - r1).abs() + 1;
-    if (w > BalehoBoard.maxW) w = BalehoBoard.maxW;
-    if (h > BalehoBoard.maxH) h = BalehoBoard.maxH;
+    (w, h) = BalehoBoard.clampSize(w, h);
     if (col + w > widget.board.cols) col = widget.board.cols - w;
     if (row + h > widget.board.rows) row = widget.board.rows - h;
     for (var r = row; r < row + h; r++) {

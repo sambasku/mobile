@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../core/network/auth_token_storage.dart';
 import '../../../core/widgets/brand_logo.dart';
 import '../../../features/about/data/datasources/about_api_datasource.dart';
 import '../../../features/about/presentation/providers/about_api_providers.dart';
@@ -75,9 +76,12 @@ class _SplashPageState extends ConsumerState<SplashPage>
 
   Future<void> _bootstrap() async {
     final started = DateTime.now();
+    // Warm Keystore/gate cache di splash supaya tap Profil setelah home
+    // tidak kena fail-closed timeout cold-start (#301).
     await Future.wait<void>([
       _loadVersion(),
       _loadSponsors(),
+      _warmAuthGate(),
     ]);
     final elapsed = DateTime.now().difference(started);
     final remaining = SplashPage.minDwell - elapsed;
@@ -86,6 +90,14 @@ class _SplashPageState extends ConsumerState<SplashPage>
     }
     if (!mounted) return;
     context.go('/');
+  }
+
+  Future<void> _warmAuthGate() async {
+    try {
+      await AuthTokenStorage.instance.getIsAuthForGate();
+    } catch (_) {
+      // Fail-soft: gate tetap dicek saat tab Profil / redirect.
+    }
   }
 
   Future<void> _loadVersion() async {
@@ -200,7 +212,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
                   opacity: _logoFade,
                   child: ScaleTransition(
                     scale: _logoScale,
-                    child: const BrandMark(size: 248),
+                    child: const BrandMark(size: kBrandMarkHeroSize),
                   ),
                 ),
                 const Spacer(),

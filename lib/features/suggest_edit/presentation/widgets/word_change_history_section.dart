@@ -353,11 +353,12 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
   }
 
   void _showDetailSheet(BuildContext context) {
-    showModalBottomSheet<void>(
+    showModalBottomSheet<void>((
       context: context,
+      useRootNavigator: true,
       showDragHandle: true,
       isScrollControlled: true,
-      builder: (sheetContext) {
+      uilder: (sheetContext) {
         final theme = sheetContext.theme;
         final l10n = AppLocalizations.of(sheetContext);
         final when = item.timestamp.isNotEmpty

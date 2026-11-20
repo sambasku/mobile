@@ -23,7 +23,9 @@ Widget _wrap(Widget child) => ProviderScope(
 void main() {
   setUpAll(() => F.appFlavor = Flavor.production);
 
-  testWidgets('blok ringkas: Apa itu, Sponsor & Tim, GitHub', (tester) async {
+  testWidgets('blok ringkas: Apa itu + GitHub (Sponsor di halaman lain)', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(800, 2000);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -37,7 +39,7 @@ void main() {
     expect(find.text('Ibnul Mutaki'), findsNothing);
     expect(find.text('Tentang'), findsWidgets);
     expect(find.text('Apa itu SambasKu?'), findsOneWidget);
-    expect(find.text('Sponsor & Tim Kami'), findsOneWidget);
+    expect(find.text('Sponsor & Tim Kami'), findsNothing);
     expect(find.text('Kode Sumber & Organisasi'), findsOneWidget);
     expect(find.text('Buka di GitHub'), findsOneWidget);
 
@@ -46,13 +48,12 @@ void main() {
     expect(find.text('Bagikan kartu'), findsNothing);
     expect(find.text('Organisasi di GitHub'), findsNothing);
 
-    // Data sponsor/tim tidak lagi di halaman Tentang (pindah ke halaman
-    // Sponsorship & Tim) - tidak boleh ada duplikasi.
+    // Data sponsor/tim tidak di halaman Tentang (pindah ke Sponsorship & Tim).
     expect(find.text('Sponsor & Mitra'), findsNothing);
     expect(find.text('Pengusul'), findsNothing);
 
     double y(String t) => tester.getTopLeft(find.text(t)).dy;
-    expect(y('Apa itu SambasKu?'), lessThan(y('Sponsor & Tim Kami')));
+    expect(y('Apa itu SambasKu?'), lessThan(y('Kode Sumber & Organisasi')));
   });
 
   testWidgets('halaman Sponsorship & Tim punya dua tab', (tester) async {

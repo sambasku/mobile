@@ -16,7 +16,7 @@ import '../providers/contribution_guide_providers.dart';
 import '../widgets/contribution_guide_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Tab KONTRIBUSI: grid hub (Dicari / Periksa) + deck nilai kata.
+/// Tab KONTRIBUSI: baris aksi pola Home (`_HomeActionChips`) + deck nilai kata.
 ///
 /// Deck sengaja **di luar** scroll view supaya swipe-atas (lewati) tidak
 /// bentrok dengan `CustomScrollView` / pull-to-refresh.
@@ -30,11 +30,8 @@ class ActivityPage extends ConsumerStatefulWidget {
 class _ActivityPageState extends ConsumerState<ActivityPage> {
   bool _guideChecked = false;
 
-  /// Sama Explore: ikon 48 + gap 6 + 2 baris label (~28).
-  static const _menuIconSize = 48.0;
-  static const _menuSpacing = 8.0;
-  static const _menuColumns = 2;
-  static const _cellHeight = _menuIconSize + 6 + 28;
+  /// Sama Home: kotak 48 1:1 + gap 6 + slot label 28.
+  static const _hubBlock = 8 + _ContributeHubChips.height + 8;
 
   Future<void> _refresh() async {
     await Future.wait([
@@ -50,9 +47,6 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
       _guideChecked = true;
       WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowGuide());
     }
-
-    // Grid: top Gap 8 + satu baris tile + Gap 8 di bawah.
-    const gridBlock = 8 + _cellHeight + 8;
 
     return Column(
       children: [
@@ -83,16 +77,11 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const Gap(8),
-                      _ContributeHubGrid(
-                        iconSize: _menuIconSize,
-                        spacing: _menuSpacing,
-                        columns: _menuColumns,
-                        cellHeight: _cellHeight,
-                      ),
+                      const _ContributeHubChips(),
                       const Gap(8),
-                      // Deck mengisi sisa viewport minus grid hub.
+                      // Deck mengisi sisa viewport minus baris aksi hub.
                       SizedBox(
-                        height: (constraints.maxHeight - gridBlock).clamp(
+                        height: (constraints.maxHeight - _hubBlock).clamp(
                           200.0,
                           double.infinity,
                         ),
@@ -130,119 +119,113 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
   }
 }
 
-/// Grid 2 tile visual-identik Explore (`_ExploreMenuTile`: 48px, label bawah).
-class _ContributeHubGrid extends StatelessWidget {
-  const _ContributeHubGrid({
-    required this.iconSize,
-    required this.spacing,
-    required this.columns,
-    required this.cellHeight,
-  });
+/// Satu baris tile aksi Kontribusi - styling identik Home (`_HomeActionChips`):
+/// kotak 1:1 48px, border, ikon 18, label 10px, scroll horizontal Gap(8).
+/// Tambah item di list di bawah; baris otomatis scroll bila menu banyak.
+class _ContributeHubChips extends StatelessWidget {
+  const _ContributeHubChips();
 
-  final double iconSize;
-  final double spacing;
-  final int columns;
-  final double cellHeight;
+  static const double _tileSize = 48;
+  static const double _labelSlot = 28;
+  static const double height = _tileSize + 6 + _labelSlot;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final items = <({IconData icon, String label, String path})>[
-      (
+    final items = <_ContributeHubChip>[
+      _ContributeHubChip(
         icon: FLucideIcons.searchX,
         label: l10n.feedContributeSearchMiss,
-        path: SearchMissRouter.list.path,
+        onPress: () => context.push(SearchMissRouter.list.path),
       ),
-      (
+      _ContributeHubChip(
         icon: FLucideIcons.clipboardCheck,
         label: l10n.feedContributePeriksaKata,
-        path: PeriksaKataRouter.check.path,
+        onPress: () => context.push(PeriksaKataRouter.check.path),
       ),
     ];
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final cellW =
-            (constraints.maxWidth - spacing * (columns - 1)) / columns;
-        final childAspectRatio = cellW / cellHeight;
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: items.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: columns,
-            mainAxisSpacing: spacing,
-            crossAxisSpacing: spacing,
-            childAspectRatio: childAspectRatio,
-          ),
-          itemBuilder: (context, index) {
-            final item = items[index];
-            return _ContributeHubTile(
-              icon: item.icon,
-              label: item.label,
-              iconSize: iconSize,
-              onTap: () => context.push(item.path),
-            );
-          },
-        );
-      },
+    // Shell tab sudah Padding horizontal 12 - jangan dobel (Home pad di dalam
+    // ListView karena carousel full-bleed).
+    return SizedBox(
+      height: height,
+      child: ListView.separated(
+        key: const ValueKey('contribute_hub_chips'),
+        scrollDirection: Axis.horizontal,
+        itemCount: items.length,
+        separatorBuilder: (_, _) => const Gap(8),
+        itemBuilder: (context, i) => _ContributeHubTile(item: items[i]),
+      ),
     );
   }
 }
 
-class _ContributeHubTile extends StatelessWidget {
-  const _ContributeHubTile({
+class _ContributeHubChip {
+  const _ContributeHubChip({
     required this.icon,
     required this.label,
-    required this.iconSize,
-    required this.onTap,
+    required this.onPress,
   });
 
   final IconData icon;
   final String label;
-  final double iconSize;
-  final VoidCallback onTap;
+  final VoidCallback onPress;
+}
+
+class _ContributeHubTile extends StatelessWidget {
+  const _ContributeHubTile({required this.item});
+
+  final _ContributeHubChip item;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-
-    return FTappable(
-      onPress: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: iconSize,
-            height: iconSize,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: ColoredBox(
-                color: theme.colors.secondary,
-                child: Center(
-                  child: Icon(
-                    icon,
-                    size: iconSize * 0.42,
-                    color: theme.colors.mutedForeground,
+    const size = _ContributeHubChips._tileSize;
+    return Semantics(
+      button: true,
+      label: item.label,
+      child: FTappable(
+        onPress: item.onPress,
+        // Lebar = ukuran kotak: jarak antar kotak = separator saja (8px).
+        child: SizedBox(
+          width: size,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: size,
+                height: size,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: theme.colors.secondary,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: theme.colors.border),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      item.icon,
+                      size: 18,
+                      color: theme.colors.foreground,
+                    ),
                   ),
                 ),
               ),
-            ),
+              const Gap(6),
+              Text(
+                item.label,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.typography.body.xs.copyWith(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  height: 1.1,
+                  color: theme.colors.foreground,
+                ),
+              ),
+            ],
           ),
-          const Gap(6),
-          Text(
-            label,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: theme.typography.body.sm.copyWith(
-              fontSize: 11,
-              height: 1.2,
-              fontWeight: FontWeight.w600,
-              color: theme.colors.foreground,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

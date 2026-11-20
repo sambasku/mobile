@@ -47,11 +47,12 @@ Future<bool> showReportWordSheet(
   /// Saat diisi, laporan merujuk ke satu makna (#253).
   String? meaningId,
 }) async {
-  final sent = await showModalBottomSheet<bool>(
+  final sent = await showModalBottomSheet<bool>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (sheetContext) => _ReportWordSheet(
+    uilder: (sheetContext) => _ReportWordSheet(
       wordId: wordId,
       imageId: imageId,
       meaningId: meaningId,

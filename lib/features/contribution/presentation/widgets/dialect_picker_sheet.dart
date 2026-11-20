@@ -22,11 +22,12 @@ Future<DialectPickItem?> showDialectPickerSheet(
   required List<DialectPickItem> items,
   String? selectedId,
 }) {
-  return showModalBottomSheet<DialectPickItem>(
+  return showModalBottomSheet<DialectPickItem>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (sheetContext) {
+    uilder: (sheetContext) {
       return _DialectPickerSheetBody(items: items, selectedId: selectedId);
     },
   );

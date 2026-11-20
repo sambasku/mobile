@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../providers/voice_room_provider.dart';
+import 'voice_chat_sheet.dart';
 import 'voice_participants_sheet.dart';
 
 /// Mini bar global di atas bottom nav - gaya sama strip chat (1 baris padat).
@@ -52,19 +53,23 @@ class VoiceRoomMiniBar extends ConsumerWidget {
               ),
               const Gap(6),
               Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => showVoiceParticipantsSheet(context),
-                  child: Text(
-                    title,
-                    style: theme.typography.body.xs.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: incoming ? colors.primary : null,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                child: Text(
+                  title,
+                  style: theme.typography.body.xs.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: incoming ? colors.primary : null,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
+              ),
+              _MiniIcon(
+                icon: FLucideIcons.messageCircle,
+                semanticsLabel: l10n.voiceMiniBarOpenChat,
+                onTap: () {
+                  // ignore: discarded_futures
+                  showVoiceChatSheet(context);
+                },
               ),
               _MiniIcon(
                 icon: FLucideIcons.users,

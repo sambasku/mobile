@@ -51,13 +51,14 @@ Future<RecordedThreadAudio?> showRecordThreadAudioSheet(
   final ready = await ensureMicrophoneReady(context);
   if (!ready || !context.mounted) return null;
 
-  return showModalBottomSheet<RecordedThreadAudio>(
+  return showModalBottomSheet<RecordedThreadAudio>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     isDismissible: true,
     enableDrag: true,
-    builder: (ctx) => _RecordThreadAudioSheet(
+    uilder: (ctx) => _RecordThreadAudioSheet(
       title: title,
       subtitle: subtitle,
       submitLabel: submitLabel,

@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -9,7 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../providers/meaning_vote_providers.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../shared/utils/info_bottom_sheet.dart';
 import 'vote_buttons.dart';
 
 /// Ambang Voting Warga (selaras api voting-warga.ts).
@@ -38,10 +35,7 @@ class MeaningVoteRow extends ConsumerWidget {
     final state = ref.watch(meaningVotesControllerProvider);
     final upvotes = state.upvotesOf(meaningId);
     final downvotes = state.downvotesOf(meaningId);
-    final l10n = AppLocalizations.of(context);
 
-    // stretch: FDeterminateProgress hanya height-tight; tanpa stretch
-    // Column(start) biarkan track menyusut ke lebar isi (bukan full width).
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -57,12 +51,9 @@ class MeaningVoteRow extends ConsumerWidget {
         ),
         if (!isVerified) ...[
           const Gap(6),
-          _VoteTrustProgress(
+          VoteTrustProgress(
             upvotes: upvotes,
             downvotes: downvotes,
-            label: l10n.voteTrustProgressLabel,
-            info: l10n.voteTrustProgressInfo,
-            infoSemantics: l10n.voteTrustProgressInfoSemantics,
           ),
         ],
       ],
@@ -93,89 +84,108 @@ class MeaningVoteRow extends ConsumerWidget {
   }
 }
 
-class _VoteTrustProgress extends StatelessWidget {
-  const _VoteTrustProgress({
+/// Bar tug-of-war Voting Warga: kiri hijau (setuju) vs kanan merah (kurang setuju).
+class VoteTrustProgress extends StatelessWidget {
+  const VoteTrustProgress({
+    super.key,
     required this.upvotes,
     required this.downvotes,
-    required this.label,
-    required this.info,
-    required this.infoSemantics,
   });
 
   final int upvotes;
   final int downvotes;
-  final String label;
-  final String info;
-  final String infoSemantics;
 
-  static const double _infoIconSize = 14;
+  // Tipis / pudar - cukup terbaca, tidak mencolok.
+  static const Color _upFill = Color(0x6686EFAC); // green-300 ~40%
+  static const Color _downFill = Color(0x66FECACA); // red-200 ~40%
+  static const Color _upEmpty = Color(0x4DBBF7D0); // green-200 ~30%
+  static const Color _downEmpty = Color(0x4DFEE2E2); // red-100 ~30%
+  static const Color _divider = Color(0x44FFFFFF);
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
-    final muted = theme.colors.mutedForeground;
-    final net = upvotes - downvotes;
-    final unique = upvotes + downvotes;
-    final netProgress = (net <= 0)
-        ? 0.0
-        : math.min(1.0, net / kVotingWargaNetThreshold);
-    final uniqueProgress = math.min(
-      1.0,
-      unique / kVotingWargaNetThreshold,
-    );
-    // Binding constraint: keduanya harus mencapai ambang.
-    final value = math.min(netProgress, uniqueProgress);
+    final total = upvotes + downvotes;
+    final upRatio = total == 0
+        ? 0.5
+        : (upvotes <= 0 ? 0.0 : (downvotes <= 0 ? 1.0 : upvotes / total));
+    final upColor = total == 0 ? _upEmpty : _upFill;
+    final downColor = total == 0 ? _downEmpty : _downFill;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        FDeterminateProgress(
-          value: value,
-          style: const FDeterminateProgressStyleDelta.delta(
-            // minWidth infinity = paksa track ambil lebar parent (Forui
-            // default hanya height-tight, maxWidth unbounded → bisa menyusut).
-            constraints: BoxConstraints(
-              minWidth: double.infinity,
-              minHeight: 4,
-              maxHeight: 4,
-            ),
-          ),
-          semanticsLabel: label,
-        ),
-        const Gap(4),
-        Row(
-          children: [
-            Flexible(
-              child: Text(
-                label,
-                style: theme.typography.body.xs.copyWith(color: muted),
+    return Semantics(
+      label: AppLocalizations.of(context).voteTrustProgressLabel,
+      value: '$upvotes / $downvotes',
+      child: TweenAnimationBuilder<double>(
+        tween: Tween<double>(end: upRatio),
+        duration: const Duration(milliseconds: 420),
+        curve: Curves.easeOutCubic,
+        builder: (context, animatedRatio, _) {
+          return SizedBox(
+            height: 6,
+            width: double.infinity,
+            child: CustomPaint(
+              painter: _VoteFightBarPainter(
+                upRatio: animatedRatio,
+                upColor: upColor,
+                downColor: downColor,
+                dividerColor: _divider,
               ),
             ),
-            const Gap(2),
-            Semantics(
-              button: true,
-              label: infoSemantics,
-              hint: info,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => showAppInfoSheet(
-                  context,
-                  title: label,
-                  message: info,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(6),
-                  child: Icon(
-                    FLucideIcons.info,
-                    size: _infoIconSize,
-                    color: muted,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+          );
+        },
+      ),
     );
+  }
+}
+
+class _VoteFightBarPainter extends CustomPainter {
+  const _VoteFightBarPainter({
+    required this.upRatio,
+    required this.upColor,
+    required this.downColor,
+    required this.dividerColor,
+  });
+
+  final double upRatio;
+  final Color upColor;
+  final Color downColor;
+  final Color dividerColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final radius = Radius.circular(size.height / 2);
+    final rect = Offset.zero & size;
+    final rrect = RRect.fromRectAndRadius(rect, radius);
+
+    canvas.save();
+    canvas.clipRRect(rrect);
+
+    final split = (size.width * upRatio.clamp(0.0, 1.0)).clamp(0.0, size.width);
+    if (split > 0) {
+      canvas.drawRect(
+        Rect.fromLTWH(0, 0, split, size.height),
+        Paint()..color = upColor,
+      );
+    }
+    if (split < size.width) {
+      canvas.drawRect(
+        Rect.fromLTWH(split, 0, size.width - split, size.height),
+        Paint()..color = downColor,
+      );
+    }
+    if (split > 1 && split < size.width - 1) {
+      canvas.drawRect(
+        Rect.fromLTWH(split - 0.75, 0, 1.5, size.height),
+        Paint()..color = dividerColor,
+      );
+    }
+
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant _VoteFightBarPainter oldDelegate) {
+    return oldDelegate.upRatio != upRatio ||
+        oldDelegate.upColor != upColor ||
+        oldDelegate.downColor != downColor;
   }
 }

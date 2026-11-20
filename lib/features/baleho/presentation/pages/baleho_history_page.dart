@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/utils/format_number.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/auth_router.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -108,6 +109,7 @@ class _HistoryList extends ConsumerWidget {
         'pending_review' => l10n.balehoStatusPendingReview,
         'awaiting_payment' => l10n.balehoStatusAwaitingPayment,
         'live' => l10n.balehoStatusLive,
+        'paused' => l10n.balehoStatusPaused,
         'rejected' => l10n.balehoStatusRejected,
         'cancelled' => l10n.balehoStatusCancelled,
         'expired' => l10n.balehoStatusExpired,
@@ -256,11 +258,14 @@ class _HistoryList extends ConsumerWidget {
   }
 }
 
-/// Baris metrik padat: Tayang / Buka detail / Klik tombol (+ CTR).
+/// Baris metrik padat: funnel + rasio + biaya + ringkas 7 hari.
 class _BalehoPerfStats extends StatelessWidget {
   const _BalehoPerfStats({required this.item});
 
   final BalehoPlacementHistoryItem item;
+
+  String _pct(double v) =>
+      v == v.roundToDouble() ? '${v.toInt()}' : v.toStringAsFixed(1);
 
   @override
   Widget build(BuildContext context) {
@@ -274,9 +279,6 @@ class _BalehoPerfStats extends StatelessWidget {
       fontWeight: FontWeight.w600,
       height: 1.2,
     );
-    final ctr = item.ctrPercent == item.ctrPercent.roundToDouble()
-        ? '${item.ctrPercent.toInt()}'
-        : item.ctrPercent.toStringAsFixed(1);
 
     Widget cell(String label, String value) {
       return Expanded(
@@ -291,19 +293,61 @@ class _BalehoPerfStats extends StatelessWidget {
       );
     }
 
+    final rateBits = <String>[
+      if (item.impressions > 0) l10n.balehoHistoryStatCtr(_pct(item.ctrPercent)),
+      if (item.taps > 0)
+        l10n.balehoHistoryStatActionRate(_pct(item.actionRatePercent)),
+      if (item.actions > 0)
+        l10n.balehoHistoryStatSuccessRate(_pct(item.successRatePercent)),
+    ];
+
+    final costBits = <String>[
+      if (item.quotedAmount != null)
+        l10n.balehoHistoryStatQuoted(formatRibuan(item.quotedAmount!)),
+      if (item.cpmIdr != null)
+        l10n.balehoHistoryStatCpm(formatRibuan(item.cpmIdr!)),
+      if (item.cpcIdr != null)
+        l10n.balehoHistoryStatCpc(formatRibuan(item.cpcIdr!)),
+    ];
+
+    var dImp = 0;
+    var dTap = 0;
+    var dAct = 0;
+    for (final d in item.daily) {
+      dImp += d.impressions;
+      dTap += d.taps;
+      dAct += d.actions;
+    }
+    final hasDaily = item.daily.isNotEmpty && (dImp + dTap + dAct) > 0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
           children: [
-            cell(l10n.balehoHistoryStatImpressions, '${item.impressions}'),
-            cell(l10n.balehoHistoryStatTaps, '${item.taps}'),
-            cell(l10n.balehoHistoryStatActions, '${item.actions}'),
+            cell(l10n.balehoHistoryStatImpressions, formatRibuan(item.impressions)),
+            cell(l10n.balehoHistoryStatTaps, formatRibuan(item.taps)),
+            cell(l10n.balehoHistoryStatActions, formatRibuan(item.actions)),
           ],
         ),
-        if (item.impressions > 0) ...[
+        if (rateBits.isNotEmpty) ...[
           const Gap(4),
-          Text(l10n.balehoHistoryStatCtr(ctr), style: muted),
+          Text(rateBits.join(' · '), style: muted),
+        ],
+        if (costBits.isNotEmpty) ...[
+          const Gap(2),
+          Text(costBits.join(' · '), style: muted),
+        ],
+        if (hasDaily) ...[
+          const Gap(2),
+          Text(
+            l10n.balehoHistoryStatDaily7(
+              formatRibuan(dImp),
+              formatRibuan(dTap),
+              formatRibuan(dAct),
+            ),
+            style: muted,
+          ),
         ],
       ],
     );

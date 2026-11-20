@@ -416,7 +416,7 @@ class _SplashSponsorPreviewPageState extends State<_SplashSponsorPreviewPage>
                     opacity: _logoFade,
                     child: ScaleTransition(
                       scale: _logoScale,
-                      child: const BrandMark(size: 248),
+                      child: const BrandMark(size: kBrandMarkHeroSize),
                     ),
                   ),
                   const Spacer(),

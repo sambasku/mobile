@@ -54,7 +54,9 @@ class LemmaHybridGate {
             ),
           );
         }
-        onSource?.call(LemmaDataSourceKind.local);
+        try {
+          onSource?.call(LemmaDataSourceKind.local);
+        } catch (_) {}
         return Either.right(value);
       } catch (_) {
         return Either.left(
@@ -87,7 +89,10 @@ class LemmaHybridGate {
         },
         (value) async {
           sticky.clear();
-          onSource?.call(LemmaDataSourceKind.remote);
+          // Telemetri sumber jangan pernah memicu sticky fallback.
+          try {
+            onSource?.call(LemmaDataSourceKind.remote);
+          } catch (_) {}
           return Either<DictionaryFailure, T>.right(value);
         },
       );

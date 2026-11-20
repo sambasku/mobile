@@ -65,6 +65,16 @@ class _FakeVoteRepository implements VoteRepository {
   }
 
   @override
+  Future<Either<VoteFailure, VoteDeckPage>> getCheckDeck({
+    int limit = 20,
+    String? cursor,
+    String? q,
+    bool randomize = false,
+  }) async {
+    return Either.right(const VoteDeckPage(items: []));
+  }
+
+  @override
   Future<Either<VoteFailure, Unit>> skipMeaning(String meaningId) async =>
       Either.right(unit);
 

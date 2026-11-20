@@ -166,6 +166,48 @@ class ChatRepository {
     }
   }
 
+
+  Future<Either<ChatFailure, ChatPingStatus>> getPingStatus() async {
+    try {
+      final res = await _dio.get<Map<String, dynamic>>('$_base/ping');
+      final data = res.data?['data'];
+      if (data is! Map) {
+        return Either.left(ChatFailure(l10n.chatLoadFailed));
+      }
+      return Either.right(
+        ChatPingStatus.fromJson(Map<String, dynamic>.from(data)),
+      );
+    } on DioException catch (e) {
+      return Either.left(_mapDio(e, l10n.chatLoadFailed));
+    } catch (e) {
+      return Either.left(ChatFailure(e.toString()));
+    }
+  }
+
+  Future<Either<ChatFailure, ({ChatMessage message, ChatPingStatus status})>>
+  sendPing() async {
+    try {
+      final res = await _dio.post<Map<String, dynamic>>('$_base/ping');
+      final data = res.data?['data'];
+      if (data is! Map) {
+        return Either.left(ChatFailure(l10n.chatSendFailed));
+      }
+      final messageRaw = data['message'];
+      final statusRaw = data['status'];
+      if (messageRaw is! Map || statusRaw is! Map) {
+        return Either.left(ChatFailure(l10n.chatSendFailed));
+      }
+      return Either.right((
+        message: ChatMessage.fromJson(Map<String, dynamic>.from(messageRaw)),
+        status: ChatPingStatus.fromJson(Map<String, dynamic>.from(statusRaw)),
+      ));
+    } on DioException catch (e) {
+      return Either.left(_mapDio(e, l10n.chatSendFailed));
+    } catch (e) {
+      return Either.left(ChatFailure(e.toString()));
+    }
+  }
+
   ChatMessagePage _parsePage(Map<String, dynamic>? body) {
     final data = body?['data'];
     if (data is! Map) {

@@ -30,6 +30,12 @@ MyVoteItem parseMyVoteItem(Map<String, dynamic> map) {
     communityStatus: (rawStatus == null || rawStatus.isEmpty || rawStatus == 'null')
         ? null
         : rawStatus,
+    upvotes: map['upvotes'] is int
+        ? map['upvotes'] as int
+        : int.tryParse('${map['upvotes']}') ?? 0,
+    downvotes: map['downvotes'] is int
+        ? map['downvotes'] as int
+        : int.tryParse('${map['downvotes']}') ?? 0,
   );
 }
 

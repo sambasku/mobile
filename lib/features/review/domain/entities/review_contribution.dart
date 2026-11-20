@@ -40,14 +40,19 @@ class ReviewItem {
     return null;
   }
 
-  /// Judul baris: lemma, atau kode entity (label locale di presentation).
-  String get title => titleOrEntityType;
+  /// Judul baris: lemma saja. Jangan pakai di UI bila kosong - pakai
+  /// `reviewTitle` / `reviewDetailTitle` (label locale).
+  String get title {
+    final lemma = wordLemma?.trim();
+    if (lemma != null && lemma.isNotEmpty) return lemma;
+    return '';
+  }
 
-  /// Kode entity saat lemma kosong - siap dipetakan ke label locale.
+  /// @Deprecated Prefer `reviewTitle` - kode mentah entity tidak untuk UI.
   String get titleOrEntityType {
     final lemma = wordLemma?.trim();
     if (lemma != null && lemma.isNotEmpty) return lemma;
-    return entityType;
+    return '';
   }
 }
 

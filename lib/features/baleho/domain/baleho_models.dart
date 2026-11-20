@@ -14,8 +14,34 @@ class BalehoBoard {
 
   static const prototypeCols = 4;
   static const prototypeRows = 6;
-  static const maxW = 4;
-  static const maxH = 2;
+  /// Sisi panjang max (landscape 4x2 / portrait 2x4).
+  static const maxLong = 4;
+  /// Sisi pendek max - salah satu sisi wajib <= ini.
+  static const maxShort = 2;
+  /// Alias loop/clamp per sumbu (boleh sampai sisi panjang).
+  static const maxW = maxLong;
+  static const maxH = maxLong;
+
+  /// True untuk 1x1..4x2 (landscape) dan 1x3..2x4 (portrait); tolak 3x3+.
+  static bool isAllowedSize(int w, int h) {
+    if (w < 1 || h < 1) return false;
+    if (w > maxLong || h > maxLong) return false;
+    return w <= maxShort || h <= maxShort;
+  }
+
+  /// Clamp drag ke bentuk yang diizinkan (pertahankan sisi lebih panjang).
+  static (int, int) clampSize(int w, int h) {
+    var cw = w.clamp(1, maxLong);
+    var ch = h.clamp(1, maxLong);
+    if (cw > maxShort && ch > maxShort) {
+      if (cw >= ch) {
+        ch = maxShort;
+      } else {
+        cw = maxShort;
+      }
+    }
+    return (cw, ch);
+  }
 
   /// Path coming soon papan peringkat (slide 2, slot 4x1 tetap).
   static const weeklyLeaderboardPath = '/baleho/peringkat-mingguan';

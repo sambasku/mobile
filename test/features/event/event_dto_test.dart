@@ -65,17 +65,18 @@ void main() {
 
     test('field wajib absen -> item di-skip (null), bukan crash', () {
       expect(EventDto.fromJson(const {'id': 'x'}), isNull);
-      expect(
-        EventDto.fromJson(const {
-          'id': '01EV0000000000000000000001',
-          'slug': 's',
-          'name': 'n',
-          'category_id': 'c',
-          'starts_at': 'bukan tanggal',
-          'ends_at': '2026-11-17T16:00:00.000Z',
-        }),
-        isNull,
-      );
+      // starts_at/ends_at opsional: parse gagal → null, item tetap valid.
+      final soft = EventDto.fromJson(const {
+        'id': '01EV0000000000000000000001',
+        'slug': 's',
+        'name': 'n',
+        'category_id': 'c',
+        'starts_at': 'bukan tanggal',
+        'ends_at': '2026-11-17T16:00:00.000Z',
+      });
+      expect(soft, isNotNull);
+      expect(soft!.startsAt, isNull);
+      expect(soft.endsAt, isNotNull);
     });
 
     test('source_type tak dikenal -> null (badge dilewati)', () {

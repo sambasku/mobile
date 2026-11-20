@@ -24,9 +24,18 @@ DictionaryRepository dictionaryRepository(Ref ref) {
     cache: ref.watch(cachedJsonClientProvider),
     local: local,
     sticky: sticky,
-    isOffline: () => ref.read(isOfflineProvider).value ?? false,
+    isOffline: () {
+      try {
+        return ref.read(isOfflineProvider).value ?? false;
+      } catch (_) {
+        return false;
+      }
+    },
     onSource: (kind) {
-      ref.read(lemmaDataSourceKindControllerProvider.notifier).setKind(kind);
+      try {
+        if (!ref.mounted) return;
+        ref.read(lemmaDataSourceKindControllerProvider.notifier).setKind(kind);
+      } catch (_) {}
     },
   );
 }

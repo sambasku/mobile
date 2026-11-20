@@ -24,6 +24,10 @@ abstract interface class DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    /// Fokus makna dari Periksa Kata - API ikutkan meski belum verified.
+    String? focusMeaningId,
+    /// Feed usulan / lemma baru - tampilkan semua makna published.
+    bool includeUnverified = false,
   });
 
   /// Detail kata published by lemma (URL publik web / deep link).
@@ -31,6 +35,8 @@ abstract interface class DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   });
 
   /// Kata hari ini. Right(null) = korpus published kosong (bukan error).

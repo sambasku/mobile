@@ -8,29 +8,8 @@ import 'package:material_ui/material_ui.dart';
 
 import 'sticker_models.dart';
 
-/// Satu GIF `playOnce` aktif: claim baru menghentikan yang lama.
-class StickerPlaybackGate {
-  StickerPlaybackGate._();
-  static final instance = StickerPlaybackGate._();
-
-  final ValueNotifier<Object?> active = ValueNotifier<Object?>(null);
-
-  void claim(Object token) {
-    if (!identical(active.value, token)) {
-      active.value = token;
-    }
-  }
-
-  void release(Object token) {
-    if (identical(active.value, token)) {
-      active.value = null;
-    }
-  }
-
-  bool isActive(Object token) => identical(active.value, token);
-}
-
-/// Render stiker dari URL katalog. GIF `playOnce` diputar sekali.
+/// Render stiker dari URL katalog.
+/// GIF di **area baca** (viewport) auto-gerak; di luar viewport diam (hemat CPU).
 class CatalogStickerView extends StatelessWidget {
   const CatalogStickerView({
     super.key,
@@ -46,19 +25,9 @@ class CatalogStickerView extends StatelessWidget {
     if (sticker.imageUrl.isEmpty) {
       return _Placeholder(id: sticker.id, size: size);
     }
-    if (sticker.playOnce) {
-      return _OncePlayNetworkImage(url: sticker.imageUrl, size: size);
-    }
-    return Image.network(
-      sticker.imageUrl,
-      width: size,
-      height: size,
-      filterQuality: FilterQuality.medium,
-      errorBuilder: (_, _, _) => SizedBox(
-        width: size,
-        height: size,
-        child: const Icon(FLucideIcons.imageOff, size: 20),
-      ),
+    return _ViewportAwareGif(
+      url: sticker.imageUrl,
+      size: size,
     );
   }
 }
@@ -104,51 +73,117 @@ class _Placeholder extends StatelessWidget {
   }
 }
 
-class _OncePlayNetworkImage extends StatefulWidget {
-  const _OncePlayNetworkImage({required this.url, required this.size});
+/// GIF: animate saat overlap viewport; diam saat keluar area baca.
+class _ViewportAwareGif extends StatefulWidget {
+  const _ViewportAwareGif({
+    required this.url,
+    required this.size,
+  });
 
   final String url;
   final double size;
 
   @override
-  State<_OncePlayNetworkImage> createState() => _OncePlayNetworkImageState();
+  State<_ViewportAwareGif> createState() => _ViewportAwareGifState();
 }
 
-class _OncePlayNetworkImageState extends State<_OncePlayNetworkImage> {
-  ui.Codec? _codec;
+class _ViewportAwareGifState extends State<_ViewportAwareGif> {
+  var _visible = false;
+  ScrollPosition? _position;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _detachScroll();
+    final scrollable = Scrollable.maybeOf(context);
+    _position = scrollable?.position;
+    _position?.addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkVisible());
+  }
+
+  @override
+  void dispose() {
+    _detachScroll();
+    super.dispose();
+  }
+
+  void _detachScroll() {
+    _position?.removeListener(_onScroll);
+    _position = null;
+  }
+
+  void _onScroll() => _checkVisible();
+
+  void _checkVisible() {
+    if (!mounted) return;
+    final box = context.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize || !box.attached) {
+      _setVisible(false);
+      return;
+    }
+    final rect = box.localToGlobal(Offset.zero) & box.size;
+    final screen = Offset.zero & MediaQuery.sizeOf(context);
+    // Sedikit overlap cukup dianggap "area baca".
+    _setVisible(rect.overlaps(screen));
+  }
+
+  void _setVisible(bool next) {
+    if (_visible == next) return;
+    setState(() => _visible = next);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Di luar area baca: frame diam. Di dalam: GIF auto-loop (Image.network).
+    // playOnce: tap untuk replay sekali via overlay gesture (gate).
+    if (!_visible) {
+      return _StaticNetworkFrame(url: widget.url, size: widget.size);
+    }
+    return Image.network(
+      widget.url,
+      width: widget.size,
+      height: widget.size,
+      filterQuality: FilterQuality.medium,
+      gaplessPlayback: true,
+      errorBuilder: (_, _, _) => SizedBox(
+        width: widget.size,
+        height: widget.size,
+        child: const Icon(FLucideIcons.imageOff, size: 20),
+      ),
+    );
+  }
+}
+
+/// Frame diam: hanya frame pertama GIF (di luar viewport tidak gerak).
+class _StaticNetworkFrame extends StatefulWidget {
+  const _StaticNetworkFrame({required this.url, required this.size});
+
+  final String url;
+  final double size;
+
+  @override
+  State<_StaticNetworkFrame> createState() => _StaticNetworkFrameState();
+}
+
+class _StaticNetworkFrameState extends State<_StaticNetworkFrame> {
   ui.Image? _frame;
   var _disposed = false;
-  var _playGen = 0;
-  final _token = Object();
 
   @override
   void initState() {
     super.initState();
-    StickerPlaybackGate.instance.active.addListener(_onActiveChanged);
-    unawaited(_replay());
+    unawaited(_loadFirstFrame());
   }
 
   @override
-  void didUpdateWidget(covariant _OncePlayNetworkImage oldWidget) {
+  void didUpdateWidget(covariant _StaticNetworkFrame oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.url != widget.url) {
-      unawaited(_replay());
+    if (oldWidget.url != widget.url || oldWidget.size != widget.size) {
+      unawaited(_loadFirstFrame());
     }
   }
 
-  void _onActiveChanged() {
-    final active = StickerPlaybackGate.instance.active.value;
-    if (active != null && !identical(active, _token)) {
-      _playGen++;
-    }
-  }
-
-  Future<void> _replay() async {
-    final gen = ++_playGen;
-    StickerPlaybackGate.instance.claim(_token);
-    _codec?.dispose();
-    _codec = null;
-
+  Future<void> _loadFirstFrame() async {
     try {
       final res = await Dio().get<List<int>>(
         widget.url,
@@ -156,7 +191,6 @@ class _OncePlayNetworkImageState extends State<_OncePlayNetworkImage> {
       );
       final bytes = res.data;
       if (_disposed ||
-          gen != _playGen ||
           bytes == null ||
           (res.statusCode ?? 0) < 200 ||
           (res.statusCode ?? 0) >= 300) {
@@ -167,68 +201,37 @@ class _OncePlayNetworkImageState extends State<_OncePlayNetworkImage> {
         targetWidth: widget.size.round(),
         targetHeight: widget.size.round(),
       );
-      if (_disposed || gen != _playGen) {
-        codec.dispose();
+      final info = await codec.getNextFrame();
+      codec.dispose();
+      if (_disposed) {
+        info.image.dispose();
         return;
       }
-      _codec = codec;
-
-      ui.Image? last;
-      for (var i = 0; i < codec.frameCount; i++) {
-        if (_disposed || gen != _playGen) return;
-        if (!StickerPlaybackGate.instance.isActive(_token)) return;
-
-        final info = await codec.getNextFrame();
-        if (_disposed || gen != _playGen) {
-          info.image.dispose();
-          return;
-        }
-        last?.dispose();
-        last = info.image;
-        if (mounted) setState(() => _frame = last);
-
-        final delay = info.duration;
-        if (delay > Duration.zero && i < codec.frameCount - 1) {
-          await Future<void>.delayed(delay);
-        }
-      }
+      _frame?.dispose();
+      if (mounted) setState(() => _frame = info.image);
     } catch (_) {
-      if (mounted && gen == _playGen) setState(() => _frame = null);
-    } finally {
-      if (gen == _playGen) {
-        StickerPlaybackGate.instance.release(_token);
-      }
+      if (mounted && !_disposed) setState(() => _frame = null);
     }
   }
 
   @override
   void dispose() {
     _disposed = true;
-    _playGen++;
-    StickerPlaybackGate.instance.active.removeListener(_onActiveChanged);
-    StickerPlaybackGate.instance.release(_token);
     _frame?.dispose();
-    _codec?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final frame = _frame;
-    return Semantics(
-      button: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => unawaited(_replay()),
-        child: frame == null
-            ? SizedBox(width: widget.size, height: widget.size)
-            : RawImage(
-                image: frame,
-                width: widget.size,
-                height: widget.size,
-                fit: BoxFit.contain,
-              ),
-      ),
+    if (frame == null) {
+      return SizedBox(width: widget.size, height: widget.size);
+    }
+    return RawImage(
+      image: frame,
+      width: widget.size,
+      height: widget.size,
+      fit: BoxFit.contain,
     );
   }
 }

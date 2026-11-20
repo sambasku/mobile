@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
-/// Hub Kontribusi: grid 2 tile (Dicari warga, Periksa kata) push route root.
+/// Hub Kontribusi: chip baris Home-style (Dicari warga, Periksa kata) push route.
 void main() {
   Future<List<String>> pump(WidgetTester tester) async {
     SharedPreferences.setMockInitialValues({});

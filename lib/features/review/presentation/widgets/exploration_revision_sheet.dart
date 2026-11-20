@@ -4,11 +4,12 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
 Future<String?> showExplorationRevisionSheet(BuildContext context) {
-  return showModalBottomSheet<String>(
+  return showModalBottomSheet<String>((
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (sheetContext) => const _ExplorationRevisionSheet(),
+    uilder: (sheetContext) => const _ExplorationRevisionSheet(),
   );
 }
 

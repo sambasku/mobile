@@ -340,6 +340,14 @@ class _BubbleBody extends StatelessWidget {
           durationMs: message.durationMs,
           compact: true,
         );
+      case ChatMessageKind.system:
+        // System line punya widget sendiri; fallback kalau ketiban bubble.
+        return Text(
+          message.body ?? '',
+          style: theme.typography.body.xs.copyWith(
+            color: theme.colors.mutedForeground,
+          ),
+        );
       case ChatMessageKind.text:
         return MentionBodyText(
           body: message.body ?? '',

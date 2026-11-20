@@ -6,10 +6,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/format_number.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../dictionary/dictionary_router.dart';
 import '../../domain/hot_topics.dart';
 import '../providers/hot_topics_providers.dart';
 
-/// Kartu Sorotan di Home: tab Hits / Usulan / Dicari.
+/// Kartu Sorotan di Home: Hits / Usulan / Dicari / Cek.
+/// Konten digeser sebagai carousel (`PageView`); chip indikator ikut
+/// sinkron (tap chip = animasi halaman, swipe halaman = chip aktif).
 /// Tinggi list tetap 10 slot supaya kontainer tidak loncat saat ganti tab.
 class HotTopicsCard extends ConsumerStatefulWidget {
   const HotTopicsCard({super.key});
@@ -51,7 +54,99 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
     });
   }
 
+  static const _tabCount = 4;
+
+  late final PageController _pageController;
+  final _chipScroll = ScrollController();
+  final _chipKeys = List<GlobalKey>.generate(_tabCount, (_) => GlobalKey());
   int _tab = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _tab);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _chipScroll.dispose();
+    super.dispose();
+  }
+
+  void _selectTab(int index) {
+    if (_tab == index) return;
+    setState(() => _tab = index);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+    );
+    _ensureChipVisible(index);
+  }
+
+  void _onPageChanged(int index) {
+    if (_tab == index) return;
+    setState(() => _tab = index);
+    _ensureChipVisible(index);
+  }
+
+  void _ensureChipVisible(int index) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || index < 0 || index >= _chipKeys.length) return;
+      final ctx = _chipKeys[index].currentContext;
+      if (ctx == null) return;
+      Scrollable.ensureVisible(
+        ctx,
+        alignment: 0.5,
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOutCubic,
+      );
+    });
+  }
+
+  Widget _buildTabPage({
+    required AppLocalizations l10n,
+    required IconData emptyIcon,
+    required String emptyTitle,
+    required String emptyBody,
+    required HotTopicTab tab,
+  }) {
+    final items = tab.items.take(_slotCount).toList(growable: false);
+    if (items.isEmpty) {
+      return _HotTopicsEmpty(
+        icon: emptyIcon,
+        title: emptyTitle,
+        body: emptyBody,
+      );
+    }
+    final columns = _columnMajorChunks(items);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var c = 0; c < columns.length; c++) ...[
+          if (c > 0) const Gap(_colGap),
+          Expanded(
+            child: Column(
+              children: [
+                for (var r = 0; r < columns[c].length; r++) ...[
+                  if (r > 0) const Gap(_rowGap),
+                  SizedBox(
+                    height: _cellHeight,
+                    child: _CompactCell(
+                      l10n: l10n,
+                      rank: columns[c][r].rank,
+                      item: columns[c][r].item,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,32 +163,33 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
 
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
+    // Empty state: satu icon untuk semua tab (jangan beda per chip).
+    const emptyIcon = FLucideIcons.chartNoAxesColumn;
     final tabs = [
       (
         label: l10n.hotTopicsTabNearThreshold,
         tab: bundle.viewed,
-        emptyIcon: FLucideIcons.chartNoAxesColumn,
         emptyBody: l10n.hotTopicsTabEmptyNearBody,
       ),
       (
         label: l10n.hotTopicsTabProposed,
         tab: bundle.proposed,
-        emptyIcon: FLucideIcons.inbox,
         emptyBody: l10n.hotTopicsTabEmptyProposedBody,
       ),
       (
         label: l10n.hotTopicsTabSearched,
         tab: bundle.searched,
-        emptyIcon: FLucideIcons.searchX,
         emptyBody: l10n.hotTopicsTabEmptySearchedBody,
       ),
+      (
+        label: l10n.hotTopicsTabCheck,
+        tab: bundle.check,
+        emptyBody: l10n.hotTopicsTabEmptyCheckBody,
+      ),
     ];
+    assert(tabs.length == _tabCount);
     final safeTab = _tab.clamp(0, tabs.length - 1);
     final active = tabs[safeTab];
-    final items = active.tab.items.take(_slotCount).toList(growable: false);
-    final columns = items.isEmpty
-        ? const <List<({int rank, HotTopicItem? item})>>[]
-        : _columnMajorChunks(items);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -126,20 +222,24 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
         SizedBox(
           height: 28,
           child: ListView.separated(
+            controller: _chipScroll,
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
             itemCount: tabs.length,
             separatorBuilder: (_, _) => const Gap(4),
             itemBuilder: (context, i) {
               final selected = safeTab == i;
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => setState(() => _tab = i),
-                child: FBadge(
-                  variant: selected
-                      ? FBadgeVariant.primary
-                      : FBadgeVariant.secondary,
-                  child: Text(tabs[i].label),
+              return KeyedSubtree(
+                key: _chipKeys[i],
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => _selectTab(i),
+                  child: FBadge(
+                    variant: selected
+                        ? FBadgeVariant.primary
+                        : FBadgeVariant.secondary,
+                    child: Text(tabs[i].label),
+                  ),
                 ),
               );
             },
@@ -149,37 +249,21 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
           child: SizedBox(
             height: _listHeight,
-            child: items.isEmpty
-                ? _HotTopicsEmpty(
-                    icon: active.emptyIcon,
-                    title: l10n.hotTopicsTabEmpty,
-                    body: active.emptyBody,
-                  )
-                : Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (var c = 0; c < columns.length; c++) ...[
-                        if (c > 0) const Gap(_colGap),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              for (var r = 0; r < columns[c].length; r++) ...[
-                                if (r > 0) const Gap(_rowGap),
-                                SizedBox(
-                                  height: _cellHeight,
-                                  child: _CompactCell(
-                                    l10n: l10n,
-                                    rank: columns[c][r].rank,
-                                    item: columns[c][r].item,
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: tabs.length,
+              onPageChanged: _onPageChanged,
+              itemBuilder: (context, i) {
+                final page = tabs[i];
+                return _buildTabPage(
+                  l10n: l10n,
+                  emptyIcon: emptyIcon,
+                  emptyTitle: l10n.hotTopicsTabEmpty,
+                  emptyBody: page.emptyBody,
+                  tab: page.tab,
+                );
+              },
+            ),
           ),
         ),
       ],
@@ -276,16 +360,34 @@ class _CompactCell extends StatelessWidget {
             context.push('/contribute?$q');
           },
         ),
+      // Usulan: preview lemma + makna menunggu (?include_unverified=1).
       HotProposedItem(:final wordId, :final lemma) => (
         title: lemma,
         meta: l10n.hotTopicsProposedSubtitle,
-        onPress: () => context.push('/words/$wordId'),
+        onPress: () => context.push(
+          wordDetailPath(wordId, includeUnverified: true),
+        ),
       ),
+      // Hits: detail kamus reguler (hanya makna verified).
       HotViewedItem(:final wordId, :final lemma, :final viewCount) => (
         title: lemma,
         meta: l10n.hotTopicsViewCount(formatRibuan(viewCount)),
-        onPress: () => context.push('/words/$wordId'),
+        onPress: () => context.push(wordDetailPath(wordId)),
       ),
+      // Cek: fokus makna downvote (mode Periksa Kata via ?meaning=).
+      HotCheckItem(
+        :final wordId,
+        :final meaningId,
+        :final lemma,
+        :final downvotes,
+      ) =>
+        (
+          title: lemma,
+          meta: l10n.hotTopicsDownvoteCount(formatRibuan(downvotes)),
+          onPress: () => context.push(
+            wordDetailPath(wordId, meaningId: meaningId),
+          ),
+        ),
     };
 
     final rankStyle = theme.typography.body.xs.copyWith(
