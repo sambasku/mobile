@@ -440,7 +440,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
     required VoteDeckItem item,
     required VoteDeckSwipeDirection direction,
   }) {
-    unawaited(HapticFeedback.lightImpact());
+    unawaited(HapticFeedback.mediumImpact());
     _cast(context, ref, item: item, direction: direction);
   }
 

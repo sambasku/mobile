@@ -20,6 +20,11 @@ MyVoteItem parseMyVoteItem(Map<String, dynamic> map) {
     );
   }
   final rawStatus = map['community_status']?.toString();
+  String? optionalText(Object? raw) {
+    final s = raw?.toString().trim() ?? '';
+    return s.isEmpty || s == 'null' ? null : s;
+  }
+
   return MyVoteItem(
     id: map['id']?.toString() ?? '',
     targetType: map['target_type']?.toString() ?? '',
@@ -36,6 +41,8 @@ MyVoteItem parseMyVoteItem(Map<String, dynamic> map) {
     downvotes: map['downvotes'] is int
         ? map['downvotes'] as int
         : int.tryParse('${map['downvotes']}') ?? 0,
+    definition: optionalText(map['definition']),
+    translation: optionalText(map['translation']),
   );
 }
 

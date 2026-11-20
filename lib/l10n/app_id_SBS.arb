@@ -1892,9 +1892,9 @@
   "dictVariantInflection": "Fleksi",
   "dictVariantDerivation": "Derivasi",
   "dictVariantReduplication": "Reduplikasi",
-  "dictAttributionCreatedBy": "Dibuat oleh {name}",
+  "dictAttributionCreatedBy": "Diusulkan oleh {name}",
   "dictAttributionVerifiedBy": "Diverifikasi oleh {name}",
-  "dictAttributionCreatedAndVerifiedBy": "Dibuat dan diverifikasi oleh {name}",
+  "dictAttributionCreatedAndVerifiedBy": "Diusulkan dan diverifikasi oleh {name}",
   "dictSpeakerAnonymous": "Anonim",
   "dictCopiedWord": "Teks kata disalin",
   "dictCopiedMeaning": "Makna disalin",
@@ -6280,6 +6280,14 @@
     "placeholders": {
       "clock": { "type": "String", "example": "4:32" }
     }
+  },
+  "chatPingCooldownSheetHint": "Ping baru saja dipakai. Tunggu timer habis, lalu coba lagi.",
+  "@chatPingCooldownSheetHint": {
+    "description": "Teks di bawah timer live di sheet cooldown ping"
+  },
+  "chatPingCooldownReady": "Ping siap dipakai lagi",
+  "@chatPingCooldownReady": {
+    "description": "Status di sheet saat countdown ping habis"
   },
   "chatPingCooldownBodyGeneric": "Ping baru saja dipakai. Tunggu sebentar lalu coba lagi ya.",
   "@chatPingCooldownBodyGeneric": {

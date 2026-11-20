@@ -4295,7 +4295,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String dictAttributionCreatedBy(String name) {
-    return 'Dibuat oleh $name';
+    return 'Diusulkan oleh $name';
   }
 
   @override
@@ -4305,7 +4305,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String dictAttributionCreatedAndVerifiedBy(String name) {
-    return 'Dibuat dan diverifikasi oleh $name';
+    return 'Diusulkan dan diverifikasi oleh $name';
   }
 
   @override
@@ -13056,6 +13056,13 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get chatPingCooldownSheetHint =>
+      'Ping baru saja dipakai. Tunggu timer habis, lalu coba lagi.';
+
+  @override
+  String get chatPingCooldownReady => 'Ping siap dipakai lagi';
+
+  @override
   String get chatPingCooldownBodyGeneric =>
       'Ping baru saja dipakai. Tunggu sebentar lalu coba lagi ya.';
 
@@ -17471,7 +17478,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String dictAttributionCreatedBy(String name) {
-    return 'Dibuat oleh $name';
+    return 'Diusulkan oleh $name';
   }
 
   @override
@@ -17481,7 +17488,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String dictAttributionCreatedAndVerifiedBy(String name) {
-    return 'Dibuat dan diverifikasi oleh $name';
+    return 'Diusulkan dan diverifikasi oleh $name';
   }
 
   @override
@@ -26146,6 +26153,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String chatPingCooldownBody(String clock) {
     return 'Ping baru saja dipakai. Coba lagi dalam $clock.';
   }
+
+  @override
+  String get chatPingCooldownSheetHint =>
+      'Ping baru saja dipakai. Tunggu timer habis, lalu coba lagi.';
+
+  @override
+  String get chatPingCooldownReady => 'Ping siap dipakai lagi';
 
   @override
   String get chatPingCooldownBodyGeneric =>

@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/theme/f_colors_x.dart';
-import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../dictionary/dictionary_router.dart';
@@ -340,15 +340,6 @@ class _HistoryTileState extends ConsumerState<_HistoryTile> {
 
   MyVoteItem get item => widget.item;
 
-  String _statusLabel(AppLocalizations l10n) {
-    return switch (item.communityStatus) {
-      'verified' => l10n.periksaKataFilterVerified,
-      'rejected' => l10n.periksaKataFilterRejected,
-      'pending' => l10n.periksaKataFilterPending,
-      _ => l10n.periksaKataFilterPending,
-    };
-  }
-
   void _openDetail() {
     if (item.word == null) return;
     final path = DictionaryRouter.detail.path.replaceFirst(
@@ -442,6 +433,7 @@ class _HistoryTileState extends ConsumerState<_HistoryTile> {
     }
 
     final wasCancel = value == item.value;
+    unawaited(HapticFeedback.mediumImpact());
     setState(() => _inFlight = true);
     try {
       final failure = await ref
@@ -466,15 +458,10 @@ class _HistoryTileState extends ConsumerState<_HistoryTile> {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final lemma = item.word?.lemma ?? '-';
-    final choice = item.value == 1
-        ? l10n.periksaKataAgree
-        : l10n.periksaKataDisagree;
-    final locked = !item.canReviseVote;
-    final meta = locked
-        ? '$choice · ${_statusLabel(l10n)} · ${l10n.periksaKataVoteLockedMeta}'
-        : '$choice · ${_statusLabel(l10n)} · ${formatDateTimeIso(item.votedAt)}';
+    final translation = (item.translation ?? '').trim();
+    final definition = (item.definition ?? '').trim();
 
-    // Model sama Periksa Kata: kiri teks, kanan panel jempol kompak, bar bawah.
+    // Compact: lemma / terjemahan / definisi saja (tanpa label & meta).
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: DecoratedBox(
@@ -506,15 +493,30 @@ class _HistoryTileState extends ConsumerState<_HistoryTile> {
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            const Gap(2),
-                            Text(
-                              meta,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.typography.body.xs.copyWith(
-                                color: theme.colors.mutedForeground,
+                            if (translation.isNotEmpty) ...[
+                              const Gap(2),
+                              Text(
+                                translation,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.typography.body.sm.copyWith(
+                                  color: theme.colors.foreground,
+                                  height: 1.25,
+                                ),
                               ),
-                            ),
+                            ],
+                            if (definition.isNotEmpty) ...[
+                              const Gap(2),
+                              Text(
+                                definition,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.typography.body.sm.copyWith(
+                                  color: theme.colors.foreground,
+                                  height: 1.25,
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                       ),

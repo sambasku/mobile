@@ -64,7 +64,7 @@ String variantTypeLabel(String variantType, AppLocalizations l10n) =>
       _ => variantType,
     };
 
-/// Baris atribusi "Dibuat oleh X" / "Diverifikasi oleh X".
+/// Baris atribusi "Diusulkan oleh X" / "Diverifikasi oleh X".
 String? creatorAttributionLabel(WordDetail detail, AppLocalizations l10n) {
   final name = _attributionName(detail.createdBy);
   return name == null ? null : l10n.dictAttributionCreatedBy(name);

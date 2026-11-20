@@ -17,11 +17,11 @@ Future<DuplicateMeaningVoteChoice?> showDuplicateMeaningVoteSheet({
   required String lemma,
   required bool isAuthenticated,
 }) {
-  return showModalBottomSheet<DuplicateMeaningVoteChoice>((
+  return showModalBottomSheet<DuplicateMeaningVoteChoice>(
     context: context,
     useRootNavigator: true,
     showDragHandle: true,
-    uilder: (sheetContext) {
+    builder: (sheetContext) {
       final l10n = AppLocalizations.of(sheetContext);
       final theme = sheetContext.theme;
       return SafeArea(

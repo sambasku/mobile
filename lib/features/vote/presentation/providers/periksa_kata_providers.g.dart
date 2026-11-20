@@ -41,7 +41,7 @@ final class PeriksaKataFeedControllerProvider
 }
 
 String _$periksaKataFeedControllerHash() =>
-    r'7d8af48db57b054860baf9e9753355e7bd9bdbf8';
+    r'353f6fa3bfda44f6f99f49a39bb151f322e770f1';
 
 /// Feed Periksa Kata - terpisah dari [VoteDeckController].
 
@@ -99,7 +99,7 @@ final class PeriksaKataHistoryControllerProvider
 }
 
 String _$periksaKataHistoryControllerHash() =>
-    r'9971b7312d3ab2bb72209d093f24b73bfb1ab74a';
+    r'c23231b8920dd83ed52810621a7ee0b7399656c3';
 
 abstract class _$PeriksaKataHistoryController
     extends $AsyncNotifier<PeriksaKataHistoryState> {

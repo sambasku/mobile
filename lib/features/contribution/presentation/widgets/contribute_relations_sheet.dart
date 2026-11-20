@@ -53,12 +53,12 @@ Future<ContributeRelationsDraft?> showContributeRelationsSheet(
   required ContributeRelationsDraft initial,
   required String lemma,
 }) {
-  return showModalBottomSheet<ContributeRelationsDraft>((
+  return showModalBottomSheet<ContributeRelationsDraft>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    uilder: (sheetContext) {
+    builder: (sheetContext) {
       return _ContributeRelationsSheetBody(initial: initial, lemma: lemma);
     },
   );

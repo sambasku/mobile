@@ -84,7 +84,7 @@ ProviderContainer _container(_LemmaAdapter adapter) => ProviderContainer(
   overrides: [
     dioProvider.overrideWithValue(Dio()..httpClientAdapter = adapter),
     responseCacheStoreProvider.overrideWithValue(_MemoryCacheStore()),
-    isOfflineProvider.overrideWith((ref) => Stream.value(false)),
+    isOfflineProvider.overrideWithValue(false),
     dictionaryLocalDatasourceProvider.overrideWith((ref) async => null),
   ],
 );

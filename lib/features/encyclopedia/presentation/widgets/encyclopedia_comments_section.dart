@@ -36,13 +36,13 @@ Future<void> showEncyclopediaCommentsSheet(
   String articleId,
 ) {
   final bg = context.theme.colors.background;
-  return showModalBottomSheet<void>((
+  return showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     backgroundColor: bg,
-    uilder: (sheetContext) {
+    builder: (sheetContext) {
       final media = MediaQuery.of(sheetContext);
       final height = (media.size.height - media.viewInsets.bottom) * 0.88;
       return Padding(

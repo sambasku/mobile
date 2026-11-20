@@ -239,7 +239,11 @@ void main() {
     await tester.tap(find.text('Setujui'));
     await tester.pumpAndSettle();
     expect(reviewRepo.approved, 1);
-    expect(find.text('Terverifikasi'), findsWidgets);
+    // Badge verified kini icon + Semantics label (tanpa teks terlihat).
+    expect(
+      find.bySemanticsLabel(RegExp('terverifikasi', caseSensitive: false)),
+      findsWidgets,
+    );
     expect(find.byType(WordApprovedBadgeIcon), findsOneWidget);
     expect(find.byType(PendingReviewBadgeIcon), findsNothing);
   });

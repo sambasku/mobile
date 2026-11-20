@@ -65,7 +65,7 @@ import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 
 bool _lemmaUsesLocalCorpus(WidgetRef ref) {
-  final offline = ref.watch(isOfflineProvider).value ?? false;
+  final offline = ref.watch(isOfflineProvider);
   final source = ref.watch(lemmaDataSourceKindControllerProvider);
   return offline || source == LemmaDataSourceKind.local;
 }
@@ -411,50 +411,21 @@ Future<void> _refreshDetailAfterDecision(WidgetRef ref, String wordId) async {
   await ref.read(wordDetailProvider(wordId).future);
 }
 
-/// Chip ringkas trust lemma: semua / sebagian / menunggu.
-class _LemmaTrustChip extends StatelessWidget {
-  const _LemmaTrustChip({
-    required this.summary,
-    required this.onVerifiedTap,
-    required this.pendingBadge,
+/// Centang / menunggu di tiap baris makna (tanpa label teks di header lemma).
+class _MeaningTrustBadge extends StatelessWidget {
+  const _MeaningTrustBadge({
+    required this.meaning,
+    this.offerReview = false,
+    this.onReview,
+    this.onApprove,
+    this.onReject,
   });
 
-  final LemmaTrustSummary summary;
-  final VoidCallback onVerifiedTap;
-  final Widget pendingBadge;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    switch (summary) {
-      case LemmaTrustSummary.allVerified:
-        return Semantics(
-          button: true,
-          label: l10n.dictSeeVerifiers,
-          child: GestureDetector(
-            onTap: onVerifiedTap,
-            child: FBadge(
-              variant: FBadgeVariant.secondary,
-              child: Text(l10n.dictLemmaTrustVerified),
-            ),
-          ),
-        );
-      case LemmaTrustSummary.partial:
-        return FBadge(
-          variant: FBadgeVariant.secondary,
-          child: Text(l10n.dictLemmaTrustPartial),
-        );
-      case LemmaTrustSummary.pending:
-        return pendingBadge;
-    }
-  }
-}
-
-/// Centang / menunggu di tiap baris makna.
-class _MeaningTrustBadge extends StatelessWidget {
-  const _MeaningTrustBadge({required this.meaning});
-
   final WordMeaning meaning;
+  final bool offerReview;
+  final VoidCallback? onReview;
+  final VoidCallback? onApprove;
+  final VoidCallback? onReject;
 
   @override
   Widget build(BuildContext context) {
@@ -466,38 +437,17 @@ class _MeaningTrustBadge extends StatelessWidget {
       );
     }
     return Semantics(
-      label: l10n.dictMeaningPendingCheck,
-      child: const PendingReviewBadgeIcon(size: 16),
-    );
-  }
-}
-
-/// Ikon menunggu pengecekan. Untuk verifikator, aksi Tinjau ada di bottom
-/// sheet yang sama polanya dengan [showVerifierAttributionSheet].
-class _PendingStatusBadge extends StatelessWidget {
-  const _PendingStatusBadge({
-    required this.offerReview,
-    required this.onReview,
-    required this.onApprove,
-    required this.onReject,
-  });
-
-  final bool offerReview;
-  final VoidCallback onReview;
-  final VoidCallback onApprove;
-  final VoidCallback onReject;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
       button: true,
-      label: AppLocalizations.of(context).dictPendingCheck,
+      label: l10n.dictMeaningPendingCheck,
       child: GestureDetector(
         onTap: () {
-          if (offerReview) {
+          if (offerReview &&
+              onReview != null &&
+              onApprove != null &&
+              onReject != null) {
             showPendingReviewSheet(
               context,
-              onReview: onReview,
+              onReview: onReview!,
               onApprove: onApprove,
               onReject: onReject,
             );
@@ -505,7 +455,7 @@ class _PendingStatusBadge extends StatelessWidget {
           }
           showPendingReviewInfo(context);
         },
-        child: const PendingReviewBadgeIcon(),
+        child: const PendingReviewBadgeIcon(size: 16),
       ),
     );
   }
@@ -517,11 +467,11 @@ void showPendingReviewSheet(
   VoidCallback? onApprove,
   VoidCallback? onReject,
 }) {
-  showModalBottomSheet<void>((
+  showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
-    uilder: (sheetContext) {
+    builder: (sheetContext) {
       final theme = sheetContext.theme;
       return Material(
         color: Theme.of(sheetContext).colorScheme.surface,
@@ -777,54 +727,12 @@ class _DetailBody extends HookConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        detail.lemma,
-                                        style: theme.typography.body.xl
-                                            .copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              height: 1.15,
-                                            ),
-                                      ),
-                                    ),
-                                    _LemmaTrustChip(
-                                      summary: lemmaTrustSummary(
-                                        detail.meanings,
-                                      ),
-                                      onVerifiedTap: () =>
-                                          showVerifierAttributionSheet(
-                                            context,
-                                            detail,
-                                          ),
-                                      pendingBadge: _PendingStatusBadge(
-                                        offerReview:
-                                            detail.status == 'published' &&
-                                            canReviewQueue(
-                                              ref
-                                                  .watch(authStatusProvider)
-                                                  .value
-                                                  ?.role,
-                                            ),
-                                        onReview: () => _openWordReview(
-                                          context,
-                                          ref,
-                                          wordId,
-                                        ),
-                                        onApprove: () => _approveInPlace(
-                                          context,
-                                          ref,
-                                          wordId,
-                                        ),
-                                        onReject: () => _rejectInPlace(
-                                          context,
-                                          ref,
-                                          wordId,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                Text(
+                                  detail.lemma,
+                                  style: theme.typography.body.xl.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.15,
+                                  ),
                                 ),
                                 const Gap(4),
                                 WrittenPronunciationLine(
@@ -1204,7 +1112,6 @@ class _CommunityVoteFooter extends ConsumerWidget {
                     Expanded(
                       child: _DetailCommunityVoteButton(
                         icon: FLucideIcons.arrowBigDown,
-                        label: l10n.periksaKataDisagree,
                         count: downvotes,
                         active: myVote == -1,
                         idleBg: theme.colors.destructive.withValues(alpha: 0.12),
@@ -1221,7 +1128,6 @@ class _CommunityVoteFooter extends ConsumerWidget {
                     Expanded(
                       child: _DetailCommunityVoteButton(
                         icon: FLucideIcons.arrowBigUp,
-                        label: l10n.periksaKataAgree,
                         count: upvotes,
                         active: myVote == 1,
                         idleBg: theme.colors.success.withValues(alpha: 0.12),
@@ -1270,7 +1176,6 @@ class _CommunityVoteFooter extends ConsumerWidget {
 class _DetailCommunityVoteButton extends StatelessWidget {
   const _DetailCommunityVoteButton({
     required this.icon,
-    required this.label,
     required this.count,
     required this.active,
     required this.idleBg,
@@ -1283,7 +1188,6 @@ class _DetailCommunityVoteButton extends StatelessWidget {
   });
 
   final IconData icon;
-  final String label;
   final int count;
   final bool active;
   final Color idleBg;
@@ -1313,7 +1217,8 @@ class _DetailCommunityVoteButton extends StatelessWidget {
             border: Border.all(color: border, width: 1.25),
           ),
           child: SizedBox(
-            height: 56,
+            // Ikon + angka saja - tinggi tetap nyaman untuk tap.
+            height: 48,
             width: double.infinity,
             child: Center(
               child: Row(
@@ -1321,26 +1226,13 @@ class _DetailCommunityVoteButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(icon, size: 22, color: fg),
-                  const Gap(6),
+                  const Gap(8),
                   Text(
                     '$count',
-                    style: theme.typography.body.sm.copyWith(
+                    style: theme.typography.body.md.copyWith(
                       color: fg,
                       fontWeight: FontWeight.w700,
                       height: 1,
-                    ),
-                  ),
-                  const Gap(6),
-                  Flexible(
-                    child: Text(
-                      label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.typography.body.xs.copyWith(
-                        color: fg,
-                        fontWeight: FontWeight.w600,
-                        height: 1.1,
-                      ),
                     ),
                   ),
                 ],
@@ -1991,7 +1883,16 @@ class _MeaningBlock extends ConsumerWidget {
                     : const SizedBox.shrink(),
               ),
               const Gap(8),
-              _MeaningTrustBadge(meaning: meaning),
+              _MeaningTrustBadge(
+                meaning: meaning,
+                offerReview: !meaning.isVerified &&
+                    canReviewQueue(
+                      ref.watch(authStatusProvider).value?.role,
+                    ),
+                onReview: () => _openWordReview(context, ref, wordId),
+                onApprove: () => _approveInPlace(context, ref, wordId),
+                onReject: () => _rejectInPlace(context, ref, wordId),
+              ),
               IconButton(
                 visualDensity: VisualDensity.compact,
                 padding: EdgeInsets.zero,
@@ -2445,7 +2346,11 @@ class _AttributionLine extends StatelessWidget {
         child: Text.rich(
           TextSpan(
             style: textStyle,
-            children: _attributionSpans(label, showCheck: showCheck),
+            children: _attributionSpans(
+              label,
+              showCheck: showCheck,
+              style: textStyle,
+            ),
           ),
         ),
       ),
@@ -2454,17 +2359,35 @@ class _AttributionLine extends StatelessWidget {
 }
 
 /// Kalimat atribusi + centang. Menggantikan chip teks "Verifikator".
-List<InlineSpan> _attributionSpans(String label, {required bool showCheck}) {
+///
+/// Kata terakhir digabung dengan lencana dalam satu [WidgetSpan] supaya
+/// icon tidak orphan di baris sendiri saat teks wrap.
+List<InlineSpan> _attributionSpans(
+  String label, {
+  required bool showCheck,
+  TextStyle? style,
+}) {
+  if (!showCheck) return [TextSpan(text: label)];
+
+  final space = label.lastIndexOf(' ');
+  final prefix = space < 0 ? '' : label.substring(0, space + 1);
+  final tail = space < 0 ? label : label.substring(space + 1);
+
   return [
-    TextSpan(text: label),
-    if (showCheck)
-      const WidgetSpan(
-        alignment: PlaceholderAlignment.middle,
-        child: Padding(
-          padding: EdgeInsets.only(left: 4),
-          child: VerifiedBadgeIcon(size: 14),
-        ),
+    if (prefix.isNotEmpty) TextSpan(text: prefix),
+    WidgetSpan(
+      alignment: PlaceholderAlignment.middle,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(tail, style: style),
+          const Padding(
+            padding: EdgeInsets.only(left: 4),
+            child: VerifiedBadgeIcon(size: 14),
+          ),
+        ],
       ),
+    ),
   ];
 }
 
@@ -2477,11 +2400,11 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
       detail.verifiedBy!.username,
   };
 
-  showModalBottomSheet<void>((
+  showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
-    uilder: (sheetContext) {
+    builder: (sheetContext) {
       final theme = sheetContext.theme;
       return Material(
         color: Theme.of(sheetContext).colorScheme.surface,
@@ -2522,6 +2445,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                           AppLocalizations.of(context),
                         )!,
                         showCheck: detail.combinedByVerifier,
+                        style: theme.typography.body.sm,
                       ),
                     ),
                   )
@@ -2540,6 +2464,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                             AppLocalizations.of(context),
                           )!,
                           showCheck: isVerifierRole(detail.createdBy!.role),
+                          style: theme.typography.body.sm,
                         ),
                       ),
                     ),
@@ -2558,6 +2483,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                             AppLocalizations.of(context),
                           )!,
                           showCheck: isVerifierRole(detail.verifiedBy!.role),
+                          style: theme.typography.body.sm,
                         ),
                       ),
                     ),

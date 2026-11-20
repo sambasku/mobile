@@ -7540,7 +7540,7 @@ abstract class AppLocalizations {
   /// No description provided for @dictAttributionCreatedBy.
   ///
   /// In id, this message translates to:
-  /// **'Dibuat oleh {name}'**
+  /// **'Diusulkan oleh {name}'**
   String dictAttributionCreatedBy(String name);
 
   /// No description provided for @dictAttributionVerifiedBy.
@@ -7552,7 +7552,7 @@ abstract class AppLocalizations {
   /// No description provided for @dictAttributionCreatedAndVerifiedBy.
   ///
   /// In id, this message translates to:
-  /// **'Dibuat dan diverifikasi oleh {name}'**
+  /// **'Diusulkan dan diverifikasi oleh {name}'**
   String dictAttributionCreatedAndVerifiedBy(String name);
 
   /// No description provided for @dictSpeakerAnonymous.
@@ -23020,6 +23020,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Ping baru saja dipakai. Coba lagi dalam {clock}.'**
   String chatPingCooldownBody(String clock);
+
+  /// Teks di bawah timer live di sheet cooldown ping
+  ///
+  /// In id, this message translates to:
+  /// **'Ping baru saja dipakai. Tunggu timer habis, lalu coba lagi.'**
+  String get chatPingCooldownSheetHint;
+
+  /// Status di sheet saat countdown ping habis
+  ///
+  /// In id, this message translates to:
+  /// **'Ping siap dipakai lagi'**
+  String get chatPingCooldownReady;
 
   /// Isi sheet cooldown ping tanpa sisa waktu
   ///

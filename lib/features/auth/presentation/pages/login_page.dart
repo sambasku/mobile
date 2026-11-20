@@ -373,11 +373,11 @@ class LoginPage extends HookConsumerWidget {
 }
 
 void _showEmailNotVerifiedSheet(BuildContext context, String email) {
-  showModalBottomSheet<void>((
+  showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
-    uilder: (sheetContext) {
+    builder: (sheetContext) {
       final theme = sheetContext.theme;
       return Material(
         color: Theme.of(sheetContext).colorScheme.surface,

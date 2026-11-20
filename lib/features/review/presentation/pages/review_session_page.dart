@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import '../review_labels.dart';
 import 'package:forui/forui.dart';
@@ -1023,7 +1024,12 @@ class ReviewSessionActionBar extends StatelessWidget {
                   variant: FButtonVariant.outline,
                   size: FButtonSizeVariant.sm,
                   semanticsLabel: AppLocalizations.of(context).commonReject,
-                  onPress: _busy ? null : onReject,
+                  onPress: _busy
+                      ? null
+                      : () {
+                          HapticFeedback.mediumImpact();
+                          onReject();
+                        },
                   child: Icon(FLucideIcons.x, color: theme.colors.destructive),
                 ),
                 const Gap(4),
@@ -1045,7 +1051,12 @@ class ReviewSessionActionBar extends StatelessWidget {
                   variant: FButtonVariant.outline,
                   size: FButtonSizeVariant.sm,
                   semanticsLabel: AppLocalizations.of(context).commonApprove,
-                  onPress: _busy ? null : onApprove,
+                  onPress: _busy
+                      ? null
+                      : () {
+                          HapticFeedback.mediumImpact();
+                          onApprove();
+                        },
                   child: Icon(FLucideIcons.check, color: theme.colors.success),
                 ),
             ],

@@ -35,12 +35,12 @@ import '../../../../core/utils/format_datetime.dart';
 
 /// Buka thread komentar tanpa memanjangkan entri kata.
 Future<void> showWordCommentsSheet(BuildContext context, String wordId) {
-  return showModalBottomSheet<void>((
+  return showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    uilder: (sheetContext) {
+    builder: (sheetContext) {
       final media = MediaQuery.of(sheetContext);
       final height = (media.size.height - media.viewInsets.bottom) * 0.88;
       return Padding(

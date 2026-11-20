@@ -20,12 +20,12 @@ List<String> rejectReasons(AppLocalizations l10n) => [
 /// Tampilkan sheet pemilih alasan penolakan. Kembalikan teks alasan, atau
 /// `null` bila user membatalkan.
 Future<String?> showRejectReasonSheet(BuildContext context) {
-  return showModalBottomSheet<String>((
+  return showModalBottomSheet<String>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    uilder: (sheetContext) => const _RejectReasonSheet(),
+    builder: (sheetContext) => const _RejectReasonSheet(),
   );
 }
 

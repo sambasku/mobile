@@ -336,4 +336,4 @@ final class LemmaDatasetUpdaterProvider
 }
 
 String _$lemmaDatasetUpdaterHash() =>
-    r'a3b7bde452b544c560efda88d7b89732c816781c';
+    r'1cab299e14def0b0b95f066f581d9d66266db8b8';

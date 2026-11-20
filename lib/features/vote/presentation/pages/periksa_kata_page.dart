@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -423,150 +424,107 @@ class _PeriksaKataCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
-    final voted = sessionVote != null;
     final translation = (item.translation ?? '').trim();
     final definition = (item.definition ?? '').trim();
 
-    final metaParts = <String>[
-      if (item.meaningCount > 1)
-        l10n.voteMeaningOrder(item.orderIndex, item.meaningCount),
-      if (isPriorVote)
-        l10n.periksaKataPriorVoteMeta
-      else if (voted)
-        l10n.periksaKataVoted,
-    ];
-
+    // Compact: lemma / terjemahan / definisi saja (tanpa label & meta).
     final card = DecoratedBox(
       decoration: BoxDecoration(
         color: theme.colors.background,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: theme.colors.border),
       ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            FTappable(
-              onPress: () => _openDetail(context),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          item.lemma,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.typography.body.md.copyWith(
-                            fontWeight: FontWeight.w700,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: FTappable(
+                    onPress: () => _openDetail(context),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 6, 8, 4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.lemma,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.typography.body.sm.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
+                          if (translation.isNotEmpty) ...[
+                            const Gap(2),
+                            Text(
+                              translation,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.typography.body.sm.copyWith(
+                                color: theme.colors.foreground,
+                                height: 1.25,
+                              ),
+                            ),
+                          ],
+                          if (definition.isNotEmpty) ...[
+                            const Gap(2),
+                            Text(
+                              definition,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.typography.body.sm.copyWith(
+                                color: theme.colors.foreground,
+                                height: 1.25,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: theme.colors.secondary,
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  child: SizedBox(
+                    width: 100,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(6, 6, 6, 6),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: _PeriksaSideVotePanel(
+                          upvotes: item.upvotes,
+                          downvotes: item.downvotes,
+                          myVote: sessionVote,
+                          disagreeSemantics: l10n.periksaKataDisagree,
+                          agreeSemantics: l10n.periksaKataAgree,
+                          onVote: (value) => _onVote(context, ref, value),
                         ),
                       ),
-                      Icon(
-                        FLucideIcons.chevronRight,
-                        size: 16,
-                        color: theme.colors.mutedForeground,
-                      ),
-                    ],
+                    ),
                   ),
-                  if (translation.isNotEmpty) ...[
-                    const Gap(4),
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '${l10n.historyFieldTranslation} · ',
-                            style: theme.typography.body.xs.copyWith(
-                              color: theme.colors.mutedForeground,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          TextSpan(
-                            text: translation,
-                            style: theme.typography.body.sm.copyWith(
-                              color: theme.colors.foreground,
-                              height: 1.25,
-                            ),
-                          ),
-                        ],
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                  if (definition.isNotEmpty) ...[
-                    const Gap(4),
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '${l10n.historyFieldDefinition} · ',
-                            style: theme.typography.body.xs.copyWith(
-                              color: theme.colors.mutedForeground,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          TextSpan(
-                            text: definition,
-                            style: theme.typography.body.sm.copyWith(
-                              color: theme.colors.foreground,
-                              height: 1.25,
-                            ),
-                          ),
-                        ],
-                      ),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                  if (metaParts.isNotEmpty) ...[
-                    const Gap(4),
-                    Text(
-                      metaParts.join(' · '),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.typography.body.xs.copyWith(
-                        color: voted
-                            ? theme.colors.primary
-                            : theme.colors.mutedForeground,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
+                ),
+              ],
             ),
-            const Gap(10),
-            VoteTrustProgress(
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 6, 10, 8),
+            child: VoteTrustProgress(
               upvotes: item.upvotes,
               downvotes: item.downvotes,
             ),
-            const Gap(10),
-            _PeriksaVoteBar(
-              upvotes: item.upvotes,
-              downvotes: item.downvotes,
-              myVote: sessionVote,
-              disagreeSemantics: l10n.periksaKataDisagree,
-              agreeSemantics: l10n.periksaKataAgree,
-              onVote: (value) => _onVote(context, ref, value),
-            ),
-            const Gap(6),
-            Text(
-              l10n.periksaKataSkipSwipeHint,
-              textAlign: TextAlign.center,
-              style: theme.typography.body.xs.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 6),
       child: Dismissible(
         key: ValueKey('periksa-skip-${item.id}'),
         direction: DismissDirection.endToStart,
@@ -632,9 +590,9 @@ class _PeriksaKataCard extends ConsumerWidget {
   }
 }
 
-/// Tombol vote penuh: hanya ↓ dan ↑ (lewati lewat geser kiri).
-class _PeriksaVoteBar extends StatefulWidget {
-  const _PeriksaVoteBar({
+/// Panel vote kanan (layout sama Riwayat): ↓ / ↑ ikon + angka.
+class _PeriksaSideVotePanel extends StatefulWidget {
+  const _PeriksaSideVotePanel({
     required this.upvotes,
     required this.downvotes,
     required this.myVote,
@@ -651,16 +609,15 @@ class _PeriksaVoteBar extends StatefulWidget {
   final Future<void> Function(int value) onVote;
 
   @override
-  State<_PeriksaVoteBar> createState() => _PeriksaVoteBarState();
+  State<_PeriksaSideVotePanel> createState() => _PeriksaSideVotePanelState();
 }
 
-class _PeriksaVoteBarState extends State<_PeriksaVoteBar> {
+class _PeriksaSideVotePanelState extends State<_PeriksaSideVotePanel> {
   bool _inFlight = false;
 
-  bool get _disabled => _inFlight;
-
   Future<void> _tapVote(int value) async {
-    if (_disabled) return;
+    if (_inFlight) return;
+    unawaited(HapticFeedback.mediumImpact());
     setState(() => _inFlight = true);
     try {
       await widget.onVote(value);
@@ -676,35 +633,33 @@ class _PeriksaVoteBarState extends State<_PeriksaVoteBar> {
     return Row(
       children: [
         Expanded(
-          child: _PeriksaBarButton(
+          child: _PeriksaSideVoteIcon(
             icon: FLucideIcons.arrowBigDown,
-            label: widget.disagreeSemantics,
             count: widget.downvotes,
-            semanticsLabel: widget.disagreeSemantics,
-            disabled: _disabled,
             active: widget.myVote == -1,
+            enabled: !_inFlight,
             idleBg: theme.colors.destructive.withValues(alpha: 0.12),
             idleFg: theme.colors.destructive,
             idleBorder: theme.colors.destructive.withValues(alpha: 0.45),
             activeBg: theme.colors.destructive,
             activeFg: theme.colors.destructiveForeground,
+            semanticsLabel: widget.disagreeSemantics,
             onPress: () => _tapVote(-1),
           ),
         ),
-        const Gap(10),
+        const Gap(4),
         Expanded(
-          child: _PeriksaBarButton(
+          child: _PeriksaSideVoteIcon(
             icon: FLucideIcons.arrowBigUp,
-            label: widget.agreeSemantics,
             count: widget.upvotes,
-            semanticsLabel: widget.agreeSemantics,
-            disabled: _disabled,
             active: widget.myVote == 1,
+            enabled: !_inFlight,
             idleBg: theme.colors.success.withValues(alpha: 0.12),
             idleFg: theme.colors.success,
             idleBorder: theme.colors.success.withValues(alpha: 0.45),
             activeBg: theme.colors.success,
             activeFg: theme.colors.background,
+            semanticsLabel: widget.agreeSemantics,
             onPress: () => _tapVote(1),
           ),
         ),
@@ -713,33 +668,31 @@ class _PeriksaVoteBarState extends State<_PeriksaVoteBar> {
   }
 }
 
-class _PeriksaBarButton extends StatelessWidget {
-  const _PeriksaBarButton({
+class _PeriksaSideVoteIcon extends StatelessWidget {
+  const _PeriksaSideVoteIcon({
     required this.icon,
-    required this.label,
-    required this.semanticsLabel,
-    required this.disabled,
+    required this.count,
     required this.active,
+    required this.enabled,
     required this.idleBg,
     required this.idleFg,
     required this.idleBorder,
     required this.activeBg,
     required this.activeFg,
+    required this.semanticsLabel,
     required this.onPress,
-    required this.count,
   });
 
   final IconData icon;
-  final String label;
-  final String semanticsLabel;
   final int count;
-  final bool disabled;
   final bool active;
+  final bool enabled;
   final Color idleBg;
   final Color idleFg;
   final Color idleBorder;
   final Color activeBg;
   final Color activeFg;
+  final String semanticsLabel;
   final VoidCallback onPress;
 
   @override
@@ -754,44 +707,30 @@ class _PeriksaBarButton extends StatelessWidget {
       label: semanticsLabel,
       value: '$count',
       child: Opacity(
-        opacity: disabled && !active ? 0.55 : 1,
+        opacity: enabled || active ? 1 : 0.55,
         child: FTappable(
-          onPress: disabled ? null : onPress,
+          onPress: enabled ? onPress : null,
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: bg,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: border, width: 1.25),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: border, width: 1.5),
             ),
             child: SizedBox(
-              height: 56,
+              height: 44,
               width: double.infinity,
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(icon, size: 22, color: fg),
-                    const Gap(6),
+                    Icon(icon, size: 18, color: fg),
+                    const Gap(4),
                     Text(
                       '$count',
                       style: theme.typography.body.sm.copyWith(
                         color: fg,
                         fontWeight: FontWeight.w700,
-                        height: 1,
-                      ),
-                    ),
-                    const Gap(6),
-                    Flexible(
-                      child: Text(
-                        label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.body.xs.copyWith(
-                          color: fg,
-                          fontWeight: FontWeight.w600,
-                          height: 1.1,
-                        ),
                       ),
                     ),
                   ],

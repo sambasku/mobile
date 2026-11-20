@@ -579,6 +579,9 @@ class _SwipeIconOverlay extends StatelessWidget {
       SwipeDecisionCardState._overlayMaxScale,
       t,
     )!;
+    final theme = context.theme;
+    // Lingkaran bertema: latar background + ring warna keputusan supaya
+    // ikon/teks kontras di atas isi kartu (deck vote + mulai tinjauan).
     return Positioned.fill(
       child: IgnorePointer(
         child: Center(
@@ -589,12 +592,47 @@ class _SwipeIconOverlay extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 96, color: color),
-                  Text(
-                    label,
-                    style: context.theme.typography.body.lg.copyWith(
-                      color: color,
-                      fontWeight: FontWeight.w800,
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: theme.colors.background.withValues(alpha: 0.94),
+                      border: Border.all(color: color, width: 3),
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.colors.foreground.withValues(alpha: 0.12),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: SizedBox(
+                      width: 112,
+                      height: 112,
+                      child: Icon(icon, size: 56, color: color),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: theme.colors.background.withValues(alpha: 0.94),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: color.withValues(alpha: 0.55),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      child: Text(
+                        label,
+                        style: theme.typography.body.lg.copyWith(
+                          color: color,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
                     ),
                   ),
                 ],

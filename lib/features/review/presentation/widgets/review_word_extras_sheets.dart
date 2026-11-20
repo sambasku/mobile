@@ -34,12 +34,12 @@ Future<void> showReviewRelationsSheet(
   required String excludeWordId,
   required ValueChanged<List<ReviewRelatedWord>> onChanged,
 }) {
-  return showModalBottomSheet<void>((
+  return showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    uilder: (_) => _RelationsSheet(
+    builder: (_) => _RelationsSheet(
       initial: initial,
       excludeWordId: excludeWordId,
       onChanged: onChanged,
@@ -296,12 +296,12 @@ Future<void> showReviewVariantsSheet(
   required String lemma,
   required ValueChanged<List<String>> onChanged,
 }) {
-  return showModalBottomSheet<void>((
+  return showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    uilder: (_) =>
+    builder: (_) =>
         _VariantsSheet(initial: initial, lemma: lemma, onChanged: onChanged),
   );
 }

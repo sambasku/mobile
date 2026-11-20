@@ -66,12 +66,12 @@ class ReviewEntityPreview extends ConsumerWidget {
   }
 
   void _showPreviewSheet(BuildContext context, Widget content) {
-    showModalBottomSheet((
+    showModalBottomSheet(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
-      uilder: (sheetContext) {
+      builder: (sheetContext) {
         final theme = sheetContext.theme;
         return Material(
           color: theme.colors.background,

@@ -121,7 +121,7 @@ class _MemoryCacheStore implements ResponseCacheStore {
 
 ProviderContainer _container(_LemmaAdapter adapter) => ProviderContainer(
   overrides: [
-    isOfflineProvider.overrideWith((ref) => Stream.value(false)),
+    isOfflineProvider.overrideWithValue(false),
     dictionaryLocalDatasourceProvider.overrideWith((ref) async => null),
     dioProvider.overrideWithValue(Dio()..httpClientAdapter = adapter),
     responseCacheStoreProvider.overrideWithValue(_MemoryCacheStore()),

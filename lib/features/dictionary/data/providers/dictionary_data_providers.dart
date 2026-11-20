@@ -26,7 +26,7 @@ DictionaryRepository dictionaryRepository(Ref ref) {
     sticky: sticky,
     isOffline: () {
       try {
-        return ref.read(isOfflineProvider).value ?? false;
+        return ref.read(isOfflineProvider);
       } catch (_) {
         return false;
       }

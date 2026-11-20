@@ -12,13 +12,15 @@ import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 void main() {
   test('connectivity: semua none = offline, ada wifi = online', () {
-    bool offlineFn(List<ConnectivityResult> r) =>
-        r.isEmpty || r.every((x) => x == ConnectivityResult.none);
-    expect(offlineFn([ConnectivityResult.none]), isTrue);
+    expect(connectivityResultsAreOffline([ConnectivityResult.none]), isTrue);
     expect(
-      offlineFn([ConnectivityResult.wifi, ConnectivityResult.none]),
+      connectivityResultsAreOffline([
+        ConnectivityResult.wifi,
+        ConnectivityResult.none,
+      ]),
       isFalse,
     );
+    expect(connectivityResultsAreOffline(const []), isTrue);
   });
 
   testWidgets('banner: tampil saat offline, hilang saat online', (tester) async {
@@ -32,14 +34,14 @@ void main() {
         child: FTheme(
           data: foruiPalettes['zinc']!.light.touch,
           child: MaterialApp(
-        localizationsDelegates: const [
-          ...AppLocalizations.localizationsDelegates,
-          ...FLocalizations.localizationsDelegates,
-        ],
-        supportedLocales: const [Locale('id')],
-        locale: const Locale('id'),
-        home: const Scaffold(body: OfflineBanner()),
-      ),
+            localizationsDelegates: const [
+              ...AppLocalizations.localizationsDelegates,
+              ...FLocalizations.localizationsDelegates,
+            ],
+            supportedLocales: const [Locale('id')],
+            locale: const Locale('id'),
+            home: const Scaffold(body: OfflineBanner()),
+          ),
         ),
       ),
     );
@@ -52,12 +54,56 @@ void main() {
 
     // Offline event -> banner muncul (setelah debounce 2s).
     controller.add([ConnectivityResult.none]);
+    await tester.pump();
     await tester.pump(const Duration(seconds: 3));
     expect(find.text(offlineCopy), findsOneWidget);
 
     // Online lagi -> banner hilang tanpa debounce.
     controller.add([ConnectivityResult.wifi]);
+    await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text(offlineCopy), findsNothing);
+
+    await controller.close();
+  });
+
+  testWidgets('banner: loading/null connectivity tidak stuck offline', (
+    tester,
+  ) async {
+    final controller = StreamController<List<ConnectivityResult>>();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          connectivityProvider.overrideWith((ref) => controller.stream),
+        ],
+        child: FTheme(
+          data: foruiPalettes['zinc']!.light.touch,
+          child: MaterialApp(
+            localizationsDelegates: const [
+              ...AppLocalizations.localizationsDelegates,
+              ...FLocalizations.localizationsDelegates,
+            ],
+            supportedLocales: const [Locale('id')],
+            locale: const Locale('id'),
+            home: const Scaffold(body: OfflineBanner()),
+          ),
+        ),
+      ),
+    );
+
+    const offlineCopy =
+        'Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.';
+
+    controller.add([ConnectivityResult.none]);
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 3));
+    expect(find.text(offlineCopy), findsOneWidget);
+
+    // Emulasi stream reconnect tanpa event data baru: provider loading
+    // tidak boleh mempertahankan/memicu offline palsu setelah online.
+    controller.add([ConnectivityResult.wifi]);
+    await tester.pump();
     expect(find.text(offlineCopy), findsNothing);
 
     await controller.close();

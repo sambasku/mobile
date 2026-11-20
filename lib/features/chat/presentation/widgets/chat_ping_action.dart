@@ -5,9 +5,9 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
-import '../../../../shared/utils/info_bottom_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../providers/chat_ping_provider.dart';
+import 'chat_ping_cooldown_sheet.dart';
 
 /// Aksi Ping di header: ikon radio hijau siap / abu cooldown (tanpa label).
 class ChatPingAction extends ConsumerWidget {
@@ -63,13 +63,7 @@ class ChatPingAction extends ConsumerWidget {
           : () async {
               if (!ready) {
                 if (!context.mounted) return;
-                await showAppInfoSheet(
-                  context,
-                  title: l10n.chatPingCooldownTitle,
-                  message: cooldownClock == null
-                      ? l10n.chatPingCooldownBodyGeneric
-                      : l10n.chatPingCooldownBody(cooldownClock),
-                );
+                await showChatPingCooldownSheet(context);
                 return;
               }
               final ok = await ref.read(chatPingProvider.notifier).send();

@@ -9,12 +9,12 @@ Future<Color?> showShareSolidColorSheet(
   BuildContext context, {
   required Color initial,
 }) {
-  return showModalBottomSheet<Color>((
+  return showModalBottomSheet<Color>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
-    uilder: (sheetContext) => _ShareSolidColorSheet(initial: initial),
+    builder: (sheetContext) => _ShareSolidColorSheet(initial: initial),
   );
 }
 

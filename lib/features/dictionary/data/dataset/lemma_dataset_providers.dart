@@ -55,7 +55,7 @@ Future<LemmaReleaseMeta?> lemmaInstalledMeta(Ref ref) async {
 
 @riverpod
 LemmaDatasetUpdater lemmaDatasetUpdater(Ref ref) {
-  final offline = ref.watch(isOfflineProvider).value ?? false;
+  final offline = ref.watch(isOfflineProvider);
   final opener = ref.watch(lemmaDatabaseOpenerProvider);
   return LemmaDatasetUpdater(
     dio: ref.watch(dioProvider),

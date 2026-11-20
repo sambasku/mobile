@@ -23,6 +23,8 @@ class MyVoteItem {
     this.communityStatus,
     this.upvotes = 0,
     this.downvotes = 0,
+    this.definition,
+    this.translation,
   });
 
   final String id;
@@ -38,6 +40,10 @@ class MyVoteItem {
   /// Total upvote/downvote komunitas untuk target ini.
   final int upvotes;
   final int downvotes;
+
+  /// Cuplikan makna (target meaning). Null bila kosong / bukan meaning.
+  final String? definition;
+  final String? translation;
 
   bool get canOpen => word != null;
 
@@ -55,8 +61,12 @@ class MyVoteItem {
     String? communityStatus,
     int? upvotes,
     int? downvotes,
+    String? definition,
+    String? translation,
     bool clearWord = false,
     bool clearCommunityStatus = false,
+    bool clearDefinition = false,
+    bool clearTranslation = false,
   }) {
     return MyVoteItem(
       id: id ?? this.id,
@@ -70,6 +80,8 @@ class MyVoteItem {
           : (communityStatus ?? this.communityStatus),
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
+      definition: clearDefinition ? null : (definition ?? this.definition),
+      translation: clearTranslation ? null : (translation ?? this.translation),
     );
   }
 }

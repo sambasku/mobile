@@ -155,37 +155,8 @@ void main() {
     expect(haptics, contains('HapticFeedbackType.mediumImpact'));
   });
 
-  // Harus test pertama yang membiarkan hint jalan: hint sekali per proses.
-  testWidgets('hint goyang sekali: label terlihat, 2 haptic, lalu kembali', (
-    tester,
-  ) async {
-    final haptics = _recordHaptics(tester);
-
-    Widget card(String id) => wrap(
-          VoteDeckSwipeCard(
-            key: ValueKey(id),
-            itemKey: id,
-            enabled: true,
-            onSwiped: (_) async => true,
-            child: const SizedBox.expand(),
-          ),
-        );
-
-    await tester.pumpWidget(card('h1'));
-    await tester.pump(const Duration(milliseconds: 700));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
-    expect(find.text('Sudah pas'), findsOneWidget);
-
-    await tester.pumpAndSettle();
-    expect(find.text('Sudah pas'), findsNothing);
-    expect(find.text('Perlu dicek ulang'), findsNothing);
-    expect(haptics, hasLength(2));
-
-    await tester.pumpWidget(card('h2'));
-    await tester.pump(const Duration(seconds: 3));
-    expect(haptics, hasLength(2));
-  });
+  // Hint auto-play sudah dimatikan di produksi (hintId: null - meresahkan),
+  // test hint goyang dihapus bersama fiturnya.
 
   testWidgets('geser di chip jenis tidak memanggil onSwiped', (tester) async {
     VoteDeckSwipeDirection? got;

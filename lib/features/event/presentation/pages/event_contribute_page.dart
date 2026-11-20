@@ -191,12 +191,12 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
       initial: initial,
       toggleable: false,
     );
-    return showModalBottomSheet<DateTime?>((
+    return showModalBottomSheet<DateTime?>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
-      uilder: (sheetContext) => SafeArea(
+      builder: (sheetContext) => SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
@@ -241,12 +241,12 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
     required FTime initial,
   }) {
     var selected = initial;
-    return showModalBottomSheet<FTime?>((
+    return showModalBottomSheet<FTime?>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
-      uilder: (sheetContext) => SafeArea(
+      builder: (sheetContext) => SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),

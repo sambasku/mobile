@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -27,6 +29,8 @@ typedef ChatTypingBroadcastHandler =
 class ChatRealtime {
   ChatRealtime._(this._client);
 
+  static final bool _inTests = Platform.environment.containsKey('FLUTTER_TEST');
+
   final SupabaseClient _client;
   RealtimeChannel? _channel;
   RealtimeChannel? _presenceChannel;
@@ -34,6 +38,9 @@ class ChatRealtime {
   final _messageListeners = <void Function(ChatRealtimeEvent event)>{};
 
   static ChatRealtime? tryCreate() {
+    // flutter_test gagal invariant "Timer still pending": SupabaseClient
+    // .dispose() menjadwalkan Timer 6s (close timeout) di fake_async.
+    if (_inTests) return null;
     final url = Env.supabaseUrl;
     final key = Env.supabaseAnonKey;
     if (url == null || key == null) return null;
