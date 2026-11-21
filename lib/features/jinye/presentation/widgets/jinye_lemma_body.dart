@@ -1,9 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gap/gap.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/thread_reply_draft.dart';
+import '../../../../shared/widgets/thread_message.dart';
 import '../../domain/jinye_models.dart';
 import 'jinye_link_lemma_sheet.dart';
 
@@ -294,4 +297,132 @@ class _JinyeLemmaBodyState extends State<JinyeLemmaBody> {
     );
     if (chosen != null) widget.onLinkLongPress!(chosen);
   }
+}
+
+List<JinyeLemmaLink> jinyeLemmaLinksInRest(
+  List<JinyeLemmaLink> links,
+  String body,
+  int restStart,
+) {
+  final restLen = body.length - restStart;
+  if (restStart <= 0 || restLen <= 0) return links;
+
+  final remapped = <JinyeLemmaLink>[];
+  for (final link in links) {
+    if (link.start < restStart || link.end > body.length) continue;
+    if (link.end <= restStart) continue;
+    remapped.add(
+      JinyeLemmaLink(
+        id: link.id,
+        start: link.start - restStart,
+        end: link.end - restStart,
+        wordId: link.wordId,
+        status: link.status,
+        jinyeId: link.jinyeId,
+        commentId: link.commentId,
+        lemma: link.lemma,
+        source: link.source,
+        proposedWordId: link.proposedWordId,
+        proposedLemma: link.proposedLemma,
+        proposedBy: link.proposedBy,
+      ),
+    );
+  }
+  return remapped;
+}
+
+/// Body komentar/balasan Jinye: blockquote balasan (#205) + lemma pada teks
+/// balasan saja (span link mengacu ke [body] penuh dari API).
+class ThreadLemmaBody extends StatelessWidget {
+  const ThreadLemmaBody({
+    super.key,
+    required this.body,
+    required this.links,
+    this.style,
+    this.onLinkLongPress,
+    this.onWordTap,
+    this.onMentionTap,
+    this.isRedacted = false,
+  });
+
+  final String body;
+  final List<JinyeLemmaLink> links;
+  final TextStyle? style;
+  final void Function(JinyeLemmaLink link)? onLinkLongPress;
+  final void Function(JinyeSpanSelection span, JinyeLemmaLink? link)? onWordTap;
+  final ValueChanged<String>? onMentionTap;
+  final bool isRedacted;
+
+  @override
+  Widget build(BuildContext context) {
+    final split = splitLeadingBlockquote(body);
+
+    if (split.quote.isEmpty) {
+      return JinyeLemmaBody(
+        body: body,
+        links: links,
+        style: style,
+        onLinkLongPress: onLinkLongPress,
+        onWordTap: onWordTap,
+      );
+    }
+
+    final rest = split.rest;
+    final baseStyle = style ?? context.theme.typography.body.md;
+    final restLinks = jinyeLemmaLinksInRest(links, body, split.restStart);
+    final offset = split.restStart;
+
+    // Lemma di wilayah quote jarang; tampil sebagai teks biasa di quote.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (split.quote.trim().isNotEmpty)
+          ThreadReplyQuoteBlock(
+            quote: split.quote,
+            style: baseStyle,
+            isRedacted: isRedacted,
+            onMentionTap: onMentionTap,
+          ),
+        if (rest.trim().isNotEmpty) ...[
+          if (split.quote.trim().isNotEmpty) const Gap(6),
+          JinyeLemmaBody(
+            body: rest,
+            links: restLinks,
+            style: style,
+            onLinkLongPress: onLinkLongPress == null
+                ? null
+                : (link) =>
+                    onLinkLongPress!(_offsetLemmaLink(link, offset)),
+            onWordTap: onWordTap == null
+                ? null
+                : (span, link) => onWordTap!(
+                      JinyeSpanSelection(
+                        start: span.start + offset,
+                        end: span.end + offset,
+                        text: span.text,
+                      ),
+                      link != null ? _offsetLemmaLink(link, offset) : null,
+                    ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+JinyeLemmaLink _offsetLemmaLink(JinyeLemmaLink link, int offset) {
+  return JinyeLemmaLink(
+    id: link.id,
+    start: link.start + offset,
+    end: link.end + offset,
+    wordId: link.wordId,
+    status: link.status,
+    jinyeId: link.jinyeId,
+    commentId: link.commentId,
+    lemma: link.lemma,
+    source: link.source,
+    proposedWordId: link.proposedWordId,
+    proposedLemma: link.proposedLemma,
+    proposedBy: link.proposedBy,
+  );
 }

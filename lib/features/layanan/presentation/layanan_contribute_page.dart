@@ -5,7 +5,9 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/state/local_form_draft_store.dart';
 import '../../../shared/utils/error_bottom_sheet.dart';
+import '../../../shared/utils/form_draft_reset_sheet.dart';
 import '../../../shared/widgets/attachment_images_field.dart';
 import '../../../shared/widgets/image_crop_page.dart';
 import '../../../shared/widgets/option_picker_sheet.dart';
@@ -46,7 +48,8 @@ class LayananContributePage extends ConsumerStatefulWidget {
       _LayananContributePageState();
 }
 
-class _LayananContributePageState extends ConsumerState<LayananContributePage> {
+class _LayananContributePageState extends ConsumerState<LayananContributePage>
+    with LocalDraftKeeper<_LayananDraft> {
   static const _maxPhones = 5;
 
   final _name = TextEditingController();
@@ -60,15 +63,106 @@ class _LayananContributePageState extends ConsumerState<LayananContributePage> {
   var _busy = false;
 
   @override
-  void initState() {
-    super.initState();
+  String get draftKey => 'layanan:${widget.layananId ?? 'new'}';
+
+  @override
+  bool get draftHasContent => captureDraft().hasContent;
+
+  @override
+  String get draftToken => [
+    _name.text,
+    _address.text,
+    _note.text,
+    _category,
+    _regionId,
+    for (final row in _phones) '${row.phone.text}\u0001${row.note.text}',
+    for (final image in _logo)
+      '${image.id}|${image.localPath}|${image.uploaded?.url}',
+  ].join('\u0001');
+
+  @override
+  _LayananDraft captureDraft() => _LayananDraft(
+    name: _name.text,
+    address: _address.text,
+    note: _note.text,
+    category: _category,
+    regionId: _regionId,
+    phones: [
+      for (final row in _phones)
+        _LayananPhoneDraft(
+          phone: row.phone.text,
+          note: row.note.text,
+        ),
+    ],
+    logo: draftAttachmentSlots(_logo),
+  );
+
+  @override
+  void restoreDraft(_LayananDraft draft) {
+    _name.text = draft.name;
+    _address.text = draft.address;
+    _note.text = draft.note;
+    _category = draft.category;
+    _regionId = draft.regionId;
+    _logo = draft.logo;
+    for (final row in _phones) {
+      row.dispose();
+    }
+    _phones
+      ..clear()
+      ..addAll(
+        draft.phones.map((p) {
+          final d = _PhoneDraft();
+          d.phone.text = p.phone;
+          d.note.text = p.note;
+          return d;
+        }),
+      );
+    if (_phones.isEmpty) {
+      _phones.add(_PhoneDraft());
+    }
+  }
+
+  void _applyRouteDefaults() {
     final incoming = widget.category;
     _category = incoming == 'fire' || incoming == 'ambulance' ? incoming : null;
     _regionId = widget.regionId;
   }
 
+  void _clearFormEmpty() {
+    _name.clear();
+    _address.clear();
+    _note.clear();
+    _logo = const [];
+    for (final row in _phones) {
+      row.dispose();
+    }
+    _phones
+      ..clear()
+      ..add(_PhoneDraft());
+    _applyRouteDefaults();
+  }
+
+  Future<void> _resetForm() async {
+    if (!draftHasContent) return;
+    final l10n = AppLocalizations.of(context);
+    final ok = await confirmFormDraftReset(context, l10n);
+    if (!ok || !mounted) return;
+    _clearFormEmpty();
+    abandonLocalDraft();
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _applyRouteDefaults();
+    loadLocalDraft();
+  }
+
   @override
   void dispose() {
+    flushLocalDraft();
     _name.dispose();
     _address.dispose();
     _note.dispose();
@@ -138,6 +232,7 @@ class _LayananContributePageState extends ConsumerState<LayananContributePage> {
         if (_address.text.trim().isNotEmpty) 'address_text': _address.text.trim(),
         if (_note.text.trim().isNotEmpty) 'note': _note.text.trim(),
       });
+      commitLocalDraft();
       if (!mounted) return;
       context.pushReplacement(LayananRouter.proposals.path);
     } catch (error) {
@@ -166,6 +261,16 @@ class _LayananContributePageState extends ConsumerState<LayananContributePage> {
       header: FHeader.nested(
         title: Text(l10n.layananPropose),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
+        suffixes: [
+          if (draftHasContent)
+            Tooltip(
+              message: l10n.contributeFormResetTooltip,
+              child: FHeaderAction(
+                icon: const Icon(FLucideIcons.trash),
+                onPress: _resetForm,
+              ),
+            ),
+        ],
       ),
       footer: SafeArea(
         top: false,
@@ -328,5 +433,45 @@ class _LayananContributePageState extends ConsumerState<LayananContributePage> {
         ],
       ),
     );
+  }
+}
+
+class _LayananPhoneDraft {
+  const _LayananPhoneDraft({required this.phone, required this.note});
+
+  final String phone;
+  final String note;
+}
+
+class _LayananDraft {
+  const _LayananDraft({
+    required this.name,
+    required this.address,
+    required this.note,
+    required this.category,
+    required this.regionId,
+    required this.phones,
+    required this.logo,
+  });
+
+  final String name;
+  final String address;
+  final String note;
+  final String? category;
+  final String? regionId;
+  final List<_LayananPhoneDraft> phones;
+  final List<AttachmentImageSlot> logo;
+
+  bool get hasContent {
+    final phoneFilled = phones.any(
+      (p) => p.phone.trim().isNotEmpty || p.note.trim().isNotEmpty,
+    );
+    return name.trim().isNotEmpty ||
+        address.trim().isNotEmpty ||
+        note.trim().isNotEmpty ||
+        logo.isNotEmpty ||
+        category != null ||
+        phoneFilled ||
+        phones.length > 1;
   }
 }

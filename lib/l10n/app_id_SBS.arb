@@ -3262,6 +3262,22 @@
   "encyclopediaProposalKindEdit": "Usulan perbaikan",
   "encyclopediaBodyEmpty": "Belum ada isi.",
   "encyclopediaCoverSemantics": "Gambar sampul artikel",
+  "encyclopediaDetailActions": "Aksi",
+  "encyclopediaClapLoginBody": "Masuk dulu untuk memberi apresiasi pada artikel ini.",
+  "encyclopediaClapSemantics": "Apresiasi artikel: {total} clap, kamu memberi {mine}",
+  "@encyclopediaClapSemantics": {
+    "placeholders": {
+      "total": { "type": "String" },
+      "mine": { "type": "String" }
+    }
+  },
+  "encyclopediaClapYours": "({count} dari kamu)",
+  "@encyclopediaClapYours": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "encyclopediaBookmarkToggleSemantics": "Bookmark artikel",
   "encyclopediaFieldCover": "Gambar sampul",
   "encyclopediaFieldCoverHint": "Opsional - tampil sebagai hero di detail artikel",
   "encyclopediaCoverWaitUpload": "Tunggu upload sampul selesai",
@@ -4796,6 +4812,22 @@
   "@pantunComposeDiscardDraftConfirm": {
     "description": "Tombol konfirmasi buang draf"
   },
+  "contributeFormResetTooltip": "Kosongkan form",
+  "@contributeFormResetTooltip": {
+    "description": "Tooltip ikon reset di header form usulan"
+  },
+  "contributeFormResetTitle": "Kosongkan form usulan?",
+  "@contributeFormResetTitle": {
+    "description": "Judul sheet konfirmasi reset form usulan"
+  },
+  "contributeFormResetBody": "Isi yang sudah kamu ketik hilang. Draft halaman lain tidak ikut terhapus.",
+  "@contributeFormResetBody": {
+    "description": "Isi sheet konfirmasi reset form usulan"
+  },
+  "contributeFormResetConfirm": "Kosongkan",
+  "@contributeFormResetConfirm": {
+    "description": "Tombol konfirmasi kosongkan form usulan"
+  },
   "pantunComposeRhymeOk": "Pola rima cocok",
   "@pantunComposeRhymeOk": {
     "description": "Badge rima cocok tanpa nama skema"
@@ -6109,6 +6141,14 @@
   "chatRetry": "Coba lagi",
   "chatEmpty": "Belum ada pesan",
   "chatEmptyBody": "Jadi yang pertama menyapa warga di sini.",
+  "chatComposerCharCount": "{current}/{max}",
+  "@chatComposerCharCount": {
+    "description": "Penghitung karakter composer chat",
+    "placeholders": {
+      "current": { "type": "int" },
+      "max": { "type": "int" }
+    }
+  },
   "chatComposerHint": "Tulis pesan…",
   "chatSend": "Kirim",
   "chatPrivacyWarningTitle": "Peringatan Privasi",
@@ -6185,6 +6225,14 @@
   "chatReplySnippetSystem": "[sistem]",
   "chatLongPressReply": "Balas",
   "chatLongPressDelete": "Hapus",
+  "chatLongPressCopy": "Salin",
+  "@chatLongPressCopy": {
+    "description": "Aksi long-press salin isi pesan chat"
+  },
+  "chatMessageCopied": "Pesan disalin",
+  "@chatMessageCopied": {
+    "description": "Toast setelah teks pesan chat disalin"
+  },
   "chatConnectionFailed": "Koneksi terputus. Coba lagi ya.",
   "chatServerTimeout": "Server lambat merespons. Coba lagi ya.",
   "settingsGroupExperiments": "Eksperimen",
@@ -6193,6 +6241,17 @@
     "description": "Toggle opt-in LiveKit voice room di Pengaturan"
   },
   "settingsVoiceRoomOptInSubtitle": "Gabung obrolan suara di tab Chat (experimental).",
+  "voiceStripWatching": "{count} orang di voice room",
+  "@voiceStripWatching": {
+    "description": "Strip voice: pengamat chat lihat jumlah peserta",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "chatSwipeReplyHint": "Geser untuk membalas",
+  "@chatSwipeReplyHint": { "description": "Semantik geser balas chat" },
+  "feedKindChat": "Chat publik",
+  "@feedKindChat": { "description": "Label jenis aktivitas ping chat" },
+  "feedCtaChat": "Buka chat",
+  "@feedCtaChat": { "description": "CTA feed menuju chat publik" },
   "voiceStripTitle": "Voice room",
   "voiceStripOptInHint": "Voice room tersedia. Aktifkan di Pengaturan dulu.",
   "voiceStripOpenSettings": "Pengaturan",
@@ -6372,7 +6431,7 @@
       }
     }
   },
-  "chatTypingOne": "{name} sedang mengetik…",
+  "chatTypingOne": "{name} mengetik…",
   "@chatTypingOne": {
     "description": "Satu orang sedang mengetik di chat",
     "placeholders": {
@@ -6381,7 +6440,7 @@
       }
     }
   },
-  "chatTypingTwo": "{a} dan {b} sedang mengetik…",
+  "chatTypingTwo": "{a} dan {b} mengetik…",
   "@chatTypingTwo": {
     "description": "Dua orang sedang mengetik di chat",
     "placeholders": {
@@ -6393,7 +6452,7 @@
       }
     }
   },
-  "chatTypingMany": "{count} orang sedang mengetik…",
+  "chatTypingMany": "{count} mengetik…",
   "@chatTypingMany": {
     "description": "Tiga atau lebih orang sedang mengetik di chat",
     "placeholders": {

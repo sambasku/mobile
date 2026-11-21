@@ -104,7 +104,11 @@ EncyclopediaArticle _$EncyclopediaArticleFromJson(Map<String, dynamic> json) =>
       referencesMd: json['references_md'] as String?,
       publishedAt: json['published_at'] as String?,
       bookmarked: json['bookmarked'] as bool?,
-      related: _relatedFromJson(json['related']),
+      clapTotal: (json['clap_total'] as num?)?.toInt() ?? 0,
+      myClapCount: (json['my_clap_count'] as num?)?.toInt(),
+      related: json['related'] == null
+          ? const []
+          : _relatedFromJson(json['related']),
     );
 
 Map<String, dynamic> _$EncyclopediaArticleToJson(
@@ -124,17 +128,23 @@ Map<String, dynamic> _$EncyclopediaArticleToJson(
   'references_md': instance.referencesMd,
   'published_at': instance.publishedAt,
   'bookmarked': instance.bookmarked,
-  'related': instance.related
-      .map(
-        (e) => <String, dynamic>{
-          'kind': e.kind,
-          'id': e.id,
-          'title': e.title,
-          'slug': e.slug,
-          'cover_url': e.coverUrl,
-        },
-      )
-      .toList(),
+  'clap_total': instance.clapTotal,
+  'my_clap_count': instance.myClapCount,
+  'related': _relatedToJson(instance.related),
+};
+
+EncyclopediaClapResult _$EncyclopediaClapResultFromJson(
+  Map<String, dynamic> json,
+) => EncyclopediaClapResult(
+  count: (json['count'] as num).toInt(),
+  clapTotal: (json['clap_total'] as num).toInt(),
+);
+
+Map<String, dynamic> _$EncyclopediaClapResultToJson(
+  EncyclopediaClapResult instance,
+) => <String, dynamic>{
+  'count': instance.count,
+  'clap_total': instance.clapTotal,
 };
 
 EncyclopediaBookmarkResult _$EncyclopediaBookmarkResultFromJson(
@@ -269,9 +279,7 @@ _$SubmitEncyclopediaContributionPayloadFromJson(Map<String, dynamic> json) =>
       coverUrl: json['cover_url'] as String?,
       sourceUrl: json['source_url'] as String?,
       referencesMd: json['references_md'] as String?,
-      related: json['related'] == null
-          ? null
-          : _relatedFromJson(json['related']),
+      related: _relatedFromJson(json['related']),
     );
 
 Map<String, dynamic> _$SubmitEncyclopediaContributionPayloadToJson(
@@ -287,7 +295,7 @@ Map<String, dynamic> _$SubmitEncyclopediaContributionPayloadToJson(
   'cover_url': instance.coverUrl,
   'source_url': instance.sourceUrl,
   'references_md': instance.referencesMd,
-  if (instance.related != null) 'related': _relatedToJson(instance.related),
+  'related': ?_relatedToJson(instance.related),
 };
 
 EncyclopediaContributionPayload _$EncyclopediaContributionPayloadFromJson(
@@ -303,7 +311,9 @@ EncyclopediaContributionPayload _$EncyclopediaContributionPayloadFromJson(
   coverUrl: json['cover_url'] as String?,
   sourceUrl: json['source_url'] as String?,
   referencesMd: json['references_md'] as String?,
-  related: _relatedFromJson(json['related']),
+  related: json['related'] == null
+      ? const []
+      : _relatedFromJson(json['related']),
 );
 
 Map<String, dynamic> _$EncyclopediaContributionPayloadToJson(

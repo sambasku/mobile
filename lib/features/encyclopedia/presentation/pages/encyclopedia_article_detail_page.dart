@@ -4,20 +4,27 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../../core/widgets/image_preview.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/public_account_name.dart';
-import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/back_to_top_button.dart';
 import '../../../../shared/widgets/content_related_section.dart';
 import '../../../../shared/widgets/contributor_appreciation.dart';
+import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/widgets/sambasku_markdown.dart';
 import '../../data/encyclopedia_providers.dart';
 import '../../domain/encyclopedia.entity.dart';
+import '../../encyclopedia_router.dart';
 import '../providers/encyclopedia_detail_providers.dart';
 import '../utils/encyclopedia_auth.dart';
 import '../utils/encyclopedia_back.dart';
+import '../widgets/encyclopedia_article_hero.dart';
+import '../widgets/encyclopedia_clap_button.dart';
 import '../widgets/encyclopedia_comments_section.dart';
+
+/// Ruang di atas gesture bar supaya tombol back-to-top tidak tertutup footer komentar.
+const _kBackToTopAboveFooter = 72.0;
 
 class EncyclopediaArticleDetailPage extends ConsumerStatefulWidget {
   const EncyclopediaArticleDetailPage({super.key, required this.slug});
@@ -30,7 +37,15 @@ class EncyclopediaArticleDetailPage extends ConsumerStatefulWidget {
 
 class _EncyclopediaArticleDetailPageState
     extends ConsumerState<EncyclopediaArticleDetailPage> {
+  final _scroll = ScrollController();
+
   bool _viewRecorded = false;
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
 
   Future<void> _recordView(String slug) async {
     try {
@@ -87,6 +102,17 @@ class _EncyclopediaArticleDetailPageState
     }
   }
 
+  Future<void> _openSuggestEdit(EncyclopediaArticle article) async {
+    final l10n = AppLocalizations.of(context);
+    final okAuth = await ensureEncyclopediaAuth(
+      context,
+      ref,
+      body: l10n.encyclopediaLoginContributeBody,
+    );
+    if (!okAuth || !mounted) return;
+    context.push(EncyclopediaRouter.contributeEditPath(article.slug));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -124,164 +150,191 @@ class _EncyclopediaArticleDetailPageState
     }
 
     final bookmarked = _bookmarked ?? false;
+    final coverUrl = article.coverUrl?.trim();
+    final hasCover = coverUrl != null && coverUrl.isNotEmpty;
+    final width = MediaQuery.sizeOf(context).width;
+    final coverHeight = hasCover ? width / encyclopediaHeroAspect : 0.0;
 
-    return FScaffold(
-      // Padding manual di scroll - jangan dobel dengan childPad default.
-      childPad: false,
-      header: FHeader.nested(
-        title: Text(
-          article.title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        prefixes: [
-          FHeaderAction.back(
-            onPress: () => encyclopediaPopOrGoExplore(context),
+    final bodyColumn = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _ArticleTopMeta(article: article, l10n: l10n),
+        if (!hasCover) ...[
+          Text(
+            article.title,
+            style: theme.typography.display.lg.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
           ),
+          const Gap(12),
         ],
-        suffixes: [
-          FHeaderAction(
-            icon: _busyBookmark
-                ? const Icon(FLucideIcons.loaderCircle)
-                : Icon(
-                    bookmarked
-                        ? FLucideIcons.bookmarkCheck
-                        : FLucideIcons.bookmark,
-                  ),
-            onPress: _busyBookmark ? null : () => _toggleBookmark(article),
-          ),
-        ],
-      ),
-      // Pola lemma: bar entri komentar di bawah, thread di sheet.
-      footer: EncyclopediaCommentEntryBar(articleId: article.id),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Hero cover full-bleed; body markdown di bawahnya.
-            if (article.coverUrl != null &&
-                article.coverUrl!.trim().isNotEmpty)
-              _ArticleCoverHero(coverUrl: article.coverUrl!.trim()),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    article.title,
-                    style: theme.typography.display.lg.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const Gap(12),
-                  Row(
-                    children: [
-                      Icon(
-                        FLucideIcons.user,
-                        size: 16,
-                        color: theme.colors.mutedForeground,
-                      ),
-                      const Gap(8),
-                      Expanded(
-                        child: Text(
-                          article.author.displayName ??
-                              article.author.username ??
-                              l10n.dictSpeakerAnonymous,
-                          style: theme.typography.body.sm.copyWith(
-                            color: theme.colors.mutedForeground,
-                          ),
-                        ),
-                      ),
-                      if (article.author.isVerifier)
-                        FBadge(
-                          variant: FBadgeVariant.outline,
-                          child: Text(l10n.encyclopediaAuthorBy),
-                        ),
-                    ],
-                  ),
-                  const Gap(16),
-                  if (article.excerpt.isNotEmpty)
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: theme.colors.secondary,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        article.excerpt,
-                        style: theme.typography.body.sm.copyWith(
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ),
-                  const Gap(16),
-                  SambaskuMarkdown(
-                    data: article.bodyMd.isEmpty
-                        ? '_${l10n.encyclopediaBodyEmpty}_'
-                        : article.bodyMd,
-                  ),
-                  if (article.referencesMd != null &&
-                      article.referencesMd!.isNotEmpty) ...[
-                    const Gap(24),
-                    Text(
-                      l10n.encyclopediaReferencesTitle,
-                      style: theme.typography.display.sm.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const Gap(8),
-                    SambaskuMarkdown(data: article.referencesMd!),
-                  ],
-                  ContentRelatedSection(items: article.related),
-                  // Apresiasi pengusul di paling bawah halaman.
-                  if (isLinkablePublicUsername(article.author.username))
-                    ContributorAppreciationSection(
-                      label: l10n.usahaContributorProposedBy,
-                      contributors: [
-                        ContributorCredit(
-                          username: article.author.username!,
-                          displayName: article.author.displayName ?? '',
-                        ),
-                      ],
-                    ),
-                ],
+        if (!hasCover && article.excerpt.isNotEmpty) ...[
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: theme.colors.secondary,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              article.excerpt,
+              style: theme.typography.body.sm.copyWith(
+                fontStyle: FontStyle.italic,
               ),
             ),
+          ),
+          const Gap(16),
+        ],
+        FTileGroup(
+          label: Text(l10n.encyclopediaDetailActions),
+          children: [
+            FTile(
+              prefix: const Icon(FLucideIcons.pencil, size: 18),
+              title: Text(l10n.encyclopediaProposeEdit),
+              suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+              onPress: () => unawaited(_openSuggestEdit(article)),
+            ),
           ],
+        ),
+        const Gap(16),
+        SambaskuMarkdown(
+          data: article.bodyMd.isEmpty
+              ? '_${l10n.encyclopediaBodyEmpty}_'
+              : article.bodyMd,
+        ),
+        if (article.referencesMd != null &&
+            article.referencesMd!.isNotEmpty) ...[
+          const Gap(24),
+          Text(
+            l10n.encyclopediaReferencesTitle,
+            style: theme.typography.display.sm.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const Gap(8),
+          SambaskuMarkdown(data: article.referencesMd!),
+        ],
+        ContentRelatedSection(items: article.related),
+        const Gap(16),
+        EncyclopediaClapButton(
+          articleId: article.id,
+          initialTotal: article.clapTotal,
+          initialMine: article.myClapCount,
+        ),
+      ],
+    );
+
+    final bookmarkIcon = _busyBookmark
+        ? FLucideIcons.loaderCircle
+        : bookmarked
+            ? FLucideIcons.bookmarkCheck
+            : FLucideIcons.bookmark;
+
+    return FScaffold(
+      childPad: false,
+      footer: EncyclopediaCommentEntryBar(articleId: article.id),
+      child: ProfileHeroShell(
+        showBack: true,
+        onBack: () => encyclopediaPopOrGoExplore(context),
+        backLabel: l10n.commonBack,
+        title: article.title,
+        coverHeight: coverHeight,
+        actions: [
+          ProfileHeroAction(
+            icon: bookmarkIcon,
+            tooltip: l10n.encyclopediaBookmarkToggleSemantics,
+            onPress: _busyBookmark
+                ? () {}
+                : () => unawaited(_toggleBookmark(article)),
+          ),
+        ],
+        scrollView: ScrollWithBackToTop(
+          controller: _scroll,
+          bottom: _kBackToTopAboveFooter,
+          child: CustomScrollView(
+            controller: _scroll,
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              if (hasCover)
+                SliverToBoxAdapter(
+                  child: EncyclopediaArticleHero(
+                    coverUrl: coverUrl,
+                    title: article.title,
+                    excerpt: article.excerpt,
+                  ),
+                ),
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(
+                  12,
+                  hasCover ? 12 : MediaQuery.paddingOf(context).top +
+                      ProfileHeroShell.barHeight + 8,
+                  12,
+                  24,
+                ),
+                sliver: SliverToBoxAdapter(child: bodyColumn),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-/// Hero sampul artikel: full-bleed 16:10, tap -> preview fullscreen.
-class _ArticleCoverHero extends StatelessWidget {
-  const _ArticleCoverHero({required this.coverUrl});
+/// Meta artikel di atas isi: apresiasi pengusul, kategori, tag.
+class _ArticleTopMeta extends StatelessWidget {
+  const _ArticleTopMeta({required this.article, required this.l10n});
 
-  final String coverUrl;
+  final EncyclopediaArticle article;
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final theme = context.theme;
-    return GestureDetector(
-      onTap: () => showImagePreview(context, urls: [coverUrl]),
-      child: Semantics(
-        button: true,
-        label: l10n.encyclopediaCoverSemantics,
-        child: AspectRatio(
-          aspectRatio: 16 / 10,
-          child: ColoredBox(
-            color: theme.colors.muted,
-            child: CachedNetworkImageWithFallback(
-              imageUrl: coverUrl,
-              fallbackUrl: coverUrl,
-              fit: BoxFit.cover,
-            ),
+    final tags = [
+      for (final t in article.tags)
+        if (t.trim().isNotEmpty) t.trim(),
+    ];
+    final categoryName = article.category.name.trim();
+    final showBadges = categoryName.isNotEmpty || tags.isNotEmpty;
+    final showContributor =
+        isLinkablePublicUsername(article.author.username);
+
+    if (!showContributor && !showBadges) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (showContributor)
+          ContributorAppreciationSection(
+            label: l10n.usahaContributorProposedBy,
+            contributors: [
+              ContributorCredit(
+                username: article.author.username!,
+                displayName: article.author.displayName ?? '',
+              ),
+            ],
           ),
-        ),
-      ),
+        if (showBadges) ...[
+          if (showContributor) const Gap(10),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              if (categoryName.isNotEmpty)
+                FBadge(
+                  variant: FBadgeVariant.secondary,
+                  child: Text(categoryName),
+                ),
+              for (final tag in tags)
+                FBadge(
+                  variant: FBadgeVariant.outline,
+                  child: Text(tag),
+                ),
+            ],
+          ),
+        ],
+        const Gap(16),
+      ],
     );
   }
 }

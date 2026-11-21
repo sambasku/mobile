@@ -10,6 +10,7 @@ import '../../../../shared/models/content_related_link.dart';
 import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/content_related_nav.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/form_draft_reset_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/content_related_picker_sheet.dart';
 import '../../../../shared/widgets/image_crop_page.dart';
@@ -367,6 +368,52 @@ class _EncyclopediaContributionPageState
     }
   }
 
+
+  void _clearFormEmpty() {
+    _titleController.clear();
+    _tagsController.clear();
+    _sourceUrlController.clear();
+    _bodyMd = '';
+    _categoryId = null;
+    _cover = const [];
+    _related = const [];
+    _articleId = null;
+    _prefilled = false;
+  }
+
+  Future<void> _resetForm() async {
+    if (!draftHasContent) return;
+    final l10n = AppLocalizations.of(context);
+    final ok = await confirmFormDraftReset(context, l10n);
+    if (!ok || !mounted) return;
+
+    _clearFormEmpty();
+
+    final contributionId = widget.contributionId;
+    if (contributionId != null && contributionId.isNotEmpty) {
+      final items = ref.read(myEncyclopediaContributionsProvider).asData?.value;
+      if (items != null) {
+        for (final item in items) {
+          if (item.id == contributionId) {
+            _applyContribution(item);
+            break;
+          }
+        }
+      }
+    } else {
+      final slug = widget.articleSlug;
+      if (slug != null) {
+        final article = ref.read(encyclopediaArticleProvider(slug)).asData?.value;
+        if (article != null) {
+          _applyArticle(article);
+        }
+      }
+    }
+
+    abandonLocalDraft();
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -430,6 +477,16 @@ class _EncyclopediaContributionPageState
           FHeaderAction.back(
             onPress: () => encyclopediaPopOrGoExplore(context),
           ),
+        ],
+        suffixes: [
+          if (draftHasContent)
+            Tooltip(
+              message: l10n.contributeFormResetTooltip,
+              child: FHeaderAction(
+                icon: const Icon(FLucideIcons.trash),
+                onPress: _resetForm,
+              ),
+            ),
         ],
       ),
       footer: SafeArea(

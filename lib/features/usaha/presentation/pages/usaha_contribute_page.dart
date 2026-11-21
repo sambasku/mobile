@@ -12,6 +12,7 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/form_draft_reset_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../../../shared/widgets/pasteable_url_field.dart';
@@ -404,6 +405,47 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage>
     return changed;
   }
 
+  void _clearFormEmpty() {
+    _name.clear();
+    _description.clear();
+    _address.clear();
+    _phone.clear();
+    _website.clear();
+    _social.clear();
+    _categoryId = null;
+    _categoryName = null;
+    _kind = UsahaKind.product;
+    _kecamatan = null;
+    _desa = null;
+    _point = null;
+    _cover = const [];
+    _wantsClaim = false;
+    _baseline = const {};
+  }
+
+  Future<void> _resetForm() async {
+    if (!draftHasContent) return;
+    final l10n = AppLocalizations.of(context);
+    final ok = await confirmFormDraftReset(context, l10n);
+    if (!ok || !mounted) return;
+
+    _clearFormEmpty();
+    _prefilled = false;
+
+    if (_isEdit) {
+      final slug = widget.slug ?? '';
+      final usaha = ref.read(usahaBySlugProvider(slug)).value;
+      if (usaha != null) {
+        _applyUsaha(usaha);
+        await _resolveRegionsForEdit(usaha);
+        sealDraftBaseline();
+      }
+    }
+
+    abandonLocalDraft();
+    if (mounted) setState(() {});
+  }
+
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
     final name = _name.text.trim();
@@ -605,6 +647,16 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage>
                 ? context.pop()
                 : context.go(UsahaRouter.list.path),
           ),
+        ],
+        suffixes: [
+          if (draftHasContent)
+            Tooltip(
+              message: l10n.contributeFormResetTooltip,
+              child: FHeaderAction(
+                icon: const Icon(FLucideIcons.trash),
+                onPress: _resetForm,
+              ),
+            ),
         ],
       ),
       // CTA sticky: pola lemma (spinner di prefix, label tetap di child).

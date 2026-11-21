@@ -717,6 +717,94 @@ class ThreadLoginPrompt extends StatelessWidget {
   }
 }
 
+final RegExp threadMentionUsernamePattern = RegExp(
+  r'@([a-zA-Z0-9_.\-]{2,30})(?![a-zA-Z0-9_.\-])',
+);
+
+/// RichText span dengan deteksi `@username` (shared thread / lemma quote).
+TextSpan buildThreadMentionTextSpan(
+  String text, {
+  required TextStyle baseStyle,
+  required TextStyle mentionStyle,
+  ValueChanged<String>? onMentionTap,
+}) {
+  final spans = <TextSpan>[];
+  var lastEnd = 0;
+
+  for (final match in threadMentionUsernamePattern.allMatches(text)) {
+    if (match.start > lastEnd) {
+      spans.add(TextSpan(text: text.substring(lastEnd, match.start)));
+    }
+    final username = match.group(1)!;
+    // `anonim` = akun sistem, dirender sebagai teks biasa.
+    final isRealMention = username.toLowerCase() != 'anonim';
+    spans.add(
+      TextSpan(
+        text: match.group(0),
+        style: isRealMention ? mentionStyle : null,
+        recognizer: isRealMention && onMentionTap != null
+            ? (TapGestureRecognizer()..onTap = () => onMentionTap(username))
+            : null,
+      ),
+    );
+    lastEnd = match.end;
+  }
+  if (lastEnd < text.length) {
+    spans.add(TextSpan(text: text.substring(lastEnd)));
+  }
+
+  return TextSpan(children: spans, style: baseStyle);
+}
+
+/// Cuplikan quote balasan thread (tanpa marker `>`) (#205).
+class ThreadReplyQuoteBlock extends StatelessWidget {
+  const ThreadReplyQuoteBlock({
+    super.key,
+    required this.quote,
+    required this.style,
+    this.isRedacted = false,
+    this.onMentionTap,
+  });
+
+  final String quote;
+  final TextStyle style;
+  final bool isRedacted;
+  final ValueChanged<String>? onMentionTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final quoteStyle = style.copyWith(
+      color: theme.colors.mutedForeground,
+      fontStyle: FontStyle.italic,
+    );
+    final quoteMentionStyle = quoteStyle.copyWith(
+      color: isRedacted ? null : theme.colors.primary,
+      fontWeight: isRedacted ? null : FontWeight.w600,
+      fontStyle: FontStyle.normal,
+    );
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+          left: BorderSide(color: theme.colors.border, width: 3),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10),
+        child: RichText(
+          text: buildThreadMentionTextSpan(
+            quote,
+            baseStyle: quoteStyle,
+            mentionStyle: quoteMentionStyle,
+            onMentionTap: onMentionTap,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// Teks body thread dengan deteksi `@username`: mention dirender bold +
 /// warna primer, tap → [onMentionTap] (navigasi profil).
 /// Leading baris `>` dirender sebagai cuplikan quote (#205).
@@ -736,10 +824,6 @@ class MentionBodyText extends StatelessWidget {
   /// Callback dengan username yang di-tap (tanpa `@`).
   final ValueChanged<String>? onMentionTap;
 
-  static final RegExp _mentionRe = RegExp(
-    r'@([a-zA-Z0-9_.\-]{2,30})(?![a-zA-Z0-9_.\-])',
-  );
-
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -749,76 +833,39 @@ class MentionBodyText extends StatelessWidget {
     );
 
     final split = splitLeadingBlockquote(body);
-    final quoteStyle = style.copyWith(
-      color: theme.colors.mutedForeground,
-      fontStyle: FontStyle.italic,
-    );
-    final quoteMentionStyle = quoteStyle.copyWith(
-      color: isRedacted ? null : theme.colors.primary,
-      fontWeight: isRedacted ? null : FontWeight.w600,
-      fontStyle: FontStyle.normal,
-    );
 
     if (split.quote.isEmpty) {
-      return RichText(text: _buildTextSpan(body, mentionStyle, style));
+      return RichText(
+        text: buildThreadMentionTextSpan(
+          body,
+          baseStyle: style,
+          mentionStyle: mentionStyle,
+          onMentionTap: onMentionTap,
+        ),
+      );
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border(
-              left: BorderSide(color: theme.colors.border, width: 3),
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: RichText(
-              text: _buildTextSpan(split.quote, quoteMentionStyle, quoteStyle),
-            ),
-          ),
+        ThreadReplyQuoteBlock(
+          quote: split.quote,
+          style: style,
+          isRedacted: isRedacted,
+          onMentionTap: onMentionTap,
         ),
         if (split.rest.trim().isNotEmpty) ...[
           const Gap(6),
           RichText(
-            text: _buildTextSpan(split.rest, mentionStyle, style),
+            text: buildThreadMentionTextSpan(
+              split.rest,
+              baseStyle: style,
+              mentionStyle: mentionStyle,
+              onMentionTap: onMentionTap,
+            ),
           ),
         ],
       ],
     );
-  }
-
-  TextSpan _buildTextSpan(
-    String text,
-    TextStyle mentionStyle,
-    TextStyle baseStyle,
-  ) {
-    final spans = <TextSpan>[];
-    var lastEnd = 0;
-
-    for (final match in _mentionRe.allMatches(text)) {
-      if (match.start > lastEnd) {
-        spans.add(TextSpan(text: text.substring(lastEnd, match.start)));
-      }
-      final username = match.group(1)!;
-      // `anonim` = akun sistem, dirender sebagai teks biasa.
-      final isRealMention = username.toLowerCase() != 'anonim';
-      spans.add(
-        TextSpan(
-          text: match.group(0),
-          style: isRealMention ? mentionStyle : null,
-          recognizer: isRealMention && onMentionTap != null
-              ? (TapGestureRecognizer()..onTap = () => onMentionTap!(username))
-              : null,
-        ),
-      );
-      lastEnd = match.end;
-    }
-    if (lastEnd < text.length) {
-      spans.add(TextSpan(text: text.substring(lastEnd)));
-    }
-
-    return TextSpan(children: spans, style: baseStyle);
   }
 }

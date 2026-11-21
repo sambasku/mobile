@@ -1,11 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-/// Back kanonik hub Diskusi (feed + chat di [StatefulShellRoute]).
+/// Back kanonik hub Diskusi (chat + ruang di [StatefulShellRoute]).
 ///
-/// Chat (branch 1) → kembali ke Ruang Diskusi (branch 0) dulu.
-/// Di feed: `pop` bila ada stack; selain itu (deep link / `go`) ke Home
-/// supaya system back tidak menutup app.
+/// Branch 0 = Chat (default). Dari Ruang Diskusi (branch 1) → ke Chat dulu.
+/// Dari Chat: `pop` bila ada stack; selain itu ke Home supaya system back aman.
 void leaveDiscussionHub(
   BuildContext context,
   StatefulNavigationShell navigationShell,

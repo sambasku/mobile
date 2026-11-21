@@ -356,7 +356,7 @@ class _HomeActionChips extends ConsumerWidget {
         icon: FLucideIcons.messagesSquare,
         label: l10n.dictDiscussionChip,
         semanticsLabel: l10n.dictDiscussionSubtitle,
-        onPress: () => context.push(DiscussionRouter.feed.path),
+        onPress: () => context.push(DiscussionRouter.chat.path),
       ),
       _HomeActionChip(
         icon: FLucideIcons.feather,

@@ -46,7 +46,8 @@ ThreadReplyDraft buildThreadReplyDraft({
       ? ''
       : quoteSnippet
           .split('\n')
-          .map((line) => line.isEmpty ? '>' : '> $line')
+          .where((line) => line.trim().isNotEmpty)
+          .map((line) => '> $line')
           .join('\n');
 
   final canMention = isLinkablePublicUsername(username) &&
@@ -84,8 +85,13 @@ String stripLeadingReplyDraft(String text, String draftPrefix) {
 }
 
 /// Pecah leading blockquote markdown (`>` / `> `) dari sisa body.
-({String quote, String rest}) splitLeadingBlockquote(String body) {
-  if (body.isEmpty) return (quote: '', rest: '');
+///
+/// [restStart] = indeks karakter di [body] asli tempat [rest] dimulai
+/// (untuk memetakan span lemma link ke substring balasan).
+({String quote, String rest, int restStart}) splitLeadingBlockquote(
+  String body,
+) {
+  if (body.isEmpty) return (quote: '', rest: '', restStart: 0);
   final lines = body.split('\n');
   final quoteLines = <String>[];
   var i = 0;
@@ -96,11 +102,13 @@ String stripLeadingReplyDraft(String text, String draftPrefix) {
     quoteLines.add(match.group(1) ?? '');
     i++;
   }
-  if (quoteLines.isEmpty) return (quote: '', rest: body);
+  if (quoteLines.isEmpty) return (quote: '', rest: body, restStart: 0);
   // Lewati satu baris kosong pemisah quote ↔ balasan (pola draft kita).
   if (i < lines.length && lines[i].trim().isEmpty) i++;
   final rest = lines.sublist(i).join('\n');
-  return (quote: quoteLines.join('\n'), rest: rest);
+  final restStart = rest.isEmpty ? body.length : body.length - rest.length;
+
+  return (quote: quoteLines.join('\n'), rest: rest, restStart: restStart);
 }
 
 String? _snippetForQuote(
@@ -126,6 +134,13 @@ String? _snippetForQuote(
   final taken = <String>[];
   var chars = 0;
   for (final line in lines) {
+    final trimmedLine = line.trim();
+    if (trimmedLine.isEmpty) break;
+    // Jangan kutip balasan lama (baris @mention) saat balas ke balas.
+    if (RegExp(r'^@[a-zA-Z0-9_.\-]{2,30}(?![a-zA-Z0-9_.\-])')
+        .hasMatch(trimmedLine)) {
+      break;
+    }
     if (taken.length >= maxQuoteLines) break;
     final room = maxQuoteChars - chars;
     if (room <= 0) break;

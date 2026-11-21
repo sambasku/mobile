@@ -12,6 +12,7 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/form_draft_reset_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../../../shared/widgets/pasteable_url_field.dart';
@@ -385,6 +386,34 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
     }
   }
 
+
+  void _clearFormEmpty() {
+    _name.clear();
+    _description.clear();
+    _location.clear();
+    _organizer.clear();
+    _sourceUrl.clear();
+    _sourceAttribution.clear();
+    _categoryId = null;
+    _sourceType = null;
+    _point = null;
+    _startDate = null;
+    _startTime = null;
+    _endDate = null;
+    _endTime = null;
+    _posters = const [];
+  }
+
+  Future<void> _resetForm() async {
+    if (!draftHasContent) return;
+    final l10n = AppLocalizations.of(context);
+    final ok = await confirmFormDraftReset(context, l10n);
+    if (!ok || !mounted) return;
+    _clearFormEmpty();
+    abandonLocalDraft();
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -405,6 +434,16 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
             onPress: () =>
                 context.canPop() ? context.pop() : context.go('/explore'),
           ),
+        ],
+        suffixes: [
+          if (draftHasContent)
+            Tooltip(
+              message: AppLocalizations.of(context).contributeFormResetTooltip,
+              child: FHeaderAction(
+                icon: const Icon(FLucideIcons.trash),
+                onPress: _resetForm,
+              ),
+            ),
         ],
       ),
       footer: SafeArea(

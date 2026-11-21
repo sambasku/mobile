@@ -14703,6 +14703,36 @@ abstract class AppLocalizations {
   /// **'Gambar sampul artikel'**
   String get encyclopediaCoverSemantics;
 
+  /// Label grup aksi di detail artikel ensiklopedia
+  ///
+  /// In id, this message translates to:
+  /// **'Aksi'**
+  String get encyclopediaDetailActions;
+
+  /// Body sheet login sebelum clap artikel
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk memberi apresiasi pada artikel ini.'**
+  String get encyclopediaClapLoginBody;
+
+  /// Semantics tombol clap artikel
+  ///
+  /// In id, this message translates to:
+  /// **'Apresiasi artikel: {total} clap, kamu memberi {mine}'**
+  String encyclopediaClapSemantics(String total, String mine);
+
+  /// Label clap yang sudah diberikan user
+  ///
+  /// In id, this message translates to:
+  /// **'({count} dari kamu)'**
+  String encyclopediaClapYours(String count);
+
+  /// Tooltip tombol bookmark di hero detail ensiklopedia
+  ///
+  /// In id, this message translates to:
+  /// **'Bookmark artikel'**
+  String get encyclopediaBookmarkToggleSemantics;
+
   /// Label field sampul opsional di form usulan ensiklopedia
   ///
   /// In id, this message translates to:
@@ -19467,6 +19497,30 @@ abstract class AppLocalizations {
   /// **'Buang'**
   String get pantunComposeDiscardDraftConfirm;
 
+  /// Tooltip ikon reset di header form usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Kosongkan form'**
+  String get contributeFormResetTooltip;
+
+  /// Judul sheet konfirmasi reset form usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Kosongkan form usulan?'**
+  String get contributeFormResetTitle;
+
+  /// Isi sheet konfirmasi reset form usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Isi yang sudah kamu ketik hilang. Draft halaman lain tidak ikut terhapus.'**
+  String get contributeFormResetBody;
+
+  /// Tombol konfirmasi kosongkan form usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Kosongkan'**
+  String get contributeFormResetConfirm;
+
   /// Badge rima cocok tanpa nama skema
   ///
   /// In id, this message translates to:
@@ -22603,6 +22657,12 @@ abstract class AppLocalizations {
   /// **'Jadi yang pertama menyapa warga di sini.'**
   String get chatEmptyBody;
 
+  /// Penghitung karakter composer chat
+  ///
+  /// In id, this message translates to:
+  /// **'{current}/{max}'**
+  String chatComposerCharCount(int current, int max);
+
   /// No description provided for @chatComposerHint.
   ///
   /// In id, this message translates to:
@@ -22819,6 +22879,18 @@ abstract class AppLocalizations {
   /// **'Hapus'**
   String get chatLongPressDelete;
 
+  /// Aksi long-press salin isi pesan chat
+  ///
+  /// In id, this message translates to:
+  /// **'Salin'**
+  String get chatLongPressCopy;
+
+  /// Toast setelah teks pesan chat disalin
+  ///
+  /// In id, this message translates to:
+  /// **'Pesan disalin'**
+  String get chatMessageCopied;
+
   /// No description provided for @chatConnectionFailed.
   ///
   /// In id, this message translates to:
@@ -22848,6 +22920,30 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Gabung obrolan suara di tab Chat (experimental).'**
   String get settingsVoiceRoomOptInSubtitle;
+
+  /// Strip voice: pengamat chat lihat jumlah peserta
+  ///
+  /// In id, this message translates to:
+  /// **'{count} orang di voice room'**
+  String voiceStripWatching(int count);
+
+  /// Semantik geser balas chat
+  ///
+  /// In id, this message translates to:
+  /// **'Geser untuk membalas'**
+  String get chatSwipeReplyHint;
+
+  /// Label jenis aktivitas ping chat
+  ///
+  /// In id, this message translates to:
+  /// **'Chat publik'**
+  String get feedKindChat;
+
+  /// CTA feed menuju chat publik
+  ///
+  /// In id, this message translates to:
+  /// **'Buka chat'**
+  String get feedCtaChat;
 
   /// No description provided for @voiceStripTitle.
   ///
@@ -23116,19 +23212,19 @@ abstract class AppLocalizations {
   /// Satu orang sedang mengetik di chat
   ///
   /// In id, this message translates to:
-  /// **'{name} sedang mengetik…'**
+  /// **'{name} mengetik…'**
   String chatTypingOne(String name);
 
   /// Dua orang sedang mengetik di chat
   ///
   /// In id, this message translates to:
-  /// **'{a} dan {b} sedang mengetik…'**
+  /// **'{a} dan {b} mengetik…'**
   String chatTypingTwo(String a, String b);
 
   /// Tiga atau lebih orang sedang mengetik di chat
   ///
   /// In id, this message translates to:
-  /// **'{count} orang sedang mengetik…'**
+  /// **'{count} mengetik…'**
   String chatTypingMany(int count);
 
   /// Lencana singkat di kartu listing usaha yang jadi sponsor

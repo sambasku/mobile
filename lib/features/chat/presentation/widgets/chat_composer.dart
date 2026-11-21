@@ -1,8 +1,10 @@
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/chat_limits.dart';
 import '../../domain/chat_models.dart';
 import 'chat_reply_bar.dart';
 import 'chat_typing_indicator.dart';
@@ -12,7 +14,7 @@ import 'chat_typing_indicator.dart';
 ///
 /// Dipasang di **body** Column (bukan [FScaffold.footer]): footer Forui
 /// menaruh anak di bottom absolut sehingga tertutup keyboard.
-class ChatComposer extends StatelessWidget {
+class ChatComposer extends HookWidget {
   const ChatComposer({
     super.key,
     required this.controller,
@@ -50,6 +52,14 @@ class ChatComposer extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
+    useListenable(controller);
+    final length = controller.text.characters.length;
+
+    final countStyle = theme.typography.body.xs3.copyWith(
+      color: length >= kChatBodyCountWarnAt
+          ? theme.colors.destructive
+          : theme.colors.mutedForeground,
+    );
 
     return Material(
       color: theme.colors.background,
@@ -70,6 +80,7 @@ class ChatComposer extends StatelessWidget {
                 const Gap(6),
               ],
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _ComposerIconButton(
                     icon: FLucideIcons.smile,
@@ -102,8 +113,37 @@ class ChatComposer extends StatelessWidget {
                       textInputAction: TextInputAction.newline,
                       maxLines: 3,
                       minLines: 1,
-                      // Selaras BODY_MAX API chat (240).
-                      maxLength: 240,
+                      maxLength: kChatBodyMax,
+                      style: FTextFieldStyleDelta.delta(
+                        contentPadding: EdgeInsetsGeometryDelta.value(
+                          const EdgeInsetsDirectional.fromSTEB(10, 8, 10, 22),
+                        ),
+                      ),
+                      builder: (context, style, _, field) => Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          field,
+                          PositionedDirectional(
+                            end: 8,
+                            bottom: 4,
+                            child: IgnorePointer(
+                              child: Semantics(
+                                label: l10n.chatComposerCharCount(
+                                  length,
+                                  kChatBodyMax,
+                                ),
+                                child: Text(
+                                  l10n.chatComposerCharCount(
+                                    length,
+                                    kChatBodyMax,
+                                  ),
+                                  style: countStyle,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const Gap(6),

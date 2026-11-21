@@ -12,15 +12,20 @@ import 'presentation/pages/my_discussions_page.dart';
 class DiscussionRouter {
   DiscussionRouter._();
 
-  static const feed = RouteDefiner(
-    path: '/discussions',
-    name: 'DiscussionRouter.feed',
-  );
-
+  /// Tab Chat (default masuk hub Diskusi).
   static const chat = RouteDefiner(
-    path: '/discussions/chat',
+    path: '/discussions',
     name: 'DiscussionRouter.chat',
   );
+
+  /// Tab Ruang Diskusi (daftar thread).
+  static const rooms = RouteDefiner(
+    path: '/discussions/rooms',
+    name: 'DiscussionRouter.rooms',
+  );
+
+  /// Alias lama - arahkan ke tab Ruang Diskusi.
+  static const feed = rooms;
 
   static const create = RouteDefiner(
     path: '/discussions/create',
@@ -39,8 +44,21 @@ class DiscussionRouter {
 
   static String detailPath(String id) => '/discussions/$id';
 
-  /// Hub (feed + chat) = StatefulShell; create/mine/detail = overlay root.
+  static const _legacyChatPath = '/discussions/chat';
+
+  static const Set<String> _reservedDetailSlugs = {
+    'rooms',
+    'chat',
+    'create',
+    'my',
+  };
+
+  /// Hub (chat + ruang) = StatefulShell; create/mine/detail = overlay root.
   static final List<RouteBase> routes = [
+    GoRoute(
+      path: _legacyChatPath,
+      redirect: (context, state) => chat.path,
+    ),
     StatefulShellRoute.indexedStack(
       parentNavigatorKey: AppRouter.rootNavigatorKey,
       builder: (context, state, navigationShell) =>
@@ -49,18 +67,18 @@ class DiscussionRouter {
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: feed.path,
-              name: feed.name,
-              builder: (context, state) => const DiscussionRoomsPage(),
+              path: chat.path,
+              name: chat.name,
+              builder: (context, state) => const ChatPage(embeddedInHub: true),
             ),
           ],
         ),
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: chat.path,
-              name: chat.name,
-              builder: (context, state) => const ChatPage(embeddedInHub: true),
+              path: rooms.path,
+              name: rooms.name,
+              builder: (context, state) => const DiscussionRoomsPage(),
             ),
           ],
         ),
@@ -84,6 +102,13 @@ class DiscussionRouter {
       path: detail.path,
       name: detail.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
+      redirect: (context, state) {
+        final id = state.pathParameters['id'] ?? '';
+        if (id == 'rooms') return rooms.path;
+        if (id == 'chat') return chat.path;
+        if (_reservedDetailSlugs.contains(id)) return chat.path;
+        return null;
+      },
       builder: (context, state) => DiscussionDetailPage(
         id: state.pathParameters['id'] ?? '',
       ),

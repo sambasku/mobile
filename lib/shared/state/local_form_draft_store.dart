@@ -59,6 +59,14 @@ mixin LocalDraftKeeper<T extends Object> {
     LocalFormDraftStore.instance.remove(draftKey);
   }
 
+  /// Hapus draft key halaman ini saja; panggil setelah form UI dikosongkan.
+  void abandonLocalDraft() {
+    LocalFormDraftStore.instance.remove(draftKey);
+    _draftCommitted = false;
+    _draftRestored = false;
+    _baselineToken = draftToken;
+  }
+
   void flushLocalDraft() {
     if (_draftCommitted ||
         (!_draftRestored && draftToken == _baselineToken) ||

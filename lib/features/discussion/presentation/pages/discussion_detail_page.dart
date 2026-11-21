@@ -590,14 +590,16 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
     required bool isVerifier,
     required bool isAuth,
     required String? replyId,
+    ValueChanged<String>? onMentionTap,
   }) {
     final body = rawBody ?? '';
     if (body.trim().isEmpty) return null;
     final jinyeLinks = links.map(_asJinyeLemmaLink).toList();
-    return JinyeLemmaBody(
+    return ThreadLemmaBody(
       body: body,
       links: jinyeLinks,
       style: bodyStyle,
+      onMentionTap: onMentionTap,
       onLinkLongPress: (link) => _showLemmaLinkActions(
         link: link,
         sourceBody: body,
@@ -897,6 +899,11 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                           isVerifier: _isVerifierRole(auth?.role),
                           isAuth: isAuth,
                           replyId: null,
+                          onMentionTap: (mentionedUsername) =>
+                              UserProfileRouter.open(
+                                context,
+                                mentionedUsername,
+                              ),
                         ),
                         dateLabel: formatRelativeCompact(
                           DateTime.tryParse(item.createdAt),
@@ -1020,6 +1027,11 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                                     isVerifier: _isVerifierRole(auth?.role),
                                     isAuth: isAuth,
                                     replyId: reply.id,
+                                    onMentionTap: (mentionedUsername) =>
+                                        UserProfileRouter.open(
+                                          context,
+                                          mentionedUsername,
+                                        ),
                                   )
                                 : null,
                             dateLabel: formatRelativeAgo(

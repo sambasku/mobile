@@ -515,11 +515,7 @@ class _HistoryTileState extends ConsumerState<_HistoryTile> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    PeriksaLemmaHeader(
-                      lemma: lemma,
-                      contributorUsername: item.contributorUsername,
-                      contributorDisplayName: item.contributorDisplayName,
-                    ),
+                    PeriksaLemmaHeader(lemma: lemma),
                     PeriksaMeaningBlurb(
                       translation: translation,
                       definition: definition,

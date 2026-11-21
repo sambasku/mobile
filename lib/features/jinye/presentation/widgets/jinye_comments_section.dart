@@ -672,10 +672,12 @@ class _JinyeThreadComment extends ConsumerWidget {
       body: bodyText,
       bodyWidget: bodyText.isEmpty
           ? null
-          : JinyeLemmaBody(
+          : ThreadLemmaBody(
               body: comment.body,
               links: links,
               style: theme.typography.body.sm.copyWith(height: 1.35),
+              onMentionTap: (mentionedUsername) =>
+                  UserProfileRouter.open(context, mentionedUsername),
               onLinkLongPress: (link) => _showCommentLemmaLinkActions(
                 context,
                 ref,

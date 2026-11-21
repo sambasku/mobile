@@ -10,6 +10,7 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/form_draft_reset_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/culinary_contribution_api.dart';
@@ -262,6 +263,28 @@ class _CulinaryContributePageState extends ConsumerState<CulinaryContributePage>
     context.canPop() ? context.pop() : context.go('/explore/cuisine');
   }
 
+
+  void _clearFormEmpty() {
+    _name.clear();
+    _description.clear();
+    _ingredients.clear();
+    _address.clear();
+    _locationHint.clear();
+    _cuisineSlug = null;
+    _placeSlug = null;
+    _images = const [];
+  }
+
+  Future<void> _resetForm() async {
+    if (!draftHasContent) return;
+    final l10n = AppLocalizations.of(context);
+    final ok = await confirmFormDraftReset(context, l10n);
+    if (!ok || !mounted) return;
+    _clearFormEmpty();
+    abandonLocalDraft();
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -278,6 +301,16 @@ class _CulinaryContributePageState extends ConsumerState<CulinaryContributePage>
                 ? context.pop()
                 : context.go('/explore/cuisine'),
           ),
+        ],
+        suffixes: [
+          if (draftHasContent)
+            Tooltip(
+              message: l10n.contributeFormResetTooltip,
+              child: FHeaderAction(
+                icon: const Icon(FLucideIcons.trash),
+                onPress: _resetForm,
+              ),
+            ),
         ],
       ),
       // CTA sticky: pola lemma (spinner di prefix, label tetap di child).

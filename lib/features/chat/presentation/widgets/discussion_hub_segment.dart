@@ -10,7 +10,7 @@ import '../providers/chat_presence_provider.dart';
 ///
 /// Konten di [DiscussionHubShell] via `StatefulNavigationShell`; di sini
 /// hanya chrome tab supaya tidak dobel scaffold.
-/// Label Chat menampilkan `Chat (x)` jika ada orang di presence (x > 0).
+/// Label Chat selalu `Chat (x)` supaya lebar tab stabil saat presence sync.
 class DiscussionHubSegment extends ConsumerWidget {
   const DiscussionHubSegment({
     super.key,
@@ -18,7 +18,7 @@ class DiscussionHubSegment extends ConsumerWidget {
     required this.onChanged,
   });
 
-  /// 0 = Ruang Diskusi, 1 = Chat.
+  /// 0 = Chat, 1 = Ruang Diskusi.
   final int index;
   final ValueChanged<int> onChanged;
 
@@ -27,9 +27,7 @@ class DiscussionHubSegment extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final presence = ref.watch(chatPresenceCountProvider);
-    final chatLabel = presence > 0
-        ? l10n.discussionTabChatWithCount(presence)
-        : l10n.discussionTabChat;
+    final chatLabel = l10n.discussionTabChatWithCount(presence);
 
     return FTabs(
       expands: false,
@@ -38,8 +36,8 @@ class DiscussionHubSegment extends ConsumerWidget {
       children: [
         FTabEntry.entry(
           label: _HubTabLabel(
-            icon: FLucideIcons.messagesSquare,
-            text: l10n.discussionTabRooms,
+            icon: FLucideIcons.messageCircle,
+            text: chatLabel,
             selected: index == 0,
             theme: theme,
           ),
@@ -47,8 +45,8 @@ class DiscussionHubSegment extends ConsumerWidget {
         ),
         FTabEntry.entry(
           label: _HubTabLabel(
-            icon: FLucideIcons.messageCircle,
-            text: chatLabel,
+            icon: FLucideIcons.messagesSquare,
+            text: l10n.discussionTabRooms,
             selected: index == 1,
             theme: theme,
           ),

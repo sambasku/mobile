@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -10,6 +11,7 @@ import '../../../../shared/widgets/thread_message.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../domain/chat_models.dart';
 import 'chat_sticker_view.dart';
+import 'chat_swipe_reply.dart';
 
 class ChatBubble extends StatelessWidget {
   const ChatBubble({
@@ -20,6 +22,7 @@ class ChatBubble extends StatelessWidget {
     this.onDelete,
     this.onJumpToReply,
     this.highlighted = false,
+    this.replyingTo = false,
     this.showName = true,
     this.showTime = true,
     this.clustered = false,
@@ -33,6 +36,9 @@ class ChatBubble extends StatelessWidget {
 
   /// Bingkai singkat setelah loncat dari quote reply.
   final bool highlighted;
+
+  /// Pesan ini sedang jadi target balas (swipe / long-press reply).
+  final bool replyingTo;
 
   /// Nama pengirim: hanya di pesan pertama grup beruntun.
   final bool showName;
@@ -61,6 +67,7 @@ class ChatBubble extends StatelessWidget {
     final showEdited = message.isEdited && !message.isDeleted;
     final showMeta =
         message.pending || (showTime && timeLabel.isNotEmpty) || showEdited;
+    final frameBubble = highlighted || replyingTo;
     // Player sudah punya kotak sendiri. Bubble luar = container dobel.
     final bareVoice =
         !message.isDeleted &&
@@ -129,15 +136,22 @@ class ChatBubble extends StatelessWidget {
       ],
     );
 
+    final swipeReply = !message.pending &&
+        !message.isDeleted &&
+        message.kind != ChatMessageKind.system;
+
     return Align(
       alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: MediaQuery.sizeOf(context).width * 0.78,
         ),
-        child: GestureDetector(
-          onLongPress: () => _showActions(context),
-          child: Padding(
+        child: ChatSwipeReply(
+          enabled: swipeReply,
+          onReply: onReply,
+          child: GestureDetector(
+            onLongPress: () => _showActions(context),
+            child: Padding(
             padding: EdgeInsets.fromLTRB(
               2,
               // clustered = run beruntun: rapat tapi masih ada napas
@@ -159,42 +173,57 @@ class ChatBubble extends StatelessWidget {
                       ),
                     ),
                   ),
-                DecoratedBox(
-                  decoration: highlighted
-                      ? BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: theme.colors.primary,
-                            width: 1.5,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: DecoratedBox(
+                    decoration: frameBubble
+                        ? BoxDecoration(
+                            color: replyingTo
+                                ? theme.colors.primary.withValues(alpha: 0.08)
+                                : null,
+                            border: Border.all(
+                              color: theme.colors.primary,
+                              width: 1.5,
+                            ),
+                          )
+                        : const BoxDecoration(),
+                    child: bareVoice
+                        ? bubbleBody
+                        : DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: bubbleColor,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(7, 3, 7, 3),
+                              child: bubbleBody,
+                            ),
                           ),
-                        )
-                      : const BoxDecoration(),
-                  child: bareVoice
-                      ? bubbleBody
-                      : DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: bubbleColor,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(7, 3, 7, 3),
-                            // ponytail: jangan IntrinsicWidth di ListView - race
-                            // sliver.geometry! null di visitChildrenForSemantics.
-                            // Column min + end: bubble ikut konten, jam kanan.
-                            child: bubbleBody,
-                          ),
-                        ),
+                  ),
                 ),
               ],
             ),
           ),
         ),
       ),
+    ),
     );
+  }
+
+  String? _textToCopy(AppLocalizations l10n) {
+    if (message.pending || message.isDeleted) return null;
+    return switch (message.kind) {
+      ChatMessageKind.text || ChatMessageKind.system => () {
+          final t = (message.body ?? '').trim();
+          return t.isEmpty ? null : t;
+        }(),
+      ChatMessageKind.sticker => l10n.chatReplySnippetSticker,
+      ChatMessageKind.voiceNote => l10n.chatReplySnippetVoice,
+    };
   }
 
   Future<void> _showActions(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
+    final copyText = _textToCopy(l10n);
     final action = await showModalBottomSheet<String>(
       context: context,
       useRootNavigator: true,
@@ -211,6 +240,11 @@ class ChatBubble extends StatelessWidget {
                     title: Text(l10n.chatLongPressReply),
                     onPress: () => Navigator.pop(sheetContext, 'reply'),
                   ),
+                  if (copyText != null)
+                    FTile(
+                      title: Text(l10n.chatLongPressCopy),
+                      onPress: () => Navigator.pop(sheetContext, 'copy'),
+                    ),
                   if (onDelete != null &&
                       !message.pending &&
                       !message.isDeleted)
@@ -231,6 +265,14 @@ class ChatBubble extends StatelessWidget {
     );
     if (!context.mounted) return;
     if (action == 'reply') onReply();
+    if (action == 'copy' && copyText != null) {
+      await Clipboard.setData(ClipboardData(text: copyText));
+      if (!context.mounted) return;
+      showFToast(
+        context: context,
+        title: Text(l10n.chatMessageCopied),
+      );
+    }
     if (action == 'delete') onDelete?.call();
   }
 }
@@ -256,16 +298,17 @@ class _ReplyQuote extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: theme.colors.primary.withValues(alpha: 0.14),
-            borderRadius: BorderRadius.circular(6),
-            border: Border(
-              left: BorderSide(color: theme.colors.primary, width: 3),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: theme.colors.primary.withValues(alpha: 0.14),
+              border: Border(
+                left: BorderSide(color: theme.colors.primary, width: 3),
+              ),
             ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
             // softWrap false: ikut lebar teks, jangan tarik bubble ke max.
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,6 +334,7 @@ class _ReplyQuote extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
+            ),
             ),
           ),
         ),

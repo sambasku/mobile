@@ -563,9 +563,7 @@ class ChatPage extends HookConsumerWidget {
     }, [keyboardInset]);
 
     final presenceCount = ref.watch(chatPresenceCountProvider);
-    final chatChromeTitle = presenceCount > 0
-        ? l10n.discussionTabChatWithCount(presenceCount)
-        : l10n.discussionTabChat;
+    final chatChromeTitle = l10n.discussionTabChatWithCount(presenceCount);
 
     final body = Padding(
       padding: EdgeInsets.only(bottom: keyboardInset),
@@ -768,6 +766,7 @@ class ChatPage extends HookConsumerWidget {
                               showTime: showTime,
                               clustered: clustered,
                               highlighted: highlightId.value == message.id,
+                              replyingTo: replyTarget.value?.id == message.id,
                               onReply: () => startReply(message),
                               onJumpToReply: message.replyToId == null
                                   ? null

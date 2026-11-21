@@ -13,6 +13,7 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/form_draft_reset_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -436,6 +437,49 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
     }
   }
 
+
+  void _clearFormEmpty() {
+    _name.clear();
+    _slugCtrl.clear();
+    _desc.clear();
+    _hours.clear();
+    _contact.clear();
+    _step = 0;
+    _placeId = null;
+    _slugTouched = false;
+    _category = 'wisata';
+    _type = null;
+    _regionId = null;
+    _regionName = null;
+    _villageId = null;
+    _villageName = null;
+    _point = null;
+    _images = const [];
+    _filled = false;
+  }
+
+  Future<void> _resetForm() async {
+    if (!draftHasContent) return;
+    final l10n = AppLocalizations.of(context);
+    final ok = await confirmFormDraftReset(context, l10n);
+    if (!ok || !mounted) return;
+
+    if (widget.mode == PlaceContributeMode.photo) {
+      setState(() => _images = const []);
+    } else if (widget.mode == PlaceContributeMode.create) {
+      _clearFormEmpty();
+    } else {
+      _clearFormEmpty();
+      final place = _currentPlace();
+      if (place != null) {
+        _apply(place);
+      }
+    }
+
+    abandonLocalDraft();
+    if (mounted) setState(() {});
+  }
+
   Place? _currentPlace() {
     final slug = widget.slug;
     if (slug == null) return null;
@@ -484,6 +528,16 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
             onPress: () =>
                 context.canPop() ? context.pop() : context.go('/explore'),
           ),
+        ],
+        suffixes: [
+          if (draftHasContent)
+            Tooltip(
+              message: l10n.contributeFormResetTooltip,
+              child: FHeaderAction(
+                icon: const Icon(FLucideIcons.trash),
+                onPress: _resetForm,
+              ),
+            ),
         ],
       ),
       // CTA sticky: pola lemma (SafeArea + padding 12,8,12,8 + spinner di prefix).

@@ -15,6 +15,7 @@ import '../domain/layanan.dart';
 import '../layanan_router.dart';
 import 'layanan_logo.dart';
 import 'layanan_providers.dart';
+import '../../../shared/widgets/public_browse_list_divider.dart';
 import 'widgets/layanan_filter_sheet.dart';
 
 /// Ukuran avatar list - pola kontak.
@@ -190,12 +191,14 @@ class _LayananPageState extends ConsumerState<LayananPage> {
                 }
                 return RefreshIndicator(
                   onRefresh: _reload,
-                  child: ListView.builder(
+                  child: ListView.separated(
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: EdgeInsets.only(
                       bottom: MediaQuery.paddingOf(context).bottom,
                     ),
                     itemCount: visible.length,
+                    separatorBuilder: (context, _) =>
+                        const PublicBrowseListDivider(),
                     itemBuilder: (context, i) => _LayananListTile(
                       item: visible[i],
                       showCategory: _category == null,
