@@ -434,11 +434,7 @@ class _PeriksaKataCard extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  PeriksaLemmaHeader(
-                    lemma: item.lemma,
-                    contributorUsername: item.contributorUsername,
-                    contributorDisplayName: item.contributorDisplayName,
-                  ),
+                  PeriksaLemmaHeader(lemma: item.lemma),
                   PeriksaMeaningBlurb(
                     translation: translation,
                     definition: definition,

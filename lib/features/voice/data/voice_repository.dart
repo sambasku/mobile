@@ -79,6 +79,34 @@ class VoiceFailure {
   final String? errorCode;
 }
 
+/// Ringkasan peserta dari GET /api/v1/voice/room/summary.
+class VoiceRoomSummary {
+  const VoiceRoomSummary({
+    required this.room,
+    required this.participantCount,
+    required this.voiceRoomEnabled,
+  });
+
+  final String room;
+  final int participantCount;
+  final bool voiceRoomEnabled;
+
+  factory VoiceRoomSummary.fromJson(Map<String, dynamic> json) {
+    final countRaw = json['participant_count'];
+    final count = switch (countRaw) {
+      final int n => n,
+      final num n => n.toInt(),
+      final String s => int.tryParse(s) ?? 0,
+      _ => 0,
+    };
+    return VoiceRoomSummary(
+      room: json['room']?.toString() ?? '',
+      participantCount: count,
+      voiceRoomEnabled: json['voice_room_enabled'] == true,
+    );
+  }
+}
+
 enum VoiceRoomEventKind { joined, left, disconnect, joinFailed }
 
 class VoiceRepository {
@@ -115,6 +143,19 @@ class VoiceRepository {
     } catch (_) {
       // ponytail: analytics best-effort
     }
+  }
+
+  Future<VoiceRoomSummary> fetchRoomSummary() async {
+    final res = await _dio.get<Map<String, dynamic>>('/api/v1/voice/room/summary');
+    final data = res.data?['data'];
+    if (data is! Map) {
+      return const VoiceRoomSummary(
+        room: '',
+        participantCount: 0,
+        voiceRoomEnabled: false,
+      );
+    }
+    return VoiceRoomSummary.fromJson(Map<String, dynamic>.from(data));
   }
 
   Future<Either<VoiceFailure, VoiceToken>> mintToken() async {

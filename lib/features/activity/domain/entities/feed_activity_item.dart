@@ -26,6 +26,7 @@ enum FeedActivityKind {
   pantun,
   jinye,
   article,
+  chat,
 }
 
 FeedActivityKind? parseFeedActivityKind(String raw) {
@@ -85,6 +86,8 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.jinye;
     case 'article':
       return FeedActivityKind.article;
+    case 'chat':
+      return FeedActivityKind.chat;
     default:
       return null;
   }

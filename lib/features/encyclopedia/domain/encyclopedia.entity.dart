@@ -115,6 +115,8 @@ class EncyclopediaArticle {
     this.referencesMd,
     this.publishedAt,
     this.bookmarked,
+    this.clapTotal = 0,
+    this.myClapCount,
     this.related = const [],
   });
   factory EncyclopediaArticle.fromJson(Map<String, dynamic> json) =>
@@ -141,8 +143,29 @@ class EncyclopediaArticle {
   final String? publishedAt;
   /// null = tamu / tidak dicek; true/false = status bookmark user login.
   final bool? bookmarked;
+  @JsonKey(name: 'clap_total')
+  final int clapTotal;
+  /// null = tamu; 0-50 = clap user login.
+  @JsonKey(name: 'my_clap_count')
+  final int? myClapCount;
   @JsonKey(fromJson: _relatedFromJson, toJson: _relatedToJson)
   final List<ContentRelatedLink> related;
+}
+
+/// Response set clap - `PUT /articles/:id/claps`.
+@JsonSerializable(fieldRename: FieldRename.snake)
+class EncyclopediaClapResult {
+  const EncyclopediaClapResult({
+    required this.count,
+    required this.clapTotal,
+  });
+  factory EncyclopediaClapResult.fromJson(Map<String, dynamic> json) =>
+      _$EncyclopediaClapResultFromJson(json);
+  Map<String, dynamic> toJson() => _$EncyclopediaClapResultToJson(this);
+
+  final int count;
+  @JsonKey(name: 'clap_total')
+  final int clapTotal;
 }
 
 /// Response toggle bookmark - `POST /articles/:id/bookmark`.
@@ -323,7 +346,11 @@ class SubmitEncyclopediaContributionPayload {
   final String? sourceUrl;
   @JsonKey(name: 'references_md')
   final String? referencesMd;
-  @JsonKey(toJson: _relatedToJson, includeIfNull: false)
+  @JsonKey(
+    fromJson: _relatedFromJson,
+    toJson: _relatedToJson,
+    includeIfNull: false,
+  )
   final List<ContentRelatedLink>? related;
 }
 

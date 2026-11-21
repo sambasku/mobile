@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/public_browse_list_divider.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../explore/explore_router.dart';
 import '../../karya_router.dart';
@@ -207,12 +208,14 @@ class _KaryaListPageState extends ConsumerState<KaryaListPage> {
                 }
                 return RefreshIndicator(
                   onRefresh: _reload,
-                  child: ListView.builder(
+                  child: ListView.separated(
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: EdgeInsets.only(
                       bottom: MediaQuery.paddingOf(context).bottom,
                     ),
                     itemCount: items.length,
+                    separatorBuilder: (context, _) =>
+                        const PublicBrowseListDivider(),
                     itemBuilder: (context, i) => _KaryaListTile(
                       item: items[i],
                       showKind: _kind == null,

@@ -10,7 +10,7 @@ import '../utils/discussion_hub_back.dart';
 
 /// Chrome bersama hub Diskusi (header + tab) di atas [StatefulNavigationShell].
 ///
-/// Branch 0 = Ruang Diskusi, 1 = Chat. State tiap branch dijaga
+/// Branch 0 = Chat, 1 = Ruang Diskusi. State tiap branch dijaga
 /// `StatefulShellRoute.indexedStack`.
 class DiscussionHubShell extends StatelessWidget {
   const DiscussionHubShell({super.key, required this.navigationShell});
@@ -21,9 +21,7 @@ class DiscussionHubShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final index = navigationShell.currentIndex;
-    // Chat atur keyboard sendiri (padding manual) - shell jangan resize.
-    final isChat = index == 1;
-    // Di chat: tahan pop sistem → pindah ke feed dulu (bukan exit / skip feed).
+    final isChat = index == 0;
     final canPopHub = !isChat && discussionHubCanPop(context);
 
     return PopScope(

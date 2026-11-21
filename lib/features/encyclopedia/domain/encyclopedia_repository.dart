@@ -29,6 +29,10 @@ abstract interface class EncyclopediaRepository {
   );
   Future<ApiResponse<void>> deleteComment(String id);
   Future<ApiResponse<EncyclopediaBookmarkResult>> toggleBookmark(String id);
+  Future<ApiResponse<EncyclopediaClapResult>> setClapCount(
+    String id,
+    int count,
+  );
   Future<ApiResponse<MyContributionItem>> submitContribution(
     SubmitEncyclopediaContributionPayload body,
   );
@@ -94,6 +98,12 @@ class EncyclopediaRepositoryImpl implements EncyclopediaRepository {
   @override
   Future<ApiResponse<EncyclopediaBookmarkResult>> toggleBookmark(String id) =>
       _remote.toggleBookmark(id);
+
+  @override
+  Future<ApiResponse<EncyclopediaClapResult>> setClapCount(
+    String id,
+    int count,
+  ) => _remote.setClapCount(id, {'count': count});
 
   @override
   Future<ApiResponse<MyContributionItem>> submitContribution(

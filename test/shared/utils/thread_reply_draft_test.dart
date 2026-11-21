@@ -45,6 +45,16 @@ void main() {
       expect(draft.quotePreview!.endsWith('…'), isTrue);
       expect(draft.quotePreview!.length, lessThanOrEqualTo(121));
     });
+
+    test('balas ke balas tanpa baris quote kosong', () {
+      final draft = buildThreadReplyDraft(
+        username: 'budi',
+        body: '> a\n\n@x balasan',
+      );
+      expect(draft.text.contains('\n>\n'), isFalse);
+      expect(draft.text, '> a\n\n@budi ');
+      expect(draft.quotePreview, 'a');
+    });
   });
 
   group('stripLeadingReplyDraft', () {
@@ -65,15 +75,19 @@ void main() {
 
   group('splitLeadingBlockquote', () {
     test('pisah quote dan sisa', () {
-      final split = splitLeadingBlockquote('> satu\n> dua\n\n@budi ya');
+      const body = '> satu\n> dua\n\n@budi ya';
+      final split = splitLeadingBlockquote(body);
       expect(split.quote, 'satu\ndua');
       expect(split.rest, '@budi ya');
+      expect(split.restStart, 14);
+      expect(body.substring(split.restStart), split.rest);
     });
 
     test('tanpa quote', () {
       final split = splitLeadingBlockquote('@budi halo');
       expect(split.quote, isEmpty);
       expect(split.rest, '@budi halo');
+      expect(split.restStart, 0);
     });
   });
 }

@@ -42,6 +42,10 @@ class EncyclopediaRouter {
 
   static String detailPath(String slug) => detail.path.replaceFirst(':slug', slug);
 
+  /// Form usul perbaikan artikel published (`article_slug` query).
+  static String contributeEditPath(String slug) =>
+      '${contribute.path}?${Uri(queryParameters: {'article_slug': slug}).query}';
+
   /// Literal (`usulan/saya`, `usulan/editor`, `usulan`) WAJIB sebelum `/:slug`.
   static final List<GoRoute> routes = [
     GoRoute(

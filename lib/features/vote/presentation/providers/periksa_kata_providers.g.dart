@@ -99,7 +99,7 @@ final class PeriksaKataHistoryControllerProvider
 }
 
 String _$periksaKataHistoryControllerHash() =>
-    r'c23231b8920dd83ed52810621a7ee0b7399656c3';
+    r'8118de8a6b568d43e7d8a36880eef802ada0496e';
 
 abstract class _$PeriksaKataHistoryController
     extends $AsyncNotifier<PeriksaKataHistoryState> {

@@ -7,7 +7,9 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/form_draft_reset_sheet.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../../../shared/widgets/pasteable_url_field.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -76,7 +78,8 @@ class KaryaContributePage extends ConsumerStatefulWidget {
       _KaryaContributePageState();
 }
 
-class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
+class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
+    with LocalDraftKeeper<_KaryaDraft> {
   final _title = TextEditingController();
   final _year = TextEditingController();
   final _description = TextEditingController();
@@ -94,6 +97,176 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
   bool get _isEdit => widget.karyaId != null && widget.karyaId!.isNotEmpty;
 
   @override
+  String get draftKey => 'karya:${widget.karyaId ?? widget.slug ?? 'new'}';
+
+  @override
+  bool get draftHasContent => captureDraft().hasContent;
+
+  @override
+  String get draftToken => [
+    _title.text,
+    _year.text,
+    _description.text,
+    _kind,
+    for (final c in _credits)
+      '${c.name.text}|${c.role}|${c.kreatorId}',
+    for (final s in _sambas) '${s.note.text}|${s.type}',
+    for (final a in _access) '${a.label.text}|${a.url.text}|${a.kind}',
+  ].join('\u0001');
+
+  @override
+  _KaryaDraft captureDraft() => _KaryaDraft(
+    title: _title.text,
+    year: _year.text,
+    description: _description.text,
+    kind: _kind,
+    credits: [
+      for (final c in _credits)
+        _KaryaCreditRowDraft(
+          name: c.name.text,
+          role: c.role,
+          kreatorId: c.kreatorId,
+        ),
+    ],
+    sambas: [
+      for (final s in _sambas)
+        _KaryaSambasRowDraft(note: s.note.text, type: s.type),
+    ],
+    access: [
+      for (final a in _access)
+        _KaryaAccessRowDraft(
+          label: a.label.text,
+          url: a.url.text,
+          kind: a.kind,
+        ),
+    ],
+  );
+
+  void _disposeDynamicRows() {
+    for (final row in _credits) {
+      row.dispose();
+    }
+    for (final row in _sambas) {
+      row.dispose();
+    }
+    for (final row in _access) {
+      row.dispose();
+    }
+    _credits.clear();
+    _sambas.clear();
+    _access.clear();
+  }
+
+  void _attachCreateCreditListener() {
+    if (_isEdit || _credits.isEmpty) return;
+    _credits.first.name.removeListener(_onCreditNameChanged);
+    _credits.first.name.addListener(_onCreditNameChanged);
+  }
+
+  @override
+  void restoreDraft(_KaryaDraft draft) {
+    _title.text = draft.title;
+    _year.text = draft.year;
+    _description.text = draft.description;
+    _kind = draft.kind;
+    _disposeDynamicRows();
+    _credits.addAll(
+      draft.credits.map((c) {
+        final d = _CreditDraft()
+          ..role = c.role
+          ..kreatorId = c.kreatorId;
+        d.name.text = c.name;
+        return d;
+      }),
+    );
+    if (_credits.isEmpty) {
+      _credits.add(_CreditDraft());
+    }
+    _sambas.addAll(
+      draft.sambas.map((s) {
+        final d = _SambasDraft()..type = s.type;
+        d.note.text = s.note;
+        return d;
+      }),
+    );
+    if (_sambas.isEmpty) {
+      _sambas.add(_SambasDraft());
+    }
+    _access.addAll(
+      draft.access.map((a) {
+        final d = _AccessDraft()
+          ..kind = a.kind
+          ..label.text = a.label
+          ..url.text = a.url;
+        return d;
+      }),
+    );
+    _attachCreateCreditListener();
+    if (_isEdit && draft.hasContent) {
+      _prefilled = true;
+    }
+    _kreatorHints = const [];
+    _kreatorLoading = false;
+  }
+
+  void _resetToCreateDefaults() {
+    _title.clear();
+    _year.clear();
+    _description.clear();
+    if (_credits.isNotEmpty) {
+      _credits.first.name.removeListener(_onCreditNameChanged);
+    }
+    _disposeDynamicRows();
+    final prefillKind = widget.prefillKind;
+    _kind = prefillKind == 'film' ? 'film' : 'music';
+    final credit = _CreditDraft()
+      ..role = _kind == 'film' ? 'other' : 'vocal';
+    final prefillName = (widget.prefillCreditName ?? '').trim();
+    if (prefillName.isNotEmpty) {
+      credit.name.text = prefillName;
+    }
+    _credits.add(credit);
+    _sambas.add(_SambasDraft());
+    _prefilled = false;
+    _kreatorHints = const [];
+    _kreatorLoading = false;
+    _attachCreateCreditListener();
+  }
+
+  Future<void> _resetForm() async {
+    if (!draftHasContent) return;
+    final l10n = AppLocalizations.of(context);
+    final ok = await confirmFormDraftReset(context, l10n);
+    if (!ok || !mounted) return;
+
+    if (_isEdit) {
+      if (_credits.isNotEmpty) {
+        _credits.first.name.removeListener(_onCreditNameChanged);
+      }
+      _disposeDynamicRows();
+      _credits.add(_CreditDraft());
+      _sambas.add(_SambasDraft());
+      _title.clear();
+      _year.clear();
+      _description.clear();
+      _kind = null;
+      _prefilled = false;
+      final slug = widget.slug;
+      if (slug != null && slug.isNotEmpty) {
+        final entry = ref.read(karyaBySlugProvider(slug)).value;
+        if (entry != null) {
+          setState(() => _prefillFrom(entry));
+        }
+      }
+    } else {
+      _resetToCreateDefaults();
+    }
+
+    abandonLocalDraft();
+    if (mounted) setState(() {});
+  }
+
+  @override
   void initState() {
     super.initState();
     final prefillKind = widget.prefillKind;
@@ -106,6 +279,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
       credit.name.text = prefillName;
     }
     credit.name.addListener(_onCreditNameChanged);
+    loadLocalDraft();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       final authed = ref.read(authStatusProvider).value?.isAuth ?? false;
@@ -120,6 +294,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
 
   @override
   void dispose() {
+    flushLocalDraft();
     _kreatorDebounce?.cancel();
     if (_credits.isNotEmpty) {
       _credits.first.name.removeListener(_onCreditNameChanged);
@@ -231,6 +406,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
           return d;
         }),
       );
+    sealDraftBaseline();
   }
 
   void _addCredit() {
@@ -316,6 +492,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
           'kind': 'new',
           'payload': payload,
         });
+        commitLocalDraft();
         if (!mounted) return;
         context.pushReplacement(KaryaRouter.proposals.path);
       } catch (error) {
@@ -389,6 +566,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
         'karya_id': widget.karyaId,
         'payload': payload,
       });
+      commitLocalDraft();
       if (!mounted) return;
       context.pop();
       showFToast(context: context, title: Text(l10n.karyaProposeSuccess));
@@ -505,6 +683,16 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
       header: FHeader.nested(
         title: Text(headerTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
+        suffixes: [
+          if (draftHasContent)
+            Tooltip(
+              message: l10n.contributeFormResetTooltip,
+              child: FHeaderAction(
+                icon: const Icon(FLucideIcons.trash),
+                onPress: _resetForm,
+              ),
+            ),
+        ],
       ),
       footer: SafeArea(
         top: false,
@@ -733,5 +921,70 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
         ),
       ],
     ];
+  }
+}
+
+class _KaryaCreditRowDraft {
+  const _KaryaCreditRowDraft({
+    required this.name,
+    required this.role,
+    this.kreatorId,
+  });
+
+  final String name;
+  final String role;
+  final String? kreatorId;
+}
+
+class _KaryaSambasRowDraft {
+  const _KaryaSambasRowDraft({required this.note, required this.type});
+
+  final String note;
+  final String type;
+}
+
+class _KaryaAccessRowDraft {
+  const _KaryaAccessRowDraft({
+    required this.label,
+    required this.url,
+    required this.kind,
+  });
+
+  final String label;
+  final String url;
+  final String kind;
+}
+
+class _KaryaDraft {
+  const _KaryaDraft({
+    required this.title,
+    required this.year,
+    required this.description,
+    required this.kind,
+    required this.credits,
+    required this.sambas,
+    required this.access,
+  });
+
+  final String title;
+  final String year;
+  final String description;
+  final String? kind;
+  final List<_KaryaCreditRowDraft> credits;
+  final List<_KaryaSambasRowDraft> sambas;
+  final List<_KaryaAccessRowDraft> access;
+
+  bool get hasContent {
+    if (title.trim().isNotEmpty ||
+        year.trim().isNotEmpty ||
+        description.trim().isNotEmpty) {
+      return true;
+    }
+    final creditFilled = credits.any((c) => c.name.trim().isNotEmpty);
+    final sambasFilled = sambas.any((s) => s.note.trim().isNotEmpty);
+    final accessFilled = access.any(
+      (a) => a.label.trim().isNotEmpty || a.url.trim().isNotEmpty,
+    );
+    return creditFilled || sambasFilled || accessFilled;
   }
 }

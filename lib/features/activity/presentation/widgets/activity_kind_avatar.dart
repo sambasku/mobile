@@ -103,6 +103,11 @@ class ActivityKindAvatar extends StatelessWidget {
           icon: FLucideIcons.circleHelp,
           foreground: theme.colors.destructive,
         );
+      case FeedActivityKind.chat:
+        return _KindAvatarStyle(
+          icon: FLucideIcons.messageCircle,
+          foreground: primary,
+        );
       case FeedActivityKind.discussion:
         return _KindAvatarStyle(
           icon: FLucideIcons.messagesSquare,

@@ -11,16 +11,44 @@ import '../../../chat/data/chat_providers.dart';
 import '../../../settings/settings_router.dart';
 import '../providers/voice_opt_in_provider.dart';
 import '../providers/voice_room_provider.dart';
+import '../providers/voice_room_summary_provider.dart';
 import 'voice_participants_sheet.dart';
 
 /// Strip 1 baris di atas stream chat - minimal, bukan kartu tebal.
 ///
 /// Gate: `voice_room_enabled` (API) ∧ opt-in SharedPreferences.
-class VoiceRoomStrip extends ConsumerWidget {
+class VoiceRoomStrip extends ConsumerStatefulWidget {
   const VoiceRoomStrip({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<VoiceRoomStrip> createState() => _VoiceRoomStripState();
+}
+
+class _VoiceRoomStripState extends ConsumerState<VoiceRoomStrip> {
+  late final VoiceRoomSummaryController _summaryNotifier =
+      ref.read(voiceRoomSummaryProvider.notifier);
+  var _summaryWatching = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _summaryNotifier.watch();
+      _summaryWatching = true;
+    });
+  }
+
+  @override
+  void dispose() {
+    if (_summaryWatching) {
+      _summaryNotifier.unwatch();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final caps = ref.watch(chatCapabilitiesProvider).asData?.value;
     if (caps == null || !caps.voiceRoomEnabled) {
@@ -29,6 +57,7 @@ class VoiceRoomStrip extends ConsumerWidget {
 
     final optIn = ref.watch(voiceRoomOptInProvider);
     final room = ref.watch(voiceRoomProvider);
+    final summary = ref.watch(voiceRoomSummaryProvider);
     final auth = ref.watch(authStatusProvider).value;
     final isAuth = auth?.isAuth ?? false;
 
@@ -57,6 +86,7 @@ class VoiceRoomStrip extends ConsumerWidget {
               ? _ActiveStrip(
                   l10n: l10n,
                   room: room,
+                  idleParticipantCount: summary.participantCount,
                   isAuth: isAuth,
                   onLogin: () => context.push('/login'),
                   onJoin: () => ref.read(voiceRoomProvider.notifier).join(l10n),
@@ -127,6 +157,7 @@ class _ActiveStrip extends StatelessWidget {
   const _ActiveStrip({
     required this.l10n,
     required this.room,
+    required this.idleParticipantCount,
     required this.isAuth,
     required this.onLogin,
     required this.onJoin,
@@ -137,6 +168,7 @@ class _ActiveStrip extends StatelessWidget {
 
   final AppLocalizations l10n;
   final VoiceRoomState room;
+  final int idleParticipantCount;
   final bool isAuth;
   final VoidCallback onLogin;
   final VoidCallback onJoin;
@@ -161,7 +193,9 @@ class _ActiveStrip extends StatelessWidget {
             ? l10n.voiceStripHearing(speaker)
             : inSession
                 ? l10n.voiceStripInRoom(room.participantCount)
-                : l10n.voiceStripTitle;
+                : idleParticipantCount > 0
+                    ? l10n.voiceStripWatching(idleParticipantCount)
+                    : l10n.voiceStripTitle;
 
     // Tinggi tetap: indikator bicara jangan mengubah layout strip.
     return SizedBox(

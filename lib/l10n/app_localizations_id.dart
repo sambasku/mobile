@@ -8190,6 +8190,26 @@ class AppLocalizationsId extends AppLocalizations {
   String get encyclopediaCoverSemantics => 'Gambar sampul artikel';
 
   @override
+  String get encyclopediaDetailActions => 'Aksi';
+
+  @override
+  String get encyclopediaClapLoginBody =>
+      'Masuk dulu untuk memberi apresiasi pada artikel ini.';
+
+  @override
+  String encyclopediaClapSemantics(String total, String mine) {
+    return 'Apresiasi artikel: $total clap, kamu memberi $mine';
+  }
+
+  @override
+  String encyclopediaClapYours(String count) {
+    return '($count dari kamu)';
+  }
+
+  @override
+  String get encyclopediaBookmarkToggleSemantics => 'Bookmark artikel';
+
+  @override
   String get encyclopediaFieldCover => 'Gambar sampul';
 
   @override
@@ -10977,6 +10997,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get pantunComposeDiscardDraftConfirm => 'Buang';
 
   @override
+  String get contributeFormResetTooltip => 'Kosongkan form';
+
+  @override
+  String get contributeFormResetTitle => 'Kosongkan form usulan?';
+
+  @override
+  String get contributeFormResetBody =>
+      'Isi yang sudah kamu ketik hilang. Draft halaman lain tidak ikut terhapus.';
+
+  @override
+  String get contributeFormResetConfirm => 'Kosongkan';
+
+  @override
   String get pantunComposeRhymeOk => 'Pola rima cocok';
 
   @override
@@ -12822,6 +12855,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get chatEmptyBody => 'Jadi yang pertama menyapa warga di sini.';
 
   @override
+  String chatComposerCharCount(int current, int max) {
+    return '$current/$max';
+  }
+
+  @override
   String get chatComposerHint => 'Tulis pesan…';
 
   @override
@@ -12938,6 +12976,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get chatLongPressDelete => 'Hapus';
 
   @override
+  String get chatLongPressCopy => 'Salin';
+
+  @override
+  String get chatMessageCopied => 'Pesan disalin';
+
+  @override
   String get chatConnectionFailed => 'Koneksi terputus. Coba lagi ya.';
 
   @override
@@ -12952,6 +12996,20 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get settingsVoiceRoomOptInSubtitle =>
       'Gabung obrolan suara di tab Chat (experimental).';
+
+  @override
+  String voiceStripWatching(int count) {
+    return '$count orang di voice room';
+  }
+
+  @override
+  String get chatSwipeReplyHint => 'Geser untuk membalas';
+
+  @override
+  String get feedKindChat => 'Chat publik';
+
+  @override
+  String get feedCtaChat => 'Buka chat';
 
   @override
   String get voiceStripTitle => 'Voice room';
@@ -13113,17 +13171,17 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String chatTypingOne(String name) {
-    return '$name sedang mengetik…';
+    return '$name mengetik…';
   }
 
   @override
   String chatTypingTwo(String a, String b) {
-    return '$a dan $b sedang mengetik…';
+    return '$a dan $b mengetik…';
   }
 
   @override
   String chatTypingMany(int count) {
-    return '$count orang sedang mengetik…';
+    return '$count mengetik…';
   }
 
   @override
@@ -21318,6 +21376,26 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get encyclopediaCoverSemantics => 'Gambar sampul artikel';
 
   @override
+  String get encyclopediaDetailActions => 'Aksi';
+
+  @override
+  String get encyclopediaClapLoginBody =>
+      'Masuk dulu untuk memberi apresiasi pada artikel ini.';
+
+  @override
+  String encyclopediaClapSemantics(String total, String mine) {
+    return 'Apresiasi artikel: $total clap, kamu memberi $mine';
+  }
+
+  @override
+  String encyclopediaClapYours(String count) {
+    return '($count dari kamu)';
+  }
+
+  @override
+  String get encyclopediaBookmarkToggleSemantics => 'Bookmark artikel';
+
+  @override
   String get encyclopediaFieldCover => 'Gambar sampul';
 
   @override
@@ -24105,6 +24183,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get pantunComposeDiscardDraftConfirm => 'Buang';
 
   @override
+  String get contributeFormResetTooltip => 'Kosongkan form';
+
+  @override
+  String get contributeFormResetTitle => 'Kosongkan form usulan?';
+
+  @override
+  String get contributeFormResetBody =>
+      'Isi yang sudah kamu ketik hilang. Draft halaman lain tidak ikut terhapus.';
+
+  @override
+  String get contributeFormResetConfirm => 'Kosongkan';
+
+  @override
   String get pantunComposeRhymeOk => 'Pola rima cocok';
 
   @override
@@ -25950,6 +26041,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get chatEmptyBody => 'Jadi yang pertama menyapa warga di sini.';
 
   @override
+  String chatComposerCharCount(int current, int max) {
+    return '$current/$max';
+  }
+
+  @override
   String get chatComposerHint => 'Tulis pesan…';
 
   @override
@@ -26066,6 +26162,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get chatLongPressDelete => 'Hapus';
 
   @override
+  String get chatLongPressCopy => 'Salin';
+
+  @override
+  String get chatMessageCopied => 'Pesan disalin';
+
+  @override
   String get chatConnectionFailed => 'Koneksi terputus. Coba lagi ya.';
 
   @override
@@ -26080,6 +26182,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get settingsVoiceRoomOptInSubtitle =>
       'Gabung obrolan suara di tab Chat (experimental).';
+
+  @override
+  String voiceStripWatching(int count) {
+    return '$count orang di voice room';
+  }
+
+  @override
+  String get chatSwipeReplyHint => 'Geser untuk membalas';
+
+  @override
+  String get feedKindChat => 'Chat publik';
+
+  @override
+  String get feedCtaChat => 'Buka chat';
 
   @override
   String get voiceStripTitle => 'Voice room';
@@ -26241,17 +26357,17 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String chatTypingOne(String name) {
-    return '$name sedang mengetik…';
+    return '$name mengetik…';
   }
 
   @override
   String chatTypingTwo(String a, String b) {
-    return '$a dan $b sedang mengetik…';
+    return '$a dan $b mengetik…';
   }
 
   @override
   String chatTypingMany(int count) {
-    return '$count orang sedang mengetik…';
+    return '$count mengetik…';
   }
 
   @override

@@ -1,7 +1,5 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
-import 'package:gap/gap.dart';
-
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/chat_models.dart';
 
@@ -31,21 +29,21 @@ class ChatReplyBar extends StatelessWidget {
             ChatMessageKind.text => (target.body ?? '').trim(),
           };
 
-    return Material(
-      color: theme.colors.secondary.withValues(alpha: 0.55),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 8, 4, 8),
-        child: Row(
-          children: [
-            Container(
-              width: 3,
-              height: 36,
-              decoration: BoxDecoration(
-                color: theme.colors.primary,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const Gap(10),
+    // Pola & clip sama [ThreadReplyBanner] (komentar lemma).
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: theme.colors.secondary,
+          border: Border(
+            left: BorderSide(color: theme.colors.primary, width: 3),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 8, 4, 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             Expanded(
               child: Semantics(
                 button: true,
@@ -88,6 +86,7 @@ class ChatReplyBar extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

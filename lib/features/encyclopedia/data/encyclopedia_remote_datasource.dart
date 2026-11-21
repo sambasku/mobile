@@ -73,6 +73,13 @@ abstract interface class EncyclopediaRemoteDatasource {
     @Path('id') String id,
   );
 
+  /// Set clap user (login) - PUT /api/v1/encyclopedia/articles/:id/claps.
+  @PUT('/api/v1/encyclopedia/articles/{id}/claps')
+  Future<ApiResponse<EncyclopediaClapResult>> setClapCount(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
+
   /// Kirim usulan (login) - POST /api/v1/encyclopedia/contributions.
   @POST('/api/v1/encyclopedia/contributions')
   Future<ApiResponse<MyContributionItem>> submitContribution(

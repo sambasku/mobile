@@ -264,6 +264,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.voteUp ||
       FeedActivityKind.voteDown => l10n.feedKindVote,
       FeedActivityKind.discussion => l10n.feedKindDiscussion,
+      FeedActivityKind.chat => l10n.feedKindChat,
       FeedActivityKind.pantun => l10n.feedKindPantun,
       FeedActivityKind.jinye => l10n.feedKindJinye,
       FeedActivityKind.wordImage => l10n.feedKindImage,
@@ -303,6 +304,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.word => l10n.feedCtaSeeMeaning,
       FeedActivityKind.comment => l10n.feedCtaReply,
       FeedActivityKind.discussion => l10n.feedCtaDiscuss,
+      FeedActivityKind.chat => l10n.feedCtaChat,
       FeedActivityKind.pantun => l10n.feedCtaSeePantun,
       FeedActivityKind.jinye => l10n.feedCtaSeeJinye,
       FeedActivityKind.wordImage => l10n.feedCtaSeePhoto,
@@ -346,6 +348,8 @@ class ActivityFeedTile extends ConsumerWidget {
           ':id',
           target.id,
         );
+      case 'chat':
+        return DiscussionRouter.chat.path;
       case 'discussion':
         // Pantun dulu di-wire sebagai discussion (target.type discussion).
         // Response lama / cache L1: bedakan lewat body copy tetap API.

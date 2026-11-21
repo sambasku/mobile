@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../providers/chat_typing_provider.dart';
 
-/// Indikator "X sedang mengetik…" di samping ikon mic composer.
+/// Indikator "{name} mengetik…" di baris atas composer (sejajar counter).
 class ChatTypingIndicator extends ConsumerWidget {
   const ChatTypingIndicator({super.key});
 

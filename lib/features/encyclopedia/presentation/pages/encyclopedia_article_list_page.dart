@@ -11,6 +11,7 @@ import '../../../../core/utils/display_image_url.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
+import '../../../../shared/widgets/public_browse_list_divider.dart';
 import '../../domain/encyclopedia.entity.dart';
 import '../../encyclopedia_router.dart';
 import '../providers/encyclopedia_list_providers.dart';
@@ -198,7 +199,7 @@ class _EncyclopediaArticleListPageState
                   }
                   return RefreshIndicator(
                     onRefresh: _reload,
-                    child: ListView.builder(
+                    child: ListView.separated(
                       controller: _scroll,
                       physics: const AlwaysScrollableScrollPhysics(),
                       // Tanpa top: FHeader sudah SafeArea; default MediaQuery.top
@@ -210,6 +211,8 @@ class _EncyclopediaArticleListPageState
                           ScrollViewKeyboardDismissBehavior.onDrag,
                       itemCount:
                           state.items.length + (state.isLoadingMore ? 1 : 0),
+                      separatorBuilder: (context, _) =>
+                          const PublicBrowseListDivider(),
                       itemBuilder: (context, i) {
                         if (i >= state.items.length) {
                           return const Padding(
@@ -386,12 +389,13 @@ class _SkeletonList extends StatelessWidget {
             : const Color(0xFFF4F4F5),
         duration: const Duration(milliseconds: 1500),
       ),
-      child: ListView.builder(
+      child: ListView.separated(
         physics: const NeverScrollableScrollPhysics(),
         padding: EdgeInsets.only(
           bottom: MediaQuery.paddingOf(context).bottom,
         ),
         itemCount: 8,
+        separatorBuilder: (context, _) => const PublicBrowseListDivider(),
         itemBuilder: (_, _) => const Padding(
           padding: EdgeInsets.symmetric(vertical: 6),
           child: Row(
