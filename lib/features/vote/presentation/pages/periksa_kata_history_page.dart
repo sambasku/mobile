@@ -7,13 +7,16 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../core/theme/f_colors_x.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../dictionary/dictionary_router.dart';
 import '../../../my_votes/domain/entities/my_vote_item.dart';
 import '../providers/periksa_kata_providers.dart';
 import '../widgets/meaning_vote_row.dart';
+import '../widgets/periksa_kata_card_shell.dart';
+import '../widgets/periksa_meaning_blurb.dart';
+import '../widgets/periksa_vote_rail.dart';
+import '../widgets/periksa_vote_split_panel.dart';
 
 /// Riwayat pemeriksaan makna (vote meaning + community_status).
 class PeriksaKataHistoryPage extends ConsumerStatefulWidget {
@@ -99,8 +102,8 @@ class _PeriksaKataHistoryPageState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final auth = ref.watch(authStatusProvider);
     final theme = context.theme;
+    final auth = ref.watch(authStatusProvider);
 
     return FScaffold(
       childPad: true,
@@ -187,65 +190,15 @@ class _PeriksaKataHistoryPageState
                   controller: _pageController,
                   itemCount: 4,
                   onPageChanged: _onPageChanged,
-                  itemBuilder: (context, _) {
+                  itemBuilder: (context, pageIndex) {
+                    final filter = _statuses[pageIndex];
                     return RefreshIndicator(
                       onRefresh: _refresh,
-                      child: async.when(
-                        loading: () => CustomScrollView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          slivers: [
-                            const SliverFillRemaining(
-                              hasScrollBody: false,
-                              child: Center(child: FCircularProgress()),
-                            ),
-                          ],
-                        ),
-                        error: (err, _) => CustomScrollView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          slivers: [
-                            SliverFillRemaining(
-                              hasScrollBody: false,
-                              child: Center(
-                                child: Text(
-                                  err.toString(),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        data: (state) {
-                          if (state.items.isEmpty) {
-                            return CustomScrollView(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              slivers: [
-                                SliverFillRemaining(
-                                  hasScrollBody: false,
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(24),
-                                      child: Text(
-                                        state.q.isEmpty
-                                            ? l10n.periksaKataHistoryEmpty
-                                            : l10n.periksaKataSearchEmpty,
-                                        textAlign: TextAlign.center,
-                                        style: theme.typography.body.sm
-                                            .copyWith(
-                                          color: theme.colors.mutedForeground,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
-
-                          return _HistoryList(
-                            items: state.items,
-                            hasMore: state.hasMore,
-                          );
-                        },
+                      child: _buildHistoryTabBody(
+                        async: async,
+                        filter: filter,
+                        l10n: l10n,
+                        theme: theme,
                       ),
                     );
                   },
@@ -257,14 +210,104 @@ class _PeriksaKataHistoryPageState
       ),
     );
   }
+  Widget _buildHistoryTabBody({
+    required AsyncValue<PeriksaKataHistoryState> async,
+    required String? filter,
+    required AppLocalizations l10n,
+    required FThemeData theme,
+  }) {
+    final notifier = ref.read(periksaKataHistoryControllerProvider.notifier);
+    final cached = notifier.cachedForStatus(filter);
+    final isActiveTab = filter == _statuses[_tabIndex];
+
+    return async.when(
+      loading: () {
+        if (cached != null) {
+          return _buildHistoryScroll(cached, l10n, theme);
+        }
+        if (!isActiveTab) {
+          return _buildHistoryScroll(
+            PeriksaKataHistoryState(communityStatus: filter),
+            l10n,
+            theme,
+          );
+        }
+        return CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            const SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(child: FCircularProgress()),
+            ),
+          ],
+        );
+      },
+      error: (err, _) {
+        if (cached != null) {
+          return _buildHistoryScroll(cached, l10n, theme);
+        }
+        return CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Text(err.toString(), textAlign: TextAlign.center),
+              ),
+            ),
+          ],
+        );
+      },
+      data: (state) {
+        final effective = state.communityStatus == filter
+            ? state
+            : (cached ??
+                PeriksaKataHistoryState(
+                  communityStatus: filter,
+                  q: state.q,
+                ));
+        return _buildHistoryScroll(effective, l10n, theme);
+      },
+    );
+  }
+
+  Widget _buildHistoryScroll(
+    PeriksaKataHistoryState state,
+    AppLocalizations l10n,
+    FThemeData theme,
+  ) {
+    if (state.items.isEmpty) {
+      return CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  state.q.isEmpty
+                      ? l10n.periksaKataHistoryEmpty
+                      : l10n.periksaKataSearchEmpty,
+                  textAlign: TextAlign.center,
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return _HistoryList(items: state.items, hasMore: state.hasMore);
+  }
+
 }
 
-
 class _HistoryList extends ConsumerStatefulWidget {
-  const _HistoryList({
-    required this.items,
-    required this.hasMore,
-  });
+  const _HistoryList({required this.items, required this.hasMore});
 
   final List<MyVoteItem> items;
   final bool hasMore;
@@ -346,9 +389,7 @@ class _HistoryTileState extends ConsumerState<_HistoryTile> {
       ':id',
       item.word!.id,
     );
-    context.push(
-      '$path?meaning=${Uri.encodeQueryComponent(item.targetId)}',
-    );
+    context.push('$path?meaning=${Uri.encodeQueryComponent(item.targetId)}');
   }
 
   Future<void> _showVoteLockedSheet() async {
@@ -456,7 +497,6 @@ class _HistoryTileState extends ConsumerState<_HistoryTile> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = context.theme;
     final lemma = item.word?.lemma ?? '-';
     final translation = (item.translation ?? '').trim();
     final definition = (item.definition ?? '').trim();
@@ -464,120 +504,28 @@ class _HistoryTileState extends ConsumerState<_HistoryTile> {
     // Compact: lemma / terjemahan / definisi saja (tanpa label & meta).
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: theme.colors.background,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: theme.colors.border),
-        ),
-        child: Column(
+      child: PeriksaKataCardShell(
+        content: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: FTappable(
-                      onPress: item.word == null ? null : _openDetail,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 6, 8, 4),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              lemma,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.typography.body.sm.copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            if (translation.isNotEmpty) ...[
-                              const Gap(2),
-                              Text(
-                                translation,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.typography.body.sm.copyWith(
-                                  color: theme.colors.foreground,
-                                  height: 1.25,
-                                ),
-                              ),
-                            ],
-                            if (definition.isNotEmpty) ...[
-                              const Gap(2),
-                              Text(
-                                definition,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.typography.body.sm.copyWith(
-                                  color: theme.colors.foreground,
-                                  height: 1.25,
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
+            FTappable(
+              onPress: item.word == null ? null : _openDetail,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 6, 8, 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PeriksaLemmaHeader(
+                      lemma: lemma,
+                      contributorUsername: item.contributorUsername,
+                      contributorDisplayName: item.contributorDisplayName,
                     ),
-                  ),
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: theme.colors.secondary,
-                      borderRadius: BorderRadius.zero,
+                    PeriksaMeaningBlurb(
+                      translation: translation,
+                      definition: definition,
                     ),
-                    child: SizedBox(
-                      width: 100,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(6, 6, 6, 6),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: _HistoryVoteIcon(
-                                  icon: FLucideIcons.arrowBigDown,
-                                  count: item.downvotes,
-                                  active: item.value == -1,
-                                  enabled: !_inFlight,
-                                  idleBg: theme.colors.destructive
-                                      .withValues(alpha: 0.12),
-                                  idleFg: theme.colors.destructive,
-                                  idleBorder: theme.colors.destructive
-                                      .withValues(alpha: 0.45),
-                                  activeBg: theme.colors.destructive,
-                                  activeFg:
-                                      theme.colors.destructiveForeground,
-                                  semanticsLabel: l10n.periksaKataDisagree,
-                                  onPress: () => _revise(-1),
-                                ),
-                              ),
-                              const Gap(4),
-                              Expanded(
-                                child: _HistoryVoteIcon(
-                                  icon: FLucideIcons.arrowBigUp,
-                                  count: item.upvotes,
-                                  active: item.value == 1,
-                                  enabled: !_inFlight,
-                                  idleBg: theme.colors.success
-                                      .withValues(alpha: 0.12),
-                                  idleFg: theme.colors.success,
-                                  idleBorder: theme.colors.success
-                                      .withValues(alpha: 0.45),
-                                  activeBg: theme.colors.success,
-                                  activeFg: theme.colors.background,
-                                  semanticsLabel: l10n.periksaKataAgree,
-                                  onPress: () => _revise(1),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             Padding(
@@ -589,83 +537,19 @@ class _HistoryTileState extends ConsumerState<_HistoryTile> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _HistoryVoteIcon extends StatelessWidget {
-  const _HistoryVoteIcon({
-    required this.icon,
-    required this.count,
-    required this.active,
-    required this.enabled,
-    required this.idleBg,
-    required this.idleFg,
-    required this.idleBorder,
-    required this.activeBg,
-    required this.activeFg,
-    required this.semanticsLabel,
-    required this.onPress,
-  });
-
-  final IconData icon;
-  final int count;
-  final bool active;
-  final bool enabled;
-  final Color idleBg;
-  final Color idleFg;
-  final Color idleBorder;
-  final Color activeBg;
-  final Color activeFg;
-  final String semanticsLabel;
-  final VoidCallback onPress;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final bg = active ? activeBg : idleBg;
-    final fg = active ? activeFg : idleFg;
-    final border = active ? activeBg : idleBorder;
-
-    return Semantics(
-      button: true,
-      label: semanticsLabel,
-      value: '$count',
-      child: Opacity(
-        opacity: enabled || active ? 1 : 0.55,
-        child: FTappable(
-          onPress: enabled ? onPress : null,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: bg,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: border, width: 1.5),
-            ),
-            child: SizedBox(
-              height: 44,
-              width: double.infinity,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(icon, size: 18, color: fg),
-                    const Gap(4),
-                    Text(
-                      '$count',
-                      style: theme.typography.body.sm.copyWith(
-                        color: fg,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+        voteRail: PeriksaVoteRail(
+          child: PeriksaVoteSplitPanel(
+            upvotes: item.upvotes,
+            downvotes: item.downvotes,
+            myVote: item.value,
+            disagreeSemantics: l10n.periksaKataDisagree,
+            agreeSemantics: l10n.periksaKataAgree,
+            onVote: (value) => _revise(value),
           ),
         ),
       ),
     );
   }
 }
+
+

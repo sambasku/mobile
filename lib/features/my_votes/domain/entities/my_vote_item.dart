@@ -25,6 +25,8 @@ class MyVoteItem {
     this.downvotes = 0,
     this.definition,
     this.translation,
+    this.contributorUsername,
+    this.contributorDisplayName,
   });
 
   final String id;
@@ -45,6 +47,9 @@ class MyVoteItem {
   final String? definition;
   final String? translation;
 
+  final String? contributorUsername;
+  final String? contributorDisplayName;
+
   bool get canOpen => word != null;
 
   /// Boleh revisi vote selama makna belum selesai (bukan verified/rejected).
@@ -63,6 +68,8 @@ class MyVoteItem {
     int? downvotes,
     String? definition,
     String? translation,
+    String? contributorUsername,
+    String? contributorDisplayName,
     bool clearWord = false,
     bool clearCommunityStatus = false,
     bool clearDefinition = false,
@@ -82,6 +89,9 @@ class MyVoteItem {
       downvotes: downvotes ?? this.downvotes,
       definition: clearDefinition ? null : (definition ?? this.definition),
       translation: clearTranslation ? null : (translation ?? this.translation),
+      contributorUsername: contributorUsername ?? this.contributorUsername,
+      contributorDisplayName:
+          contributorDisplayName ?? this.contributorDisplayName,
     );
   }
 }

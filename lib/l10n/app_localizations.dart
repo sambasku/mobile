@@ -1259,6 +1259,66 @@ abstract class AppLocalizations {
   /// **'Riwayat Baleho'**
   String get balehoHistoryTitle;
 
+  /// Judul halaman detail performa satu pesanan Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Performa Pesanan'**
+  String get balehoHistoryDetailTitle;
+
+  /// Empty state detail pesanan Baleho saat item tak ada di daftar
+  ///
+  /// In id, this message translates to:
+  /// **'Pesanan tidak ditemukan atau sudah dihapus. Tarik ke bawah untuk memuat ulang ya.'**
+  String get balehoHistoryDetailNotFound;
+
+  /// Label baris waktu berakhir di detail pesanan
+  ///
+  /// In id, this message translates to:
+  /// **'Berakhir'**
+  String get balehoHistoryDetailEnd;
+
+  /// Label baris status di detail pesanan
+  ///
+  /// In id, this message translates to:
+  /// **'Status'**
+  String get balehoHistoryDetailStatus;
+
+  /// Label baris posisi di detail pesanan
+  ///
+  /// In id, this message translates to:
+  /// **'Posisi'**
+  String get balehoHistoryDetailPosition;
+
+  /// Label baris tanggal dibuat di detail pesanan
+  ///
+  /// In id, this message translates to:
+  /// **'Dibuat'**
+  String get balehoHistoryDetailCreated;
+
+  /// Durasi tayang < 1 jam
+  ///
+  /// In id, this message translates to:
+  /// **'{minutes} menit'**
+  String balehoDurationMinutes(int minutes);
+
+  /// Durasi tayang < 1 hari
+  ///
+  /// In id, this message translates to:
+  /// **'{hours} jam'**
+  String balehoDurationHours(int hours);
+
+  /// Durasi tayang hari penuh
+  ///
+  /// In id, this message translates to:
+  /// **'{days} hari'**
+  String balehoDurationDays(int days);
+
+  /// Durasi tayang campuran hari+jam
+  ///
+  /// In id, this message translates to:
+  /// **'{days} hari {hours} jam'**
+  String balehoDurationDaysHours(int days, int hours);
+
   /// No description provided for @balehoHistoryLoginRequired.
   ///
   /// In id, this message translates to:
@@ -1397,27 +1457,11 @@ abstract class AppLocalizations {
   /// **'Biaya Rp {amount}'**
   String balehoHistoryStatQuoted(String amount);
 
-  /// Biaya per 1000 tayang di riwayat Baleho
-  ///
-  /// In id, this message translates to:
-  /// **'CPM Rp {amount}'**
-  String balehoHistoryStatCpm(String amount);
-
   /// Biaya per buka detail di riwayat Baleho
   ///
   /// In id, this message translates to:
   /// **'CPC Rp {amount}'**
   String balehoHistoryStatCpc(String amount);
-
-  /// Ringkas tren 7 hari terakhir di riwayat Baleho
-  ///
-  /// In id, this message translates to:
-  /// **'7 hari: {impressions} tayang · {taps} buka · {actions} klik'**
-  String balehoHistoryStatDaily7(
-    String impressions,
-    String taps,
-    String actions,
-  );
 
   /// No description provided for @balehoValidationNeedFrame.
   ///

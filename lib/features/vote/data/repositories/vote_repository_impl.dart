@@ -27,6 +27,8 @@ VoteDeckItem parseVoteDeckItem(Map<String, dynamic> map) {
     sense: map['sense']?.toString(),
     definition: _parseOptionalText(map['definition']),
     translation: _parseOptionalText(map['translation']),
+    contributorUsername: _parseOptionalText(map['contributor_username']),
+    contributorDisplayName: _parseOptionalText(map['contributor_display_name']),
     orderIndex: map['order_index'] is int
         ? map['order_index'] as int
         : int.tryParse('${map['order_index']}') ?? 1,
@@ -120,7 +122,9 @@ class VoteRepositoryImpl implements VoteRepository {
     List<VoteTarget> targets,
   ) async {
     try {
-      final response = await _remoteDatasource.getCounts(_targetsQuery(targets));
+      final response = await _remoteDatasource.getCounts(
+        _targetsQuery(targets),
+      );
 
       if (response.success == false) {
         return Either.left(
@@ -294,8 +298,8 @@ class VoteRepositoryImpl implements VoteRepository {
   /// Query param `targets` = daftar "type:id" dipisah koma (max 50 pasang,
   /// validator backend yang menegakkan).
   Map<String, dynamic> _targetsQuery(List<VoteTarget> targets) => {
-        'targets': targets.map((t) => '${t.type}:${t.id}').join(','),
-      };
+    'targets': targets.map((t) => '${t.type}:${t.id}').join(','),
+  };
 
   VoteFailure _mapDio(DioException error) {
     final data = error.response?.data;

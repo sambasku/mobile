@@ -8,6 +8,7 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/utils/format_number.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/auth_router.dart';
+import '../../baleho_router.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/baleho_api.dart';
 import '../providers/baleho_board_provider.dart';
@@ -97,24 +98,24 @@ class _GuestBody extends StatelessWidget {
   }
 }
 
-final _balehoHistoryProvider =
+final balehoHistoryProvider =
     FutureProvider.autoDispose<List<BalehoPlacementHistoryItem>>((ref) {
-  return ref.watch(balehoApiProvider).listMyPlacements();
-});
+      return ref.watch(balehoApiProvider).listMyPlacements();
+    });
 
 class _HistoryList extends ConsumerWidget {
   const _HistoryList();
 
   String _statusLabel(AppLocalizations l10n, String status) => switch (status) {
-        'pending_review' => l10n.balehoStatusPendingReview,
-        'awaiting_payment' => l10n.balehoStatusAwaitingPayment,
-        'live' => l10n.balehoStatusLive,
-        'paused' => l10n.balehoStatusPaused,
-        'rejected' => l10n.balehoStatusRejected,
-        'cancelled' => l10n.balehoStatusCancelled,
-        'expired' => l10n.balehoStatusExpired,
-        _ => status,
-      };
+    'pending_review' => l10n.balehoStatusPendingReview,
+    'awaiting_payment' => l10n.balehoStatusAwaitingPayment,
+    'live' => l10n.balehoStatusLive,
+    'paused' => l10n.balehoStatusPaused,
+    'rejected' => l10n.balehoStatusRejected,
+    'cancelled' => l10n.balehoStatusCancelled,
+    'expired' => l10n.balehoStatusExpired,
+    _ => status,
+  };
 
   bool _isEndingSoon(BalehoPlacementHistoryItem item) {
     if (item.status != 'live' || item.endsAt == null) return false;
@@ -127,11 +128,11 @@ class _HistoryList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
-    final async = ref.watch(_balehoHistoryProvider);
+    final async = ref.watch(balehoHistoryProvider);
 
     Future<void> refresh() async {
-      ref.invalidate(_balehoHistoryProvider);
-      await ref.read(_balehoHistoryProvider.future);
+      ref.invalidate(balehoHistoryProvider);
+      await ref.read(balehoHistoryProvider.future);
     }
 
     return async.when(
@@ -155,7 +156,7 @@ class _HistoryList extends ConsumerWidget {
                   const Gap(12),
                   FButton(
                     variant: FButtonVariant.outline,
-                    onPress: () => ref.invalidate(_balehoHistoryProvider),
+                    onPress: () => ref.invalidate(balehoHistoryProvider),
                     child: Text(l10n.commonRetry),
                   ),
                 ],
@@ -211,44 +212,50 @@ class _HistoryList extends ConsumerWidget {
                 if (endingSoon) l10n.balehoHistoryEndingSoonHint,
                 if (expired) l10n.balehoHistoryRebookHint,
               ];
-              return FTileGroup(
-                children: [
-                  FTile(
-                    prefix: item.mediaUrl != null && item.mediaUrl!.isNotEmpty
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: Image.network(
-                              item.mediaUrl!,
-                              width: 40,
-                              height: 40,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, _, _) => Icon(
-                                FLucideIcons.image,
-                                size: 20,
-                                color: theme.colors.mutedForeground,
-                              ),
-                            ),
-                          )
-                        : Icon(
-                            FLucideIcons.layoutGrid,
-                            size: 20,
-                            color: theme.colors.primary,
-                          ),
-                    title: Text(title),
-                    subtitle: Text(subtitleLines.join('\n')),
-                    suffix: expired
-                        ? FButton(
-                            variant: FButtonVariant.outline,
-                            onPress: () => context.go('/baleho'),
-                            child: Text(l10n.balehoHistoryRebookCta),
-                          )
-                        : null,
-                  ),
-                  FTile(
-                    title: Text(l10n.balehoHistoryStatsTitle),
-                    subtitle: _BalehoPerfStats(item: item),
-                  ),
-                ],
+              // Listing mengikuti pola tile inbox notifikasi: identitas +
+              // status satu baris, thumbnail di kanan, angka performa di detail.
+              final thumb = item.mediaUrl != null && item.mediaUrl!.isNotEmpty
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        item.mediaUrl!,
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) => Icon(
+                          FLucideIcons.image,
+                          size: 20,
+                          color: theme.colors.mutedForeground,
+                        ),
+                      ),
+                    )
+                  : null;
+              return FTile(
+                prefix: Icon(
+                  FLucideIcons.layoutGrid,
+                  size: 20,
+                  color: theme.colors.primary,
+                ),
+                title: Text(title),
+                subtitle: Text(subtitleLines.join(' · ')),
+                suffix: expired
+                    ? FButton(
+                        variant: FButtonVariant.outline,
+                        onPress: () => context.go('/baleho'),
+                        child: Text(l10n.balehoHistoryRebookCta),
+                      )
+                    : thumb == null
+                    ? const Icon(FLucideIcons.chevronRight)
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          thumb,
+                          const Gap(8),
+                          const Icon(FLucideIcons.chevronRight),
+                        ],
+                      ),
+                onPress: () =>
+                    context.push('${BalehoRouter.history.path}/${item.id}'),
               );
             },
           ),
@@ -258,9 +265,10 @@ class _HistoryList extends ConsumerWidget {
   }
 }
 
-/// Baris metrik padat: funnel + rasio + biaya + ringkas 7 hari.
-class _BalehoPerfStats extends StatelessWidget {
-  const _BalehoPerfStats({required this.item});
+/// Baris metrik padat: funnel + rasio + biaya. Tanpa CPM - pemilik
+/// pesanan cukup lihat angka mentah dan biaya (quoted/CPC).
+class BalehoPerfStats extends StatelessWidget {
+  const BalehoPerfStats({super.key, required this.item});
 
   final BalehoPlacementHistoryItem item;
 
@@ -287,14 +295,20 @@ class _BalehoPerfStats extends StatelessWidget {
           children: [
             Text(value, style: valueStyle),
             const Gap(2),
-            Text(label, style: muted, maxLines: 1, overflow: TextOverflow.ellipsis),
+            Text(
+              label,
+              style: muted,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
       );
     }
 
     final rateBits = <String>[
-      if (item.impressions > 0) l10n.balehoHistoryStatCtr(_pct(item.ctrPercent)),
+      if (item.impressions > 0)
+        l10n.balehoHistoryStatCtr(_pct(item.ctrPercent)),
       if (item.taps > 0)
         l10n.balehoHistoryStatActionRate(_pct(item.actionRatePercent)),
       if (item.actions > 0)
@@ -304,28 +318,19 @@ class _BalehoPerfStats extends StatelessWidget {
     final costBits = <String>[
       if (item.quotedAmount != null)
         l10n.balehoHistoryStatQuoted(formatRibuan(item.quotedAmount!)),
-      if (item.cpmIdr != null)
-        l10n.balehoHistoryStatCpm(formatRibuan(item.cpmIdr!)),
       if (item.cpcIdr != null)
         l10n.balehoHistoryStatCpc(formatRibuan(item.cpcIdr!)),
     ];
-
-    var dImp = 0;
-    var dTap = 0;
-    var dAct = 0;
-    for (final d in item.daily) {
-      dImp += d.impressions;
-      dTap += d.taps;
-      dAct += d.actions;
-    }
-    final hasDaily = item.daily.isNotEmpty && (dImp + dTap + dAct) > 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
           children: [
-            cell(l10n.balehoHistoryStatImpressions, formatRibuan(item.impressions)),
+            cell(
+              l10n.balehoHistoryStatImpressions,
+              formatRibuan(item.impressions),
+            ),
             cell(l10n.balehoHistoryStatTaps, formatRibuan(item.taps)),
             cell(l10n.balehoHistoryStatActions, formatRibuan(item.actions)),
           ],
@@ -337,17 +342,6 @@ class _BalehoPerfStats extends StatelessWidget {
         if (costBits.isNotEmpty) ...[
           const Gap(2),
           Text(costBits.join(' · '), style: muted),
-        ],
-        if (hasDaily) ...[
-          const Gap(2),
-          Text(
-            l10n.balehoHistoryStatDaily7(
-              formatRibuan(dImp),
-              formatRibuan(dTap),
-              formatRibuan(dAct),
-            ),
-            style: muted,
-          ),
         ],
       ],
     );

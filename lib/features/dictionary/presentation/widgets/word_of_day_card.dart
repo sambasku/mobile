@@ -182,21 +182,19 @@ class _WordOfDayBody extends ConsumerWidget {
                                 ),
                               ),
                             ],
-                            if (definition.isNotEmpty) ...[
-                              const Gap(1),
-                              Text(
-                                definition,
-                                maxLines: 1,
-                                softWrap: false,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.typography.body.xs3.copyWith(
-                                  height: 1.2,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.white.withValues(alpha: 0.85),
-                                  shadows: textShadow,
-                                ),
+                            const Gap(1),
+                            Text(
+                              definition.isNotEmpty ? definition : '-',
+                              maxLines: 1,
+                              softWrap: false,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.typography.body.xs3.copyWith(
+                                height: 1.2,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.white.withValues(alpha: 0.85),
+                                shadows: textShadow,
                               ),
-                            ],
+                            ),
                           ],
                         ),
                       ),

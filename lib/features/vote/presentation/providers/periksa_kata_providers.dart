@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -353,9 +355,20 @@ class PeriksaKataHistoryController extends _$PeriksaKataHistoryController {
   String _q = '';
   String? _communityStatus;
 
-  @override
-  Future<PeriksaKataHistoryState> build() async {
-    final auth = ref.watch(authStatusProvider).value;
+  final Map<String, PeriksaKataHistoryState> _statusCache = {};
+
+  static String _statusKey(String? status) => status ?? '__all__';
+
+  /// Cache per filter tab; dipakai PageView agar swipe tidak flash loading.
+  PeriksaKataHistoryState? cachedForStatus(String? communityStatus) =>
+      _statusCache[_statusKey(communityStatus)];
+
+  void _putCache(PeriksaKataHistoryState value) {
+    _statusCache[_statusKey(value.communityStatus)] = value;
+  }
+
+  Future<PeriksaKataHistoryState> _fetchForCurrentFilters() async {
+    final auth = ref.read(authStatusProvider).value;
     if (!(auth?.isAuth ?? false)) {
       return PeriksaKataHistoryState(
         q: _q,
@@ -363,14 +376,20 @@ class PeriksaKataHistoryController extends _$PeriksaKataHistoryController {
       );
     }
 
-    final result = await ref.watch(listMyVotesUseCaseProvider)(
+    final result = await ref.read(listMyVotesUseCaseProvider)(
       limit: _pageSize,
       targetType: 'meaning',
       communityStatus: _communityStatus,
       q: _q.isEmpty ? null : _q,
     );
+    if (!ref.mounted) {
+      return PeriksaKataHistoryState(q: _q, communityStatus: _communityStatus);
+    }
     final page = result.match((failure) => throw failure, (page) => page);
     final items = await _withLiveCounts(page.items);
+    if (!ref.mounted) {
+      return PeriksaKataHistoryState(q: _q, communityStatus: _communityStatus);
+    }
     return PeriksaKataHistoryState(
       items: items,
       nextCursor: page.nextCursor,
@@ -378,6 +397,29 @@ class PeriksaKataHistoryController extends _$PeriksaKataHistoryController {
       q: _q,
       communityStatus: _communityStatus,
     );
+  }
+
+  Future<void> _refreshCurrentTabSilent() async {
+    if (!ref.mounted) return;
+    try {
+      final data = await _fetchForCurrentFilters();
+      if (!ref.mounted) return;
+      if (data.communityStatus != _communityStatus) return;
+      _putCache(data);
+      state = AsyncData(data);
+    } on Object {
+      // Pertahankan cache/stale saat refresh diam gagal.
+    }
+  }
+
+  @override
+  Future<PeriksaKataHistoryState> build() async {
+    ref.watch(authStatusProvider);
+    ref.watch(listMyVotesUseCaseProvider);
+    final data = await _fetchForCurrentFilters();
+    if (!ref.mounted) return data;
+    _putCache(data);
+    return data;
   }
 
   /// Total komunitas dari GET /votes/counts (staging history belum selalu
@@ -416,13 +458,20 @@ class PeriksaKataHistoryController extends _$PeriksaKataHistoryController {
     final next = raw.trim();
     if (next == _q) return;
     _q = next;
+    _statusCache.clear();
     ref.invalidateSelf();
   }
 
   void setCommunityStatus(String? status) {
     if (status == _communityStatus) return;
     _communityStatus = status;
-    ref.invalidateSelf();
+    final cached = _statusCache[_statusKey(status)];
+    if (cached != null) {
+      state = AsyncData(cached);
+      unawaited(_refreshCurrentTabSilent());
+    } else {
+      ref.invalidateSelf();
+    }
   }
 
   Future<MyVoteFailure?> loadMore() async {
@@ -452,14 +501,14 @@ class PeriksaKataHistoryController extends _$PeriksaKataHistoryController {
     final enriched = await _withLiveCounts(page.items);
     if (!ref.mounted) return null;
     final latest = state.value ?? current;
-    state = AsyncData(
-      latest.copyWith(
-        isLoadingMore: false,
-        items: [...latest.items, ...enriched],
-        nextCursor: page.nextCursor,
-        hasMore: page.hasMore,
-      ),
+    final next = latest.copyWith(
+      isLoadingMore: false,
+      items: [...latest.items, ...enriched],
+      nextCursor: page.nextCursor,
+      hasMore: page.hasMore,
     );
+    state = AsyncData(next);
+    _putCache(next);
     return null;
   }
 
@@ -502,7 +551,9 @@ class PeriksaKataHistoryController extends _$PeriksaKataHistoryController {
                 row,
           ];
         }
-        state = AsyncData(current.copyWith(items: items));
+        final next = current.copyWith(items: items);
+        state = AsyncData(next);
+        _putCache(next);
 
         ref
             .read(periksaKataFeedControllerProvider.notifier)

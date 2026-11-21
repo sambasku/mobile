@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -17,6 +16,10 @@ import '../../domain/entities/vote_deck_item.dart';
 import '../../periksa_kata_router.dart';
 import '../providers/periksa_kata_providers.dart';
 import '../widgets/meaning_vote_row.dart';
+import '../widgets/periksa_kata_card_shell.dart';
+import '../widgets/periksa_meaning_blurb.dart';
+import '../widgets/periksa_vote_rail.dart';
+import '../widgets/periksa_vote_split_panel.dart';
 
 /// Feed Periksa Kata: makna published belum verified.
 ///
@@ -117,10 +120,7 @@ class _LoginGate extends StatelessWidget {
 }
 
 class _FeedBody extends ConsumerWidget {
-  const _FeedBody({
-    required this.onSearchChanged,
-    required this.onRefresh,
-  });
+  const _FeedBody({required this.onSearchChanged, required this.onRefresh});
 
   final ValueChanged<String> onSearchChanged;
   final Future<void> Function() onRefresh;
@@ -312,17 +312,14 @@ class _FeedListState extends ConsumerState<_FeedList> {
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
         SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final item = widget.items[index];
-              return _PeriksaKataCard(
-                item: item,
-                sessionVote: widget.sessionVotes[item.id],
-                isPriorVote: widget.priorVoteIds.contains(item.id),
-              );
-            },
-            childCount: widget.items.length,
-          ),
+          delegate: SliverChildBuilderDelegate((context, index) {
+            final item = widget.items[index];
+            return _PeriksaKataCard(
+              item: item,
+              sessionVote: widget.sessionVotes[item.id],
+              isPriorVote: widget.priorVoteIds.contains(item.id),
+            );
+          }, childCount: widget.items.length),
         ),
         const SliverFillRemaining(
           hasScrollBody: false,
@@ -410,13 +407,12 @@ class _PeriksaKataCard extends ConsumerWidget {
       showFToast(context: context, title: Text(failure.message));
       return;
     }
-    final after = ref.read(periksaKataFeedControllerProvider).value
+    final after = ref
+        .read(periksaKataFeedControllerProvider)
+        .value
         ?.sessionVoteOf(item.id);
     if (hadVote && after == null) {
-      showFToast(
-        context: context,
-        title: Text(l10n.periksaKataUnvoteDone),
-      );
+      showFToast(context: context, title: Text(l10n.periksaKataUnvoteDone));
     }
   }
 
@@ -428,88 +424,28 @@ class _PeriksaKataCard extends ConsumerWidget {
     final definition = (item.definition ?? '').trim();
 
     // Compact: lemma / terjemahan / definisi saja (tanpa label & meta).
-    final card = DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colors.background,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: theme.colors.border),
-      ),
-      child: Column(
+    final card = PeriksaKataCardShell(
+      content: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: FTappable(
-                    onPress: () => _openDetail(context),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 6, 8, 4),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.lemma,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.typography.body.sm.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          if (translation.isNotEmpty) ...[
-                            const Gap(2),
-                            Text(
-                              translation,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.typography.body.sm.copyWith(
-                                color: theme.colors.foreground,
-                                height: 1.25,
-                              ),
-                            ),
-                          ],
-                          if (definition.isNotEmpty) ...[
-                            const Gap(2),
-                            Text(
-                              definition,
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.typography.body.sm.copyWith(
-                                color: theme.colors.foreground,
-                                height: 1.25,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
+          FTappable(
+            onPress: () => _openDetail(context),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 6, 8, 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  PeriksaLemmaHeader(
+                    lemma: item.lemma,
+                    contributorUsername: item.contributorUsername,
+                    contributorDisplayName: item.contributorDisplayName,
                   ),
-                ),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: theme.colors.secondary,
-                    borderRadius: BorderRadius.zero,
+                  PeriksaMeaningBlurb(
+                    translation: translation,
+                    definition: definition,
                   ),
-                  child: SizedBox(
-                    width: 100,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(6, 6, 6, 6),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: _PeriksaSideVotePanel(
-                          upvotes: item.upvotes,
-                          downvotes: item.downvotes,
-                          myVote: sessionVote,
-                          disagreeSemantics: l10n.periksaKataDisagree,
-                          agreeSemantics: l10n.periksaKataAgree,
-                          onVote: (value) => _onVote(context, ref, value),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Padding(
@@ -520,6 +456,16 @@ class _PeriksaKataCard extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+      voteRail: PeriksaVoteRail(
+        child: PeriksaVoteSplitPanel(
+          upvotes: item.upvotes,
+          downvotes: item.downvotes,
+          myVote: sessionVote,
+          disagreeSemantics: l10n.periksaKataDisagree,
+          agreeSemantics: l10n.periksaKataAgree,
+          onVote: (value) => _onVote(context, ref, value),
+        ),
       ),
     );
 
@@ -590,156 +536,3 @@ class _PeriksaKataCard extends ConsumerWidget {
   }
 }
 
-/// Panel vote kanan (layout sama Riwayat): ↓ / ↑ ikon + angka.
-class _PeriksaSideVotePanel extends StatefulWidget {
-  const _PeriksaSideVotePanel({
-    required this.upvotes,
-    required this.downvotes,
-    required this.myVote,
-    required this.disagreeSemantics,
-    required this.agreeSemantics,
-    required this.onVote,
-  });
-
-  final int upvotes;
-  final int downvotes;
-  final int? myVote;
-  final String disagreeSemantics;
-  final String agreeSemantics;
-  final Future<void> Function(int value) onVote;
-
-  @override
-  State<_PeriksaSideVotePanel> createState() => _PeriksaSideVotePanelState();
-}
-
-class _PeriksaSideVotePanelState extends State<_PeriksaSideVotePanel> {
-  bool _inFlight = false;
-
-  Future<void> _tapVote(int value) async {
-    if (_inFlight) return;
-    unawaited(HapticFeedback.mediumImpact());
-    setState(() => _inFlight = true);
-    try {
-      await widget.onVote(value);
-    } finally {
-      if (mounted) setState(() => _inFlight = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-
-    return Row(
-      children: [
-        Expanded(
-          child: _PeriksaSideVoteIcon(
-            icon: FLucideIcons.arrowBigDown,
-            count: widget.downvotes,
-            active: widget.myVote == -1,
-            enabled: !_inFlight,
-            idleBg: theme.colors.destructive.withValues(alpha: 0.12),
-            idleFg: theme.colors.destructive,
-            idleBorder: theme.colors.destructive.withValues(alpha: 0.45),
-            activeBg: theme.colors.destructive,
-            activeFg: theme.colors.destructiveForeground,
-            semanticsLabel: widget.disagreeSemantics,
-            onPress: () => _tapVote(-1),
-          ),
-        ),
-        const Gap(4),
-        Expanded(
-          child: _PeriksaSideVoteIcon(
-            icon: FLucideIcons.arrowBigUp,
-            count: widget.upvotes,
-            active: widget.myVote == 1,
-            enabled: !_inFlight,
-            idleBg: theme.colors.success.withValues(alpha: 0.12),
-            idleFg: theme.colors.success,
-            idleBorder: theme.colors.success.withValues(alpha: 0.45),
-            activeBg: theme.colors.success,
-            activeFg: theme.colors.background,
-            semanticsLabel: widget.agreeSemantics,
-            onPress: () => _tapVote(1),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _PeriksaSideVoteIcon extends StatelessWidget {
-  const _PeriksaSideVoteIcon({
-    required this.icon,
-    required this.count,
-    required this.active,
-    required this.enabled,
-    required this.idleBg,
-    required this.idleFg,
-    required this.idleBorder,
-    required this.activeBg,
-    required this.activeFg,
-    required this.semanticsLabel,
-    required this.onPress,
-  });
-
-  final IconData icon;
-  final int count;
-  final bool active;
-  final bool enabled;
-  final Color idleBg;
-  final Color idleFg;
-  final Color idleBorder;
-  final Color activeBg;
-  final Color activeFg;
-  final String semanticsLabel;
-  final VoidCallback onPress;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final bg = active ? activeBg : idleBg;
-    final fg = active ? activeFg : idleFg;
-    final border = active ? activeBg : idleBorder;
-
-    return Semantics(
-      button: true,
-      label: semanticsLabel,
-      value: '$count',
-      child: Opacity(
-        opacity: enabled || active ? 1 : 0.55,
-        child: FTappable(
-          onPress: enabled ? onPress : null,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: bg,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: border, width: 1.5),
-            ),
-            child: SizedBox(
-              height: 44,
-              width: double.infinity,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(icon, size: 18, color: fg),
-                    const Gap(4),
-                    Text(
-                      '$count',
-                      style: theme.typography.body.sm.copyWith(
-                        color: fg,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

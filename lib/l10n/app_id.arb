@@ -694,6 +694,69 @@
   "@balehoHistoryTitle": {
     "description": "Judul halaman riwayat pesanan Baleho"
   },
+  "balehoHistoryDetailTitle": "Performa Pesanan",
+  "@balehoHistoryDetailTitle": {
+    "description": "Judul halaman detail performa satu pesanan Baleho"
+  },
+  "balehoHistoryDetailNotFound": "Pesanan tidak ditemukan atau sudah dihapus. Tarik ke bawah untuk memuat ulang ya.",
+  "balehoHistoryDetailEnd": "Berakhir",
+  "@balehoHistoryDetailNotFound": {
+    "description": "Empty state detail pesanan Baleho saat item tak ada di daftar"
+  },
+  "balehoHistoryDetailStatus": "Status",
+  "@balehoHistoryDetailStatus": {
+    "description": "Label baris status di detail pesanan"
+  },
+  "balehoHistoryDetailPosition": "Posisi",
+  "@balehoHistoryDetailPosition": {
+    "description": "Label baris posisi di detail pesanan"
+  },
+  "balehoHistoryDetailCreated": "Dibuat",
+  "@balehoHistoryDetailCreated": {
+    "description": "Label baris tanggal dibuat di detail pesanan"
+  },
+  "@balehoHistoryDetailEnd": {
+    "description": "Label baris waktu berakhir di detail pesanan"
+  },
+  "balehoDurationMinutes": "{minutes} menit",
+  "@balehoDurationMinutes": {
+    "description": "Durasi tayang < 1 jam",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoDurationHours": "{hours} jam",
+  "@balehoDurationHours": {
+    "description": "Durasi tayang < 1 hari",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoDurationDays": "{days} hari",
+  "@balehoDurationDays": {
+    "description": "Durasi tayang hari penuh",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoDurationDaysHours": "{days} hari {hours} jam",
+  "@balehoDurationDaysHours": {
+    "description": "Durasi tayang campuran hari+jam",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "balehoHistoryLoginRequired": "Masuk dulu untuk melihat riwayat pesananmu.",
   "balehoHistoryEmpty": "Belum ada pesanan. Mulai promosi di papan Baleho ya.",
   "balehoHistoryLoadFailed": "Gagal memuat riwayat. Coba lagi ya.",
@@ -784,35 +847,11 @@
       }
     }
   },
-  "balehoHistoryStatCpm": "CPM Rp {amount}",
-  "@balehoHistoryStatCpm": {
-    "description": "Biaya per 1000 tayang di riwayat Baleho",
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
   "balehoHistoryStatCpc": "CPC Rp {amount}",
   "@balehoHistoryStatCpc": {
     "description": "Biaya per buka detail di riwayat Baleho",
     "placeholders": {
       "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "balehoHistoryStatDaily7": "7 hari: {impressions} tayang · {taps} buka · {actions} klik",
-  "@balehoHistoryStatDaily7": {
-    "description": "Ringkas tren 7 hari terakhir di riwayat Baleho",
-    "placeholders": {
-      "impressions": {
-        "type": "String"
-      },
-      "taps": {
-        "type": "String"
-      },
-      "actions": {
         "type": "String"
       }
     }
@@ -2053,7 +2092,6 @@
   "@reviewSessionEntityMissingFlood": {
     "description": "Toast + keluar sesi jika terlalu banyak kartu rusak beruntun"
   },
-
   "reviewSessionApprovedToast": "Usulan disetujui",
   "reviewSessionRejectedToast": "Usulan ditolak",
   "reviewSessionAlreadyProcessed": "Usulan ini sudah diproses.",
@@ -3133,7 +3171,7 @@
       }
     }
   },
-"dictCorrectSpellingCta": "Koreksi ejaan",
+  "dictCorrectSpellingCta": "Koreksi ejaan",
   "@dictCorrectSpellingCta": {
     "description": "CTA empty-state: buka form koreksi typo jadi varian lemma benar"
   },
@@ -9595,7 +9633,9 @@
   "@discussionTabChatWithCount": {
     "description": "Tab Chat dengan jumlah orang presence; (count) hanya jika > 0",
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "chatLoadFailed": "Gagal memuat chat",
@@ -9787,8 +9827,12 @@
   "@chatPingCooldown": {
     "description": "Countdown cooldown ping global (m:ss)",
     "placeholders": {
-      "minutes": { "type": "String" },
-      "seconds": { "type": "String" }
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
     }
   },
   "chatPingSent": "Ping terkirim",
@@ -9827,7 +9871,10 @@
   "@chatPingCooldownBody": {
     "description": "Isi sheet cooldown ping dengan sisa waktu",
     "placeholders": {
-      "clock": { "type": "String", "example": "4:32" }
+      "clock": {
+        "type": "String",
+        "example": "4:32"
+      }
     }
   },
   "chatPingCooldownSheetHint": "Ping baru saja dipakai. Tunggu timer habis, lalu coba lagi.",
@@ -9846,7 +9893,10 @@
   "@chatPingCooldownSemantics": {
     "description": "SemanticsLabel ikon ping saat cooldown",
     "placeholders": {
-      "clock": { "type": "String", "example": "4:32" }
+      "clock": {
+        "type": "String",
+        "example": "4:32"
+      }
     }
   },
   "chatSystemVoiceJoinAction": "bergabung",
@@ -9861,7 +9911,10 @@
   "@chatPingSystemLine": {
     "description": "Legacy/opsional; UI system line pakai ikon + nama : PING!!!",
     "placeholders": {
-      "name": { "type": "String", "example": "Budi" }
+      "name": {
+        "type": "String",
+        "example": "Budi"
+      }
     }
   },
   "chatTypingOne": "{name} sedang mengetik…",
@@ -9931,29 +9984,62 @@
   "@voteTrustProgressDetailNeedUp": {
     "description": "Progress Voting Warga saat net >= 0: sisa poin ke verifikasi",
     "placeholders": {
-      "need": { "type": "int", "example": "4" },
-      "netLabel": { "type": "String", "example": "+1" },
-      "unique": { "type": "int", "example": "3" },
-      "threshold": { "type": "int", "example": "5" }
+      "need": {
+        "type": "int",
+        "example": "4"
+      },
+      "netLabel": {
+        "type": "String",
+        "example": "+1"
+      },
+      "unique": {
+        "type": "int",
+        "example": "3"
+      },
+      "threshold": {
+        "type": "int",
+        "example": "5"
+      }
     }
   },
   "voteTrustProgressDetailNeedDown": "Butuh -{need} poin lagi ke penolakan · net {netLabel} · {unique}/{threshold} pemilih",
   "@voteTrustProgressDetailNeedDown": {
     "description": "Progress Voting Warga saat net < 0: sisa poin ke auto-tolak",
     "placeholders": {
-      "need": { "type": "int", "example": "3" },
-      "netLabel": { "type": "String", "example": "-2" },
-      "unique": { "type": "int", "example": "3" },
-      "threshold": { "type": "int", "example": "5" }
+      "need": {
+        "type": "int",
+        "example": "3"
+      },
+      "netLabel": {
+        "type": "String",
+        "example": "-2"
+      },
+      "unique": {
+        "type": "int",
+        "example": "3"
+      },
+      "threshold": {
+        "type": "int",
+        "example": "5"
+      }
     }
   },
   "voteTrustProgressDetailNeedVoters": "Net sudah cukup · butuh {need} pemilih lagi ({unique}/{threshold})",
   "@voteTrustProgressDetailNeedVoters": {
     "description": "Net sudah >= ambang tapi unique voters masih kurang",
     "placeholders": {
-      "need": { "type": "int", "example": "2" },
-      "unique": { "type": "int", "example": "3" },
-      "threshold": { "type": "int", "example": "5" }
+      "need": {
+        "type": "int",
+        "example": "2"
+      },
+      "unique": {
+        "type": "int",
+        "example": "3"
+      },
+      "threshold": {
+        "type": "int",
+        "example": "5"
+      }
     }
   },
   "dictCommunityVoteFooterTitle": "Bantu periksa makna menunggu",
@@ -10000,5 +10086,4 @@
   "@dictCommunityVoteNoPendingBody": {
     "description": "Penjelasan fallback CTA vote di detail lemma"
   }
-
 }

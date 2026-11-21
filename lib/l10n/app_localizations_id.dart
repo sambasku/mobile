@@ -676,6 +676,45 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoHistoryTitle => 'Riwayat Baleho';
 
   @override
+  String get balehoHistoryDetailTitle => 'Performa Pesanan';
+
+  @override
+  String get balehoHistoryDetailNotFound =>
+      'Pesanan tidak ditemukan atau sudah dihapus. Tarik ke bawah untuk memuat ulang ya.';
+
+  @override
+  String get balehoHistoryDetailEnd => 'Berakhir';
+
+  @override
+  String get balehoHistoryDetailStatus => 'Status';
+
+  @override
+  String get balehoHistoryDetailPosition => 'Posisi';
+
+  @override
+  String get balehoHistoryDetailCreated => 'Dibuat';
+
+  @override
+  String balehoDurationMinutes(int minutes) {
+    return '$minutes menit';
+  }
+
+  @override
+  String balehoDurationHours(int hours) {
+    return '$hours jam';
+  }
+
+  @override
+  String balehoDurationDays(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String balehoDurationDaysHours(int days, int hours) {
+    return '$days hari $hours jam';
+  }
+
+  @override
   String get balehoHistoryLoginRequired =>
       'Masuk dulu untuk melihat riwayat pesananmu.';
 
@@ -759,22 +798,8 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String balehoHistoryStatCpm(String amount) {
-    return 'CPM Rp $amount';
-  }
-
-  @override
   String balehoHistoryStatCpc(String amount) {
     return 'CPC Rp $amount';
-  }
-
-  @override
-  String balehoHistoryStatDaily7(
-    String impressions,
-    String taps,
-    String actions,
-  ) {
-    return '7 hari: $impressions tayang · $taps buka · $actions klik';
   }
 
   @override
@@ -13859,6 +13884,45 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoHistoryTitle => 'Riwayat Baleho';
 
   @override
+  String get balehoHistoryDetailTitle => 'Performa Pesanan';
+
+  @override
+  String get balehoHistoryDetailNotFound =>
+      'Pesanan tidak ditemukan atau sudah dihapus. Tarik ke bawah untuk memuat ulang ya.';
+
+  @override
+  String get balehoHistoryDetailEnd => 'Berakhir';
+
+  @override
+  String get balehoHistoryDetailStatus => 'Status';
+
+  @override
+  String get balehoHistoryDetailPosition => 'Posisi';
+
+  @override
+  String get balehoHistoryDetailCreated => 'Dibuat';
+
+  @override
+  String balehoDurationMinutes(int minutes) {
+    return '$minutes menit';
+  }
+
+  @override
+  String balehoDurationHours(int hours) {
+    return '$hours jam';
+  }
+
+  @override
+  String balehoDurationDays(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String balehoDurationDaysHours(int days, int hours) {
+    return '$days hari $hours jam';
+  }
+
+  @override
   String get balehoHistoryLoginRequired =>
       'Masuk dulu untuk melihat riwayat pesananmu.';
 
@@ -13942,22 +14006,8 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
-  String balehoHistoryStatCpm(String amount) {
-    return 'CPM Rp $amount';
-  }
-
-  @override
   String balehoHistoryStatCpc(String amount) {
     return 'CPC Rp $amount';
-  }
-
-  @override
-  String balehoHistoryStatDaily7(
-    String impressions,
-    String taps,
-    String actions,
-  ) {
-    return '7 hari: $impressions tayang · $taps buka · $actions klik';
   }
 
   @override
