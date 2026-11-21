@@ -170,6 +170,7 @@ Future<void> _showExceptionSheet(
 }) {
   return showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) {

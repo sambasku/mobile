@@ -57,10 +57,13 @@ String eventCalendarCellDateKey(DateTime cellUtc) {
 
 /// Semua hari WIB yang overlap jadwal acara (inklusif).
 Set<String> eventCalendarDateKeysForEvent(Event event) {
-  final startKey = eventCalendarDateKeyWib(event.startsAt);
-  final endKey = eventCalendarDateKeyWib(event.endsAt);
-  final startWib = event.startsAt.toUtc().add(eventCalendarWibOffset);
-  final endWib = event.endsAt.toUtc().add(eventCalendarWibOffset);
+  final start = event.startsAt;
+  if (start == null) return {};
+  final end = event.endsAt ?? start;
+  final startKey = eventCalendarDateKeyWib(start);
+  final endKey = eventCalendarDateKeyWib(end);
+  final startWib = start.toUtc().add(eventCalendarWibOffset);
+  final endWib = end.toUtc().add(eventCalendarWibOffset);
   var day = DateTime.utc(startWib.year, startWib.month, startWib.day);
   final last = DateTime.utc(endWib.year, endWib.month, endWib.day);
   final out = <String>{startKey, endKey};
@@ -79,5 +82,8 @@ bool eventOverlapsCalendarDay(Event event, DateTime cellUtc) {
     cellUtc.day,
   ).subtract(eventCalendarWibOffset);
   final dayEnd = dayStart.add(const Duration(days: 1));
-  return event.startsAt.isBefore(dayEnd) && !event.endsAt.isBefore(dayStart);
+  final start = event.startsAt;
+  if (start == null) return false;
+  final end = event.endsAt ?? start;
+  return start.isBefore(dayEnd) && !end.isBefore(dayStart);
 }

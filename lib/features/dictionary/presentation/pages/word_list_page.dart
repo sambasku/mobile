@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import '../dictionary_labels.dart';
@@ -19,13 +21,15 @@ import '../providers/word_list_providers.dart';
 import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 
 /// Daftar kata. q kosong di mode Sambas = A-Z (`GET /words`).
-/// q terisi, atau mode Indonesia, memakai `GET /words/search` supaya
-/// hasil kosong tercatat sebagai search-miss dan bisa diusulkan.
+/// Setelah jeda ketikan (~700 ms) fetch + boleh rekam miss; Enter/blur
+/// tetap commit segera tanpa menunggu jeda.
 class WordListPage extends HookConsumerWidget {
   const WordListPage({super.key, this.autofocus = false});
 
   /// true saat dibuka dari kolom cari beranda (`?focus=1`).
   final bool autofocus;
+
+  static const _blurIdleMs = 600;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,6 +53,27 @@ class WordListPage extends HookConsumerWidget {
       });
       return null;
     }, [autofocus]);
+
+    // Blur idle: setelah field kehilangan fokus, commit miss.
+    useEffect(() {
+      Timer? blurTimer;
+      void onFocusChange() {
+        if (focusNode.hasFocus) {
+          blurTimer?.cancel();
+          return;
+        }
+        blurTimer?.cancel();
+        blurTimer = Timer(const Duration(milliseconds: _blurIdleMs), () {
+          notifier.commitSearch();
+        });
+      }
+
+      focusNode.addListener(onFocusChange);
+      return () {
+        blurTimer?.cancel();
+        focusNode.removeListener(onFocusChange);
+      };
+    }, [focusNode, notifier]);
 
     useEffect(() {
       void listener() {
@@ -136,6 +161,8 @@ class WordListPage extends HookConsumerWidget {
                 onChange: (value) => notifier.onQueryChanged(value.text),
               ),
               focusNode: focusNode,
+              textInputAction: TextInputAction.search,
+              onSubmit: (_) => notifier.commitSearch(),
               hint: state.searchIn == 'translation'
                   ? AppLocalizations.of(context).dictSearchIndonesianHint
                   : AppLocalizations.of(context).dictSearchSambasHint,
@@ -183,6 +210,7 @@ class WordListPage extends HookConsumerWidget {
                 onPick: (q) {
                   controller.text = q;
                   notifier.onQueryChanged(q);
+                  notifier.commitSearch();
                 },
                 onRemove: (q) => ref
                     .read(searchHistoryControllerProvider.notifier)
@@ -215,64 +243,100 @@ class WordListPage extends HookConsumerWidget {
     if (state.items.isEmpty) {
       final query = state.q.trim();
       final askIndonesia = state.searchIn == 'translation' && query.isEmpty;
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.zero,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                askIndonesia ? FLucideIcons.search : FLucideIcons.list,
-                size: 40,
-                color: theme.colors.mutedForeground,
-              ),
-              const Gap(8),
-              Text(
-                askIndonesia
-                    ? AppLocalizations.of(context).dictSearchIndonesianEmpty
-                    : query.isEmpty
-                    ? AppLocalizations.of(context).dictNoPublishedWord
-                    : AppLocalizations.of(context).dictNoMatchFor(query),
-                textAlign: TextAlign.center,
-                style: theme.typography.body.md.copyWith(
-                  color: theme.colors.foreground,
+      // Header + search + kategori menyisakan tinggi kecil; Column tanpa
+      // scroll overflow ~60px saat miss + 2 CTA + retry.
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      askIndonesia ? FLucideIcons.search : FLucideIcons.list,
+                      size: 40,
+                      color: theme.colors.mutedForeground,
+                    ),
+                    const Gap(8),
+                    Text(
+                      askIndonesia
+                          ? AppLocalizations.of(
+                              context,
+                            ).dictSearchIndonesianEmpty
+                          : query.isEmpty
+                          ? AppLocalizations.of(context).dictNoPublishedWord
+                          : AppLocalizations.of(
+                              context,
+                            ).dictNoMatchFor(query),
+                      textAlign: TextAlign.center,
+                      style: theme.typography.body.md.copyWith(
+                        color: theme.colors.foreground,
+                      ),
+                    ),
+                    if (query.isNotEmpty) ...[
+                      const Gap(4),
+                      Text(
+                        AppLocalizations.of(context).dictNotInDictionary,
+                        textAlign: TextAlign.center,
+                        style: theme.typography.body.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
+                      ),
+                      const Gap(12),
+                      FButton(
+                        onPress: () {
+                          final params = Uri(
+                            queryParameters: {
+                              'lemma': query,
+                              'search_in': state.searchIn,
+                              if (state.lastSearchMissId != null)
+                                'miss_id': state.lastSearchMissId!,
+                            },
+                          ).query;
+                          context.push('/contribute?$params');
+                        },
+                        child: Text(
+                          AppLocalizations.of(context).dictProposeThisWord,
+                        ),
+                      ),
+                      const Gap(8),
+                      FButton(
+                        variant: FButtonVariant.outline,
+                        onPress: () {
+                          final params = Uri(
+                            queryParameters: {
+                              'lemma': query,
+                              'search_in': state.searchIn,
+                              'correction': '1',
+                              if (state.lastSearchMissId != null)
+                                'miss_id': state.lastSearchMissId!,
+                            },
+                          ).query;
+                          context.push('/contribute?$params');
+                        },
+                        child: Text(
+                          AppLocalizations.of(context).dictCorrectSpellingCta,
+                        ),
+                      ),
+                    ],
+                    if (!askIndonesia) ...[
+                      const Gap(8),
+                      FButton(
+                        onPress: () =>
+                            ref.read(wordListProvider.notifier).load(),
+                        variant: FButtonVariant.outline,
+                        prefix: const Icon(FLucideIcons.rotateCcw),
+                        child: Text(AppLocalizations.of(context).commonRetry),
+                      ),
+                    ],
+                  ],
                 ),
               ),
-              if (query.isNotEmpty) ...[
-                const Gap(4),
-                Text(
-                  AppLocalizations.of(context).dictNotInDictionary,
-                  textAlign: TextAlign.center,
-                  style: theme.typography.body.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-                const Gap(12),
-                FButton(
-                  onPress: () {
-                    final params = Uri(
-                      queryParameters: {
-                        'lemma': query,
-                        'search_in': state.searchIn,
-                      },
-                    ).query;
-                    context.push('/contribute?$params');
-                  },
-                  child: Text(AppLocalizations.of(context).dictProposeThisWord),
-                ),
-              ],
-              if (!askIndonesia) ...[
-                const Gap(8),
-                FButton(
-                  onPress: () => ref.read(wordListProvider.notifier).load(),
-                  variant: FButtonVariant.outline,
-                  prefix: const Icon(FLucideIcons.rotateCcw),
-                  child: Text(AppLocalizations.of(context).commonRetry),
-                ),
-              ],
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       );
     }
 

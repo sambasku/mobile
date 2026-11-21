@@ -76,8 +76,8 @@ class EventContributionDraft {
     required this.description,
     required this.categoryId,
     required this.startsAt,
-    required this.endsAt,
-    required this.locationText,
+    this.endsAt,
+    this.locationText = '',
     this.lat,
     this.lng,
     this.organizer,
@@ -94,7 +94,7 @@ class EventContributionDraft {
   final String description;
   final String categoryId;
   final DateTime startsAt;
-  final DateTime endsAt;
+  final DateTime? endsAt;
   final String locationText;
   final double? lat;
   final double? lng;
@@ -119,7 +119,7 @@ class EventContributionDraft {
     'description': description,
     'category_id': categoryId,
     'starts_at': startsAt.toUtc().toIso8601String(),
-    'ends_at': endsAt.toUtc().toIso8601String(),
+    if (endsAt != null) 'ends_at': endsAt!.toUtc().toIso8601String(),
     'location_text': locationText,
     if (lat != null && lng != null) 'lat': lat,
     if (lat != null && lng != null) 'lng': lng,

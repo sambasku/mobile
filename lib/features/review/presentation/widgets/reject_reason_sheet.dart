@@ -22,6 +22,7 @@ List<String> rejectReasons(AppLocalizations l10n) => [
 Future<String?> showRejectReasonSheet(BuildContext context) {
   return showModalBottomSheet<String>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) => const _RejectReasonSheet(),

@@ -31,6 +31,9 @@ abstract class WordDetailDto with _$WordDetailDto {
     @Default([])
     List<RelatedWordDto> relatedWords,
     @JsonKey(name: 'appears_in') @Default([]) List<RelatedWordDto> appearsIn,
+    @JsonKey(name: 'appears_in_karya')
+    @Default([])
+    List<WordAppearsInKaryaDto> appearsInKarya,
 
     /// PRD relasi-lemma: kelompok makna (published saja).
     @JsonKey(name: 'meaning_groups') @Default([]) List<MeaningGroupDto> meaningGroups,
@@ -68,6 +71,11 @@ abstract class MeaningDto with _$MeaningDto {
     @JsonKey(name: 'inherited_from_meaning_id') String? inheritedFromMeaningId,
     String? definition,
     @JsonKey(name: 'order_index') @Default(0) int orderIndex,
+    // Trust per makna (G1): default true agar payload lama / lokal aman.
+    @JsonKey(name: 'is_verified') @Default(true) bool isVerified,
+    @JsonKey(name: 'needs_review') @Default(false) bool needsReview,
+    @JsonKey(name: 'verified_at') String? verifiedAt,
+    @JsonKey(name: 'verified_by') WordVerifierDto? verifiedBy,
     // WIP review-flow: kontributor per makna (belum di-commit).
     @JsonKey(name: 'created_by') WordVerifierDto? createdBy,
     @Default([]) List<TranslationDto> translations,
@@ -180,6 +188,22 @@ abstract class RelatedWordDto with _$RelatedWordDto {
 
   factory RelatedWordDto.fromJson(Map<String, dynamic> json) =>
       _$RelatedWordDtoFromJson(json);
+}
+
+@freezed
+abstract class WordAppearsInKaryaDto with _$WordAppearsInKaryaDto {
+  const factory WordAppearsInKaryaDto({
+    @JsonKey(name: 'karya_slug') required String karyaSlug,
+    @JsonKey(name: 'karya_title') required String karyaTitle,
+    @JsonKey(name: 'excerpt_id') required String excerptId,
+    @JsonKey(name: 'excerpt_kind') required String excerptKind,
+    required int start,
+    required int end,
+    required String snippet,
+  }) = _WordAppearsInKaryaDto;
+
+  factory WordAppearsInKaryaDto.fromJson(Map<String, dynamic> json) =>
+      _$WordAppearsInKaryaDtoFromJson(json);
 }
 
 /// PRD relasi-lemma: anggota satu kelompok makna.

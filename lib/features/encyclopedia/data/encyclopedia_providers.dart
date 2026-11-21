@@ -11,5 +11,6 @@ final encyclopediaRemoteDatasourceProvider =
 final encyclopediaRepositoryProvider = Provider<EncyclopediaRepository>(
   (ref) => EncyclopediaRepositoryImpl(
     ref.watch(encyclopediaRemoteDatasourceProvider),
+    ref.watch(dioProvider),
   ),
 );

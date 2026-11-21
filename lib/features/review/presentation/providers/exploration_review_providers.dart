@@ -12,17 +12,52 @@ final explorationReviewRepositoryProvider =
   (ref) => ExplorationReviewRepositoryImpl(ref.watch(dioProvider)),
 );
 
-/// List pending per domain (tanpa cursor - admin list penuh seperti console).
+/// Argumen list usulan (domain + filter periksa/riwayat + q).
+class ExplorationListArgs {
+  const ExplorationListArgs({
+    required this.domain,
+    this.decided = false,
+    this.q = '',
+  });
+
+  final ExplorationReviewDomain domain;
+  final bool decided;
+  final String q;
+
+  @override
+  bool operator ==(Object other) =>
+      other is ExplorationListArgs &&
+      other.domain == domain &&
+      other.decided == decided &&
+      other.q == q;
+
+  @override
+  int get hashCode => Object.hash(domain, decided, q);
+}
+
+/// List admin per domain (+ filter acara).
+final explorationListProvider = FutureProvider.autoDispose
+    .family<List<ExplorationProposal>, ExplorationListArgs>((ref, args) async {
+  final auth = ref.watch(authStatusProvider).value;
+  if (!canReviewQueue(auth?.role)) return const [];
+  final result = await ref.watch(explorationReviewRepositoryProvider).listPending(
+        args.domain,
+        query: ExplorationListQuery(decided: args.decided, q: args.q),
+      );
+  return result.match((failure) => throw failure, (items) => items);
+});
+
+/// List pending default (hub badge + domain non-acara).
 final explorationPendingListProvider = FutureProvider.autoDispose
     .family<List<ExplorationProposal>, ExplorationReviewDomain>((
   ref,
   domain,
 ) async {
-  final auth = ref.watch(authStatusProvider).value;
-  if (!canReviewQueue(auth?.role)) return const [];
-  final result =
-      await ref.watch(explorationReviewRepositoryProvider).listPending(domain);
-  return result.match((failure) => throw failure, (items) => items);
+  return ref.watch(
+    explorationListProvider(
+      ExplorationListArgs(domain: domain),
+    ).future,
+  );
 });
 
 final explorationHasPendingProvider =
@@ -36,7 +71,7 @@ final explorationHasPendingProvider =
   return items.isNotEmpty;
 });
 
-/// Detail = item dari cache list (tidak ada GET-by-id admin).
+/// Detail = item dari cache list pending (tidak ada GET-by-id admin).
 final explorationDetailProvider = FutureProvider.autoDispose
     .family<ExplorationProposal, (ExplorationReviewDomain, String)>((
   ref,
@@ -57,4 +92,6 @@ void invalidateExplorationReview(
 ) {
   ref.invalidate(explorationPendingListProvider(domain));
   ref.invalidate(explorationHasPendingProvider(domain));
+  // Invalidate semua varian filter list (periksa/riwayat + q).
+  ref.invalidate(explorationListProvider);
 }

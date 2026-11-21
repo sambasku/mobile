@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -81,6 +82,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    CancelToken? cancelToken,
   }) async => throw UnimplementedError();
 
   @override
@@ -91,12 +93,16 @@ class _FakeDictionaryRepository implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => throw UnimplementedError();
 
   @override
@@ -110,7 +116,12 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async => throw UnimplementedError();
+
+  @override
+  Future<void> recordView(String wordId) async {}
 }
 
 Future<void> _flush() async {

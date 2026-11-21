@@ -33,6 +33,14 @@ abstract interface class VoteRepository {
     String? cursor,
   });
 
+  /// Antrean Periksa Kata: makna published belum verified (check-deck).
+  Future<Either<VoteFailure, VoteDeckPage>> getCheckDeck({
+    int limit = 20,
+    String? cursor,
+    String? q,
+    bool randomize = false,
+  });
+
   /// Lewati kartu deck (makna) tanpa menulis vote. Idempoten.
   Future<Either<VoteFailure, Unit>> skipMeaning(String meaningId);
 

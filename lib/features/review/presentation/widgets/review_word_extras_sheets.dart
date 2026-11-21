@@ -36,6 +36,7 @@ Future<void> showReviewRelationsSheet(
 }) {
   return showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (_) => _RelationsSheet(
@@ -297,6 +298,7 @@ Future<void> showReviewVariantsSheet(
 }) {
   return showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (_) =>

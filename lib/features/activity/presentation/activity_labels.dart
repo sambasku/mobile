@@ -8,6 +8,7 @@ String feedCategoryLabel(AppLocalizations l10n, FeedCategory category) =>
       FeedCategory.searchMiss => l10n.feedCategorySearchMiss,
       FeedCategory.correction => l10n.feedCategoryCorrection,
       FeedCategory.explore => l10n.feedCategoryExplore,
+      FeedCategory.jinye => l10n.feedCategoryJinye,
       FeedCategory.announcement => l10n.feedCategoryAnnouncement,
       FeedCategory.joined => l10n.feedCategoryJoined,
     };

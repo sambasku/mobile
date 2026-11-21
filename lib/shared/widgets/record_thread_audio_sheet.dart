@@ -53,6 +53,7 @@ Future<RecordedThreadAudio?> showRecordThreadAudioSheet(
 
   return showModalBottomSheet<RecordedThreadAudio>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     isDismissible: true,

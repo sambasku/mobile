@@ -151,13 +151,13 @@ void main() {
         reason: 'chip $gone harus dihapus (tidak ada di feed utama)',
       );
     }
-    final allChip = tester.widget<FButton>(
+    final allChip = tester.widget<FBadge>(
       find.ancestor(
         of: find.descendant(of: chips, matching: find.text('Semua')),
-        matching: find.byType(FButton),
+        matching: find.byType(FBadge),
       ),
     );
-    expect(allChip.variant, FButtonVariant.primary);
+    expect(allChip.variant, FBadgeVariant.primary);
 
     // Tap "Komentar" -> provider kind comment dipanggil, chip ikut terpilih.
     await tester.tap(
@@ -165,15 +165,15 @@ void main() {
     );
     await tester.pump();
 
-    final commentChip = tester.widget<FButton>(
+    final commentChip = tester.widget<FBadge>(
       find.ancestor(
         of: find.descendant(of: chips, matching: find.text('Komentar')),
-        matching: find.byType(FButton),
+        matching: find.byType(FBadge),
       ),
     );
     expect(
       commentChip.variant,
-      FButtonVariant.primary,
+      FBadgeVariant.primary,
       reason: 'chip yang di-tap harus tampil terpilih, bukan balik ke Semua',
     );
     // Chips tetap ada selama kategori baru memuat (pelajaran bug #193).

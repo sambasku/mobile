@@ -25,11 +25,10 @@ const kSkipAuthRefreshExtra = 'skipAuthRefresh';
 /// `POST /api/v1/auth/refresh` body `{ refresh_token }`
 class AuthInterceptor extends Interceptor {
   AuthInterceptor({
-    required AuthTokenStorage tokenStorage,
+    required this._tokenStorage,
     required ApiHostResolver hostResolver,
     Dio? refreshDio,
-  }) : _tokenStorage = tokenStorage,
-       _hostResolver = hostResolver,
+  }) : _hostResolver = hostResolver,
        _refreshDio =
            refreshDio ??
            Dio(

@@ -8,16 +8,16 @@ part of 'connectivity_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Status koneksi: offline ketika tidak ada interface jaringan sama
-/// sekali (wifi + mobile kosong). WiFi/cellular/ethernet dianggap online -
-/// portal captive tidak terdeteksi, itu tanggung jawaban layer fetch.
+/// Status koneksi: seed dari [checkConnectivity] lalu ikut
+/// [onConnectivityChanged]. Tanpa seed, subscribe stream saja sering
+/// tidak dapat status awal - banner bisa stuck offline walau sudah online.
 
 @ProviderFor(connectivity)
 final connectivityProvider = ConnectivityProvider._();
 
-/// Status koneksi: offline ketika tidak ada interface jaringan sama
-/// sekali (wifi + mobile kosong). WiFi/cellular/ethernet dianggap online -
-/// portal captive tidak terdeteksi, itu tanggung jawaban layer fetch.
+/// Status koneksi: seed dari [checkConnectivity] lalu ikut
+/// [onConnectivityChanged]. Tanpa seed, subscribe stream saja sering
+/// tidak dapat status awal - banner bisa stuck offline walau sudah online.
 
 final class ConnectivityProvider
     extends
@@ -29,9 +29,9 @@ final class ConnectivityProvider
     with
         $FutureModifier<List<ConnectivityResult>>,
         $StreamProvider<List<ConnectivityResult>> {
-  /// Status koneksi: offline ketika tidak ada interface jaringan sama
-  /// sekali (wifi + mobile kosong). WiFi/cellular/ethernet dianggap online -
-  /// portal captive tidak terdeteksi, itu tanggung jawaban layer fetch.
+  /// Status koneksi: seed dari [checkConnectivity] lalu ikut
+  /// [onConnectivityChanged]. Tanpa seed, subscribe stream saja sering
+  /// tidak dapat status awal - banner bisa stuck offline walau sudah online.
   ConnectivityProvider._()
     : super(
         from: null,
@@ -58,22 +58,22 @@ final class ConnectivityProvider
   }
 }
 
-String _$connectivityHash() => r'bf12454d78bf3189236d0c99e4f0d5afc772458f';
+String _$connectivityHash() => r'eefd785e359e634d28a1063f9fe9340faa0aa029';
 
-/// Stream bisa emmit kosong sesaat saat switching - debounce supaya banner
-/// tidak kedip. Offline hanya bila hasil kosong bertahan > 2 detik.
+/// Offline hanya bila hasil offline bertahan > 2 detik (anti kedip saat
+/// switching radio). Online langsung clear. Loading/error tidak dianggap
+/// offline (bug lama: `next.value ?? []` bikin null = offline permanen).
 
-@ProviderFor(isOffline)
+@ProviderFor(IsOffline)
 final isOfflineProvider = IsOfflineProvider._();
 
-/// Stream bisa emmit kosong sesaat saat switching - debounce supaya banner
-/// tidak kedip. Offline hanya bila hasil kosong bertahan > 2 detik.
-
-final class IsOfflineProvider
-    extends $FunctionalProvider<AsyncValue<bool>, bool, Stream<bool>>
-    with $FutureModifier<bool>, $StreamProvider<bool> {
-  /// Stream bisa emmit kosong sesaat saat switching - debounce supaya banner
-  /// tidak kedip. Offline hanya bila hasil kosong bertahan > 2 detik.
+/// Offline hanya bila hasil offline bertahan > 2 detik (anti kedip saat
+/// switching radio). Online langsung clear. Loading/error tidak dianggap
+/// offline (bug lama: `next.value ?? []` bikin null = offline permanen).
+final class IsOfflineProvider extends $NotifierProvider<IsOffline, bool> {
+  /// Offline hanya bila hasil offline bertahan > 2 detik (anti kedip saat
+  /// switching radio). Online langsung clear. Loading/error tidak dianggap
+  /// offline (bug lama: `next.value ?? []` bikin null = offline permanen).
   IsOfflineProvider._()
     : super(
         from: null,
@@ -90,13 +90,37 @@ final class IsOfflineProvider
 
   @$internal
   @override
-  $StreamProviderElement<bool> $createElement($ProviderPointer pointer) =>
-      $StreamProviderElement(pointer);
+  IsOffline create() => IsOffline();
 
-  @override
-  Stream<bool> create(Ref ref) {
-    return isOffline(ref);
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
   }
 }
 
-String _$isOfflineHash() => r'98ae55e518b3745c214bb33fc03f714f60813c4e';
+String _$isOfflineHash() => r'00cc0596907ad885cba94899454dec7d67c23dca';
+
+/// Offline hanya bila hasil offline bertahan > 2 detik (anti kedip saat
+/// switching radio). Online langsung clear. Loading/error tidak dianggap
+/// offline (bug lama: `next.value ?? []` bikin null = offline permanen).
+
+abstract class _$IsOffline extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}

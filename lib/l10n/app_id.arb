@@ -20,6 +20,38 @@
   "onboardingNotifBody": "Kamu dapat kabar saat usulanmu disetujui. Izinkan notifikasi biar tidak ketinggalan.",
   "onboardingAllowNotif": "Izinkan notifikasi",
   "onboardingLater": "Nanti",
+  "onboardingSpeakerTitle": "Kamu penutur Sambas?",
+  "@onboardingSpeakerTitle": {
+    "description": "Judul slide onboarding status penutur/pembelajar (#258)"
+  },
+  "onboardingSpeakerBody": "Biar sesama pengguna tahu: kamu penutur asli atau sedang belajar bahasa Sambas.",
+  "@onboardingSpeakerBody": {
+    "description": "Body slide onboarding speaker status"
+  },
+  "onboardingSpeakerNative": "Penutur asli",
+  "@onboardingSpeakerNative": {
+    "description": "Pilihan onboarding: penutur asli"
+  },
+  "onboardingSpeakerLearner": "Sedang belajar",
+  "@onboardingSpeakerLearner": {
+    "description": "Pilihan onboarding: pembelajar"
+  },
+  "profileSpeakerNative": "Penutur Sambas",
+  "@profileSpeakerNative": {
+    "description": "Chip profil: penutur asli"
+  },
+  "profileSpeakerLearner": "Belajar Sambas",
+  "@profileSpeakerLearner": {
+    "description": "Chip profil: pembelajar"
+  },
+  "profileSpeakerLabel": "Status bahasa",
+  "@profileSpeakerLabel": {
+    "description": "Label field edit profil speaker status"
+  },
+  "profileSpeakerUnset": "Belum dipilih",
+  "@profileSpeakerUnset": {
+    "description": "Opsi kosong speaker status di edit profil"
+  },
   "settingsTitle": "Pengaturan",
   "settingsGroupLanguage": "Bahasa",
   "settingsLanguageTile": "Bahasa aplikasi",
@@ -39,6 +71,813 @@
   },
   "navHome": "Home",
   "navExplore": "Eksplorasi",
+  "navBaleho": "Baleho",
+  "@navBaleho": {
+    "description": "Label tab Baleho di bottom navigation"
+  },
+  "balehoHeaderTitle": "Baleho SambasKu",
+  "@balehoHeaderTitle": {
+    "description": "Judul FHeader tab Baleho"
+  },
+  "balehoPromoSlide": "Promosi",
+  "balehoInternalSlide": "Di aplikasi",
+  "balehoFooterPromoNote": "Area Media Promosi · Ruang publikasi dan promosi SambasKu.",
+  "@balehoFooterPromoNote": {
+    "description": "Catatan kecil di bawah dot indicator Baleho"
+  },
+  "balehoSlidePromoCaption": "Ingin tampil di sini?",
+  "@balehoSlidePromoCaption": {
+    "description": "Judul ajakan di atas grid slide promo Baleho"
+  },
+  "balehoSlidePromoBody": "Jadikan SambasKu ruang untuk memperkenalkan usaha, produk, acara, dan informasi kamu kepada masyarakat.",
+  "@balehoSlidePromoBody": {
+    "description": "Isi bottom sheet info ajakan promo Baleho"
+  },
+  "balehoPricingUnitLine": "Tarif: 1x1 / hari / slide = Rp {amount}",
+  "@balehoPricingUnitLine": {
+    "description": "Baris tarif di bottom sheet promo Baleho (qty x slide)",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoQuoteEstimate": "Estimasi: Rp {amount} ({cells} sel x {days} hari x {slides} slide)",
+  "@balehoQuoteEstimate": {
+    "description": "Estimasi satu baris (legacy); UI book pakai rincian",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "cells": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "slides": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoQuoteEstimateLoading": "Menghitung estimasi…",
+  "@balehoQuoteEstimateLoading": {
+    "description": "Placeholder saat tarif Baleho masih di-fetch"
+  },
+  "balehoQuoteSectionTitle": "Estimasi biaya",
+  "@balehoQuoteSectionTitle": {
+    "description": "Judul blok rincian estimasi di form pesan Baleho"
+  },
+  "balehoQuoteUnitLabel": "Tarif dasar",
+  "balehoQuoteUnitValue": "Rp {amount} / sel / hari / slide",
+  "@balehoQuoteUnitValue": {
+    "description": "Nilai tarif dasar Baleho",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoQuoteSizeLabel": "Ukuran",
+  "balehoQuoteSizeValue": "{size} ({cells} sel)",
+  "@balehoQuoteSizeValue": {
+    "description": "Baris ukuran slot di rincian estimasi",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      },
+      "cells": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoQuoteDaysRowLabel": "Durasi",
+  "balehoQuoteDaysRowValue": "{days} hari",
+  "@balehoQuoteDaysRowValue": {
+    "description": "Baris durasi di rincian estimasi",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoQuoteSlidesLabel": "Slide",
+  "balehoQuoteSlidesValue": "{slides} slide",
+  "@balehoQuoteSlidesValue": {
+    "description": "Baris jumlah slide di rincian estimasi",
+    "placeholders": {
+      "slides": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoQuoteTotalLabel": "Total estimasi",
+  "balehoQuoteTotalValue": "Rp {amount}",
+  "@balehoQuoteTotalValue": {
+    "description": "Total biaya estimasi Baleho",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoQuoteFormulaHint": "Hitungan: jumlah sel x hari x tarif x slide",
+  "@balehoQuoteFormulaHint": {
+    "description": "Penjelasan singkat rumus quote Baleho"
+  },
+  "balehoQuoteFooterTotal": "Estimasi Rp {amount}",
+  "@balehoQuoteFooterTotal": {
+    "description": "Total estimasi di atas tombol kirim form Baleho",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoQuoteFooterBreakdown": "{cells} sel x {days} hari x {slides} slide",
+  "@balehoQuoteFooterBreakdown": {
+    "description": "Ringkas faktor hitungan di atas tombol submit Baleho",
+    "placeholders": {
+      "cells": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "slides": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoSlidePromoInfoSemantics": "Info ingin tampil di sini",
+  "@balehoSlidePromoInfoSemantics": {
+    "description": "Label aksesibilitas tombol info caption promo Baleho"
+  },
+  "balehoSlideInternalCaption": "Ruang komunitas",
+  "@balehoSlideInternalCaption": {
+    "description": "Keterangan singkat di atas grid slide 2 Baleho"
+  },
+  "balehoWeeklyLeaderboardTitle": "Peringkat Mingguan",
+  "@balehoWeeklyLeaderboardTitle": {
+    "description": "Judul slot tetap 4x1 di slide 2 Baleho"
+  },
+  "balehoWeeklyLeaderboardCta": "Siapa kontributor teratas minggu ini?",
+  "@balehoWeeklyLeaderboardCta": {
+    "description": "Subtitle kompetitif tile peringkat mingguan Baleho"
+  },
+  "balehoWeeklyLeaderboardComingSoonBody": "Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.",
+  "@balehoWeeklyLeaderboardComingSoonBody": {
+    "description": "Body halaman coming soon papan peringkat"
+  },
+  "balehoLeaderboardTabCurrent": "Minggu ini",
+  "@balehoLeaderboardTabCurrent": {
+    "description": "Tab papan peringkat minggu berjalan"
+  },
+  "balehoLeaderboardTabHistory": "Riwayat",
+  "@balehoLeaderboardTabHistory": {
+    "description": "Tab riwayat snapshot minggu lalu"
+  },
+  "balehoLeaderboardPickWeek": "Pilih minggu",
+  "@balehoLeaderboardPickWeek": {
+    "description": "Label pemilih week_id riwayat"
+  },
+  "balehoLeaderboardWeekLabel": "Minggu {weekId}",
+  "@balehoLeaderboardWeekLabel": {
+    "description": "Label minggu ISO di header daftar",
+    "placeholders": {
+      "weekId": {
+        "type": "String",
+        "example": "2026-W40"
+      }
+    }
+  },
+  "balehoLeaderboardResetsAt": "Reset {datetime}",
+  "@balehoLeaderboardResetsAt": {
+    "description": "Reset minggu pada tanggal tetap (sudah lewat / fallback)",
+    "placeholders": {
+      "datetime": {
+        "type": "String",
+        "example": "17 Nov 2026 21:00"
+      }
+    }
+  },
+  "balehoLeaderboardResetsSoon": "Reset sebentar lagi",
+  "@balehoLeaderboardResetsSoon": {
+    "description": "Countdown reset kurang dari satu menit"
+  },
+  "balehoLeaderboardResetsInDaysHours": "Reset dalam {days} hari {hours} jam",
+  "@balehoLeaderboardResetsInDaysHours": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoLeaderboardResetsInHoursMinutes": "Reset dalam {hours} jam {minutes} menit",
+  "@balehoLeaderboardResetsInHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoLeaderboardResetsInMinutes": "Reset dalam {minutes} menit",
+  "@balehoLeaderboardResetsInMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoLeaderboardRank": "#{rank}",
+  "@balehoLeaderboardRank": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoLeaderboardScoreCombined": "{score} poin",
+  "@balehoLeaderboardScoreCombined": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoLeaderboardScoreBreakdown": "+{contrib} kontrib · +{verif} verif",
+  "@balehoLeaderboardScoreBreakdown": {
+    "placeholders": {
+      "contrib": {
+        "type": "int"
+      },
+      "verif": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoLeaderboardVerifierBadge": "Verifikator",
+  "@balehoLeaderboardVerifierBadge": {
+    "description": "Badge kecil pada entry verifikator"
+  },
+  "balehoLeaderboardEmpty": "Belum ada peringkat minggu ini.",
+  "@balehoLeaderboardEmpty": {
+    "description": "Empty state minggu berjalan"
+  },
+  "balehoLeaderboardLastWeekTitle": "Peringkat minggu lalu",
+  "@balehoLeaderboardLastWeekTitle": {
+    "description": "Judul preview juara minggu sebelumnya di tab Minggu ini"
+  },
+  "balehoLeaderboardLastWeekHint": "Minggu ini masih jalan. Di bawah ini peringkat minggu sebelumnya.",
+  "@balehoLeaderboardLastWeekHint": {
+    "description": "Penjelasan kenapa preview minggu lalu muncul"
+  },
+  "balehoLeaderboardOpenWeek": "Buka detail minggu",
+  "@balehoLeaderboardOpenWeek": {
+    "description": "CTA buka snapshot minggu dari preview"
+  },
+  "balehoLeaderboardHistoryEmpty": "Data peringkat minggu ini belum tersimpan.",
+  "@balehoLeaderboardHistoryEmpty": {
+    "description": "Riwayat CDN 404 atau daftar kosong"
+  },
+  "balehoLeaderboardLoadFailed": "Gagal memuat peringkat.",
+  "@balehoLeaderboardLoadFailed": {
+    "description": "Error muat papan peringkat"
+  },
+  "balehoLeaderboardHistoryNoWeeks": "Minggu ini masih berjalan, jadi riwayatnya masih kosong. Kembali lagi Senin depan ya.",
+  "@balehoLeaderboardHistoryNoWeeks": {
+    "description": "Empty state Riwayat sebelum finalize pertama"
+  },
+  "balehoLeaderboardScoreLabel": "Skor",
+  "@balehoLeaderboardScoreLabel": {
+    "description": "Label kecil di atas angka skor gabungan"
+  },
+  "balehoLeaderboardPodiumTitle": "Podium minggu ini",
+  "@balehoLeaderboardPodiumTitle": {
+    "description": "Judul section juara 1-3 di papan peringkat"
+  },
+  "balehoLeaderboardPodiumPlace": "Peringkat {place}",
+  "@balehoLeaderboardPodiumPlace": {
+    "description": "Label peringkat podium (1, 2, atau 3)",
+    "placeholders": {
+      "place": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoLeaderboardHistoryWeekHint": "Pilih minggu untuk lihat peringkatnya",
+  "@balehoLeaderboardHistoryWeekHint": {
+    "description": "Subtitle tile minggu di daftar riwayat"
+  },
+  "balehoLeaderboardHistoryLoadMore": "Lihat minggu sebelumnya",
+  "@balehoLeaderboardHistoryLoadMore": {
+    "description": "Tombol paginasi daftar minggu riwayat"
+  },
+  "balehoSlotAvailable": "Tersedia",
+  "balehoSlotHeld": "Dipesan",
+  "@balehoSlotHeld": {
+    "description": "Label sel Baleho yang terkunci (pending/awaiting) bagi viewer lain - bukan konten iklan"
+  },
+  "balehoSlotHeldInfoTitle": "Area sedang dipesan",
+  "@balehoSlotHeldInfoTitle": {
+    "description": "Judul sheet saat ketuk sel Dipesan"
+  },
+  "balehoSlotHeldInfoBody": "Area ini sedang dipesan dan sedang dalam pengecekan. Pilih area lain yang masih kosong ya.",
+  "@balehoSlotHeldInfoBody": {
+    "description": "Isi sheet saat ketuk sel Dipesan"
+  },
+  "balehoBoardFullTitle": "Area Baleho penuh",
+  "@balehoBoardFullTitle": {
+    "description": "Judul sheet saat semua sel slide promo sudah terisi"
+  },
+  "balehoBoardFullBody": "Semua area sudah terisi. Coba lagi nanti jika ada yang kosong ya.",
+  "@balehoBoardFullBody": {
+    "description": "Isi sheet saat board Baleho penuh"
+  },
+  "balehoPendingBadge": "Menunggu",
+  "balehoPlacementSheetTitle": "Konten Baleho",
+  "@balehoPlacementSheetTitle": {
+    "description": "Judul fallback bottom sheet saat tap placement tanpa title"
+  },
+  "balehoPlacementOpen": "Buka",
+  "@balehoPlacementOpen": {
+    "description": "CTA buka aksi placement dari bottom sheet"
+  },
+  "balehoPlacementPendingHint": "Pesananmu masih menunggu pengecekan. Belum bisa dibuka publik.",
+  "@balehoPlacementPendingHint": {
+    "description": "Info di sheet bila owner mengetuk placement pending"
+  },
+  "balehoContinueBook": "Lanjut pesan",
+  "balehoCancelSelection": "Batalkan",
+  "@balehoCancelSelection": {
+    "description": "Batalkan seleksi area di papan Baleho"
+  },
+  "balehoEnterPickMode": "Mulai Promosi",
+  "@balehoEnterPickMode": {
+    "description": "CTA di bottom sheet info - aktifkan mode pilih area Baleho"
+  },
+  "balehoSelectionHint": "Ketuk atau seret sel kosong",
+  "@balehoSelectionHint": {
+    "description": "Petunjuk singkat satu baris saat mode pilih area aktif"
+  },
+  "balehoSizePickLabel": "Ukuran area",
+  "@balehoSizePickLabel": {
+    "description": "Caption chip ukuran seleksi Baleho"
+  },
+  "balehoSizeChip": "{w}x{h}",
+  "@balehoSizeChip": {
+    "description": "Chip ukuran w x h",
+    "placeholders": {
+      "w": {
+        "type": "int"
+      },
+      "h": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoSelectionSummary": "{size} · kolom {col}, baris {row}",
+  "@balehoSelectionSummary": {
+    "description": "Ringkas area yang sedang dipilih",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      },
+      "col": {
+        "type": "int"
+      },
+      "row": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoBookConfirmTitle": "Pesanan Baleho",
+  "balehoBookConfirmSubtitle": "Ukuran {size} di posisi {position}. Referral: {referral}",
+  "@balehoBookConfirmSubtitle": {
+    "description": "Ringkas ukuran, posisi, referral",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      },
+      "position": {
+        "type": "String"
+      },
+      "referral": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoBookConfirmBody": "Form unggah media dan aksi frame menyusul. Pesanan masuk antrean moderasi dulu ya.",
+  "balehoBookClose": "Tutup",
+  "balehoLoadFailed": "Gagal memuat papan Baleho",
+  "balehoBookPageTitle": "Pesan area",
+  "balehoSlotSummary": "Ukuran {size} · kolom {col}, baris {row}",
+  "@balehoSlotSummary": {
+    "description": "Ringkas area yang dipilih di form pesan",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      },
+      "col": {
+        "type": "int"
+      },
+      "row": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoReferralLabel": "Kode teman (opsional)",
+  "balehoReferralHint": "Username yang mengajakmu",
+  "balehoDaysLabel": "Berapa hari tayang?",
+  "@balehoDaysLabel": {
+    "description": "Label field durasi tayang"
+  },
+  "balehoDaysHint": "1 sampai 30",
+  "@balehoDaysHint": {
+    "description": "Hint input durasi hari"
+  },
+  "balehoDaysChip": "{days} hari",
+  "@balehoDaysChip": {
+    "description": "Chip pilihan durasi cepat",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoDaysUnit": "hari",
+  "@balehoDaysUnit": {
+    "description": "Satuan di samping input durasi"
+  },
+  "balehoContentSection": "Baleho",
+  "@balehoContentSection": {
+    "description": "Judul bagian isi kreatif Baleho"
+  },
+  "balehoFrameLabel": "Slide {n}",
+  "@balehoFrameLabel": {
+    "description": "Judul satu slide/frame Baleho dalam stack",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoAddFrame": "Tambah slide",
+  "balehoRemoveFrame": "Hapus",
+  "balehoMediaKindLabel": "Jenis tampilan",
+  "@balehoMediaKindLabel": {
+    "description": "Caption chip jenis media"
+  },
+  "balehoMediaTextCta": "Teks + tombol",
+  "balehoMediaImage": "Gambar",
+  "balehoMediaVideo": "Video",
+  "balehoMediaUrlLabel": "Alamat media",
+  "balehoMediaUrlHint": "https://…",
+  "balehoUploadImage": "Pilih gambar",
+  "balehoReplaceImage": "Ganti gambar",
+  "@balehoReplaceImage": {
+    "description": "Tombol ganti gambar slide Baleho setelah sudah ada preview"
+  },
+  "balehoUploading": "Mengunggah…",
+  "balehoUploadOk": "Gambar terunggah",
+  "balehoTitleLabel": "Judul (opsional)",
+  "balehoBodyLabel": "Teks body (opsional)",
+  "@balehoBodyLabel": {
+    "description": "Label field body di form pesan Baleho (tampil di sheet di bawah judul)"
+  },
+  "balehoBodyHint": "Maksimal 320 karakter. Tampil di bawah judul di sheet.",
+  "@balehoBodyHint": {
+    "description": "Hint field body Baleho"
+  },
+  "balehoCtaLabel": "Teks tombol (opsional)",
+  "balehoActionKindLabel": "Saat diketuk buka",
+  "@balehoActionKindLabel": {
+    "description": "Caption chip jenis aksi"
+  },
+  "balehoActionInApp": "Halaman di SambasKu",
+  "balehoActionExternal": "Website luar",
+  "balehoActionPathLabel": "Tujuan di app",
+  "balehoActionPathHint": "/usaha/nama-slug atau /explore",
+  "balehoActionUrlLabel": "Alamat website",
+  "balehoActionUrlHint": "https://…",
+  "balehoDeeplinkPickerTitle": "Pilih halaman tujuan",
+  "@balehoDeeplinkPickerTitle": {
+    "description": "Judul bottom sheet picker deeplink Baleho"
+  },
+  "balehoDeeplinkPickerSubtitle": "Pilih dulu, lalu boleh dilengkapi slug di kolom bawah.",
+  "@balehoDeeplinkPickerSubtitle": {
+    "description": "Subjudul picker deeplink"
+  },
+  "balehoDeeplinkPickCta": "Pilih halaman",
+  "@balehoDeeplinkPickCta": {
+    "description": "Tombol buka picker deeplink"
+  },
+  "balehoDeeplinkEmpty": "Belum dipilih",
+  "balehoEntitySearchUsahaTitle": "Cari usaha",
+  "@balehoEntitySearchUsahaTitle": {
+    "description": "Judul sheet cari usaha untuk deeplink Baleho"
+  },
+  "balehoEntitySearchAcaraTitle": "Cari acara",
+  "@balehoEntitySearchAcaraTitle": {
+    "description": "Judul sheet cari acara untuk deeplink Baleho"
+  },
+  "balehoEntitySearchWisataTitle": "Cari wisata",
+  "@balehoEntitySearchWisataTitle": {
+    "description": "Judul sheet cari wisata untuk deeplink Baleho"
+  },
+  "balehoEntitySearchKaryaTitle": "Cari karya",
+  "@balehoEntitySearchKaryaTitle": {
+    "description": "Judul sheet cari karya untuk deeplink Baleho"
+  },
+  "balehoEntitySearchHint": "Ketik nama…",
+  "@balehoEntitySearchHint": {
+    "description": "Hint field cari entity Baleho"
+  },
+  "balehoEntitySearchPrompt": "Ketik minimal 2 huruf untuk mencari, atau biarkan kosong untuk melihat daftar.",
+  "@balehoEntitySearchPrompt": {
+    "description": "Prompt awal sheet cari entity"
+  },
+  "balehoEntitySearchEmpty": "Tidak ketemu. Coba kata lain ya.",
+  "@balehoEntitySearchEmpty": {
+    "description": "Empty state sheet cari entity"
+  },
+  "balehoEntitySearchFailed": "Gagal memuat daftar. Coba lagi ya.",
+  "@balehoEntitySearchFailed": {
+    "description": "Error state sheet cari entity"
+  },
+  "balehoDeeplinkPickUsaha": "Pilih usaha (cari)",
+  "balehoDeeplinkPickAcara": "Pilih acara (cari)",
+  "balehoDeeplinkPickWisata": "Pilih wisata (cari)",
+  "balehoDeeplinkPickKarya": "Pilih karya (cari)",
+  "balehoDeeplinkPickUsahaDetail": "Cari lalu pilih satu usaha",
+  "balehoDeeplinkPickAcaraDetail": "Cari lalu pilih satu acara",
+  "balehoDeeplinkPickWisataDetail": "Cari lalu pilih satu tempat wisata",
+  "balehoDeeplinkPickKaryaDetail": "Cari lalu pilih satu karya",
+  "balehoDeeplinkHome": "Beranda",
+  "balehoDeeplinkExplore": "Eksplorasi",
+  "balehoDeeplinkUsahaList": "Daftar usaha",
+  "balehoDeeplinkAcaraList": "Daftar acara",
+  "balehoDeeplinkEncyclopedia": "Ensiklopedia",
+  "balehoDeeplinkWords": "Kamus",
+  "balehoDeeplinkBaleho": "Baleho",
+  "balehoReactivateCta": "Pakai konten lama",
+  "@balehoReactivateCta": {
+    "description": "Tile buka daftar creative approved untuk reaktivasi"
+  },
+  "balehoReactivateHint": "Lewati unggah - skip cek konten",
+  "balehoReactivateTitle": "Pilih konten lama",
+  "balehoReactivateSubtitle": "Yang sudah lolos cek bisa dipakai ulang di slot baru.",
+  "balehoReactivateEmpty": "Belum ada konten yang lolos cek. Kirim pesanan baru dulu ya.",
+  "balehoReactivateUntitled": "Konten tanpa judul",
+  "balehoReactivateClear": "Batalkan - unggah baru",
+  "balehoReactivateUsingOld": "Konten lama dipakai. Atur posisi dan hari tayang saja.",
+  "balehoReactivateRefHint": "Referral: @{username}",
+  "@balehoReactivateRefHint": {
+    "description": "Subtitle creative dengan referral lama",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoActionFailToast": "Tautan tidak bisa dibuka. Coba lagi nanti ya.",
+  "@balehoActionFailToast": {
+    "description": "Toast saat action Baleho gagal (action_fail)"
+  },
+  "balehoSlideContentTitle": "Tampilan slide {n}",
+  "@balehoSlideContentTitle": {
+    "description": "Judul bottom sheet kelola konten slide",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoSlideContentCta": "Atur tampilan",
+  "@balehoSlideContentCta": {
+    "description": "Tile buka sheet kelola konten slide"
+  },
+  "balehoSlideContentFilled": "Gambar siap - ketuk untuk ganti",
+  "@balehoSlideContentFilled": {
+    "description": "Subtitle tile slide Baleho setelah gambar terunggah"
+  },
+  "balehoSlideContentEmpty": "Belum diisi - ketuk untuk atur",
+  "@balehoSlideContentEmpty": {
+    "description": "Subtitle tile jika slide belum punya judul/media"
+  },
+  "balehoSlideContentDone": "Selesai",
+  "@balehoSlideContentDone": {
+    "description": "Tutup sheet konten slide"
+  },
+  "balehoSubmit": "Kirim pesanan",
+  "balehoSubmitting": "Mengirim…",
+  "balehoSubmitOk": "Pesanan masuk antrean cek",
+  "balehoErrorSlotTaken": "Area ini baru saja terisi. Pilih yang lain ya.",
+  "balehoErrorActiveLimit": "Kamu sudah punya 2 pesanan aktif. Tunggu selesai dulu ya.",
+  "balehoErrorFingerprintDup": "Konten dan aksi ini sama dengan pesanan aktifmu. Ubah dulu ya.",
+  "@balehoErrorFingerprintDup": {
+    "description": "409 BALEHO_FINGERPRINT_DUP saat submit pesanan Baleho"
+  },
+  "balehoErrorUpload": "Gagal mengunggah gambar. Coba lagi ya.",
+  "balehoErrorCreate": "Gagal mengirim pesanan. Coba lagi ya.",
+  "balehoErrorRateLimited": "Terlalu sering. Tunggu sebentar lalu coba lagi ya.",
+  "@balehoErrorRateLimited": {
+    "description": "429 RATE_LIMITED pada submit/upload Baleho"
+  },
+  "balehoHistoryTitle": "Riwayat Baleho",
+  "@balehoHistoryTitle": {
+    "description": "Judul halaman riwayat pesanan Baleho"
+  },
+  "balehoHistoryDetailTitle": "Performa Pesanan",
+  "@balehoHistoryDetailTitle": {
+    "description": "Judul halaman detail performa satu pesanan Baleho"
+  },
+  "balehoHistoryDetailNotFound": "Pesanan tidak ditemukan atau sudah dihapus. Tarik ke bawah untuk memuat ulang ya.",
+  "balehoHistoryDetailEnd": "Berakhir",
+  "@balehoHistoryDetailNotFound": {
+    "description": "Empty state detail pesanan Baleho saat item tak ada di daftar"
+  },
+  "balehoHistoryDetailStatus": "Status",
+  "@balehoHistoryDetailStatus": {
+    "description": "Label baris status di detail pesanan"
+  },
+  "balehoHistoryDetailPosition": "Posisi",
+  "@balehoHistoryDetailPosition": {
+    "description": "Label baris posisi di detail pesanan"
+  },
+  "balehoHistoryDetailCreated": "Dibuat",
+  "@balehoHistoryDetailCreated": {
+    "description": "Label baris tanggal dibuat di detail pesanan"
+  },
+  "@balehoHistoryDetailEnd": {
+    "description": "Label baris waktu berakhir di detail pesanan"
+  },
+  "balehoDurationMinutes": "{minutes} menit",
+  "@balehoDurationMinutes": {
+    "description": "Durasi tayang < 1 jam",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoDurationHours": "{hours} jam",
+  "@balehoDurationHours": {
+    "description": "Durasi tayang < 1 hari",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoDurationDays": "{days} hari",
+  "@balehoDurationDays": {
+    "description": "Durasi tayang hari penuh",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoDurationDaysHours": "{days} hari {hours} jam",
+  "@balehoDurationDaysHours": {
+    "description": "Durasi tayang campuran hari+jam",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoHistoryLoginRequired": "Masuk dulu untuk melihat riwayat pesananmu.",
+  "balehoHistoryEmpty": "Belum ada pesanan. Mulai promosi di papan Baleho ya.",
+  "balehoHistoryLoadFailed": "Gagal memuat riwayat. Coba lagi ya.",
+  "balehoHistoryUntitled": "Tanpa judul",
+  "balehoHistoryPosition": "{size} · kolom {col}, baris {row}",
+  "@balehoHistoryPosition": {
+    "description": "Ringkas ukuran dan posisi slot di riwayat",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      },
+      "col": {
+        "type": "int"
+      },
+      "row": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoStatusPendingReview": "Menunggu cek",
+  "balehoStatusAwaitingPayment": "Menunggu bayar",
+  "balehoStatusLive": "Tayang",
+  "balehoStatusPaused": "Ditahan",
+  "balehoStatusRejected": "Ditolak",
+  "balehoStatusCancelled": "Dibatalkan",
+  "balehoStatusExpired": "Selesai",
+  "balehoHistoryEndingSoonHint": "Berakhir dalam 24 jam. Setelah selesai, pesan lagi dari sini ya.",
+  "@balehoHistoryEndingSoonHint": {
+    "description": "Hint di riwayat untuk placement live yang H-1"
+  },
+  "balehoHistoryRebookCta": "Pesan lagi",
+  "@balehoHistoryRebookCta": {
+    "description": "CTA reaktivasi setelah placement expired"
+  },
+  "balehoHistoryRebookHint": "Pilih area kosong di papan, lalu aktifkan ulang creative lama.",
+  "@balehoHistoryRebookHint": {
+    "description": "Hint singkat CTA pesan lagi di riwayat"
+  },
+  "balehoHistoryStatsTitle": "Biaya",
+  "@balehoHistoryStatsTitle": {
+    "description": "Judul ringkasan biaya di detail pesanan Baleho"
+  },
+  "balehoHistoryCostEmpty": "Belum ada ringkasan biaya untuk pesanan ini.",
+  "@balehoHistoryCostEmpty": {
+    "description": "Placeholder bila quoted/CPC belum tersedia di detail Baleho"
+  },
+  "balehoHistoryStatImpressions": "Tayang",
+  "@balehoHistoryStatImpressions": {
+    "description": "Label hitungan impression Baleho"
+  },
+  "balehoHistoryStatTaps": "Buka detail",
+  "@balehoHistoryStatTaps": {
+    "description": "Label hitungan tap membuka sheet detail"
+  },
+  "balehoHistoryStatActions": "Klik tombol",
+  "@balehoHistoryStatActions": {
+    "description": "Label hitungan klik CTA di sheet Baleho"
+  },
+  "balehoHistoryStatCtr": "CTR {percent}%",
+  "@balehoHistoryStatCtr": {
+    "description": "CTR tap/impresi di riwayat Baleho",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoHistoryStatActionRate": "Action-rate {percent}%",
+  "@balehoHistoryStatActionRate": {
+    "description": "Rasio klik CTA per buka detail di riwayat Baleho",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoHistoryStatSuccessRate": "Sukses CTA {percent}%",
+  "@balehoHistoryStatSuccessRate": {
+    "description": "Rasio action_success per klik CTA di riwayat Baleho",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoHistoryStatQuoted": "Biaya Rp {amount}",
+  "@balehoHistoryStatQuoted": {
+    "description": "Snapshot biaya pesanan di blok performa",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoHistoryStatCpc": "CPC Rp {amount}",
+  "@balehoHistoryStatCpc": {
+    "description": "Biaya per buka detail di riwayat Baleho",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoValidationNeedFrame": "Isi minimal satu slide Baleho",
+  "balehoValidationVideoSize": "Video hanya untuk ukuran 4x2 atau 2x4",
+  "balehoValidationVideoMax": "Maksimal satu video per pesanan",
+  "balehoValidationMediaUrl": "Alamat media wajib diisi",
+  "balehoValidationAction": "Isi tujuan saat Baleho diketuk",
+  "balehoValidationExternalUrl": "Alamat website tidak valid (pakai http/https)",
+  "balehoValidationDays": "Durasi harus 1 sampai 30 hari",
+  "@balehoValidationDays": {
+    "description": "Error durasi di luar 1-30"
+  },
+  "balehoTosTitle": "Tanggung jawab konten",
+  "@balehoTosTitle": {
+    "description": "Judul cuplikan ToS di form pesan Baleho"
+  },
+  "balehoTosBody": "Isi Baleho dan halaman tujuan tanggung jawabmu. SambasKu boleh menolak atau menurunkan tayangan. Ubah besar setelah lolos cek = ajukan ulang.",
+  "@balehoTosBody": {
+    "description": "Cuplikan ToS Baleho di form pesan"
+  },
   "navContribute": "Kontribusi",
   "navProfile": "Profil",
   "profileSettingsTile": "Pengaturan",
@@ -69,6 +908,10 @@
   "profileDefaultName": "Pengguna",
   "profileNotReadyToast": "Profil belum siap, coba lagi",
   "profileViewPublic": "Lihat profil publik",
+  "profileJinyeComposeQuote": "Agek mikerkan ape insanak",
+  "@profileJinyeComposeQuote": {
+    "description": "CTA quote di tab Profil di bawah Lihat profil publik; buka buat Jinye"
+  },
   "profileNotifications": "Notifikasi",
   "profileUnreadSuffix": "belum dibaca",
   "@profileUnreadSuffix": {
@@ -98,7 +941,41 @@
   "errorSheetOk": "Mengerti",
   "errorSheetClose": "Tutup",
   "errorSheetRetry": "Coba lagi",
-  "offlineBanner": "Kamu lagi offline. Nampilin data tersimpan.",
+  "offlineBanner": "Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.",
+  "lemmaLocalModeChip": "Mode offline",
+  "@lemmaLocalModeChip": {
+    "description": "Chip saat korpus lemma dari SQLite / offline"
+  },
+  "lemmaDatasetGroup": "Kamus lokal",
+  "@lemmaDatasetGroup": {
+    "description": "Label grup Settings untuk dataset lemma offline"
+  },
+  "lemmaDatasetVersion": "Versi kamus lokal v{version}",
+  "@lemmaDatasetVersion": {
+    "description": "Subtitle tile OTA; {version} = release_version integer",
+    "placeholders": {
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "lemmaDatasetVersionUnknown": "Versi kamus lokal belum terpasang",
+  "lemmaDatasetUpdate": "Perbarui kamus",
+  "@lemmaDatasetUpdate": {
+    "description": "Tombol manual OTA dataset lemma"
+  },
+  "lemmaDatasetUpdating": "Memperbarui…",
+  "lemmaDatasetUpdated": "Kamus lokal diperbarui",
+  "lemmaDatasetAlreadyLatest": "Kamus lokal sudah versi terbaru",
+  "lemmaDatasetNeedInternet": "Butuh internet untuk memperbarui kamus",
+  "lemmaDatasetUpdateFailed": "Gagal memperbarui kamus. Coba lagi nanti.",
+  "lemmaDatasetHashFailed": "File kamus rusak atau tidak cocok. Versi lama tetap dipakai.",
+  "lemmaDatasetAppUpdateRequired": "Perbarui aplikasi dulu supaya bisa pakai kamus ini",
+  "lemmaDatasetIncompatible": "Skema kamus tidak didukung aplikasi ini",
+  "lemmaSocialNeedsInternet": "Komentar tidak tersedia di mode offline",
+  "@lemmaSocialNeedsInternet": {
+    "description": "Hint di container komentar saat mode offline / sumber lokal"
+  },
   "routerNotFound": "Halaman tidak ditemukan: {error}",
   "@routerNotFound": {
     "description": "Halaman error router; {error} = path/uri yang gagal",
@@ -278,6 +1155,26 @@
     }
   },
   "voteLoginPrompt": "Masuk dulu untuk memberi vote",
+  "voteTrustProgressLabel": "Menuju verifikasi warga",
+  "@voteTrustProgressLabel": {
+    "description": "Label progress bar vote makna menuju ambang Voting Warga (+5)"
+  },
+  "voteTrustProgressInfo": "Bar kiri hijau (setuju) vs kanan merah (kurang setuju), saling merebut proporsi suara. Terverifikasi otomatis bila net minimal +5 dari sedikitnya 5 pemilih; ditolak otomatis bila net maksimal -5 dari sedikitnya 5 pemilih.",
+  "@voteTrustProgressInfo": {
+    "description": "Isi popover info: penjelasan ambang Voting Warga di progress bar makna"
+  },
+  "voteTrustProgressInfoSemantics": "Info verifikasi warga",
+  "@voteTrustProgressInfoSemantics": {
+    "description": "semanticsLabel tombol info yang membuka penjelasan Voting Warga"
+  },
+  "notificationTypeMeaningAutoVerified": "Makna terverifikasi warga",
+  "@notificationTypeMeaningAutoVerified": {
+    "description": "Label tipe inbox: makna auto-verif Voting Warga"
+  },
+  "notificationTypeMeaningNeedsReview": "Makna perlu ditinjau",
+  "@notificationTypeMeaningNeedsReview": {
+    "description": "Label tipe inbox: makna needs_review setelah downvote massal"
+  },
   "voteDeckLoginPrompt": "Masuk dulu untuk menilai kata",
   "voteDeckLoginCta": "Masuk",
   "voteDeckHelper": "Bantu nilai agar arti kata lebih akurat",
@@ -344,6 +1241,14 @@
   "commentLoginComposerPrompt": "Masuk untuk menulis komentar",
   "commentSent": "Komentar terkirim",
   "commentAddPhoto": "Foto",
+  "commentAddSticker": "Stiker",
+  "@commentAddSticker": {
+    "description": "Chip composer komentar: buka sheet katalog stiker"
+  },
+  "commentRemoveSticker": "Lepas stiker",
+  "@commentRemoveSticker": {
+    "description": "Hapus stiker yang sedang di-staging di composer"
+  },
   "@commentAddPhoto": {
     "description": "Chip lampirkan foto di composer komentar"
   },
@@ -363,7 +1268,7 @@
   "@commentRemovePhoto": {
     "description": "Aksi hapus pratinjau foto di composer komentar"
   },
-  "commentBodyOrPhotoRequired": "Komentar atau foto wajib diisi",
+  "commentBodyOrPhotoRequired": "Komentar, foto, atau stiker wajib diisi",
   "@commentBodyOrPhotoRequired": {},
   "commentRecordTitle": "Rekam komentar suara",
   "commentRecordBody": "Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.",
@@ -589,7 +1494,6 @@
     "description": "Kategori usulan #244: perbaiki contoh kalimat yang sudah tayang"
   },
   "suggestCategoryChangeExampleDesc": "Perbaiki typo atau arti contoh yang sudah ada",
-
   "suggestCategoryChangePronunciation": "Ubah pelafalan",
   "@suggestCategoryChangePronunciation": {
     "description": "Kategori usulan: perbaiki notasi pelafalan yang sudah tayang"
@@ -615,7 +1519,9 @@
   "@dictChangePronunciationSemantics": {
     "description": "Semantics label baris IPA yang bisa di-tap",
     "placeholders": {
-      "value": {"type": "String"}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "suggestPickExample": "Pilih contoh yang mau diperbaiki",
@@ -640,6 +1546,13 @@
   "suggestCategoryMeaningGroupDesc": "Gabungkan kata bermakna sama dalam satu kelompok",
   "suggestCategorySpellingVariant": "Variasi penulisan",
   "suggestCategorySpellingVariantDesc": "Ejaan lain tanpa entri sendiri (tetap di lemma ini)",
+  "suggestCategoryChangeCategories": "Ubah kategori",
+  "@suggestCategoryChangeCategories": {
+    "description": "Kategori usulan: tag topik lemma (chip)"
+  },
+  "suggestCategoryChangeCategoriesDesc": "Tambah atau lepas kategori topik di lemma ini",
+  "suggestCategoryPickHint": "Pilih kategori topik",
+  "suggestCategoryNoneSelected": "Belum ada kategori",
   "suggestCategoryLemmaNotes": "Lainnya",
   "suggestCategoryLemmaNotesDesc": "Ejaan lemma atau catatan",
   "suggestEntryTileVerifierTitle": "Perbaiki/lengkapi kata",
@@ -953,6 +1866,14 @@
   "commonForbiddenRole": "Role tidak diizinkan mengakses endpoint ini",
   "commonVerifierArea": "Area Verifikator",
   "commonReason": "Alasan",
+  "commonPaste": "Tempel",
+  "@commonPaste": {
+    "description": "Semantics / label tombol tempel clipboard di samping field URL"
+  },
+  "commonClipboardEmpty": "Clipboard kosong",
+  "@commonClipboardEmpty": {
+    "description": "Toast bila tempel ditekan tapi clipboard kosong"
+  },
   "reviewEntityWord": "Kata",
   "reviewEntityPronunciation": "Pelafalan",
   "reviewEntityWordImage": "Gambar",
@@ -1167,6 +2088,14 @@
   "reviewHistorySkeletonMeta": "Disetujui · 21 Sep 2026 00:00",
   "reviewSessionQueueDone": "Antrean selesai",
   "reviewSessionSkipped": "Dilewati.",
+  "reviewSessionEntityMissingSkipped": "Usulan tanpa isi dilewati.",
+  "@reviewSessionEntityMissingSkipped": {
+    "description": "Toast saat sesi tinjau auto-skip kartu entity kosong/orphan"
+  },
+  "reviewSessionEntityMissingFlood": "Banyak usulan tanpa isi. Kembali ke antrean dulu.",
+  "@reviewSessionEntityMissingFlood": {
+    "description": "Toast + keluar sesi jika terlalu banyak kartu rusak beruntun"
+  },
   "reviewSessionApprovedToast": "Usulan disetujui",
   "reviewSessionRejectedToast": "Usulan ditolak",
   "reviewSessionAlreadyProcessed": "Usulan ini sudah diproses.",
@@ -1440,6 +2369,10 @@
       }
     }
   },
+  "reviewPreviewEntityMissing": "Isi usulan tidak bisa dimuat. Lewati kartu ini atau coba lagi nanti.",
+  "@reviewPreviewEntityMissing": {
+    "description": "Preview kosong saat entity kontribusi null/hilang di sesi tinjau"
+  },
   "reviewPreviewProposedMeaning": "Makna yang diusulkan",
   "reviewPreviewSourceOfMeaning": "Sumber makna",
   "reviewPreviewTranslationSection": "Terjemahan",
@@ -1704,6 +2637,18 @@
   "reviewExplorePlaceListTitle": "Usulan wisata",
   "reviewExploreCulinaryListTitle": "Usulan kuliner",
   "reviewExploreEventListTitle": "Usulan acara",
+  "reviewExploreEventSearchHint": "Cari nama atau lokasi",
+  "@reviewExploreEventSearchHint": {
+    "description": "Hint field cari di antrean/riwayat usulan acara"
+  },
+  "reviewExploreEventTabPeriksa": "Periksa",
+  "@reviewExploreEventTabPeriksa": {
+    "description": "Tab antrean usulan acara pending"
+  },
+  "reviewExploreEventTabRiwayat": "Riwayat",
+  "@reviewExploreEventTabRiwayat": {
+    "description": "Tab usulan acara sudah diputus"
+  },
   "reviewExploreLayananListTitle": "Usulan layanan publik",
   "reviewExploreEmpty": "Tidak ada usulan menunggu",
   "@reviewExploreEmpty": {
@@ -1851,7 +2796,7 @@
   "dictVariantInflection": "Fleksi",
   "dictVariantDerivation": "Derivasi",
   "dictVariantReduplication": "Reduplikasi",
-  "dictAttributionCreatedBy": "Dibuat oleh {name}",
+  "dictAttributionCreatedBy": "Diusulkan oleh {name}",
   "@dictAttributionCreatedBy": {
     "placeholders": {
       "name": {
@@ -1867,7 +2812,7 @@
       }
     }
   },
-  "dictAttributionCreatedAndVerifiedBy": "Dibuat dan diverifikasi oleh {name}",
+  "dictAttributionCreatedAndVerifiedBy": "Diusulkan dan diverifikasi oleh {name}",
   "@dictAttributionCreatedAndVerifiedBy": {
     "placeholders": {
       "name": {
@@ -1964,6 +2909,22 @@
   "dictLoginToReportPhoto": "Masuk dulu untuk melaporkan foto",
   "dictPhotoReportSent": "Laporan terkirim. Foto tetap tayang sampai ditinjau.",
   "dictSeeVerifiers": "Lihat verifikator",
+  "dictLemmaTrustVerified": "Terverifikasi",
+  "@dictLemmaTrustVerified": {
+    "description": "Chip lemma: semua makna published sudah terverifikasi"
+  },
+  "dictLemmaTrustPartial": "Sebagian dicek",
+  "@dictLemmaTrustPartial": {
+    "description": "Chip lemma: hanya sebagian makna yang terverifikasi"
+  },
+  "dictMeaningVerified": "Makna terverifikasi",
+  "@dictMeaningVerified": {
+    "description": "Semantics label ikon centang per baris makna"
+  },
+  "dictMeaningPendingCheck": "Makna menunggu pengecekan",
+  "@dictMeaningPendingCheck": {
+    "description": "Semantics label ikon menunggu per baris makna"
+  },
   "dictPronunciationLine": "{notation} {value}",
   "@dictPronunciationLine": {
     "placeholders": {
@@ -2057,6 +3018,14 @@
   "dictNoTranslation": "Belum ada terjemahan",
   "dictExampleAudio": "Audio contoh",
   "dictCopyMeaning": "Salin makna",
+  "dictSuggestMeaning": "Usulkan perubahan",
+  "@dictSuggestMeaning": {
+    "description": "Tile usul edit dari sheet aksi per makna"
+  },
+  "dictSuggestMeaningSubtitle": "Makna ini langsung terpilih di form usulan",
+  "@dictSuggestMeaningSubtitle": {
+    "description": "Subtitle tile usul edit per makna"
+  },
   "dictMeaningActionsTitle": "Aksi makna",
   "@dictMeaningActionsTitle": {
     "description": "Judul sheet aksi per makna di detail kata"
@@ -2093,7 +3062,6 @@
   "reviewMeaningReportDismiss": "Tolak laporan",
   "reviewMeaningReportRemovedToast": "Makna dihapus, laporan ditutup",
   "reviewMeaningReportDismissedToast": "Laporan ditolak",
-
   "dictSkeletonLemma": "lemma contoh kata",
   "dictSkeletonWordClass": "Nomina",
   "dictSkeletonComment": "isi komentar skeleton beberapa kata di sini",
@@ -2123,6 +3091,10 @@
   "dictLangIndonesia": "Indonesia",
   "dictSearchIndonesianHint": "Cari kata Indonesia...",
   "dictSearchSambasHint": "Cari atau saring kata Sambas...",
+  "dictSearchCommitHint": "Tekan Enter atau Cari untuk mencatat kata yang belum ada.",
+  "@dictSearchCommitHint": {
+    "description": "Hint commit search miss di daftar kata (bukan tiap ketikan)"
+  },
   "dictCategory": "Kategori",
   "dictSearchIndonesianEmpty": "Ketik kata Indonesia untuk mencari terjemahannya di Sambas.",
   "dictNoPublishedWord": "Belum ada kata terbit.",
@@ -2136,6 +3108,94 @@
   },
   "dictNotInDictionary": "Belum ada di kamus. Usulkan supaya bisa dicari orang lain.",
   "dictProposeThisWord": "Usul kata ini",
+  "hotTopicsTitle": "Sorotan hari ini",
+  "@hotTopicsTitle": {
+    "description": "Judul kartu Sorotan di beranda (G4)"
+  },
+  "hotTopicsTabSearched": "Dicari",
+  "@hotTopicsTabSearched": {
+    "description": "Tab Hot: search miss 24 jam"
+  },
+  "hotTopicsTabProposed": "Usulan",
+  "@hotTopicsTabProposed": {
+    "description": "Tab Sorotan: usulan kata pending"
+  },
+  "hotTopicsTabNearThreshold": "Hits",
+  "@hotTopicsTabNearThreshold": {
+    "description": "Tab Sorotan: kata hits / banyak dilihat (word_views)"
+  },
+  "hotTopicsTabEmpty": "Belum ada data",
+  "@hotTopicsTabEmpty": {
+    "description": "Judul empty state tab Sorotan"
+  },
+  "hotTopicsTabEmptySearchedBody": "Belum ada pencarian kosong yang menonjol hari ini.",
+  "@hotTopicsTabEmptySearchedBody": {
+    "description": "Subtitle empty tab Dicari"
+  },
+  "hotTopicsTabEmptyProposedBody": "Belum ada usulan kata yang menunggu peninjauan.",
+  "@hotTopicsTabEmptyProposedBody": {
+    "description": "Subtitle empty tab Usulan"
+  },
+  "hotTopicsTabEmptyNearBody": "Belum ada hits dalam 2 hari terakhir.",
+  "@hotTopicsTabEmptyNearBody": {
+    "description": "Subtitle empty tab Hits"
+  },
+  "hotTopicsTabCheck": "Cek",
+  "@hotTopicsTabCheck": {
+    "description": "Tab Sorotan: makna yang dapat downvote"
+  },
+  "hotTopicsTabEmptyCheckBody": "Belum ada makna yang perlu dicek hari ini.",
+  "@hotTopicsTabEmptyCheckBody": {
+    "description": "Subtitle empty tab Cek"
+  },
+  "hotTopicsBackfillHint": "Sebagian dari 7 hari terakhir.",
+  "@hotTopicsBackfillHint": {
+    "description": "Hint saat tab Hot memakai backfill di luar 24 jam"
+  },
+  "hotTopicsProposedSubtitle": "Usulan baru",
+  "hotTopicsEmptySlot": "-",
+  "@hotTopicsEmptySlot": {
+    "description": "Placeholder judul slot Sorotan yang belum terisi"
+  },
+  "hotTopicsViewCount": "{count}× dibuka",
+  "@hotTopicsViewCount": {
+    "description": "Subtitle jumlah pembaca unik di tab Hits; pola sama Dicari ({count}× …)",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "hotTopicsDownvoteCount": "{count}× perlu di cek",
+  "@hotTopicsDownvoteCount": {
+    "description": "Subtitle jumlah downvote di tab Cek",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "dictCorrectSpellingCta": "Koreksi ejaan",
+  "@dictCorrectSpellingCta": {
+    "description": "CTA empty-state: buka form koreksi typo jadi varian lemma benar"
+  },
+  "contributeSpellCorrectTitle": "Koreksi ejaan",
+  "@contributeSpellCorrectTitle": {
+    "description": "Judul form usul saat mode koreksi ejaan dari miss"
+  },
+  "contributeSpellTypedLabel": "Yang kamu ketik: {term}",
+  "@contributeSpellTypedLabel": {
+    "description": "Label baca-saja term typo di form koreksi",
+    "placeholders": {
+      "term": {
+        "type": "String"
+      }
+    }
+  },
+  "contributeSpellCorrectHint": "Ejaan yang benar",
+  "@contributeSpellCorrectHint": {
+    "description": "Hint field ejaan kanonik di mode koreksi"
+  },
   "dictRelatedMeaningSubtitle": "Makna terkait · {subtitle}",
   "@dictRelatedMeaningSubtitle": {
     "placeholders": {
@@ -2727,6 +3787,10 @@
   "@feedCategoryExplore": {
     "description": "Chip kategori feed: tempat dan kuliner"
   },
+  "feedCategoryJinye": "Jinye",
+  "@feedCategoryJinye": {
+    "description": "Chip kategori feed: status Jinye"
+  },
   "feedCategoryAnnouncement": "Pengumuman",
   "@feedCategoryAnnouncement": {
     "description": "Chip kategori feed: pengumuman admin"
@@ -3044,6 +4108,82 @@
   "@feedContributeSearchMiss": {
     "description": "Item menu daftar pencarian tanpa hasil"
   },
+  "feedContributePeriksaKata": "Periksa kata",
+  "@feedContributePeriksaKata": {
+    "description": "Tile hub Kontribusi - feed makna belum verified"
+  },
+  "feedPeriksaKataStubBody": "Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.",
+  "@feedPeriksaKataStubBody": {
+    "description": "Placeholder body /periksa-kata sebelum Phase 4"
+  },
+  "periksaKataLoginPrompt": "Masuk dulu untuk memeriksa kata",
+  "@periksaKataLoginPrompt": {
+    "description": "Gate login halaman Periksa Kata"
+  },
+  "periksaKataSearchHint": "Cari lemma…",
+  "@periksaKataSearchHint": {
+    "description": "Hint field cari di feed/riwayat Periksa Kata"
+  },
+  "periksaKataEmpty": "Belum ada makna menunggu pengecekan",
+  "@periksaKataEmpty": {
+    "description": "Empty state feed Periksa Kata tanpa query"
+  },
+  "periksaKataSearchEmpty": "Tidak ketemu lemma itu",
+  "@periksaKataSearchEmpty": {
+    "description": "Empty state setelah cari di Periksa Kata"
+  },
+  "periksaKataAgree": "Sudah pas",
+  "@periksaKataAgree": {
+    "description": "Label upvote Periksa Kata"
+  },
+  "periksaKataDisagree": "Perlu dicek ulang",
+  "@periksaKataDisagree": {
+    "description": "Label downvote Periksa Kata"
+  },
+  "periksaKataVotedAgree": "Voting kamu sudah tercatat",
+  "@periksaKataVotedAgree": {
+    "description": "Status sesi setelah upvote di feed Periksa Kata"
+  },
+  "periksaKataVotedDisagree": "Voting kamu sudah tercatat",
+  "@periksaKataVotedDisagree": {
+    "description": "Status sesi setelah downvote di feed Periksa Kata"
+  },
+  "periksaKataSkip": "Lewati",
+  "@periksaKataSkip": {
+    "description": "Tombol skip Periksa Kata - user tidak tahu, kartu tidak muncul lagi"
+  },
+  "periksaKataSkipSemantics": "Lewati, saya tidak tahu",
+  "@periksaKataSkipSemantics": {
+    "description": "Semantics tombol skip Periksa Kata"
+  },
+  "periksaKataSkipSwipeHint": "Geser kiri untuk lewati",
+  "@periksaKataSkipSwipeHint": {
+    "description": "Hint di kartu Periksa Kata: lewati lewat swipe kiri, bukan tombol"
+  },
+  "periksaKataHistoryTitle": "Riwayat pemeriksaan",
+  "@periksaKataHistoryTitle": {
+    "description": "Judul halaman riwayat Periksa Kata"
+  },
+  "periksaKataHistoryEmpty": "Belum ada riwayat pemeriksaan",
+  "@periksaKataHistoryEmpty": {
+    "description": "Empty state riwayat Periksa Kata"
+  },
+  "periksaKataFilterAll": "Semua",
+  "@periksaKataFilterAll": {
+    "description": "Tab filter riwayat - semua status"
+  },
+  "periksaKataFilterPending": "Menunggu",
+  "@periksaKataFilterPending": {
+    "description": "Tab filter riwayat - pending"
+  },
+  "periksaKataFilterVerified": "Terverifikasi",
+  "@periksaKataFilterVerified": {
+    "description": "Tab filter riwayat - verified"
+  },
+  "periksaKataFilterRejected": "Ditolak",
+  "@periksaKataFilterRejected": {
+    "description": "Tab filter riwayat - rejected"
+  },
   "feedContributeSearchMissSubtitle": "Kata yang dicari warga tapi belum ketemu. Bantu isi artinya",
   "@feedContributeSearchMissSubtitle": {
     "description": "Keterangan item daftar pencarian tanpa hasil"
@@ -3169,7 +4309,7 @@
   "@profileUsernameLabel": {
     "description": "Label kolom username"
   },
-  "profileUsernameHint": "a-z, 0-9, titik, underscore (6-30 karakter)",
+  "profileUsernameHint": "a-z, 0-9, titik, underscore (6-30; tanpa beruntun)",
   "@profileUsernameHint": {
     "description": "Aturan penulisan username"
   },
@@ -3189,13 +4329,66 @@
   "@profileUsernameReserved": {
     "description": "Label username reserved"
   },
-  "profileUsernameInvalid": "Username belum memenuhi aturan (6-30, a-z, 0-9, titik, underscore)",
+  "profileUsernameInvalid": "Username belum memenuhi aturan (6-30, a-z/0-9/titik/underscore, tanpa beruntun)",
   "@profileUsernameInvalid": {
     "description": "Label username format salah"
   },
   "profileUsernameCheckFailed": "Gagal memeriksa username",
   "@profileUsernameCheckFailed": {
     "description": "Error saat GET username-availability gagal"
+  },
+  "profileUsernameReclaimable": "Username lama masih bisa dikembalikan",
+  "@profileUsernameReclaimable": {
+    "description": "Label status reclaimable"
+  },
+  "profileUsernameCooldown": "Username baru bisa diganti lagi setelah {when}",
+  "@profileUsernameCooldown": {
+    "description": "Pesan cooldown ganti username; when = tanggal",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "profileUsernameHistoryAction": "Riwayat username",
+  "@profileUsernameHistoryAction": {
+    "description": "Tombol buka sheet riwayat"
+  },
+  "profileUsernameHistoryTitle": "Riwayat username",
+  "@profileUsernameHistoryTitle": {
+    "description": "Judul sheet riwayat"
+  },
+  "profileUsernameHistorySubtitle": "Hanya kamu yang melihat daftar ini",
+  "@profileUsernameHistorySubtitle": {
+    "description": "Subtitle sheet riwayat"
+  },
+  "profileUsernameHistoryEmpty": "Belum ada perubahan username",
+  "@profileUsernameHistoryEmpty": {
+    "description": "Empty state riwayat"
+  },
+  "profileUsernameHistoryRow": "{oldUsername} jadi {newUsername}",
+  "@profileUsernameHistoryRow": {
+    "description": "Baris riwayat old jadi new",
+    "placeholders": {
+      "oldUsername": {
+        "type": "String"
+      },
+      "newUsername": {
+        "type": "String"
+      }
+    }
+  },
+  "profileUsernameHistoryCanReclaim": "Masih bisa dikembalikan",
+  "@profileUsernameHistoryCanReclaim": {
+    "description": "Subtitle baris reclaimable"
+  },
+  "profileUsernameReclaimAction": "Kembalikan",
+  "@profileUsernameReclaimAction": {
+    "description": "Tombol reclaim"
+  },
+  "profileUsernameHistoryLoadFailed": "Gagal memuat riwayat username",
+  "@profileUsernameHistoryLoadFailed": {
+    "description": "Error load history"
   },
   "profileDisplayNameLabel": "Nama tampilan",
   "@profileDisplayNameLabel": {
@@ -3717,6 +4910,18 @@
   "notificationTypeEventNeedsRevision": "Acara perlu revisi",
   "@notificationTypeEventNeedsRevision": {
     "description": "Label UI M3 (notification/komentar/usulan/vote)"
+  },
+  "notificationTypeBalehoApproved": "Baleho disetujui",
+  "@notificationTypeBalehoApproved": {
+    "description": "Label jenis notifikasi: pesanan Baleho disetujui"
+  },
+  "notificationTypeBalehoRejected": "Baleho ditolak",
+  "@notificationTypeBalehoRejected": {
+    "description": "Label jenis notifikasi: pesanan Baleho ditolak"
+  },
+  "notificationTypeBalehoEndingSoon": "Baleho hampir berakhir",
+  "@notificationTypeBalehoEndingSoon": {
+    "description": "Label jenis notifikasi: Baleho H-1 akan berakhir"
   },
   "notificationTypeUpdate": "Pembaruan",
   "@notificationTypeUpdate": {
@@ -4360,12 +5565,284 @@
   "layananStatusRevision": "Perlu perbaikan",
   "layananStatusApproved": "Sudah tayang",
   "layananStatusRejected": "Ditolak",
+  "exploreCategoryKarya": "Karya",
+  "@exploreCategoryKarya": {
+    "description": "Judul kategori Karya di hub Eksplorasi"
+  },
+  "exploreCategoryKaryaSubtitle": "Musik dan film berbau Sambas",
+  "@exploreCategoryKaryaSubtitle": {
+    "description": "Subjudul kategori Karya di hub Eksplorasi"
+  },
+  "karyaTitle": "Karya",
+  "karyaLoadFailed": "Gagal memuat karya",
+  "karyaNotFound": "Karya tidak ditemukan",
+  "karyaEmpty": "Belum ada karya",
+  "karyaEmptyHint": "Tahu lagu atau film Sambas? Kamu bisa usulkan.",
+  "karyaEmptyFilter": "Belum ada karya yang cocok",
+  "karyaEmptyFilterHint": "Coba ubah filter atau cari dengan kata lain ya.",
+  "karyaSearchPlaceholder": "Cari judul karya...",
+  "karyaKindMusic": "Musik",
+  "karyaKindFilm": "Film",
+  "karyaYear": "Tahun",
+  "karyaYearLabel": "Tahun {year}",
+  "@karyaYearLabel": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "karyaCredits": "Kredit",
+  "karyaAccess": "Akses karya",
+  "karyaAccessEmpty": "Belum ada tautan akses",
+  "karyaAccessKindListen": "Dengarkan",
+  "karyaAccessKindWatch": "Tonton",
+  "karyaAccessKindBuy": "Beli",
+  "karyaAccessKindRead": "Baca",
+  "karyaAccessKindStream": "Streaming",
+  "karyaAccessKindOfficial": "Situs resmi",
+  "karyaAccessKindOther": "Lainnya",
+  "karyaContribute": "Usulkan karya",
+  "karyaContributeMusic": "Usul lagu",
+  "@karyaContributeMusic": {
+    "description": "CTA / judul form usul karya musik (cepat)"
+  },
+  "karyaContributeFilm": "Usul film",
+  "@karyaContributeFilm": {
+    "description": "CTA / judul form usul karya film (cepat)"
+  },
+  "karyaContributePickTitle": "Usulkan karya apa?",
+  "@karyaContributePickTitle": {
+    "description": "Judul sheet pilih jenis usulan karya"
+  },
+  "karyaContributePickSubtitle": "Pilih musik atau film. Tahun dan kaitan Sambas dilengkapi saat tinjauan.",
+  "@karyaContributePickSubtitle": {
+    "description": "Subjudul sheet pilih jenis usulan karya"
+  },
+  "karyaFormQuickHint": "Cukup judul dan nama kreator. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.",
+  "@karyaFormQuickHint": {
+    "description": "Petunjuk form usul karya cepat (2 field)"
+  },
+  "karyaFormTitleHintMusic": "Judul lagu",
+  "karyaFormTitleHintFilm": "Judul film",
+  "karyaFormCreditNameMusic": "Nama penyanyi",
+  "karyaFormCreditNameFilm": "Nama kreator",
+  "@karyaFormCreditNameFilm": {
+    "description": "Label field kreator form cepat film (channel, rumah produksi, pembuat, dll.)"
+  },
+  "karyaFormCreditNameHintMusic": "Ketik nama, atau pilih dari saran kreator",
+  "karyaFormCreditNameHintFilm": "Channel, rumah produksi, pembuat, atau nama orang - ketik atau pilih saran",
+  "@karyaFormCreditNameHintFilm": {
+    "description": "Hint field kreator form cepat film"
+  },
+  "karyaFormCreditNameRequired": "Nama kreator minimal 2 karakter",
+  "karyaFormKreatorSuggestPick": "Pilih kreator ini",
+  "@karyaFormKreatorSuggestPick": {
+    "description": "Subtitle tile saran kreator di form usul"
+  },
+  "karyaContributeSubmit": "Kirim usulan",
+  "karyaContributeBusy": "Mengirim...",
+  "karyaProposeSuccess": "Usulan karya kamu sudah dikirim",
+  "karyaProposeEdit": "Usulkan perbaikan",
+  "karyaProposeAccessLink": "Usulkan tautan akses",
+  "karyaProposalsTitle": "Usulan karya saya",
+  "karyaProposalsEmpty": "Kamu belum punya usulan karya",
+  "karyaProposalKindNew": "Usulan karya baru",
+  "karyaProposalKindEdit": "Perbaikan data karya",
+  "karyaProposalKindExcerpt": "Usulan cuplikan",
+  "karyaStatusPending": "Menunggu tinjauan",
+  "karyaStatusRevision": "Perlu perbaikan",
+  "karyaStatusApproved": "Sudah tayang",
+  "karyaStatusRejected": "Ditolak",
+  "karyaSambasSection": "Kaitan dengan Sambas",
+  "karyaSambasEmpty": "Belum ada catatan kaitan",
+  "karyaSambasType": "Jenis kaitan",
+  "karyaSambasNote": "Catatan kaitan",
+  "karyaSambasNoteHint": "Singkat saja, misal asal kreator atau temanya",
+  "karyaSambasTypeCreatorOrigin": "Asal kreator",
+  "karyaSambasTypeLanguage": "Bahasa",
+  "karyaSambasTypeLocation": "Lokasi",
+  "karyaSambasTypeTheme": "Tema",
+  "karyaSambasTypeOther": "Lainnya",
+  "karyaFilterTitle": "Filter karya",
+  "@karyaFilterTitle": {
+    "description": "Judul bottom sheet filter daftar karya"
+  },
+  "karyaFilterApply": "Terapkan",
+  "karyaFilterReset": "Atur ulang",
+  "karyaFilterYear": "Tahun",
+  "karyaFilterYearHint": "Contoh 2019",
+  "karyaFilterLanguage": "Bahasa",
+  "karyaFilterLanguageHint": "Contoh sbs atau id",
+  "karyaFilterSambasType": "Jenis kaitan Sambas",
+  "karyaFilterSambasAll": "Semua kaitan",
+  "karyaRelatedSection": "Terkait",
+  "@karyaRelatedSection": {
+    "description": "Judul blok relasi di detail karya"
+  },
+  "karyaRelatedKindPlace": "Tempat",
+  "karyaRelatedKindWord": "Kata",
+  "karyaRelatedKindArticle": "Artikel",
+  "karyaRelatedKindEvent": "Acara",
+  "karyaRelatedKindUsaha": "Usaha",
+  "karyaRelatedKindKreator": "Kreator",
+  "karyaRelatedKindKarya": "Karya",
+  "karyaExcerptSection": "Cuplikan",
+  "karyaExcerptEmpty": "Belum ada cuplikan yang tayang",
+  "@karyaExcerptEmpty": {
+    "description": "Empty state blok cuplikan di detail karya"
+  },
+  "karyaExcerptEndLabel": "Label akhir (opsional)",
+  "karyaExcerptEndLabelHint": "Misal bait 2 atau menit 01:35",
+  "karyaExcerptFairQuoteTooLong": "Cuplikan wajar maksimal 4 baris atau 500 karakter. Kurangi teks atau pilih status hak yang cocok.",
+  "karyaExcerptFullRequiresA2": "Teks sepanjang ini hanya boleh dengan status ada izin, berlisensi, atau domain publik",
+  "karyaExcerptHint": "Cuplikan fair quote maksimal 4 baris atau 500 karakter. Teks lebih panjang hanya kalau haknya jelas (izin, lisensi, atau domain publik) plus catatan hak.",
+  "@karyaExcerptHint": {
+    "description": "Petunjuk batas fair quote vs A2 di form cuplikan"
+  },
+  "karyaExcerptKind": "Jenis cuplikan",
+  "karyaExcerptKindBookQuote": "Kutipan buku",
+  "karyaExcerptKindDialogue": "Dialog",
+  "karyaExcerptKindLyrics": "Lirik",
+  "karyaExcerptKindOther": "Lainnya",
+  "karyaExcerptRights": "Status hak",
+  "karyaExcerptRightsFairQuote": "Cuplikan wajar",
+  "karyaExcerptRightsLicensed": "Berlisensi",
+  "karyaExcerptRightsNote": "Catatan hak",
+  "karyaExcerptRightsNoteHint": "Jelaskan izin atau sumber lisensinya",
+  "karyaExcerptRightsNoteRequired": "Catatan hak wajib diisi untuk teks berizin/lisensi/domain publik",
+  "karyaExcerptRightsPermission": "Ada izin",
+  "karyaExcerptRightsPublicDomain": "Domain publik",
+  "karyaExcerptRightsUnknown": "Pilih status hak yang jelas dulu",
+  "karyaExcerptSourceUrl": "URL sumber (opsional)",
+  "karyaExcerptSourceUrlHint": "Tautan sumber asli (https)",
+  "karyaExcerptSourceUrlInvalid": "URL sumber tidak valid. Pakai https yang lengkap ya.",
+  "karyaExcerptStartLabel": "Label awal (opsional)",
+  "karyaExcerptStartLabelHint": "Misal bait 1 atau menit 01:20",
+  "karyaExcerptText": "Teks cuplikan",
+  "karyaExcerptTextHint": "Tempel lirik atau dialog yang mau diusulkan",
+  "karyaExcerptTextRequired": "Teks cuplikan wajib diisi",
+  "karyaProposeExcerpt": "Usulkan cuplikan",
+  "@karyaProposeExcerpt": {
+    "description": "CTA usul lirik/dialog dari detail karya"
+  },
+  "karyaAppearsInWordTitle": "Muncul di karya",
+  "@karyaAppearsInWordTitle": {
+    "description": "Judul section di detail lemma untuk cuplikan karya"
+  },
+  "karyaLemmaLinkAction": "Tautkan lemma",
+  "@karyaLemmaLinkAction": {
+    "description": "Tile di detail karya untuk menaut lemma ke cuplikan"
+  },
+  "karyaLemmaLinkSuccess": "Lemma ditautkan",
+  "@karyaLemmaLinkSuccess": {
+    "description": "Toast sukses taut lemma karya"
+  },
+  "karyaLemmaLinkFailed": "Gagal menautkan lemma",
+  "@karyaLemmaLinkFailed": {
+    "description": "Error umum saat taut lemma karya"
+  },
+  "karyaLemmaLinkNotFoundInText": "Lemma tidak ditemukan di teks cuplikan",
+  "@karyaLemmaLinkNotFoundInText": {
+    "description": "Lemma dipilih tapi tidak ada di cuplikan (case-insensitive)"
+  },
+  "karyaLemmaLinkLoginFirst": "Masuk dulu untuk menautkan lemma",
+  "@karyaLemmaLinkLoginFirst": {
+    "description": "Sheet saat guest mengetuk taut lemma"
+  },
+  "karyaFormInvalid": "Judul dan nama kreator wajib diisi",
+  "karyaFormKindRequired": "Pilih jenis karya dulu",
+  "karyaFormTitleRequired": "Judul karya minimal 2 karakter",
+  "karyaFormYearInvalid": "Isi tahun rilis yang valid (1800-2100)",
+  "karyaFormSambasRequired": "Minimal satu kaitan dengan Sambas wajib diisi",
+  "karyaFormCreditRequired": "Minimal satu kredit (nama + peran) wajib diisi",
+  "karyaFormCreditVocalRequired": "Untuk musik, minimal satu kredit dengan peran Vokal",
+  "karyaFormCreditFilmRequired": "Untuk film, minimal satu kredit wajib diisi",
+  "karyaFormCreditHintMusic": "Musik wajib punya minimal satu peran Vokal",
+  "karyaFormCreditHintFilm": "Film wajib punya minimal satu kredit (channel, rumah produksi, sutradara, atau peran lain)",
+  "kreatorTitle": "Kreator",
+  "@kreatorTitle": {
+    "description": "Judul fallback halaman profil kreator"
+  },
+  "kreatorLoadFailed": "Gagal memuat profil kreator",
+  "kreatorNotFound": "Profil kreator tidak ditemukan",
+  "kreatorKindPerson": "Orang",
+  "kreatorKindGroup": "Grup",
+  "kreatorBioEmpty": "Bio belum diisi. Data bisa dilengkapi nanti.",
+  "kreatorLinks": "Tautan",
+  "kreatorKaryaSection": "Karya",
+  "kreatorKaryaEmpty": "Belum ada karya yang terhubung ke profil ini",
+  "kreatorProposeKarya": "Usulkan karya",
+  "kreatorClaimAction": "Klaim profil ini",
+  "kreatorClaimActionHint": "Kalau ini kamu atau grupmu, kirim bukti singkat",
+  "kreatorClaimTitle": "Klaim profil kreator",
+  "kreatorClaimSubtitle": "Tim akan meninjau dulu. Bukti tidak ditampilkan ke publik.",
+  "kreatorClaimProof": "Catatan bukti",
+  "kreatorClaimProofHint": "Misal akun resmi, tautan, atau penjelasan singkat",
+  "kreatorClaimProofShort": "Catatan bukti minimal 8 karakter",
+  "kreatorClaimSubmit": "Kirim klaim",
+  "kreatorClaimSuccess": "Klaim kamu sudah dikirim",
+  "karyaFormKind": "Jenis karya",
+  "karyaFormPickKind": "Pilih jenis",
+  "karyaFormTitle": "Judul",
+  "karyaFormTitleHint": "Judul lagu atau film",
+  "karyaFormYearHint": "Contoh 2019",
+  "karyaFormAddSambas": "Tambah kaitan Sambas",
+  "karyaFormCreditRole": "Peran",
+  "karyaFormCreditName": "Nama",
+  "karyaFormCreditNameHint": "Nama orang atau grup",
+  "karyaFormAddCredit": "Tambah kredit",
+  "karyaFormAccessKind": "Jenis tautan",
+  "karyaFormAccessLabel": "Label tombol",
+  "karyaFormAccessLabelHint": "Misal Dengarkan di Spotify",
+  "karyaFormAccessUrl": "URL",
+  "karyaFormAccessUrlHint": "Tautan sumber asli (https)",
+  "karyaFormAddAccess": "Tambah tautan akses",
+  "karyaCreditRoleVocal": "Vokal",
+  "karyaCreditRoleFeat": "Feat",
+  "karyaCreditRoleSongwriter": "Penulis lagu",
+  "karyaCreditRoleComposer": "Komposer",
+  "karyaCreditRoleProducer": "Produser",
+  "karyaCreditRoleArranger": "Aransemen",
+  "karyaCreditRoleBandMember": "Anggota band",
+  "karyaCreditRoleDirector": "Sutradara",
+  "karyaCreditRoleCast": "Pemeran",
+  "karyaCreditRoleWriter": "Penulis skenario",
+  "karyaCreditRoleCinematographer": "Sinema",
+  "karyaCreditRoleOther": "Lainnya",
   "exploreCategoryAcara": "Acara",
   "exploreCategoryAcaraSubtitle": "Festival, pameran, dan kegiatan",
+  "exploreCategoryPantun": "Pantun",
+  "@exploreCategoryPantun": {
+    "description": "Judul kategori Eksplorasi untuk feed pantun"
+  },
+  "exploreCategoryPantunSubtitle": "Berbalas pantun bersama warga Sambas",
+  "@exploreCategoryPantunSubtitle": {
+    "description": "Subjudul kategori Pantun di hub Eksplorasi"
+  },
   "exploreCategoryPermainan": "Permainan",
-  "exploreCategoryPermainanSubtitle": "Pantun dan permainan Sambas",
+  "exploreCategoryPermainanSubtitle": "Teka-teki dan permainan Sambas",
+  "@exploreCategoryPermainanSubtitle": {
+    "description": "Subjudul hub Permainan setelah Pantun dipisah"
+  },
   "exploreCategoryEnsiklopedia": "Ensiklopedia",
   "exploreCategoryEnsiklopediaSubtitle": "Sejarah, kisah, karya, dan tradisi",
+  "petakateTitle": "Petakate",
+  "@petakateTitle": {
+    "description": "Nama game tebak kata harian di hub Permainan"
+  },
+  "petakateListSubtitle": "Tebak kata Melayu Sambas hari ini",
+  "@petakateListSubtitle": {
+    "description": "Subtitle baris Petakate di daftar permainan"
+  },
+  "permainanEmptyTitle": "Belum ada permainan",
+  "@permainanEmptyTitle": {
+    "description": "Judul empty state hub Permainan"
+  },
+  "permainanEmptySubtitle": "Game Sambas sedang disiapkan. Cek lagi nanti ya.",
+  "@permainanEmptySubtitle": {
+    "description": "Subtitle empty state hub Permainan"
+  },
   "encyclopediaTitle": "Ensiklopedia",
   "encyclopediaChip": "Ensik.",
   "@encyclopediaChip": {
@@ -4382,6 +5859,44 @@
   "encyclopediaAuthorBy": "Oleh",
   "encyclopediaPublishedAt": "Diterbitkan",
   "encyclopediaReferencesTitle": "Referensi & Sumber",
+  "encyclopediaViewOriginalSource": "Lihat sumber asli",
+  "@encyclopediaViewOriginalSource": {
+    "description": "CTA buka source_url artikel ensiklopedia di browser eksternal"
+  },
+  "contentRelatedSection": "Terkait",
+  "@contentRelatedSection": {
+    "description": "Judul section tautan lintas fitur (content_links)"
+  },
+  "contentRelatedArticlesSection": "Artikel terkait",
+  "@contentRelatedArticlesSection": {
+    "description": "Judul section artikel terkait di detail lemma"
+  },
+  "contentRelatedFormHint": "Opsional - tautkan lemma, artikel, atau konten lain (maks 12)",
+  "@contentRelatedFormHint": {
+    "description": "Hint picker terkait di form usulan ensiklopedia"
+  },
+  "contentRelatedAdd": "Tambah tautan",
+  "@contentRelatedAdd": {
+    "description": "Tombol tambah tautan terkait di form usulan"
+  },
+  "contentRelatedPickKindTitle": "Jenis tautan",
+  "@contentRelatedPickKindTitle": {
+    "description": "Judul sheet pilih jenis content_links"
+  },
+  "contentRelatedPickKindSubtitle": "Pilih jenis konten yang mau ditautkan",
+  "contentRelatedSearchTitle": "Cari {kind}",
+  "@contentRelatedSearchTitle": {
+    "description": "Judul sheet cari target tautan",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "contentRelatedSearchHint": "Ketik minimal 2 huruf…",
+  "contentRelatedSearchEmpty": "Tidak ada hasil. Coba kata lain.",
+  "contentRelatedKindCuisine": "Kuliner",
+  "contentRelatedKindLayanan": "Layanan",
   "encyclopediaCommentsTitle": "Komentar",
   "encyclopediaCommentPlaceholder": "Tulis komentar kamu...",
   "encyclopediaCommentSubmit": "Kirim Komentar",
@@ -4390,6 +5905,10 @@
   "encyclopediaBookmarkRemoved": "Artikel dihapus dari bookmark",
   "encyclopediaContributeTitle": "Usulkan Artikel",
   "encyclopediaContributeEditTitle": "Usul Perbaikan Artikel",
+  "encyclopediaProposeEdit": "Usulkan perbaikan",
+  "@encyclopediaProposeEdit": {
+    "description": "Tile di detail artikel untuk membuka form usulan perbaikan (mode edit)"
+  },
   "encyclopediaContributeIntro": "Bantu melengkapi khazanah Sambas dengan menulis artikel atau mengusulkan perbaikan.",
   "encyclopediaFieldTitle": "Judul Artikel",
   "encyclopediaFieldTitlePlaceholder": "Contoh: Sejarah Istana Alwatzikoebillah",
@@ -4399,6 +5918,46 @@
   "encyclopediaFieldExcerptPlaceholder": "Tulis 1-2 kalimat ringkasan artikel...",
   "encyclopediaFieldTags": "Tag (pisahkan koma)",
   "encyclopediaFieldTagsPlaceholder": "sejarah, istana, budaya",
+  "encyclopediaFieldSourceUrl": "Link sumber",
+  "@encyclopediaFieldSourceUrl": {
+    "description": "Label field opsional link sumber usulan artikel"
+  },
+  "encyclopediaFieldSourceUrlHint": "https:// (opsional)",
+  "@encyclopediaFieldSourceUrlHint": {
+    "description": "Hint field link sumber usulan artikel"
+  },
+  "encyclopediaSourceUrlPaste": "Tempel",
+  "@encyclopediaSourceUrlPaste": {
+    "description": "Tombol tempel clipboard di samping field link sumber usulan"
+  },
+  "encyclopediaSourceUrlClipboardEmpty": "Clipboard kosong",
+  "@encyclopediaSourceUrlClipboardEmpty": {
+    "description": "Toast bila tempel link sumber ditekan tapi clipboard kosong"
+  },
+  "encyclopediaFieldSourceUrlHttpsRequired": "Link sumber harus diawali https://",
+  "@encyclopediaFieldSourceUrlHttpsRequired": {
+    "description": "Validasi link sumber usulan artikel harus https"
+  },
+  "encyclopediaStatusNeedsRevision": "Perlu revisi",
+  "@encyclopediaStatusNeedsRevision": {
+    "description": "Badge status usulan ensiklopedia needs_revision"
+  },
+  "encyclopediaContributeUpdateTitle": "Ubah Usulan",
+  "@encyclopediaContributeUpdateTitle": {
+    "description": "Judul form saat mengedit usulan yang belum diverifikasi"
+  },
+  "encyclopediaUpdateButton": "Simpan Perubahan",
+  "@encyclopediaUpdateButton": {
+    "description": "CTA footer saat mengedit usulan pending"
+  },
+  "encyclopediaUpdateFailed": "Gagal menyimpan perubahan usulan",
+  "@encyclopediaUpdateFailed": {
+    "description": "Toast/sheet gagal PATCH usulan ensiklopedia"
+  },
+  "encyclopediaEditContributionMissing": "Data usulan belum termuat. Tarik untuk refresh lalu coba lagi.",
+  "@encyclopediaEditContributionMissing": {
+    "description": "Error buka form edit usulan tanpa payload"
+  },
   "encyclopediaFieldBody": "Isi Artikel (Markdown)",
   "encyclopediaFieldBodyPlaceholder": "Tulis isi artikel kamu di sini...",
   "encyclopediaFieldChangeNote": "Catatan Perubahan",
@@ -4422,6 +5981,58 @@
   "encyclopediaProposalKindNew": "Usulan artikel baru",
   "encyclopediaProposalKindEdit": "Usulan perbaikan",
   "encyclopediaBodyEmpty": "Belum ada isi.",
+  "encyclopediaCoverSemantics": "Gambar sampul artikel",
+  "@encyclopediaCoverSemantics": {
+    "description": "Semantics label hero cover di detail artikel ensiklopedia"
+  },
+  "encyclopediaFieldCover": "Gambar sampul",
+  "@encyclopediaFieldCover": {
+    "description": "Label field sampul opsional di form usulan ensiklopedia"
+  },
+  "encyclopediaFieldCoverHint": "Opsional - tampil sebagai hero di detail artikel",
+  "@encyclopediaFieldCoverHint": {
+    "description": "Hint field sampul opsional di form usulan"
+  },
+  "encyclopediaCoverWaitUpload": "Tunggu upload sampul selesai",
+  "@encyclopediaCoverWaitUpload": {
+    "description": "Toast saat submit usulan sementara sampul masih diunggah"
+  },
+  "encyclopediaCoverRemoveFailed": "Hapus sampul yang gagal diunggah dulu",
+  "@encyclopediaCoverRemoveFailed": {
+    "description": "Toast saat submit usulan dengan sampul gagal upload"
+  },
+  "markdownLinkChip": "<link>",
+  "@markdownLinkChip": {
+    "description": "Label chip pengganti URL panjang di body markdown"
+  },
+  "markdownLinkChipSemantics": "Buka tautan",
+  "@markdownLinkChipSemantics": {
+    "description": "Semantics label chip tautan markdown"
+  },
+  "markdownLinkSheetTitle": "Tautan",
+  "@markdownLinkSheetTitle": {
+    "description": "Judul bottomsheet pratinjau tautan markdown"
+  },
+  "markdownLinkOpenBrowser": "Buka di browser",
+  "@markdownLinkOpenBrowser": {
+    "description": "Tombol buka tautan markdown di browser eksternal"
+  },
+  "markdownLinkShowFullSemantics": "Lihat tautan lengkap",
+  "@markdownLinkShowFullSemantics": {
+    "description": "Semantics tombol info URL terpotong di sheet pratinjau tautan"
+  },
+  "markdownLinkFullUrlTitle": "Tautan lengkap",
+  "@markdownLinkFullUrlTitle": {
+    "description": "Judul bottomsheet menampilkan URL markdown penuh"
+  },
+  "markdownLinkCopySemantics": "Salin tautan",
+  "@markdownLinkCopySemantics": {
+    "description": "Semantics tombol ikon salin di sheet pratinjau tautan"
+  },
+  "markdownLinkOpenBrowserSemantics": "Buka di browser",
+  "@markdownLinkOpenBrowserSemantics": {
+    "description": "Semantics tombol ikon buka browser di sheet pratinjau tautan"
+  },
   "encyclopediaLoginFirstTitle": "Masuk dulu ya",
   "@encyclopediaLoginFirstTitle": {
     "description": "Judul sheet wajib login sebelum aksi ensiklopedia"
@@ -4645,14 +6256,14 @@
   "placeNoCoordinatesBody": "Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.",
   "placeBookmarkSoonTitle": "Bookmark tempat belum bisa dipakai",
   "placeBookmarkSoonBody": "Kami sedang berusaha membuatnya jadi lebih baik.",
-"placeTypeSejarah": "Sejarah",
-"placeTypeAlam": "Alam",
-"placeTypeReligi": "Religi",
-"placeTypeTirta": "Tirta",
-"placeTypeAgro": "Agro",
-"placeTypeBahari": "Bahari",
-"placeTypeBudaya": "Budaya",
-"placeTypeWisata": "Wisata",
+  "placeTypeSejarah": "Sejarah",
+  "placeTypeAlam": "Alam",
+  "placeTypeReligi": "Religi",
+  "placeTypeTirta": "Tirta",
+  "placeTypeAgro": "Agro",
+  "placeTypeBahari": "Bahari",
+  "placeTypeBudaya": "Budaya",
+  "placeTypeWisata": "Wisata",
   "@placeTypeWisata": {
     "description": "Label generik destinasi wisata"
   },
@@ -4778,6 +6389,21 @@
   "cuisineDetailHelpTitle": "Bantu lengkapi",
   "cuisineDetailSuggestEditBody": "Salah nama, deskripsi, atau bahan?",
   "cuisineDetailReportBody": "Data menyesatkan atau duplikat",
+  "cuisineActionAddPhoto": "Tambah foto",
+  "@cuisineActionAddPhoto": {
+    "description": "CTA tambah foto di detail kuliner (#281)"
+  },
+  "cuisineAddPhotoBody": "Kirim foto kuliner yang sudah terbit",
+  "@cuisineAddPhotoBody": {
+    "description": "Subtitle tile tambah foto di detail kuliner"
+  },
+  "cuisineAddPhotoIntro": "Pilih hingga 5 foto. Foto langsung tayang setelah terkirim.",
+  "@cuisineAddPhotoIntro": {
+    "description": "Intro form tambah foto kuliner"
+  },
+  "cuisineAddPhotoRequired": "Pilih minimal satu foto dulu ya.",
+  "cuisineAddPhotoSentTitle": "Foto terkirim",
+  "cuisineAddPhotoSentBody": "Terima kasih. Foto kuliner sudah ditambahkan.",
   "placePhotosNotFoundTitle": "Foto tidak ditemukan",
   "placePhotosNotFoundBody": "Tempat ini belum punya foto, atau datanya gagal dimuat.",
   "placePhotosEmpty": "Belum ada foto untuk tempat ini.",
@@ -4972,7 +6598,7 @@
   "contributeSubmitting": "Mengirim...",
   "contributeSubmitCta": "Kirim Usulan",
   "contributeSentPending": "Katanya langsung tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.",
-  "contributeSentGuest": "Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.",
+  "contributeSentGuest": "Dikirim sebagai tamu. Katanya sudah tayang, menunggu pengecekan warga.",
   "contributeBulkTitle": "Usulkan banyak sekaligus",
   "contributeBulkSubtitle": "Isi beberapa kata dan terjemahan dalam satu layar",
   "contributeHowToFill": "Cara mengisi",
@@ -4998,6 +6624,18 @@
   "contributeDefinitionHint": "Muncul setelah satu makna dipilih dari KBBI. Tetap jika terjemahan dikosongkan; hilang jika terjemahan diganti kata lain.",
   "contributeKindLabel": "Jenis",
   "contributeKindHint": "Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan berupa frasa; kata tunggal tidak perlu dipilih.",
+  "contributeCategoryLabel": "Kategori",
+  "@contributeCategoryLabel": {
+    "description": "Label field kategori topik lemma di form usul kata"
+  },
+  "contributeCategoryHint": "Opsional. Tag topik lemma (hewan, budaya, buah-buahan). Satu kata boleh lebih dari satu.",
+  "contributeCategoryPick": "Pilih kategori",
+  "contributeCategorySheetTitle": "Pilih kategori",
+  "contributeCategorySheetSubtitle": "Boleh lebih dari satu. Chip muncul di atas detail kata.",
+  "contributeCategorySheetDone": "Simpan",
+  "contributeCategorySearchHint": "Cari kategori",
+  "contributeCategoryEmpty": "Tidak ada kategori yang cocok",
+  "contributeCategoryLoadFailed": "Gagal memuat kategori",
   "contributeRegisterLabel": "Register",
   "contributeRegisterHint": "Opsional. Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa dipilih bersamaan.",
   "contributeWarningLabel": "Peringatan",
@@ -5131,7 +6769,7 @@
   "contributeBulkSendAll": "Kirim semua",
   "contributeBulkHeader": "Usulkan banyak",
   "contributeBulkSentPending": "Tiap kata langsung tayang dengan label Menunggu pengecekan.",
-  "contributeBulkSentGuest": "Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.",
+  "contributeBulkSentGuest": "Dikirim sebagai tamu. Kata sudah tayang, menunggu pengecekan warga.",
   "contributeBulkMaxRowsHint": "Maksimal {max} kata. Isi kata Sambas dan terjemahan Indonesia.",
   "@contributeBulkMaxRowsHint": {
     "placeholders": {
@@ -5658,7 +7296,7 @@
   "@eventFormDescRequired": {},
   "eventFormCategoryRequired": "Pilih kategori acara dulu.",
   "@eventFormCategoryRequired": {},
-  "eventFormStartRequired": "Tentukan waktu mulai.",
+  "eventFormStartRequired": "Tentukan tanggal mulai.",
   "@eventFormStartRequired": {},
   "eventFormEndRequired": "Tentukan waktu selesai.",
   "@eventFormEndRequired": {},
@@ -5678,27 +7316,27 @@
   "@eventSubmitting": {},
   "eventSubmitCta": "Kirim usulan",
   "@eventSubmitCta": {},
-  "eventFormIntro": "Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.",
+  "eventFormIntro": "Isi nama, kategori, dan tanggal mulai. Yang lain boleh dikosongkan. Usulan ditinjau dulu sebelum tayang.",
   "@eventFormIntro": {},
   "eventFormNameLabel": "Nama acara",
   "@eventFormNameLabel": {},
   "eventFormDescLabel": "Deskripsi",
   "@eventFormDescLabel": {},
-  "eventFormDescHint": "Ceritakan singkat acaranya",
+  "eventFormDescHint": "Opsional - ceritakan singkat acaranya",
   "@eventFormDescHint": {},
   "eventFormScheduleLabel": "Jadwal",
   "@eventFormScheduleLabel": {},
   "eventFormStartDateLabel": "Tanggal mulai",
   "@eventFormStartDateLabel": {},
-  "eventFormStartTimeLabel": "Jam mulai",
+  "eventFormStartTimeLabel": "Jam mulai (opsional)",
   "@eventFormStartTimeLabel": {},
-  "eventFormEndDateLabel": "Tanggal selesai",
+  "eventFormEndDateLabel": "Tanggal selesai (opsional)",
   "@eventFormEndDateLabel": {},
-  "eventFormEndTimeLabel": "Jam selesai",
+  "eventFormEndTimeLabel": "Jam selesai (opsional)",
   "@eventFormEndTimeLabel": {},
   "eventFormLocationLabel": "Lokasi",
   "@eventFormLocationLabel": {},
-  "eventFormLocationHint": "Nama tempat atau alamat acara",
+  "eventFormLocationHint": "Opsional - nama tempat atau alamat",
   "@eventFormLocationHint": {},
   "eventFormMapHint": "Ketuk peta untuk memilih koordinat. Opsional.",
   "@eventFormMapHint": {},
@@ -6620,6 +8258,15 @@
   "@achievementSeeMore": {
     "description": "Overlay sel ujung saat lencana profil lebih dari satu baris"
   },
+  "achievementRepeatCount": "×{count}",
+  "@achievementRepeatCount": {
+    "description": "Pengulangan lencana peringkat mingguan (juara ×3)",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "achievementBorderUpdated": "Bingkai profil diperbarui",
   "@achievementBorderUpdated": {},
   "achievementBorderPickerSubtitle": "Pilih bingkai yang sudah kamu miliki",
@@ -6867,6 +8514,10 @@
   "@profileStatWords": {},
   "profileStatCorrections": "perbaikan",
   "@profileStatCorrections": {},
+  "infoSheetTitle": "Informasi",
+  "@infoSheetTitle": {
+    "description": "Judul default bottom sheet info (bukan error)"
+  },
   "infoSheetUnderstood": "Mengerti",
   "@infoSheetUnderstood": {},
   "phoneCountrySearchHint": "Cari nama atau kode",
@@ -7255,13 +8906,41 @@
   "@jinyePreviewEmpty": {
     "description": "Fallback preview Jinye tanpa teks/media"
   },
+  "jinyeProfileJikuLabel": "Jiku",
+  "@jinyeProfileJikuLabel": {
+    "description": "Label kecil di atas preview Jinye di halaman profil"
+  },
   "jinyeSheetReply": "Balas",
   "@jinyeSheetReply": {
-    "description": "CTA sheet profil - fokus reply"
+    "description": "CTA sheet profil - fokus reply (legacy)"
   },
   "jinyeSheetViewDiscussion": "Lihat diskusi",
   "@jinyeSheetViewDiscussion": {
-    "description": "CTA sheet profil - buka thread"
+    "description": "CTA sheet profil - buka thread (legacy)"
+  },
+  "jinyeSheetCreateNew": "Buat jinye baru",
+  "@jinyeSheetCreateNew": {
+    "description": "CTA sheet profil sendiri - buka compose Jinye baru"
+  },
+  "jinyeSheetClear": "Kosongkan jinye",
+  "@jinyeSheetClear": {
+    "description": "CTA sheet profil sendiri - arsipkan status agar hilang dari bubble"
+  },
+  "jinyeSheetClearConfirmTitle": "Kosongkan jinye?",
+  "@jinyeSheetClearConfirmTitle": {
+    "description": "Judul konfirmasi kosongkan Jinye di profil"
+  },
+  "jinyeSheetClearConfirmBody": "Status di profil kamu hilang. Jinye tetap tersimpan di arsip.",
+  "@jinyeSheetClearConfirmBody": {
+    "description": "Isi konfirmasi kosongkan Jinye di profil"
+  },
+  "jinyeSheetClearConfirmAction": "Kosongkan",
+  "@jinyeSheetClearConfirmAction": {
+    "description": "Tombol konfirmasi destruktif kosongkan Jinye"
+  },
+  "jinyeClearedSuccess": "Jinye dikosongkan",
+  "@jinyeClearedSuccess": {
+    "description": "Toast sukses setelah kosongkan Jinye dari profil"
   },
   "jinyeDiscussionEmpty": "Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.",
   "@jinyeDiscussionEmpty": {
@@ -7434,77 +9113,162 @@
     "description": "Error generik submit laporan Jinye"
   },
   "jinyeArchivedTitle": "Arsip Jinye",
-  "@jinyeArchivedTitle": {"description": "Judul halaman arsip Jinye"},
+  "@jinyeArchivedTitle": {
+    "description": "Judul halaman arsip Jinye"
+  },
   "jinyeArchivedEmpty": "Belum ada Jinye di arsip",
-  "@jinyeArchivedEmpty": {"description": "Empty state arsip Jinye"},
+  "@jinyeArchivedEmpty": {
+    "description": "Empty state arsip Jinye"
+  },
   "jinyeArchivedLoadFailed": "Gagal memuat arsip Jinye",
-  "@jinyeArchivedLoadFailed": {"description": "Error load arsip Jinye"},
+  "@jinyeArchivedLoadFailed": {
+    "description": "Error load arsip Jinye"
+  },
   "jinyePinAction": "Sematkan di profil",
-  "@jinyePinAction": {"description": "CTA pin Jinye ke profil"},
+  "@jinyePinAction": {
+    "description": "CTA pin Jinye ke profil"
+  },
   "jinyeUnpinAction": "Lepas dari profil",
-  "@jinyeUnpinAction": {"description": "CTA unpin Jinye"},
+  "@jinyeUnpinAction": {
+    "description": "CTA unpin Jinye"
+  },
   "jinyeArchiveAction": "Arsipkan",
-  "@jinyeArchiveAction": {"description": "CTA arsipkan Jinye"},
+  "@jinyeArchiveAction": {
+    "description": "CTA arsipkan Jinye"
+  },
   "jinyeUnarchiveAction": "Pulihkan",
-  "@jinyeUnarchiveAction": {"description": "CTA unarchive Jinye"},
+  "@jinyeUnarchiveAction": {
+    "description": "CTA unarchive Jinye"
+  },
   "jinyePinSuccess": "Jinye disematkan di profil",
-  "@jinyePinSuccess": {"description": "Toast sukses pin Jinye"},
+  "@jinyePinSuccess": {
+    "description": "Toast sukses pin Jinye"
+  },
   "jinyeUnpinSuccess": "Pin Jinye dilepas",
-  "@jinyeUnpinSuccess": {"description": "Toast sukses unpin Jinye"},
+  "@jinyeUnpinSuccess": {
+    "description": "Toast sukses unpin Jinye"
+  },
   "jinyeArchiveSuccess": "Jinye diarsipkan",
-  "@jinyeArchiveSuccess": {"description": "Toast sukses archive Jinye"},
+  "@jinyeArchiveSuccess": {
+    "description": "Toast sukses archive Jinye"
+  },
   "jinyeUnarchiveSuccess": "Jinye dipulihkan",
-  "@jinyeUnarchiveSuccess": {"description": "Toast sukses unarchive Jinye"},
+  "@jinyeUnarchiveSuccess": {
+    "description": "Toast sukses unarchive Jinye"
+  },
   "jinyeUnarchiveFailed": "Gagal memulihkan Jinye",
-  "@jinyeUnarchiveFailed": {"description": "Error unarchive Jinye"},
+  "@jinyeUnarchiveFailed": {
+    "description": "Error unarchive Jinye"
+  },
   "jinyeOwnerActionFailed": "Gagal mengubah Jinye",
-  "@jinyeOwnerActionFailed": {"description": "Error generik aksi owner Jinye"},
+  "@jinyeOwnerActionFailed": {
+    "description": "Error generik aksi owner Jinye"
+  },
   "jinyeLemmaLinkAction": "Tautkan lemma",
-  "@jinyeLemmaLinkAction": {"description": "CTA owner tautkan span ke lemma"},
+  "@jinyeLemmaLinkAction": {
+    "description": "CTA owner tautkan span ke lemma"
+  },
   "jinyeLemmaSelectSpanTitle": "Pilih teks",
-  "@jinyeLemmaSelectSpanTitle": {"description": "Judul sheet pilih span lemma"},
+  "@jinyeLemmaSelectSpanTitle": {
+    "description": "Judul sheet pilih span lemma"
+  },
   "jinyeLemmaSelectSpanHint": "Ketuk kata. Ketuk lagi di kata lain untuk rentang.",
-  "@jinyeLemmaSelectSpanHint": {"description": "Petunjuk pilih token span"},
+  "@jinyeLemmaSelectSpanHint": {
+    "description": "Petunjuk pilih token span"
+  },
   "jinyeLemmaSelectSpanEmpty": "Tidak ada teks yang bisa ditautkan",
-  "@jinyeLemmaSelectSpanEmpty": {"description": "Body kosong untuk span"},
+  "@jinyeLemmaSelectSpanEmpty": {
+    "description": "Body kosong untuk span"
+  },
   "jinyeLemmaSelectSpanContinue": "Pilih lemma",
-  "@jinyeLemmaSelectSpanContinue": {"description": "Lanjut ke pencarian kata"},
+  "@jinyeLemmaSelectSpanContinue": {
+    "description": "Lanjut ke pencarian kata"
+  },
   "jinyeLemmaPickWordTitle": "Pilih lemma",
-  "@jinyeLemmaPickWordTitle": {"description": "Judul sheet cari kata"},
+  "@jinyeLemmaPickWordTitle": {
+    "description": "Judul sheet cari kata"
+  },
+  "jinyeLemmaPickWordIntro": "Ketik kata Sambas yang sudah terverifikasi - hasil muncul otomatis.",
+  "@jinyeLemmaPickWordIntro": {
+    "description": "Intro sheet cari lemma Jinye (pola KBBI compact)"
+  },
   "jinyeLemmaPickWordHint": "Cari kata Sambas…",
-  "@jinyeLemmaPickWordHint": {"description": "Hint pencarian lemma"},
+  "@jinyeLemmaPickWordHint": {
+    "description": "Hint pencarian lemma"
+  },
   "jinyeLemmaPickWordEmptyHint": "Ketik lemma untuk mencari",
-  "@jinyeLemmaPickWordEmptyHint": {"description": "Empty sebelum ketik query"},
+  "@jinyeLemmaPickWordEmptyHint": {
+    "description": "Empty sebelum ketik query"
+  },
   "jinyeLemmaPickWordNoResult": "Tidak ada kata terverifikasi yang cocok",
-  "@jinyeLemmaPickWordNoResult": {"description": "Hasil search kosong"},
+  "@jinyeLemmaPickWordNoResult": {
+    "description": "Hasil search kosong"
+  },
+  "jinyeLemmaPickWordCount": "{count} hasil",
+  "@jinyeLemmaPickWordCount": {
+    "description": "Jumlah hasil cari lemma di sheet Jinye",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "jinyeLemmaLinkSuccess": "Lemma ditautkan",
-  "@jinyeLemmaLinkSuccess": {"description": "Toast sukses buat lemma link"},
+  "@jinyeLemmaLinkSuccess": {
+    "description": "Toast sukses buat lemma link"
+  },
   "jinyeLemmaLinkFailed": "Gagal menautkan lemma",
-  "@jinyeLemmaLinkFailed": {"description": "Error buat lemma link"},
+  "@jinyeLemmaLinkFailed": {
+    "description": "Error buat lemma link"
+  },
   "jinyeLemmaOpenWord": "Buka arti",
-  "@jinyeLemmaOpenWord": {"description": "Aksi buka detail kata dari span"},
+  "@jinyeLemmaOpenWord": {
+    "description": "Aksi buka detail kata dari span"
+  },
   "jinyeLemmaProposeCorrection": "Usulkan koreksi",
-  "@jinyeLemmaProposeCorrection": {"description": "Aksi usul koreksi lemma"},
+  "@jinyeLemmaProposeCorrection": {
+    "description": "Aksi usul koreksi lemma"
+  },
   "jinyeLemmaDeleteLink": "Hapus tautan",
-  "@jinyeLemmaDeleteLink": {"description": "Aksi hapus lemma link"},
+  "@jinyeLemmaDeleteLink": {
+    "description": "Aksi hapus lemma link"
+  },
   "jinyeLemmaApproveCorrection": "Setujui koreksi",
-  "@jinyeLemmaApproveCorrection": {"description": "Verifikator approve koreksi"},
+  "@jinyeLemmaApproveCorrection": {
+    "description": "Verifikator approve koreksi"
+  },
   "jinyeLemmaRejectCorrection": "Tolak koreksi",
-  "@jinyeLemmaRejectCorrection": {"description": "Verifikator reject koreksi"},
+  "@jinyeLemmaRejectCorrection": {
+    "description": "Verifikator reject koreksi"
+  },
   "jinyeLemmaPendingCorrection": "Koreksi menunggu tinjauan",
-  "@jinyeLemmaPendingCorrection": {"description": "Status pending_correction"},
+  "@jinyeLemmaPendingCorrection": {
+    "description": "Status pending_correction"
+  },
   "jinyeLemmaCorrectionSuccess": "Usulan koreksi terkirim",
-  "@jinyeLemmaCorrectionSuccess": {"description": "Toast sukses propose"},
+  "@jinyeLemmaCorrectionSuccess": {
+    "description": "Toast sukses propose"
+  },
   "jinyeLemmaCorrectionFailed": "Gagal mengusulkan koreksi",
-  "@jinyeLemmaCorrectionFailed": {"description": "Error propose koreksi"},
+  "@jinyeLemmaCorrectionFailed": {
+    "description": "Error propose koreksi"
+  },
   "jinyeLemmaResolveSuccess": "Koreksi diproses",
-  "@jinyeLemmaResolveSuccess": {"description": "Toast sukses resolve"},
+  "@jinyeLemmaResolveSuccess": {
+    "description": "Toast sukses resolve"
+  },
   "jinyeLemmaResolveFailed": "Gagal memproses koreksi",
-  "@jinyeLemmaResolveFailed": {"description": "Error resolve koreksi"},
+  "@jinyeLemmaResolveFailed": {
+    "description": "Error resolve koreksi"
+  },
   "jinyeLemmaDeleteSuccess": "Tautan lemma dihapus",
-  "@jinyeLemmaDeleteSuccess": {"description": "Toast sukses hapus link"},
+  "@jinyeLemmaDeleteSuccess": {
+    "description": "Toast sukses hapus link"
+  },
   "jinyeLemmaDeleteFailed": "Gagal menghapus tautan",
-  "@jinyeLemmaDeleteFailed": {"description": "Error hapus lemma link"},
+  "@jinyeLemmaDeleteFailed": {
+    "description": "Error hapus lemma link"
+  },
   "jinyeWordMeaningLookupLabel": "Arti (Sambas → Indonesia)",
   "@jinyeWordMeaningLookupLabel": {
     "description": "Label arah makna di sheet tap kata Jinye"
@@ -7530,27 +9294,49 @@
     "description": "Toast guest saat usul/hubungkan lemma dari sheet tap kata Jinye"
   },
   "jinyePromoteExampleAction": "Jadikan contoh lemma",
-  "@jinyePromoteExampleAction": {"description": "CTA owner promote Jinye ke contoh"},
+  "@jinyePromoteExampleAction": {
+    "description": "CTA owner promote Jinye ke contoh"
+  },
   "jinyePromoteWithAudio": "Sertakan rekaman suara",
-  "@jinyePromoteWithAudio": {"description": "Pilihan promote + audio"},
+  "@jinyePromoteWithAudio": {
+    "description": "Pilihan promote + audio"
+  },
   "jinyePromoteTextOnly": "Teks saja",
-  "@jinyePromoteTextOnly": {"description": "Pilihan promote tanpa audio"},
+  "@jinyePromoteTextOnly": {
+    "description": "Pilihan promote tanpa audio"
+  },
   "jinyePromoteSuccess": "Usulan contoh terkirim",
-  "@jinyePromoteSuccess": {"description": "Toast sukses promote example"},
+  "@jinyePromoteSuccess": {
+    "description": "Toast sukses promote example"
+  },
   "jinyePromoteFailed": "Gagal mengajukan jadi contoh",
-  "@jinyePromoteFailed": {"description": "Error promote example"},
+  "@jinyePromoteFailed": {
+    "description": "Error promote example"
+  },
   "jinyeTranslateAction": "Usul terjemahan",
-  "@jinyeTranslateAction": {"description": "CTA usul terjemahan Jinye"},
+  "@jinyeTranslateAction": {
+    "description": "CTA usul terjemahan Jinye"
+  },
   "jinyeTranslateTitle": "Terjemahan Indonesia",
-  "@jinyeTranslateTitle": {"description": "Judul sheet terjemahan Jinye"},
+  "@jinyeTranslateTitle": {
+    "description": "Judul sheet terjemahan Jinye"
+  },
   "jinyeTranslateHint": "Tulis arti dalam bahasa Indonesia…",
-  "@jinyeTranslateHint": {"description": "Hint field terjemahan Jinye"},
+  "@jinyeTranslateHint": {
+    "description": "Hint field terjemahan Jinye"
+  },
   "jinyeTranslateSubmit": "Kirim usulan",
-  "@jinyeTranslateSubmit": {"description": "CTA submit terjemahan Jinye"},
+  "@jinyeTranslateSubmit": {
+    "description": "CTA submit terjemahan Jinye"
+  },
   "jinyeTranslateSuccess": "Usulan terjemahan terkirim",
-  "@jinyeTranslateSuccess": {"description": "Toast sukses terjemahan"},
+  "@jinyeTranslateSuccess": {
+    "description": "Toast sukses terjemahan"
+  },
   "jinyeTranslateFailed": "Gagal mengusulkan terjemahan",
-  "@jinyeTranslateFailed": {"description": "Error terjemahan Jinye"},
+  "@jinyeTranslateFailed": {
+    "description": "Error terjemahan Jinye"
+  },
   "jinyeTranslateReviewAction": "Tinjau usulan terjemahan",
   "@jinyeTranslateReviewAction": {
     "description": "Menu verifikator buka antrian terjemahan Jinye"
@@ -7571,7 +9357,9 @@
   "@jinyeTranslateReviewSourceId": {
     "description": "Fallback label bila snapshot sumber kosong",
     "placeholders": {
-      "id": { "type": "String" }
+      "id": {
+        "type": "String"
+      }
     }
   },
   "jinyeTranslateReviewSourceLabel": "Teks sumber",
@@ -7610,63 +9398,696 @@
   "jinyeTranslateStatusAccepted": "Diterima",
   "jinyeTranslateStatusRejected": "Ditolak",
   "jinyeEditAction": "Sunting",
-  "@jinyeEditAction": {"description": "CTA owner edit body Jinye"},
+  "@jinyeEditAction": {
+    "description": "CTA owner edit body Jinye"
+  },
   "jinyeEditTitle": "Sunting Jinye",
-  "@jinyeEditTitle": {"description": "Judul sheet edit Jinye"},
+  "@jinyeEditTitle": {
+    "description": "Judul sheet edit Jinye"
+  },
   "jinyeEditSave": "Simpan",
-  "@jinyeEditSave": {"description": "CTA simpan edit Jinye"},
+  "@jinyeEditSave": {
+    "description": "CTA simpan edit Jinye"
+  },
   "jinyeEditSuccess": "Jinye diperbarui",
-  "@jinyeEditSuccess": {"description": "Toast sukses edit Jinye"},
+  "@jinyeEditSuccess": {
+    "description": "Toast sukses edit Jinye"
+  },
   "jinyeEditFailed": "Gagal menyunting Jinye",
-  "@jinyeEditFailed": {"description": "Error edit Jinye"},
+  "@jinyeEditFailed": {
+    "description": "Error edit Jinye"
+  },
   "jinyeEditHistoryTitle": "Riwayat sunting",
-  "@jinyeEditHistoryTitle": {"description": "Judul sheet riwayat edit Jinye"},
+  "@jinyeEditHistoryTitle": {
+    "description": "Judul sheet riwayat edit Jinye"
+  },
   "jinyeEditHistoryFailed": "Gagal memuat riwayat sunting",
-  "@jinyeEditHistoryFailed": {"description": "Error load edit history Jinye"},
+  "@jinyeEditHistoryFailed": {
+    "description": "Error load edit history Jinye"
+  },
   "jinyeRepostAction": "Bagikan ulang",
-  "@jinyeRepostAction": {"description": "CTA repost polos Jinye"},
+  "@jinyeRepostAction": {
+    "description": "CTA repost polos Jinye"
+  },
   "jinyeUnrepostAction": "Batalkan bagikan ulang",
-  "@jinyeUnrepostAction": {"description": "CTA unrepost Jinye"},
+  "@jinyeUnrepostAction": {
+    "description": "CTA unrepost Jinye"
+  },
   "jinyeRepostSuccess": "Jinye dibagikan ulang",
-  "@jinyeRepostSuccess": {"description": "Toast sukses repost"},
+  "@jinyeRepostSuccess": {
+    "description": "Toast sukses repost"
+  },
   "jinyeUnrepostSuccess": "Bagikan ulang dibatalkan",
-  "@jinyeUnrepostSuccess": {"description": "Toast sukses unrepost"},
+  "@jinyeUnrepostSuccess": {
+    "description": "Toast sukses unrepost"
+  },
   "jinyeRepostFailed": "Gagal membagikan ulang",
-  "@jinyeRepostFailed": {"description": "Error repost/unrepost Jinye"},
+  "@jinyeRepostFailed": {
+    "description": "Error repost/unrepost Jinye"
+  },
   "jinyeQuoteAction": "Kutip",
-  "@jinyeQuoteAction": {"description": "CTA quote-repost Jinye"},
+  "@jinyeQuoteAction": {
+    "description": "CTA quote-repost Jinye"
+  },
   "jinyeQuoteTitle": "Kutip Jinye",
-  "@jinyeQuoteTitle": {"description": "Judul sheet quote Jinye"},
+  "@jinyeQuoteTitle": {
+    "description": "Judul sheet quote Jinye"
+  },
   "jinyeQuoteHint": "Tulis kutipanmu…",
-  "@jinyeQuoteHint": {"description": "Hint field quote Jinye"},
+  "@jinyeQuoteHint": {
+    "description": "Hint field quote Jinye"
+  },
   "jinyeQuoteSubmit": "Kirim kutipan",
-  "@jinyeQuoteSubmit": {"description": "CTA submit quote Jinye"},
+  "@jinyeQuoteSubmit": {
+    "description": "CTA submit quote Jinye"
+  },
   "jinyeQuoteSuccess": "Kutipan terkirim",
-  "@jinyeQuoteSuccess": {"description": "Toast sukses quote"},
+  "@jinyeQuoteSuccess": {
+    "description": "Toast sukses quote"
+  },
   "jinyeQuoteFailed": "Gagal mengutip Jinye",
-  "@jinyeQuoteFailed": {"description": "Error quote Jinye"},
+  "@jinyeQuoteFailed": {
+    "description": "Error quote Jinye"
+  },
   "jinyeRepostLabel": "Membagikan ulang",
-  "@jinyeRepostLabel": {"description": "Label kartu repost polos"},
+  "@jinyeRepostLabel": {
+    "description": "Label kartu repost polos"
+  },
   "jinyeOpenOriginal": "Buka Jinye asli",
-  "@jinyeOpenOriginal": {"description": "CTA buka original dari repost/quote"},
+  "@jinyeOpenOriginal": {
+    "description": "CTA buka original dari repost/quote"
+  },
   "jinyeUsedInWordTitle": "Dipakai di Jinye",
-  "@jinyeUsedInWordTitle": {"description": "Section title di detail lemma"},
+  "@jinyeUsedInWordTitle": {
+    "description": "Section title di detail lemma"
+  },
   "jinyeCreateChipAudio": "Suara",
-  "@jinyeCreateChipAudio": {"description": "Chip compact attach voice Jinye"},
+  "@jinyeCreateChipAudio": {
+    "description": "Chip compact attach voice Jinye"
+  },
   "jinyeCreateChipAudioReady": "Suara · {seconds} dtk",
   "@jinyeCreateChipAudioReady": {
     "description": "Chip voice sudah terrekam",
     "placeholders": {
-      "seconds": {"type": "int"}
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "jinyeCreateChipPhoto": "Foto",
-  "@jinyeCreateChipPhoto": {"description": "Chip compact attach foto Jinye"},
+  "@jinyeCreateChipPhoto": {
+    "description": "Chip compact attach foto Jinye"
+  },
   "jinyeCreateChipPhotoCount": "Foto · {count}",
   "@jinyeCreateChipPhotoCount": {
     "description": "Chip foto dengan jumlah slot",
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
+  },
+  "eventAllPhotos": "Lihat semua foto & unggah",
+  "@eventAllPhotos": {},
+  "eventDetailAddressLabel": "Alamat",
+  "@eventDetailAddressLabel": {
+    "description": "Label tile alamat di detail acara"
+  },
+  "eventDetailOrganizerLabel": "Penyelenggara",
+  "@eventDetailOrganizerLabel": {
+    "description": "Label tile penyelenggara di detail acara"
+  },
+  "eventGoingAction": "Aku hadir",
+  "@eventGoingAction": {},
+  "eventGoingCancel": "Batal hadir",
+  "@eventGoingCancel": {},
+  "eventGoingCount": "{count} orang hadir",
+  "@eventGoingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "placeVisitAction": "Pernah singgah",
+  "@placeVisitAction": {
+    "description": "CTA tandai pernah singgah di wisata"
+  },
+  "placeVisitCancel": "Batal singgah",
+  "@placeVisitCancel": {
+    "description": "CTA batalkan tandai pernah singgah"
+  },
+  "placeVisitCount": "{count} orang pernah singgah",
+  "@placeVisitCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "usahaVisitAction": "Pernah bertransaksi",
+  "@usahaVisitAction": {
+    "description": "CTA tandai pernah bertransaksi di usaha"
+  },
+  "usahaVisitCancel": "Batal transaksi",
+  "@usahaVisitCancel": {
+    "description": "CTA batalkan tandai pernah bertransaksi"
+  },
+  "usahaVisitCount": "{count} orang pernah bertransaksi",
+  "@usahaVisitCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "placeCommentsTitle": "Komentar wisata",
+  "@placeCommentsTitle": {},
+  "placeCommentsEmpty": "Belum ada komentar. Jadi yang pertama ya.",
+  "@placeCommentsEmpty": {},
+  "placeCommentHint": "Tulis komentar tentang tempat ini",
+  "@placeCommentHint": {},
+  "usahaCommentsTitle": "Komentar usaha",
+  "@usahaCommentsTitle": {},
+  "usahaCommentsEmpty": "Belum ada komentar. Jadi yang pertama ya.",
+  "@usahaCommentsEmpty": {},
+  "usahaCommentHint": "Tulis komentar tentang usaha ini",
+  "@usahaCommentHint": {},
+  "cuisineCommentsTitle": "Komentar kuliner",
+  "@cuisineCommentsTitle": {},
+  "cuisineCommentsEmpty": "Belum ada komentar. Jadi yang pertama ya.",
+  "@cuisineCommentsEmpty": {},
+  "cuisineCommentHint": "Tulis komentar tentang kuliner ini",
+  "@cuisineCommentHint": {},
+  "eventCommentsTitle": "Komentar acara",
+  "@eventCommentsTitle": {},
+  "eventCommentsEmpty": "Belum ada komentar. Jadi yang pertama ya.",
+  "@eventCommentsEmpty": {},
+  "eventCommentHint": "Tulis komentar tentang acara ini",
+  "@eventCommentHint": {},
+  "eventMorePhotos": "Lihat lainnya ({count} foto)",
+  "@eventMorePhotos": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "eventPhotoSection": "Foto",
+  "@eventPhotoSection": {},
+  "eventPhotoUploadFailed": "Unggah foto gagal. Coba lagi.",
+  "eventPhotosAddTitle": "Tambah Foto Acara",
+  "eventPhotosEmpty": "Belum ada foto untuk acara ini.",
+  "eventPhotosMaxInfo": "Maksimal {count} foto per kiriman.",
+  "eventPhotosSubmit": "Kirim",
+  "eventPhotosSubmitting": "Mengirim...",
+  "eventPhotosTitle": "Foto Acara",
+  "eventPhotosUpload": "Unggah foto",
+  "layananSearchPlaceholder": "Cari nama layanan atau kecamatan",
+  "@layananSearchPlaceholder": {
+    "description": "Placeholder field pencarian daftar layanan publik"
+  },
+  "eventPhotosSuccess": "Foto acara berhasil ditambahkan.",
+  "@eventPhotosMaxInfo": {
+    "description": "Info batas jumlah foto per submit galeri acara",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "discussionHubTitle": "Diskusi",
+  "@discussionHubTitle": {
+    "description": "Judul header hub Diskusi (tab Ruang Diskusi + Chat)"
+  },
+  "discussionTabRooms": "Ruang Diskusi",
+  "@discussionTabRooms": {
+    "description": "Label tab feed ruang diskusi"
+  },
+  "discussionTabChat": "Chat",
+  "@discussionTabChat": {
+    "description": "Label tab chat publik"
+  },
+  "discussionTabChatWithCount": "Chat ({count})",
+  "@discussionTabChatWithCount": {
+    "description": "Tab Chat dengan jumlah orang presence; (count) hanya jika > 0",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatLoadFailed": "Gagal memuat chat",
+  "chatRetry": "Coba lagi",
+  "chatEmpty": "Belum ada pesan",
+  "chatEmptyBody": "Jadi yang pertama menyapa warga di sini.",
+  "chatComposerHint": "Tulis pesan…",
+  "chatSend": "Kirim",
+  "chatPrivacyWarningTitle": "Peringatan Privasi",
+  "@chatPrivacyWarningTitle": {
+    "description": "Judul alert peringatan chat publik tanpa enkripsi"
+  },
+  "chatPrivacyWarningBody": "Ruang chat ini bersifat publik dan tidak dilengkapi enkripsi atau pengamanan khusus. Pastikan kamu tidak mengirimkan informasi pribadi, data sensitif, atau informasi penting lainnya.",
+  "@chatPrivacyWarningBody": {
+    "description": "Isi alert peringatan chat publik tanpa enkripsi"
+  },
+  "chatPrivacyWarningDismiss": "Tutup peringatan privasi",
+  "@chatPrivacyWarningDismiss": {
+    "description": "Semantics tombol tutup alert privasi chat"
+  },
+  "chatPrivacyWarningHint": "Chat ini publik. Jangan kirim data pribadi.",
+  "@chatPrivacyWarningHint": {
+    "description": "Satu baris peringatan chat publik. Ketuk untuk baca teks lengkap."
+  },
+  "chatLoginToSend": "Masuk dulu untuk ikut chat ya.",
+  "chatTombstone": "Pesan dihapus",
+  "chatEdited": "disunting",
+  "@chatEdited": {
+    "description": "Label kecil di bubble teks yang sudah diedit"
+  },
+  "chatScrollToLatest": "Ke pesan terakhir",
+  "@chatScrollToLatest": {
+    "description": "Semantics tombol kecil loncat ke bawah chat saat scroll naik"
+  },
+  "chatNewMessages": "{count} chat baru",
+  "@chatNewMessages": {
+    "description": "Chip loncat ke pesan baru saat scroll naik",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatReplyBar": "Membalas @{username}",
+  "@chatReplyBar": {
+    "description": "Pita reply di atas composer",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "chatReplyCancelSemantics": "Batalkan balasan",
+  "chatReplyJumpSemantics": "Lihat pesan yang dibalas",
+  "@chatReplyJumpSemantics": {
+    "description": "Semantics ketuk quote reply untuk loncat ke pesan asal"
+  },
+  "chatReplyTargetMissing": "Pesan itu belum ada di daftar. Gulir ke atas dulu.",
+  "@chatReplyTargetMissing": {
+    "description": "Toast saat pesan yang dibalas belum termuat di list chat"
+  },
+  "chatDeleteConfirmTitle": "Hapus pesan?",
+  "chatDeleteConfirmBody": "Pesan akan diganti jadi \"Pesan dihapus\".",
+  "chatDeleteAction": "Hapus",
+  "chatDeleteFailed": "Gagal menghapus pesan",
+  "chatSendFailed": "Gagal mengirim pesan",
+  "chatVoiceSendFailed": "Gagal mengirim voice note",
+  "chatRecordSheetTitle": "Rekam voice note",
+  "chatRecordSheetSubtitle": "Maksimal 60 detik.",
+  "chatRecordSheetSubmit": "Kirim voice note",
+  "chatStickerSheetTitle": "Pilih stiker",
+  "chatStickerSemantics": "Stiker",
+  "stickerTabAll": "Semua",
+  "@stickerTabAll": {
+    "description": "Tab picker stiker: semua kategori"
+  },
+  "stickerSearchHint": "Cari id stiker",
+  "@stickerSearchHint": {
+    "description": "Hint field pencarian di sheet stiker (by id slug)"
+  },
+  "stickerSearchEmpty": "Tidak ada stiker yang cocok",
+  "@stickerSearchEmpty": {
+    "description": "Empty state picker stiker saat filter/search kosong"
+  },
+  "chatMicSemantics": "Rekam suara",
+  "chatSending": "Mengirim…",
+  "chatReplySnippetSticker": "[stiker]",
+  "chatReplySnippetVoice": "[voice note]",
+  "chatReplySnippetSystem": "[sistem]",
+  "@chatReplySnippetSystem": {
+    "description": "Cuplikan reply untuk pesan system (voice join/leave)"
+  },
+  "chatLongPressReply": "Balas",
+  "chatLongPressDelete": "Hapus",
+  "chatConnectionFailed": "Koneksi terputus. Coba lagi ya.",
+  "chatServerTimeout": "Server lambat merespons. Coba lagi ya.",
+  "settingsGroupExperiments": "Eksperimen",
+  "settingsVoiceRoomOptIn": "Voice room",
+  "@settingsVoiceRoomOptIn": {
+    "description": "Toggle opt-in LiveKit voice room di Pengaturan"
+  },
+  "settingsVoiceRoomOptInSubtitle": "Gabung obrolan suara di tab Chat (experimental).",
+  "voiceStripTitle": "Voice room",
+  "voiceStripOptInHint": "Voice room tersedia. Aktifkan di Pengaturan dulu.",
+  "voiceStripOpenSettings": "Pengaturan",
+  "voiceStripInRoom": "{count} di room",
+  "@voiceStripInRoom": {
+    "description": "Jumlah peserta voice room saat terhubung",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceStripHearing": "Suara: {name}",
+  "@voiceStripHearing": {
+    "description": "Indikator strip: remote sedang bicara",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceStripMicSending": "Mic mengirim",
+  "@voiceStripMicSending": {
+    "description": "Semantics/indikator mic lokal sedang mengirim suara"
+  },
+  "voiceStripIncomingHint": "Ada suara masuk",
+  "@voiceStripIncomingHint": {
+    "description": "Semantics ikon strip saat remote bicara"
+  },
+  "voiceJoin": "Gabung",
+  "voiceJoining": "Menghubungkan…",
+  "voiceLeave": "Keluar",
+  "voiceMute": "Bisukan",
+  "voiceUnmute": "Bunyikan",
+  "voiceJoinFailed": "Gagal masuk voice room",
+  "voiceRoomDisabled": "Voice room sedang dimatikan.",
+  "voiceUnavailable": "Voice room belum siap. Coba lagi nanti ya.",
+  "voiceMicDenied": "Izin mikrofon dibutuhkan untuk voice room.",
+  "voiceMiniBarOpenChat": "Ketuk untuk buka Chat",
+  "@voiceMiniBarOpenChat": {
+    "description": "Subtitle mini bar voice room di atas bottom nav"
+  },
+  "voiceParticipantsTitle": "Peserta voice ({count})",
+  "@voiceParticipantsTitle": {
+    "description": "Judul sheet daftar peserta voice room",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceParticipantsEmpty": "Belum ada peserta di room.",
+  "voiceParticipantYou": "{name} (kamu)",
+  "@voiceParticipantYou": {
+    "description": "Label peserta lokal di daftar voice",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceParticipantSpeaking": "Sedang bicara",
+  "voiceParticipantMuted": "Mikrofon dimatikan",
+  "voiceParticipantListening": "Mendengarkan",
+  "voiceShowParticipants": "Lihat peserta",
+  "@voiceShowParticipants": {
+    "description": "Aksi buka sheet daftar peserta voice"
+  },
+  "chatPresenceCount": "{count} orang di chat",
+  "@chatPresenceCount": {
+    "description": "Indikator jumlah orang yang sedang buka layar Chat",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatPresenceGuestName": "Tamu",
+  "@chatPresenceGuestName": {
+    "description": "Nama presence untuk pengunjung belum login di Chat"
+  },
+  "chatPingAction": "Ping",
+  "@chatPingAction": {
+    "description": "Label tombol ping di baris presence chat"
+  },
+  "chatPingCooldown": "{minutes}:{seconds}",
+  "@chatPingCooldown": {
+    "description": "Countdown cooldown ping global (m:ss)",
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "chatPingSent": "Ping terkirim",
+  "@chatPingSent": {
+    "description": "Toast setelah berhasil kirim ping"
+  },
+  "voiceRoomFull": "Voice room penuh (maks 15 orang). Coba lagi nanti ya.",
+  "@voiceRoomFull": {
+    "description": "Error saat room LiveKit sudah mencapai 15 peserta"
+  },
+  "voiceAlreadyJoinedOtherDevice": "Akun ini sudah gabung voice di device lain. Keluar dulu di device itu ya.",
+  "@voiceAlreadyJoinedOtherDevice": {
+    "description": "Error 409 VOICE_ALREADY_JOINED - seat voice terikat device lain"
+  },
+  "voiceDisconnected": "Koneksi voice putus. Server lagi bermasalah - coba gabung lagi nanti ya.",
+  "@voiceDisconnected": {
+    "description": "Error setelah disconnect tak terduga (homelab mati / jaringan)"
+  },
+  "voiceReconnecting": "Menyambungkan ulang…",
+  "@voiceReconnecting": {
+    "description": "Status strip/mini bar saat LiveKit sedang reconnect"
+  },
+  "voiceConnectTimeout": "Gagal terhubung ke voice server. Coba lagi nanti ya.",
+  "@voiceConnectTimeout": {
+    "description": "Timeout 20s saat connect ke LiveKit"
+  },
+  "voiceWsFailed": "Voice server tidak menerima koneksi WebSocket. Cek proxy/Cloudflare (Upgrade) di homelab.",
+  "@voiceWsFailed": {
+    "description": "WebSocketException / upgrade gagal ke LIVEKIT_URL"
+  },
+  "chatPingCooldownTitle": "Ping sedang cooldown",
+  "@chatPingCooldownTitle": {
+    "description": "Judul sheet saat tap ping abu-abu"
+  },
+  "chatPingCooldownBody": "Ping baru saja dipakai. Coba lagi dalam {clock}.",
+  "@chatPingCooldownBody": {
+    "description": "Isi sheet cooldown ping dengan sisa waktu",
+    "placeholders": {
+      "clock": {
+        "type": "String",
+        "example": "4:32"
+      }
+    }
+  },
+  "chatPingCooldownSheetHint": "Ping baru saja dipakai. Tunggu timer habis, lalu coba lagi.",
+  "@chatPingCooldownSheetHint": {
+    "description": "Teks di bawah timer live di sheet cooldown ping"
+  },
+  "chatPingCooldownReady": "Ping siap dipakai lagi",
+  "@chatPingCooldownReady": {
+    "description": "Status di sheet saat countdown ping habis"
+  },
+  "chatPingCooldownBodyGeneric": "Ping baru saja dipakai. Tunggu sebentar lalu coba lagi ya.",
+  "@chatPingCooldownBodyGeneric": {
+    "description": "Isi sheet cooldown ping tanpa sisa waktu"
+  },
+  "chatPingCooldownSemantics": "Ping cooldown {clock}",
+  "@chatPingCooldownSemantics": {
+    "description": "SemanticsLabel ikon ping saat cooldown",
+    "placeholders": {
+      "clock": {
+        "type": "String",
+        "example": "4:32"
+      }
+    }
+  },
+  "chatSystemVoiceJoinAction": "bergabung",
+  "@chatSystemVoiceJoinAction": {
+    "description": "Aksi setelah nama di baris system join voice"
+  },
+  "chatSystemVoiceLeaveAction": "keluar",
+  "@chatSystemVoiceLeaveAction": {
+    "description": "Aksi setelah nama di baris system leave voice"
+  },
+  "chatPingSystemLine": "{name} : PING!!!",
+  "@chatPingSystemLine": {
+    "description": "Legacy/opsional; UI system line pakai ikon + nama : PING!!!",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Budi"
+      }
+    }
+  },
+  "chatTypingOne": "{name} sedang mengetik…",
+  "@chatTypingOne": {
+    "description": "Satu orang sedang mengetik di chat",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chatTypingTwo": "{a} dan {b} sedang mengetik…",
+  "@chatTypingTwo": {
+    "description": "Dua orang sedang mengetik di chat",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "chatTypingMany": "{count} orang sedang mengetik…",
+  "@chatTypingMany": {
+    "description": "Tiga atau lebih orang sedang mengetik di chat",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "usahaSponsorBadge": "Sponsor",
+  "@usahaSponsorBadge": {
+    "description": "Lencana singkat di kartu listing usaha yang jadi sponsor"
+  },
+  "usahaSponsorBadgeTier": "Sponsor {tier}",
+  "@usahaSponsorBadgeTier": {
+    "description": "Lencana detail usaha dengan nama tingkat dukungan",
+    "placeholders": {
+      "tier": {
+        "type": "String"
+      }
+    }
+  },
+  "usahaSponsorTierPerak": "Perak",
+  "@usahaSponsorTierPerak": {
+    "description": "Nama tingkat sponsor Perak"
+  },
+  "usahaSponsorTierEmas": "Emas",
+  "@usahaSponsorTierEmas": {
+    "description": "Nama tingkat sponsor Emas"
+  },
+  "usahaSponsorTierIntan": "Intan",
+  "@usahaSponsorTierIntan": {
+    "description": "Nama tingkat sponsor Intan"
+  },
+  "usahaSponsorTierMustika": "Mustika",
+  "@usahaSponsorTierMustika": {
+    "description": "Nama tingkat sponsor Mustika"
+  },
+  "periksaKataVoted": "Voting kamu sudah tercatat",
+  "@periksaKataVoted": {
+    "description": "Status sesi setelah vote di feed Periksa Kata (arah terlihat di indikator ↑/↓)"
+  },
+  "voteTrustProgressDetailNeedUp": "Butuh +{need} poin lagi · net {netLabel} · {unique}/{threshold} pemilih",
+  "@voteTrustProgressDetailNeedUp": {
+    "description": "Progress Voting Warga saat net >= 0: sisa poin ke verifikasi",
+    "placeholders": {
+      "need": {
+        "type": "int",
+        "example": "4"
+      },
+      "netLabel": {
+        "type": "String",
+        "example": "+1"
+      },
+      "unique": {
+        "type": "int",
+        "example": "3"
+      },
+      "threshold": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "voteTrustProgressDetailNeedDown": "Butuh -{need} poin lagi ke penolakan · net {netLabel} · {unique}/{threshold} pemilih",
+  "@voteTrustProgressDetailNeedDown": {
+    "description": "Progress Voting Warga saat net < 0: sisa poin ke auto-tolak",
+    "placeholders": {
+      "need": {
+        "type": "int",
+        "example": "3"
+      },
+      "netLabel": {
+        "type": "String",
+        "example": "-2"
+      },
+      "unique": {
+        "type": "int",
+        "example": "3"
+      },
+      "threshold": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "voteTrustProgressDetailNeedVoters": "Net sudah cukup · butuh {need} pemilih lagi ({unique}/{threshold})",
+  "@voteTrustProgressDetailNeedVoters": {
+    "description": "Net sudah >= ambang tapi unique voters masih kurang",
+    "placeholders": {
+      "need": {
+        "type": "int",
+        "example": "2"
+      },
+      "unique": {
+        "type": "int",
+        "example": "3"
+      },
+      "threshold": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "dictCommunityVoteFooterTitle": "Bantu periksa makna kata ini",
+  "@dictCommunityVoteFooterTitle": {
+    "description": "Judul panel vote bawah di detail kata dari feed usulan / Periksa Kata"
+  },
+  "periksaKataUnvoteTitle": "Batalkan vote?",
+  "@periksaKataUnvoteTitle": {
+    "description": "Judul konfirmasi batal vote di riwayat Periksa Kata"
+  },
+  "periksaKataUnvoteBody": "Vote kamu akan dihapus dari riwayat pemeriksaan untuk kata ini.",
+  "@periksaKataUnvoteBody": {
+    "description": "Isi konfirmasi batal vote di riwayat Periksa Kata"
+  },
+  "periksaKataUnvoteConfirm": "Batalkan vote",
+  "@periksaKataUnvoteConfirm": {
+    "description": "CTA konfirmasi batal vote di riwayat Periksa Kata"
+  },
+  "periksaKataVoteLockedMeta": "Tidak bisa diubah - makna sudah selesai dicek",
+  "@periksaKataVoteLockedMeta": {
+    "description": "periksaKataVoteLockedMeta"
+  },
+  "periksaKataVoteLockedTitle": "Vote tidak bisa diubah",
+  "@periksaKataVoteLockedTitle": {
+    "description": "periksaKataVoteLockedTitle"
+  },
+  "periksaKataVoteLockedBody": "Makna ini sudah terverifikasi atau ditolak. Vote lama kamu tetap tercatat dan tidak bisa dibatalkan atau diganti.",
+  "@periksaKataVoteLockedBody": {
+    "description": "periksaKataVoteLockedBody"
+  },
+  "periksaKataPriorVoteMeta": "Vote sebelumnya masih aktif - tap tombol yang sama untuk batal",
+  "@periksaKataPriorVoteMeta": {
+    "description": "periksaKataPriorVoteMeta"
+  },
+  "periksaKataUnvoteDone": "Vote dibatalkan",
+  "@periksaKataUnvoteDone": {
+    "description": "periksaKataUnvoteDone"
+  },
+  "dictCommunityVoteOpenPeriksa": "Buka Periksa Kata",
+  "@dictCommunityVoteOpenPeriksa": {
+    "description": "CTA fallback ke Periksa Kata dari detail lemma"
+  },
+  "dictCommunityVoteNoPendingBody": "Makna menunggu tidak tampil di sini. Lanjut di Periksa Kata untuk vote.",
+  "@dictCommunityVoteNoPendingBody": {
+    "description": "Penjelasan fallback CTA vote di detail lemma"
   }
 }

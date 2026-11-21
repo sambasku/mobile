@@ -17,6 +17,7 @@ class WordComment {
     this.audioMimeType,
     this.audioDurationMs,
     this.image,
+    this.stickerId,
     this.createdAt,
     this.status,
     this.upvotes = 0,
@@ -51,6 +52,9 @@ class WordComment {
 
   final CommentImage? image;
 
+  /// Slug stiker katalog aktif; null kalau tanpa stiker.
+  final String? stickerId;
+
   final String? createdAt;
 
   /// published | taken_down | deleted_by_author
@@ -77,6 +81,9 @@ class WordComment {
 
   bool get hasImage => image != null;
 
+  bool get hasSticker =>
+      stickerId != null && stickerId!.trim().isNotEmpty;
+
   bool get hasPendingImage => image?.isPendingReview ?? false;
 
   String get displayBody {
@@ -87,7 +94,7 @@ class WordComment {
       return 'Komentar ini dihapus oleh penulis.';
     }
     if (body == null || body!.trim().isEmpty) {
-      if ((hasAudio || hasImage) && isPublished) return '';
+      if ((hasAudio || hasImage || hasSticker) && isPublished) return '';
       return 'Komentar ini tidak tersedia.';
     }
     return body!;
@@ -102,6 +109,7 @@ class WordComment {
     bool? isEdited,
     String? updatedAt,
     CommentImage? image,
+    Object? stickerId = _unset,
   }) {
     return WordComment(
       id: id,
@@ -116,6 +124,9 @@ class WordComment {
       audioMimeType: audioMimeType,
       audioDurationMs: audioDurationMs,
       image: image ?? this.image,
+      stickerId: identical(stickerId, _unset)
+          ? this.stickerId
+          : stickerId as String?,
       createdAt: createdAt,
       status: status ?? this.status,
       upvotes: upvotes ?? this.upvotes,

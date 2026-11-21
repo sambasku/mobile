@@ -11,6 +11,7 @@ Future<Color?> showShareSolidColorSheet(
 }) {
   return showModalBottomSheet<Color>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) => _ShareSolidColorSheet(initial: initial),

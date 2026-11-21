@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../entities/word_summary.dart';
@@ -17,6 +18,8 @@ class SearchWordsUseCase {
       limit: params.limit,
       cursor: params.cursor,
       searchIn: params.searchIn,
+      recordMiss: params.recordMiss,
+      cancelToken: params.cancelToken,
     );
   }
 }
@@ -27,10 +30,16 @@ class SearchWordsParams {
     this.limit = 20,
     this.cursor,
     this.searchIn = 'lemma',
+    this.recordMiss = true,
+    this.cancelToken,
   });
 
   final String query;
   final int limit;
   final String? cursor;
   final String searchIn;
+
+  /// false = explore/typeahead; true = Enter / Cari / blur idle.
+  final bool recordMiss;
+  final CancelToken? cancelToken;
 }

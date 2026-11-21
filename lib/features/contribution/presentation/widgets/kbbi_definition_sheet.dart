@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/compact_search_hit_tile.dart';
 
 /// Satu pilihan dari GET /api/v1/lemma-definitions/lookup → suggestions[].
 class KbbiSuggestion {
@@ -38,6 +39,7 @@ Future<KbbiSuggestion?> showKbbiDefinitionSheet(
 }) {
   return showModalBottomSheet<KbbiSuggestion>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) {
@@ -243,7 +245,7 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
                   ),
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(FLucideIcons.x),
                   ),
                 ],
               ),
@@ -344,81 +346,26 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
                           ScrollViewKeyboardDismissBehavior.onDrag,
                       itemBuilder: (context, index) {
                         final item = _items[index];
-                        return _KbbiSuggestionTile(
-                          item: item,
+                        final meta = [
+                          item.lemma,
+                          AppLocalizations.of(context).contributeKbbiSheetSense(
+                            item.homonymIndex,
+                            item.senseIndex,
+                          ),
+                          if (item.wordClassLabel != null &&
+                              item.wordClassLabel!.isNotEmpty)
+                            item.wordClassLabel!,
+                        ].join(' · ');
+                        return CompactSearchHitTile(
+                          title: item.definition,
+                          subtitle: meta,
+                          titleMaxLines: 4,
                           onTap: () => Navigator.of(context).pop(item),
                         );
                       },
                     ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _KbbiSuggestionTile extends StatelessWidget {
-  const _KbbiSuggestionTile({required this.item, required this.onTap});
-
-  final KbbiSuggestion item;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final meta = [
-      item.lemma,
-      AppLocalizations.of(
-        context,
-      ).contributeKbbiSheetSense(item.homonymIndex, item.senseIndex),
-      if (item.wordClassLabel != null && item.wordClassLabel!.isNotEmpty)
-        item.wordClassLabel!,
-    ].join(' · ');
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.definition,
-                      style: theme.typography.body.sm,
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const Gap(4),
-                    Text(
-                      meta,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.typography.body.sm.copyWith(
-                        color: theme.colors.mutedForeground,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Gap(8),
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Icon(
-                  FLucideIcons.chevronRight,
-                  size: 16,
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

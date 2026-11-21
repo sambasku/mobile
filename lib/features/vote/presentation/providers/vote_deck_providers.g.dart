@@ -40,7 +40,7 @@ final class VoteDeckControllerProvider
 }
 
 String _$voteDeckControllerHash() =>
-    r'efd84ba726495e6e0f1b8bc2dc8ab8c5ff9169b1';
+    r'7dcc27b8b5a7b3b76bdf69c0c5ab0fe19ecc765e';
 
 /// Antrean deck nilai per makna (login, 0101: 1 kartu = 1 makna).
 /// keepAlive + watch auth.

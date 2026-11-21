@@ -19,6 +19,7 @@ import '../../../../core/network/network_providers.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/in_app_review_service.dart';
 import '../../../../core/theme/f_colors_x.dart';
+import '../../../../shared/utils/info_bottom_sheet.dart';
 import '../../../activity/data/activity_feed_repository.dart' show FeedCategory;
 import '../../../activity/presentation/providers/activity_feed_providers.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -34,6 +35,7 @@ import '../models/submit_word_state.dart';
 import '../providers/lemma_check_providers.dart';
 import '../providers/submit_word_providers.dart';
 import '../utils/invalidate_word_detail.dart';
+import '../widgets/category_multi_picker_sheet.dart';
 import '../widgets/contribute_images_field.dart';
 import '../widgets/contribute_relations_sheet.dart';
 import '../widgets/dialect_picker_sheet.dart';
@@ -43,6 +45,7 @@ import '../widgets/kbbi_translation_field.dart';
 import '../widgets/knowledge_toggles.dart';
 import '../widgets/word_class_picker_sheet.dart';
 import '../../data/providers/contribution_data_providers.dart';
+import '../../../dictionary/presentation/providers/categories_provider.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/message_dialog.dart';
 import '../../../../shared/widgets/kbbi_source_notice.dart';
@@ -53,11 +56,15 @@ class ContributePage extends ConsumerStatefulWidget {
     this.initialLemma,
     this.initialSearchIn,
     this.initialSearchMissId,
+    this.spellCorrection = false,
   });
 
   final String? initialLemma;
   final String? initialSearchIn;
   final String? initialSearchMissId;
+
+  /// G3b: form koreksi ejaan - term ketikan jadi varian, field isi ejaan benar.
+  final bool spellCorrection;
 
   @override
   ConsumerState<ContributePage> createState() => _ContributePageState();
@@ -116,6 +123,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
   /// Register & peringatan (`usage_labels`). Default kosong.
   final Set<String> _usageLabels = {};
 
+  /// Kategori topik lemma (`category_ids`). Chip di atas detail kata.
+  final Set<String> _categoryIds = {};
+
   ContributeRelationsDraft _relations = const ContributeRelationsDraft();
   List<ContributeImageSlot> _images = const [];
 
@@ -123,17 +133,25 @@ class _ContributePageState extends ConsumerState<ContributePage> {
   void initState() {
     super.initState();
     final isTranslationMiss = widget.initialSearchIn == 'translation';
+    final spell = widget.spellCorrection;
+    // Koreksi ejaan: field utama kosong (user isi yang benar); typo di banner.
     _lemmaCtrl = TextEditingController(
-      text: isTranslationMiss ? '' : (widget.initialLemma ?? ''),
+      text: spell
+          ? ''
+          : (isTranslationMiss ? '' : (widget.initialLemma ?? '')),
     );
     _lemmaFocus = FocusNode();
     _pronunciationCtrl = TextEditingController();
     _standardTranslationCtrl = TextEditingController(
-      text: isTranslationMiss ? (widget.initialLemma ?? '') : '',
+      text: spell
+          ? ''
+          : (isTranslationMiss ? (widget.initialLemma ?? '') : ''),
     );
     _meanings = [
       _MeaningDraft(
-        initialPadanan: isTranslationMiss ? (widget.initialLemma ?? '') : null,
+        initialPadanan: spell
+            ? null
+            : (isTranslationMiss ? (widget.initialLemma ?? '') : null),
       ),
     ];
 
@@ -330,6 +348,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       _applyingKbbiPick = false;
       _wordType = 'word';
       _usageLabels.clear();
+      _categoryIds.clear();
       _relations = const ContributeRelationsDraft();
       _images = const [];
     });
@@ -470,9 +489,16 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       }
     });
 
+    final typedTypo = (widget.initialLemma ?? '').trim();
+    final showSpellBanner = widget.spellCorrection && typedTypo.isNotEmpty;
+
     return FScaffold(
       header: FHeader.nested(
-        title: Text(l10n.contributeTitle),
+        title: Text(
+          showSpellBanner
+              ? l10n.contributeSpellCorrectTitle
+              : l10n.contributeTitle,
+        ),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop() ? context.pop() : context.go('/'),
@@ -509,21 +535,51 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               color: theme.colors.mutedForeground,
             ),
           ),
-          const Gap(16),
-          FTileGroup(
-            children: [
-              FTile(
-                prefix: Icon(
-                  FLucideIcons.listPlus,
-                  color: theme.colors.primary,
+          if (showSpellBanner) ...[
+            const Gap(12),
+            FTileGroup(
+              children: [
+                FTile(
+                  title: Text(l10n.contributeSpellTypedLabel(typedTypo)),
+                  subtitle: Text(l10n.contributeSpellCorrectHint),
                 ),
-                title: Text(l10n.contributeBulkTitle),
-                subtitle: Text(l10n.contributeBulkSubtitle),
-                suffix: const Icon(FLucideIcons.chevronRight),
-                onPress: () => context.push('/contribute/bulk'),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
+          if (!showSpellBanner) ...[
+            const Gap(16),
+            FTileGroup(
+              children: [
+                FTile(
+                  prefix: Icon(
+                    FLucideIcons.listPlus,
+                    color: theme.colors.primary,
+                  ),
+                  title: Text(l10n.contributeBulkTitle),
+                  subtitle: Text(l10n.contributeBulkSubtitle),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () {
+                    final params = Uri(
+                      queryParameters: {
+                        if ((widget.initialLemma ?? '').trim().isNotEmpty)
+                          'lemma': widget.initialLemma!.trim(),
+                        if (widget.initialSearchIn != null)
+                          'search_in': widget.initialSearchIn!,
+                        if (widget.initialSearchMissId != null)
+                          'miss_id': widget.initialSearchMissId!,
+                        if (widget.spellCorrection) 'correction': '1',
+                      },
+                    ).query;
+                    context.push(
+                      params.isEmpty
+                          ? '/contribute/bulk'
+                          : '/contribute/bulk?$params',
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
           const Gap(16),
           _FieldCaption(l10n.contributeHowToFill),
           _ContributeModeChips(
@@ -682,6 +738,13 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               onToggle: _toggleUsageLabel,
             ),
             _inlineError(notifier.errorFor('usage_labels')),
+            const Gap(16),
+            _FieldCaption(
+              l10n.contributeCategoryLabel,
+              info: l10n.contributeCategoryHint,
+            ),
+            _categorySelectField(l10n),
+            _inlineError(notifier.errorFor('category_ids')),
           ] else ...[
             const Gap(16),
             _FieldCaption(l10n.contributeKindLabel),
@@ -714,6 +777,13 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               onToggle: _toggleUsageLabel,
             ),
             _inlineError(notifier.errorFor('usage_labels')),
+            const Gap(16),
+            _FieldCaption(
+              l10n.contributeCategoryLabel,
+              info: l10n.contributeCategoryHint,
+            ),
+            _categorySelectField(l10n),
+            _inlineError(notifier.errorFor('category_ids')),
             const Gap(16),
             _FieldCaption(l10n.contributeDialectLabel),
             if (sambasLanguageId == null)
@@ -866,6 +936,47 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       return;
     }
     setState(() => _usageLabels.remove(code));
+  }
+
+  Widget _categorySelectField(AppLocalizations l10n) {
+    final categoriesAsync = ref.watch(categoriesProvider);
+    return categoriesAsync.when(
+      loading: () => const _SelectFieldSkeleton(),
+      error: (_, _) => _BuildReferenceError(
+        message: l10n.contributeCategoryLoadFailed,
+        onRetry: () => ref.invalidate(categoriesProvider),
+      ),
+      data: (items) {
+        final selectedNames = [
+          for (final c in items)
+            if (_categoryIds.contains(c.id)) c.name,
+        ];
+        return _SelectField(
+          selectedLabel: selectedNames.isEmpty
+              ? null
+              : selectedNames.join(', '),
+          hint: items.isEmpty ? '-' : l10n.contributeCategoryPick,
+          onTap: items.isEmpty
+              ? null
+              : () => _openCategorySheet(items),
+        );
+      },
+    );
+  }
+
+  Future<void> _openCategorySheet(List<WordCategory> items) async {
+    final picked = await showCategoryMultiPickerSheet(
+      context,
+      items: categoryPickItemsFrom(items),
+      selectedIds: _categoryIds,
+    );
+    if (!mounted || picked == null) return;
+    _onFieldEdited();
+    setState(() {
+      _categoryIds
+        ..clear()
+        ..addAll(picked);
+    });
   }
 
   Future<void> _openDialectSheet(List<_OptionItem> items) async {
@@ -1078,6 +1189,23 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               ?.id;
     }
     final notes = _relations.notesText.trim();
+    final typedTypo = (widget.initialLemma ?? '').trim();
+    final spellLemma = widget.spellCorrection &&
+        widget.initialSearchIn != 'translation' &&
+        typedTypo.isNotEmpty;
+    final spellTranslation = widget.spellCorrection &&
+        widget.initialSearchIn == 'translation' &&
+        typedTypo.isNotEmpty;
+
+    List<String> translationTextsFor(List<String> primary) {
+      if (!spellTranslation) return primary;
+      final out = <String>[...primary.where((t) => t.trim().isNotEmpty)];
+      if (!out.any((t) => t.trim().toLowerCase() == typedTypo.toLowerCase())) {
+        out.add(typedTypo);
+      }
+      return out;
+    }
+
     final meanings = _advanced
         ? [
             for (final m in _meanings)
@@ -1085,9 +1213,11 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                 wordClassId: m.wordClassId ?? '',
                 definition: m.wantDefinition ? m.defCtrl.text : '-',
                 isHaveDefinition: m.wantDefinition,
-                isHaveTranslation: m.wantPadanan,
+                isHaveTranslation: m.wantPadanan || spellTranslation,
                 meaningSource: _resolveDraftMeaningSource(m).apiValue,
-                translationTexts: m.wantPadanan ? [m.trCtrl.text] : const [],
+                translationTexts: translationTextsFor(
+                  m.wantPadanan ? [m.trCtrl.text] : const [],
+                ),
               ),
           ]
         : [
@@ -1099,21 +1229,36 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               isHaveDefinition: _standardDefinition.trim().isNotEmpty,
               isHaveTranslation: true,
               meaningSource: _resolveStandardMeaningSource().apiValue,
-              translationTexts: [_standardTranslationCtrl.text],
+              translationTexts: translationTextsFor([
+                _standardTranslationCtrl.text,
+              ]),
             ),
           ];
+
+    final variants = <String>[
+      if (_advanced) ..._parseCsv(_relations.variantsText),
+      if (spellLemma) typedTypo,
+    ];
+    // Dedup case-insensitive, jaga urutan.
+    final seen = <String>{};
+    final spellingVariants = <String>[];
+    for (final v in variants) {
+      final key = v.trim().toLowerCase();
+      if (key.isEmpty || seen.contains(key)) continue;
+      seen.add(key);
+      spellingVariants.add(v.trim());
+    }
+
     await notifier.submit(
       lemma: _lemmaCtrl.text,
       languageId: languageId,
       meanings: meanings,
       dialectId: dialectId,
       wordType: _advanced ? _wordType : 'word',
-      categoryIds: [],
+      categoryIds: _categoryIds.toList(growable: false),
       usageLabels: _usageLabels.toList(growable: false),
       notes: _advanced && notes.isNotEmpty ? notes : null,
-      spellingVariants: _advanced
-          ? _parseCsv(_relations.variantsText)
-          : const [],
+      spellingVariants: spellingVariants,
       relatedWords: _advanced ? _buildRelatedWords() : const [],
       translationLanguageId: translationLanguageId,
       images: _advanced ? readySubmitImages(_images) : const [],
@@ -1533,11 +1678,14 @@ class _MeaningBlock extends StatelessWidget {
                   l10n.contributeDefinitionFieldLabel,
                   info: l10n.contributeDefinitionGuide,
                 ),
-                FTextField.multiline(
+                // #271: mulai 1 baris, tumbuh sampai 4 (pola terjemahan).
+                FTextField(
                   control: FTextFieldControl.managed(controller: draft.defCtrl),
                   hint: l10n.contributeDefinitionHintField,
-                  minLines: 4,
-                  maxLines: 8,
+                  minLines: 1,
+                  maxLines: 4,
+                  keyboardType: TextInputType.text,
+                  textAlignVertical: TextAlignVertical.top,
                 ),
                 _MeaningInlineError(definitionError),
               ],
@@ -1650,8 +1798,7 @@ class _FieldCaption extends StatelessWidget {
   }
 }
 
-/// Ikon ⓘ - tap buka penjelasan singkat (FPopover, lebih jelas di touch
-/// daripada FTooltip long-press).
+/// Ikon ⓘ - tap buka penjelasan via bottom sheet (bukan tooltip/popover).
 class _InfoTip extends StatelessWidget {
   const _InfoTip({required this.message});
 
@@ -1660,20 +1807,9 @@ class _InfoTip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    return FPopover(
-      constraints: const FPortalConstraints(maxWidth: 280),
-      popoverBuilder: (context, _) => Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Text(
-          message,
-          style: theme.typography.body.sm.copyWith(height: 1.35),
-        ),
-      ),
-      builder: (context, controller, child) => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: controller.toggle,
-        child: child,
-      ),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => showAppInfoSheet(context, message: message),
       child: Padding(
         padding: const EdgeInsets.all(2),
         child: Icon(

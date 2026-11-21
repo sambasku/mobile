@@ -10,7 +10,7 @@ import 'presentation/pages/permainan_list_page.dart';
 class EntertainmentRouter {
   EntertainmentRouter._();
 
-  /// Hub semua permainan (grid 3 kolom). Pantun salah satu isinya.
+  /// Hub permainan (Petakate dll.). Pantun sudah di kategori Eksplorasi.
   static const hub = RouteDefiner(
     path: '/entertainment',
     name: 'EntertainmentRouter.hub',

@@ -9,6 +9,9 @@ const kBrandMarkLightAsset = 'assets/icons/logo_alpha_light.png';
 const kBrandWordmarkDarkAsset = 'assets/svg/sambasku_header_dark.svg';
 const kBrandWordmarkLightAsset = 'assets/svg/sambasku_header_light.svg';
 
+/// Ukuran BrandMark hero (splash custom + halaman login).
+const kBrandMarkHeroSize = 248.0;
+
 /// Logo stacked (perisai + wordmark) adaptif terang/gelap.
 /// Login, onboarding, about. Teks "SambasKu" sudah di aset.
 /// Gelap: [kBrandMarkDarkAsset]. Terang: [kBrandMarkLightAsset].
@@ -96,9 +99,16 @@ class BrandLogo extends StatelessWidget {
 /// Wordmark landscape adaptif (putih di gelap / navy-gold di terang).
 /// App bar tab Home.
 class BrandWordmark extends StatelessWidget {
-  const BrandWordmark({super.key, this.height = 28});
+  const BrandWordmark({
+    super.key,
+    this.height = 28,
+    this.showBetaBadge = true,
+  });
 
   final double height;
+
+  /// Set false untuk halaman yang tidak ingin badge Beta (mis. Baleho).
+  final bool showBetaBadge;
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +120,7 @@ class BrandWordmark extends StatelessWidget {
       alignment: Alignment.centerLeft,
       semanticsLabel: 'SambasKu',
     );
-    if (!F.isBeta) return wordmark;
+    if (!showBetaBadge || !F.isBeta) return wordmark;
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,

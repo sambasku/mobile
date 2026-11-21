@@ -12,6 +12,7 @@ enum FeedCategory {
   searchMiss('search_miss'),
   correction('correction'),
   explore('explore'),
+  jinye('jinye'),
   announcement('announcement'),
   joined('joined');
 
@@ -34,7 +35,7 @@ class ActivityFeedPage {
 }
 
 class ActivityFeedRepository {
-  ActivityFeedRepository(this._dio, {CachedJsonClient? cache}) : _cache = cache;
+  ActivityFeedRepository(this._dio, {this._cache});
 
   final Dio _dio;
   final CachedJsonClient? _cache;

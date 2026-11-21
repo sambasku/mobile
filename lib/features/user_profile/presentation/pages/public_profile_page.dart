@@ -272,6 +272,7 @@ class _ProfileBody extends HookConsumerWidget {
                         avatarUrl: avatarSrc,
                         borderUrl: borderUrl,
                         bio: profile.bio,
+                        speakerStatus: profile.speakerStatus,
                         isVerifier: profile.isVerifier,
                         leveling: profile.leveling == null
                             ? null
@@ -296,10 +297,6 @@ class _ProfileBody extends HookConsumerWidget {
                             ? () =>
                                   showImagePreview(context, urls: [avatarSrc])
                             : null,
-                        avatarOverlay: JinyeProfilePreview(
-                          username: profile.username,
-                          isOwnProfile: isOwnProfile,
-                        ),
                         actions: [
                           if (isOwnProfile)
                             SmallButton(
@@ -309,6 +306,12 @@ class _ProfileBody extends HookConsumerWidget {
                               onPress: () => context.push('/edit-profile'),
                             ),
                         ],
+                        // Bubble Jinye di bahu avatar (bukan status line /
+                        // quote CTA - itu khusus tab Profil pribadi).
+                        avatarOverlay: JinyeProfilePreview(
+                          username: profile.username,
+                          isOwnProfile: isOwnProfile,
+                        ),
                         footer: ProfileAchievementTabs(
                           username: isOwnProfile ? null : profile.username,
                           showTitle: true,

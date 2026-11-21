@@ -17,9 +17,12 @@ class CreateCommentUseCase {
     required String wordId,
     required String body,
     CommentImageStaging? image,
+    String? stickerId,
   }) {
     final trimmed = body.trim();
-    if (trimmed.isEmpty && image == null) {
+    final sticker = stickerId?.trim();
+    final hasSticker = sticker != null && sticker.isNotEmpty;
+    if (trimmed.isEmpty && image == null && !hasSticker) {
       return Future.value(
         Left(CommentFailure(l10n.commentBodyOrPhotoRequired)),
       );
@@ -28,6 +31,7 @@ class CreateCommentUseCase {
       wordId: wordId,
       body: trimmed,
       image: image,
+      stickerId: hasSticker ? sticker : null,
     );
   }
 }

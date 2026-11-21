@@ -34,6 +34,10 @@ class VoteDeckItem {
     this.pronunciationValue,
     this.hasAudio = false,
     this.sense,
+    this.definition,
+    this.translation,
+    this.contributorUsername,
+    this.contributorDisplayName,
     this.upvotes = 0,
     this.downvotes = 0,
   });
@@ -51,8 +55,17 @@ class VoteDeckItem {
   final bool isVerified;
   final String approvedAt;
 
-  /// Definisi makna ini; fallback terjemahan pertama bila kosong.
+  /// Definisi makna ini; fallback terjemahan pertama bila kosong (klien lama).
   final String? sense;
+
+  /// Definisi makna (bukan placeholder). Null bila belum diisi.
+  final String? definition;
+
+  /// Terjemahan pertama makna. Null bila belum diisi.
+  final String? translation;
+
+  final String? contributorUsername;
+  final String? contributorDisplayName;
 
   /// Posisi 1-based antar makna published kata ini (konteks "Makna ke-N").
   final int orderIndex;
@@ -88,6 +101,10 @@ class VoteDeckItem {
     String? pronunciationValue,
     bool? hasAudio,
     String? sense,
+    String? definition,
+    String? translation,
+    String? contributorUsername,
+    String? contributorDisplayName,
     int? upvotes,
     int? downvotes,
     bool clearWordClass = false,
@@ -111,6 +128,11 @@ class VoteDeckItem {
           : (pronunciationValue ?? this.pronunciationValue),
       hasAudio: hasAudio ?? this.hasAudio,
       sense: sense ?? this.sense,
+      definition: definition ?? this.definition,
+      translation: translation ?? this.translation,
+      contributorUsername: contributorUsername ?? this.contributorUsername,
+      contributorDisplayName:
+          contributorDisplayName ?? this.contributorDisplayName,
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
     );
@@ -118,11 +140,11 @@ class VoteDeckItem {
 
   /// Label jenis entri untuk UI (seragam dengan wordSummary/wordDetail).
   String get wordTypeLabel => switch (wordType) {
-        'idiom' => 'Idiom',
-        'peribahasa' => 'Peribahasa',
-        'ungkapan' => 'Ungkapan',
-        _ => 'Kata',
-      };
+    'idiom' => 'Idiom',
+    'peribahasa' => 'Peribahasa',
+    'ungkapan' => 'Ungkapan',
+    _ => 'Kata',
+  };
 
   /// Label chip kelas kata: pakai `alias` ("Kata Benda") untuk kelas
   /// spesifik. `umum` pakai `name` - alias seed-nya ("Belum Diketahui")

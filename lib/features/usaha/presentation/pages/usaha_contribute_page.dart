@@ -14,6 +14,7 @@ import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
+import '../../../../shared/widgets/pasteable_url_field.dart';
 import '../../../explore/domain/entities/region.dart';
 import '../../../explore/presentation/pages/place_pin_picker_page.dart';
 import '../../../explore/presentation/providers/regions_providers.dart';
@@ -709,18 +710,16 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage>
             keyboardType: TextInputType.phone,
           ),
           const Gap(10),
-          FTextField(
-            control: FTextFieldControl.managed(controller: _website),
+          PasteableUrlField(
+            controller: _website,
             label: Text(l10n.usahaFormWebsite),
             hint: 'https://...',
-            keyboardType: TextInputType.url,
           ),
           const Gap(10),
-          FTextField(
-            control: FTextFieldControl.managed(controller: _social),
+          PasteableUrlField(
+            controller: _social,
             label: Text(l10n.usahaFormSocial),
             hint: 'https://instagram.com/...',
-            keyboardType: TextInputType.url,
           ),
           if (!_isEdit) ...[
             const Gap(16),

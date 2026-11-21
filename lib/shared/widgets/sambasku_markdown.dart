@@ -1,20 +1,19 @@
-import 'dart:async';
-
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:material_ui/material_ui.dart';
 
-import '../../core/models/external_link.dart';
 import '../../core/widgets/image_preview.dart';
+import '../../l10n/app_localizations.dart';
 import 'cached_network_image_with_fallback.dart';
+import 'markdown_link_sheet.dart';
 
 /// Renderer markdown bersama: dipakai body pengumuman (#124) dan artikel
 /// profil kecamatan (#123) supaya behaviour tap link & preview gambar
 /// identik di seluruh app.
 ///
 /// - gambar: lebar penuh, rasio asli, tap -> preview fullscreen pinch-zoom
-/// - link: hanya https -> browser eksternal (skema lain diabaikan)
+/// - link: chip ringkas `<link>` -> bottomsheet in-app browser (https saja)
 /// - tabel: lebar kolom mengikuti isi, scroll horizontal bila melebihi layar
 /// - GFM: tabel, strikethrough, fenced code (ExtensionSet.gitHubFlavored)
 class SambaskuMarkdown extends StatelessWidget {
@@ -39,7 +38,11 @@ class SambaskuMarkdown extends StatelessWidget {
       selectable: selectable,
       extensionSet: md.ExtensionSet.gitHubFlavored,
       imageBuilder: buildSambaskuMarkdownImage,
-      onTapLink: (text, href, title) => openSambaskuMarkdownHref(href),
+      builders: {'a': SambaskuMarkdownLinkBuilder()},
+      // Builder `a` menangani tap sendiri; onTapLink cadangan untuk kasus
+      // tanpa builder (mis. autolink edge case).
+      onTapLink: (text, href, title) =>
+          openSambaskuMarkdownHref(context, href),
       styleSheet: sambaskuMarkdownStyleSheet(context),
     );
   }
@@ -155,11 +158,43 @@ Widget buildSambaskuMarkdownImage(Uri uri, String? title, String? alt) {
   );
 }
 
-/// Buka link markdown lewat browser. Hanya https (aturan keamanan sama
-/// dengan tombol aksi pengumuman); skema lain diabaikan.
-void openSambaskuMarkdownHref(String? href) {
+/// Chip tautan markdown: teks panjang diganti label ringkas, tap membuka
+/// bottomsheet in-app browser.
+class SambaskuMarkdownLinkBuilder extends MarkdownElementBuilder {
+  @override
+  Widget? visitElementAfterWithContext(
+    BuildContext context,
+    md.Element element,
+    TextStyle? preferredStyle,
+    TextStyle? parentStyle,
+  ) {
+    final href = element.attributes['href'];
+    final uri = href == null || href.isEmpty ? null : Uri.tryParse(href);
+    if (uri == null || !uri.isScheme('https')) {
+      // Biarkan renderer default untuk skema non-https / href rusak.
+      return null;
+    }
+    final l10n = AppLocalizations.of(context);
+    final style = (preferredStyle ?? parentStyle)?.copyWith(
+      decoration: TextDecoration.underline,
+      decorationColor: preferredStyle?.color,
+    );
+    return GestureDetector(
+      onTap: () => openSambaskuMarkdownHref(context, href),
+      child: Semantics(
+        button: true,
+        label: l10n.markdownLinkChipSemantics,
+        child: Text(l10n.markdownLinkChip, style: style),
+      ),
+    );
+  }
+}
+
+/// Buka tautan markdown di bottomsheet in-app. Hanya https.
+void openSambaskuMarkdownHref(BuildContext context, String? href) {
   if (href == null || href.isEmpty) return;
   final uri = Uri.tryParse(href);
   if (uri == null || !uri.isScheme('https')) return;
-  unawaited(launchExternalUrl(uri));
+  // ignore: discarded_futures - sheet async; caller onTap tidak await
+  showMarkdownLinkSheet(context, uri: uri);
 }

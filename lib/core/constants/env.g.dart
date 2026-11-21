@@ -15,7 +15,7 @@ final class _Env {
   static const String? apiHostProduction = 'https://api.sambasku.com';
 
   static const String? apiHostFallbackProduction =
-      'https://render.sambasku.com';
+      'https://cloudflare.sambasku.com';
 
   static const String? apiHostFallback2Production = null;
 
@@ -37,4 +37,16 @@ final class _Env {
       'https://sambasku-web-staging.ibnuul.workers.dev';
 
   static const String? webAppUrlProduction = 'https://sambasku.com';
+
+  static const String? supabaseUrlStaging =
+      'https://wkhlcrxlncflcztptrmg.supabase.co';
+
+  static const String? supabaseUrlProduction =
+      'https://qqlksojwaqrydxhqpyqd.supabase.co';
+
+  static const String? supabaseAnonKeyStaging =
+      'sb_publishable_GH5uCMllV6Ub_szpUjmNug_B-WjFYdt';
+
+  static const String? supabaseAnonKeyProduction =
+      'sb_publishable_NHLIVT7JQ-RaKra_1bgYNA_i9jpD1vG';
 }

@@ -70,7 +70,7 @@ final class MyAchievementsProvider
   }
 }
 
-String _$myAchievementsHash() => r'8ffe7a5e18a42b313f851ec020e557070a62087b';
+String _$myAchievementsHash() => r'79fda3e40b00d87459888d7a088d401d46d3f982';
 
 /// Milik user login: owned + locked (GET /me/achievements).
 

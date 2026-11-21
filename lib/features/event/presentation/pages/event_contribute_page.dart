@@ -14,6 +14,7 @@ import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
+import '../../../../shared/widgets/pasteable_url_field.dart';
 import '../../../explore/domain/sambas_map_config.dart';
 import '../../../explore/presentation/pages/place_pin_picker_page.dart';
 import '../../../explore/presentation/widgets/sambas_map_view.dart';
@@ -147,15 +148,12 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
     super.dispose();
   }
 
-  /// Jadwal gabungan. Tanggal dari FDateField selalu UTC midnight
-  /// (lihat `FDateSelectionController`), jam digabung di waktu lokal.
-  DateTime? get _startsAt => _combine(_startDate, _startTime);
-
-  DateTime? get _endsAt => _combine(_endDate, _endTime);
-
+  /// Tanggal dari FDateField = UTC midnight; jam opsional → 00:00 lokal.
   static DateTime? _combine(DateTime? date, FTime? time) {
-    if (date == null || time == null) return null;
-    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
+    if (date == null) return null;
+    final hour = time?.hour ?? 0;
+    final minute = time?.minute ?? 0;
+    return DateTime(date.year, date.month, date.day, hour, minute);
   }
 
   /// Tanggal dari kalender = UTC midnight. Formatnya pakai komponen tanggal
@@ -195,6 +193,7 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
     );
     return showModalBottomSheet<DateTime?>(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
       builder: (sheetContext) => SafeArea(
@@ -244,6 +243,7 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
     var selected = initial;
     return showModalBottomSheet<FTime?>(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
       builder: (sheetContext) => SafeArea(
@@ -307,34 +307,23 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
   }
 
   Future<void> _submit() async {
-    final startsAt = _startsAt;
-    final endsAt = _endsAt;
+    // Tanggal mulai tanpa jam → 00:00. Selesai opsional (null bila tanpa tanggal).
+    final startsAt = _startDate == null ? null : _combine(_startDate, _startTime);
+    final endsAt = _endDate == null ? null : _combine(_endDate, _endTime);
     if (_name.text.trim().isEmpty) {
       _validationError(AppLocalizations.of(context).eventFormNameRequired);
-      return;
-    }
-    if (_description.text.trim().isEmpty) {
-      _validationError(AppLocalizations.of(context).eventFormDescRequired);
       return;
     }
     if (_categoryId == null) {
       _validationError(AppLocalizations.of(context).eventFormCategoryRequired);
       return;
     }
-    if (startsAt == null || _startDate == null || _startTime == null) {
+    if (startsAt == null || _startDate == null) {
       _validationError(AppLocalizations.of(context).eventFormStartRequired);
       return;
     }
-    if (endsAt == null || _endDate == null || _endTime == null) {
-      _validationError(AppLocalizations.of(context).eventFormEndRequired);
-      return;
-    }
-    if (endsAt.isBefore(startsAt)) {
+    if (endsAt != null && endsAt.isBefore(startsAt)) {
       _validationError(AppLocalizations.of(context).eventFormEndBeforeStart);
-      return;
-    }
-    if (_location.text.trim().isEmpty) {
-      _validationError(AppLocalizations.of(context).eventFormLocationRequired);
       return;
     }
     final sourceUrl = _sourceUrl.text.trim();
@@ -483,9 +472,9 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
                   if (picked == null || !mounted) return;
                   setState(() {
                     _startDate = picked;
-                    // Acara satu hari paling umum - isi otomatis.
+                    // Kalau selesai sudah diisi tapi sebelum mulai, sesuaikan.
                     final end = _endDate;
-                    if (end == null || end.isBefore(picked)) {
+                    if (end != null && end.isBefore(picked)) {
                       _endDate = picked;
                     }
                   });
@@ -544,6 +533,8 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
             control: FTextFieldControl.managed(controller: _location),
             label: Text(AppLocalizations.of(context).eventFormLocationLabel),
             hint: AppLocalizations.of(context).eventFormLocationHint,
+            minLines: 1,
+            maxLines: 4,
           ),
           const Gap(12),
           Text(
@@ -644,8 +635,8 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
             ),
           ),
           const Gap(12),
-          FTextField(
-            control: FTextFieldControl.managed(controller: _sourceUrl),
+          PasteableUrlField(
+            controller: _sourceUrl,
             label: Text(AppLocalizations.of(context).eventFormSourceLinkLabel),
             hint: AppLocalizations.of(context).eventFormSourceLinkHint,
           ),

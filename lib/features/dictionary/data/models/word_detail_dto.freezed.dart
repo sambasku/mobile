@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WordDetailDto {
 
- String get id; String get lemma;@JsonKey(name: 'language_id') String get languageId; String? get notes;@JsonKey(name: 'word_type') String get wordType; String get status;@JsonKey(name: 'is_verified') bool get isVerified;@JsonKey(name: 'is_corrected') bool get isCorrected;@JsonKey(name: 'self_verified') bool get selfVerified;@JsonKey(name: 'verified_at') String? get verifiedAt;@JsonKey(name: 'verified_by') WordVerifierDto? get verifiedBy;@JsonKey(name: 'created_by') WordVerifierDto? get createdBy; List<MeaningDto> get meanings; List<CategoryDto> get categories;@JsonKey(name: 'usage_labels') List<String> get usageLabels; List<PronunciationDto> get pronunciations; List<WordAudioDto> get audios; List<WordImageDto> get images;@JsonKey(name: 'related_words') List<RelatedWordDto> get relatedWords;@JsonKey(name: 'appears_in') List<RelatedWordDto> get appearsIn;/// PRD relasi-lemma: kelompok makna (published saja).
+ String get id; String get lemma;@JsonKey(name: 'language_id') String get languageId; String? get notes;@JsonKey(name: 'word_type') String get wordType; String get status;@JsonKey(name: 'is_verified') bool get isVerified;@JsonKey(name: 'is_corrected') bool get isCorrected;@JsonKey(name: 'self_verified') bool get selfVerified;@JsonKey(name: 'verified_at') String? get verifiedAt;@JsonKey(name: 'verified_by') WordVerifierDto? get verifiedBy;@JsonKey(name: 'created_by') WordVerifierDto? get createdBy; List<MeaningDto> get meanings; List<CategoryDto> get categories;@JsonKey(name: 'usage_labels') List<String> get usageLabels; List<PronunciationDto> get pronunciations; List<WordAudioDto> get audios; List<WordImageDto> get images;@JsonKey(name: 'related_words') List<RelatedWordDto> get relatedWords;@JsonKey(name: 'appears_in') List<RelatedWordDto> get appearsIn;@JsonKey(name: 'appears_in_karya') List<WordAppearsInKaryaDto> get appearsInKarya;/// PRD relasi-lemma: kelompok makna (published saja).
 @JsonKey(name: 'meaning_groups') List<MeaningGroupDto> get meaningGroups; List<WordVariantDto> get variants;/// Hanya diisi GET /words/today; detail biasa mengabaikan (null/false).
  String? get date;@JsonKey(name: 'is_new_this_week') bool get isNewThisWeek;
 /// Create a copy of WordDetailDto
@@ -32,20 +32,20 @@ $WordDetailDtoCopyWith<WordDetailDto> get copyWith => _$WordDetailDtoCopyWithImp
 @override
 bool operator ==(Object other) {
   final _this = this as WordDetailDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WordDetailDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.lemma, _this.lemma) || other.lemma == _this.lemma)&&(identical(other.languageId, _this.languageId) || other.languageId == _this.languageId)&&(identical(other.notes, _this.notes) || other.notes == _this.notes)&&(identical(other.wordType, _this.wordType) || other.wordType == _this.wordType)&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.isVerified, _this.isVerified) || other.isVerified == _this.isVerified)&&(identical(other.isCorrected, _this.isCorrected) || other.isCorrected == _this.isCorrected)&&(identical(other.selfVerified, _this.selfVerified) || other.selfVerified == _this.selfVerified)&&(identical(other.verifiedAt, _this.verifiedAt) || other.verifiedAt == _this.verifiedAt)&&(identical(other.verifiedBy, _this.verifiedBy) || other.verifiedBy == _this.verifiedBy)&&(identical(other.createdBy, _this.createdBy) || other.createdBy == _this.createdBy)&&const DeepCollectionEquality().equals(other.meanings, _this.meanings)&&const DeepCollectionEquality().equals(other.categories, _this.categories)&&const DeepCollectionEquality().equals(other.usageLabels, _this.usageLabels)&&const DeepCollectionEquality().equals(other.pronunciations, _this.pronunciations)&&const DeepCollectionEquality().equals(other.audios, _this.audios)&&const DeepCollectionEquality().equals(other.images, _this.images)&&const DeepCollectionEquality().equals(other.relatedWords, _this.relatedWords)&&const DeepCollectionEquality().equals(other.appearsIn, _this.appearsIn)&&const DeepCollectionEquality().equals(other.meaningGroups, _this.meaningGroups)&&const DeepCollectionEquality().equals(other.variants, _this.variants)&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.isNewThisWeek, _this.isNewThisWeek) || other.isNewThisWeek == _this.isNewThisWeek));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WordDetailDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.lemma, _this.lemma) || other.lemma == _this.lemma)&&(identical(other.languageId, _this.languageId) || other.languageId == _this.languageId)&&(identical(other.notes, _this.notes) || other.notes == _this.notes)&&(identical(other.wordType, _this.wordType) || other.wordType == _this.wordType)&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.isVerified, _this.isVerified) || other.isVerified == _this.isVerified)&&(identical(other.isCorrected, _this.isCorrected) || other.isCorrected == _this.isCorrected)&&(identical(other.selfVerified, _this.selfVerified) || other.selfVerified == _this.selfVerified)&&(identical(other.verifiedAt, _this.verifiedAt) || other.verifiedAt == _this.verifiedAt)&&(identical(other.verifiedBy, _this.verifiedBy) || other.verifiedBy == _this.verifiedBy)&&(identical(other.createdBy, _this.createdBy) || other.createdBy == _this.createdBy)&&const DeepCollectionEquality().equals(other.meanings, _this.meanings)&&const DeepCollectionEquality().equals(other.categories, _this.categories)&&const DeepCollectionEquality().equals(other.usageLabels, _this.usageLabels)&&const DeepCollectionEquality().equals(other.pronunciations, _this.pronunciations)&&const DeepCollectionEquality().equals(other.audios, _this.audios)&&const DeepCollectionEquality().equals(other.images, _this.images)&&const DeepCollectionEquality().equals(other.relatedWords, _this.relatedWords)&&const DeepCollectionEquality().equals(other.appearsIn, _this.appearsIn)&&const DeepCollectionEquality().equals(other.appearsInKarya, _this.appearsInKarya)&&const DeepCollectionEquality().equals(other.meaningGroups, _this.meaningGroups)&&const DeepCollectionEquality().equals(other.variants, _this.variants)&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.isNewThisWeek, _this.isNewThisWeek) || other.isNewThisWeek == _this.isNewThisWeek));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as WordDetailDto;
-  return Object.hashAll([runtimeType,_this.id,_this.lemma,_this.languageId,_this.notes,_this.wordType,_this.status,_this.isVerified,_this.isCorrected,_this.selfVerified,_this.verifiedAt,_this.verifiedBy,_this.createdBy,const DeepCollectionEquality().hash(_this.meanings),const DeepCollectionEquality().hash(_this.categories),const DeepCollectionEquality().hash(_this.usageLabels),const DeepCollectionEquality().hash(_this.pronunciations),const DeepCollectionEquality().hash(_this.audios),const DeepCollectionEquality().hash(_this.images),const DeepCollectionEquality().hash(_this.relatedWords),const DeepCollectionEquality().hash(_this.appearsIn),const DeepCollectionEquality().hash(_this.meaningGroups),const DeepCollectionEquality().hash(_this.variants),_this.date,_this.isNewThisWeek]);
+  return Object.hashAll([runtimeType,_this.id,_this.lemma,_this.languageId,_this.notes,_this.wordType,_this.status,_this.isVerified,_this.isCorrected,_this.selfVerified,_this.verifiedAt,_this.verifiedBy,_this.createdBy,const DeepCollectionEquality().hash(_this.meanings),const DeepCollectionEquality().hash(_this.categories),const DeepCollectionEquality().hash(_this.usageLabels),const DeepCollectionEquality().hash(_this.pronunciations),const DeepCollectionEquality().hash(_this.audios),const DeepCollectionEquality().hash(_this.images),const DeepCollectionEquality().hash(_this.relatedWords),const DeepCollectionEquality().hash(_this.appearsIn),const DeepCollectionEquality().hash(_this.appearsInKarya),const DeepCollectionEquality().hash(_this.meaningGroups),const DeepCollectionEquality().hash(_this.variants),_this.date,_this.isNewThisWeek]);
 }
 
 @override
 String toString() {
   final _this = this as WordDetailDto;
-  return 'WordDetailDto(id: ${_this.id}, lemma: ${_this.lemma}, languageId: ${_this.languageId}, notes: ${_this.notes}, wordType: ${_this.wordType}, status: ${_this.status}, isVerified: ${_this.isVerified}, isCorrected: ${_this.isCorrected}, selfVerified: ${_this.selfVerified}, verifiedAt: ${_this.verifiedAt}, verifiedBy: ${_this.verifiedBy}, createdBy: ${_this.createdBy}, meanings: ${_this.meanings}, categories: ${_this.categories}, usageLabels: ${_this.usageLabels}, pronunciations: ${_this.pronunciations}, audios: ${_this.audios}, images: ${_this.images}, relatedWords: ${_this.relatedWords}, appearsIn: ${_this.appearsIn}, meaningGroups: ${_this.meaningGroups}, variants: ${_this.variants}, date: ${_this.date}, isNewThisWeek: ${_this.isNewThisWeek})';
+  return 'WordDetailDto(id: ${_this.id}, lemma: ${_this.lemma}, languageId: ${_this.languageId}, notes: ${_this.notes}, wordType: ${_this.wordType}, status: ${_this.status}, isVerified: ${_this.isVerified}, isCorrected: ${_this.isCorrected}, selfVerified: ${_this.selfVerified}, verifiedAt: ${_this.verifiedAt}, verifiedBy: ${_this.verifiedBy}, createdBy: ${_this.createdBy}, meanings: ${_this.meanings}, categories: ${_this.categories}, usageLabels: ${_this.usageLabels}, pronunciations: ${_this.pronunciations}, audios: ${_this.audios}, images: ${_this.images}, relatedWords: ${_this.relatedWords}, appearsIn: ${_this.appearsIn}, appearsInKarya: ${_this.appearsInKarya}, meaningGroups: ${_this.meaningGroups}, variants: ${_this.variants}, date: ${_this.date}, isNewThisWeek: ${_this.isNewThisWeek})';
 }
 
 
@@ -56,7 +56,7 @@ abstract mixin class $WordDetailDtoCopyWith<$Res>  {
   factory $WordDetailDtoCopyWith(WordDetailDto value, $Res Function(WordDetailDto) _then) = _$WordDetailDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String lemma,@JsonKey(name: 'language_id') String languageId, String? notes,@JsonKey(name: 'word_type') String wordType, String status,@JsonKey(name: 'is_verified') bool isVerified,@JsonKey(name: 'is_corrected') bool isCorrected,@JsonKey(name: 'self_verified') bool selfVerified,@JsonKey(name: 'verified_at') String? verifiedAt,@JsonKey(name: 'verified_by') WordVerifierDto? verifiedBy,@JsonKey(name: 'created_by') WordVerifierDto? createdBy, List<MeaningDto> meanings, List<CategoryDto> categories,@JsonKey(name: 'usage_labels') List<String> usageLabels, List<PronunciationDto> pronunciations, List<WordAudioDto> audios, List<WordImageDto> images,@JsonKey(name: 'related_words') List<RelatedWordDto> relatedWords,@JsonKey(name: 'appears_in') List<RelatedWordDto> appearsIn,@JsonKey(name: 'meaning_groups') List<MeaningGroupDto> meaningGroups, List<WordVariantDto> variants, String? date,@JsonKey(name: 'is_new_this_week') bool isNewThisWeek
+ String id, String lemma,@JsonKey(name: 'language_id') String languageId, String? notes,@JsonKey(name: 'word_type') String wordType, String status,@JsonKey(name: 'is_verified') bool isVerified,@JsonKey(name: 'is_corrected') bool isCorrected,@JsonKey(name: 'self_verified') bool selfVerified,@JsonKey(name: 'verified_at') String? verifiedAt,@JsonKey(name: 'verified_by') WordVerifierDto? verifiedBy,@JsonKey(name: 'created_by') WordVerifierDto? createdBy, List<MeaningDto> meanings, List<CategoryDto> categories,@JsonKey(name: 'usage_labels') List<String> usageLabels, List<PronunciationDto> pronunciations, List<WordAudioDto> audios, List<WordImageDto> images,@JsonKey(name: 'related_words') List<RelatedWordDto> relatedWords,@JsonKey(name: 'appears_in') List<RelatedWordDto> appearsIn,@JsonKey(name: 'appears_in_karya') List<WordAppearsInKaryaDto> appearsInKarya,@JsonKey(name: 'meaning_groups') List<MeaningGroupDto> meaningGroups, List<WordVariantDto> variants, String? date,@JsonKey(name: 'is_new_this_week') bool isNewThisWeek
 });
 
 
@@ -73,7 +73,7 @@ class _$WordDetailDtoCopyWithImpl<$Res>
 
 /// Create a copy of WordDetailDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? lemma = null,Object? languageId = null,Object? notes = freezed,Object? wordType = null,Object? status = null,Object? isVerified = null,Object? isCorrected = null,Object? selfVerified = null,Object? verifiedAt = freezed,Object? verifiedBy = freezed,Object? createdBy = freezed,Object? meanings = null,Object? categories = null,Object? usageLabels = null,Object? pronunciations = null,Object? audios = null,Object? images = null,Object? relatedWords = null,Object? appearsIn = null,Object? meaningGroups = null,Object? variants = null,Object? date = freezed,Object? isNewThisWeek = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? lemma = null,Object? languageId = null,Object? notes = freezed,Object? wordType = null,Object? status = null,Object? isVerified = null,Object? isCorrected = null,Object? selfVerified = null,Object? verifiedAt = freezed,Object? verifiedBy = freezed,Object? createdBy = freezed,Object? meanings = null,Object? categories = null,Object? usageLabels = null,Object? pronunciations = null,Object? audios = null,Object? images = null,Object? relatedWords = null,Object? appearsIn = null,Object? appearsInKarya = null,Object? meaningGroups = null,Object? variants = null,Object? date = freezed,Object? isNewThisWeek = null,}) {
   return _then(WordDetailDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,lemma: null == lemma ? _self.lemma : lemma // ignore: cast_nullable_to_non_nullable
@@ -95,7 +95,8 @@ as List<PronunciationDto>,audios: null == audios ? _self.audios : audios // igno
 as List<WordAudioDto>,images: null == images ? _self.images : images // ignore: cast_nullable_to_non_nullable
 as List<WordImageDto>,relatedWords: null == relatedWords ? _self.relatedWords : relatedWords // ignore: cast_nullable_to_non_nullable
 as List<RelatedWordDto>,appearsIn: null == appearsIn ? _self.appearsIn : appearsIn // ignore: cast_nullable_to_non_nullable
-as List<RelatedWordDto>,meaningGroups: null == meaningGroups ? _self.meaningGroups : meaningGroups // ignore: cast_nullable_to_non_nullable
+as List<RelatedWordDto>,appearsInKarya: null == appearsInKarya ? _self.appearsInKarya : appearsInKarya // ignore: cast_nullable_to_non_nullable
+as List<WordAppearsInKaryaDto>,meaningGroups: null == meaningGroups ? _self.meaningGroups : meaningGroups // ignore: cast_nullable_to_non_nullable
 as List<MeaningGroupDto>,variants: null == variants ? _self.variants : variants // ignore: cast_nullable_to_non_nullable
 as List<WordVariantDto>,date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String?,isNewThisWeek: null == isNewThisWeek ? _self.isNewThisWeek : isNewThisWeek // ignore: cast_nullable_to_non_nullable
@@ -208,10 +209,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String lemma, @JsonKey(name: 'language_id')  String languageId,  String? notes, @JsonKey(name: 'word_type')  String wordType,  String status, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'is_corrected')  bool isCorrected, @JsonKey(name: 'self_verified')  bool selfVerified, @JsonKey(name: 'verified_at')  String? verifiedAt, @JsonKey(name: 'verified_by')  WordVerifierDto? verifiedBy, @JsonKey(name: 'created_by')  WordVerifierDto? createdBy,  List<MeaningDto> meanings,  List<CategoryDto> categories, @JsonKey(name: 'usage_labels')  List<String> usageLabels,  List<PronunciationDto> pronunciations,  List<WordAudioDto> audios,  List<WordImageDto> images, @JsonKey(name: 'related_words')  List<RelatedWordDto> relatedWords, @JsonKey(name: 'appears_in')  List<RelatedWordDto> appearsIn, @JsonKey(name: 'meaning_groups')  List<MeaningGroupDto> meaningGroups,  List<WordVariantDto> variants,  String? date, @JsonKey(name: 'is_new_this_week')  bool isNewThisWeek)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String lemma, @JsonKey(name: 'language_id')  String languageId,  String? notes, @JsonKey(name: 'word_type')  String wordType,  String status, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'is_corrected')  bool isCorrected, @JsonKey(name: 'self_verified')  bool selfVerified, @JsonKey(name: 'verified_at')  String? verifiedAt, @JsonKey(name: 'verified_by')  WordVerifierDto? verifiedBy, @JsonKey(name: 'created_by')  WordVerifierDto? createdBy,  List<MeaningDto> meanings,  List<CategoryDto> categories, @JsonKey(name: 'usage_labels')  List<String> usageLabels,  List<PronunciationDto> pronunciations,  List<WordAudioDto> audios,  List<WordImageDto> images, @JsonKey(name: 'related_words')  List<RelatedWordDto> relatedWords, @JsonKey(name: 'appears_in')  List<RelatedWordDto> appearsIn, @JsonKey(name: 'appears_in_karya')  List<WordAppearsInKaryaDto> appearsInKarya, @JsonKey(name: 'meaning_groups')  List<MeaningGroupDto> meaningGroups,  List<WordVariantDto> variants,  String? date, @JsonKey(name: 'is_new_this_week')  bool isNewThisWeek)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WordDetailDto() when $default != null:
-return $default(_that.id,_that.lemma,_that.languageId,_that.notes,_that.wordType,_that.status,_that.isVerified,_that.isCorrected,_that.selfVerified,_that.verifiedAt,_that.verifiedBy,_that.createdBy,_that.meanings,_that.categories,_that.usageLabels,_that.pronunciations,_that.audios,_that.images,_that.relatedWords,_that.appearsIn,_that.meaningGroups,_that.variants,_that.date,_that.isNewThisWeek);case _:
+return $default(_that.id,_that.lemma,_that.languageId,_that.notes,_that.wordType,_that.status,_that.isVerified,_that.isCorrected,_that.selfVerified,_that.verifiedAt,_that.verifiedBy,_that.createdBy,_that.meanings,_that.categories,_that.usageLabels,_that.pronunciations,_that.audios,_that.images,_that.relatedWords,_that.appearsIn,_that.appearsInKarya,_that.meaningGroups,_that.variants,_that.date,_that.isNewThisWeek);case _:
   return orElse();
 
 }
@@ -229,10 +230,10 @@ return $default(_that.id,_that.lemma,_that.languageId,_that.notes,_that.wordType
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String lemma, @JsonKey(name: 'language_id')  String languageId,  String? notes, @JsonKey(name: 'word_type')  String wordType,  String status, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'is_corrected')  bool isCorrected, @JsonKey(name: 'self_verified')  bool selfVerified, @JsonKey(name: 'verified_at')  String? verifiedAt, @JsonKey(name: 'verified_by')  WordVerifierDto? verifiedBy, @JsonKey(name: 'created_by')  WordVerifierDto? createdBy,  List<MeaningDto> meanings,  List<CategoryDto> categories, @JsonKey(name: 'usage_labels')  List<String> usageLabels,  List<PronunciationDto> pronunciations,  List<WordAudioDto> audios,  List<WordImageDto> images, @JsonKey(name: 'related_words')  List<RelatedWordDto> relatedWords, @JsonKey(name: 'appears_in')  List<RelatedWordDto> appearsIn, @JsonKey(name: 'meaning_groups')  List<MeaningGroupDto> meaningGroups,  List<WordVariantDto> variants,  String? date, @JsonKey(name: 'is_new_this_week')  bool isNewThisWeek)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String lemma, @JsonKey(name: 'language_id')  String languageId,  String? notes, @JsonKey(name: 'word_type')  String wordType,  String status, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'is_corrected')  bool isCorrected, @JsonKey(name: 'self_verified')  bool selfVerified, @JsonKey(name: 'verified_at')  String? verifiedAt, @JsonKey(name: 'verified_by')  WordVerifierDto? verifiedBy, @JsonKey(name: 'created_by')  WordVerifierDto? createdBy,  List<MeaningDto> meanings,  List<CategoryDto> categories, @JsonKey(name: 'usage_labels')  List<String> usageLabels,  List<PronunciationDto> pronunciations,  List<WordAudioDto> audios,  List<WordImageDto> images, @JsonKey(name: 'related_words')  List<RelatedWordDto> relatedWords, @JsonKey(name: 'appears_in')  List<RelatedWordDto> appearsIn, @JsonKey(name: 'appears_in_karya')  List<WordAppearsInKaryaDto> appearsInKarya, @JsonKey(name: 'meaning_groups')  List<MeaningGroupDto> meaningGroups,  List<WordVariantDto> variants,  String? date, @JsonKey(name: 'is_new_this_week')  bool isNewThisWeek)  $default,) {final _that = this;
 switch (_that) {
 case _WordDetailDto():
-return $default(_that.id,_that.lemma,_that.languageId,_that.notes,_that.wordType,_that.status,_that.isVerified,_that.isCorrected,_that.selfVerified,_that.verifiedAt,_that.verifiedBy,_that.createdBy,_that.meanings,_that.categories,_that.usageLabels,_that.pronunciations,_that.audios,_that.images,_that.relatedWords,_that.appearsIn,_that.meaningGroups,_that.variants,_that.date,_that.isNewThisWeek);case _:
+return $default(_that.id,_that.lemma,_that.languageId,_that.notes,_that.wordType,_that.status,_that.isVerified,_that.isCorrected,_that.selfVerified,_that.verifiedAt,_that.verifiedBy,_that.createdBy,_that.meanings,_that.categories,_that.usageLabels,_that.pronunciations,_that.audios,_that.images,_that.relatedWords,_that.appearsIn,_that.appearsInKarya,_that.meaningGroups,_that.variants,_that.date,_that.isNewThisWeek);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -249,10 +250,10 @@ return $default(_that.id,_that.lemma,_that.languageId,_that.notes,_that.wordType
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String lemma, @JsonKey(name: 'language_id')  String languageId,  String? notes, @JsonKey(name: 'word_type')  String wordType,  String status, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'is_corrected')  bool isCorrected, @JsonKey(name: 'self_verified')  bool selfVerified, @JsonKey(name: 'verified_at')  String? verifiedAt, @JsonKey(name: 'verified_by')  WordVerifierDto? verifiedBy, @JsonKey(name: 'created_by')  WordVerifierDto? createdBy,  List<MeaningDto> meanings,  List<CategoryDto> categories, @JsonKey(name: 'usage_labels')  List<String> usageLabels,  List<PronunciationDto> pronunciations,  List<WordAudioDto> audios,  List<WordImageDto> images, @JsonKey(name: 'related_words')  List<RelatedWordDto> relatedWords, @JsonKey(name: 'appears_in')  List<RelatedWordDto> appearsIn, @JsonKey(name: 'meaning_groups')  List<MeaningGroupDto> meaningGroups,  List<WordVariantDto> variants,  String? date, @JsonKey(name: 'is_new_this_week')  bool isNewThisWeek)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String lemma, @JsonKey(name: 'language_id')  String languageId,  String? notes, @JsonKey(name: 'word_type')  String wordType,  String status, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'is_corrected')  bool isCorrected, @JsonKey(name: 'self_verified')  bool selfVerified, @JsonKey(name: 'verified_at')  String? verifiedAt, @JsonKey(name: 'verified_by')  WordVerifierDto? verifiedBy, @JsonKey(name: 'created_by')  WordVerifierDto? createdBy,  List<MeaningDto> meanings,  List<CategoryDto> categories, @JsonKey(name: 'usage_labels')  List<String> usageLabels,  List<PronunciationDto> pronunciations,  List<WordAudioDto> audios,  List<WordImageDto> images, @JsonKey(name: 'related_words')  List<RelatedWordDto> relatedWords, @JsonKey(name: 'appears_in')  List<RelatedWordDto> appearsIn, @JsonKey(name: 'appears_in_karya')  List<WordAppearsInKaryaDto> appearsInKarya, @JsonKey(name: 'meaning_groups')  List<MeaningGroupDto> meaningGroups,  List<WordVariantDto> variants,  String? date, @JsonKey(name: 'is_new_this_week')  bool isNewThisWeek)?  $default,) {final _that = this;
 switch (_that) {
 case _WordDetailDto() when $default != null:
-return $default(_that.id,_that.lemma,_that.languageId,_that.notes,_that.wordType,_that.status,_that.isVerified,_that.isCorrected,_that.selfVerified,_that.verifiedAt,_that.verifiedBy,_that.createdBy,_that.meanings,_that.categories,_that.usageLabels,_that.pronunciations,_that.audios,_that.images,_that.relatedWords,_that.appearsIn,_that.meaningGroups,_that.variants,_that.date,_that.isNewThisWeek);case _:
+return $default(_that.id,_that.lemma,_that.languageId,_that.notes,_that.wordType,_that.status,_that.isVerified,_that.isCorrected,_that.selfVerified,_that.verifiedAt,_that.verifiedBy,_that.createdBy,_that.meanings,_that.categories,_that.usageLabels,_that.pronunciations,_that.audios,_that.images,_that.relatedWords,_that.appearsIn,_that.appearsInKarya,_that.meaningGroups,_that.variants,_that.date,_that.isNewThisWeek);case _:
   return null;
 
 }
@@ -264,7 +265,7 @@ return $default(_that.id,_that.lemma,_that.languageId,_that.notes,_that.wordType
 @JsonSerializable()
 
 class _WordDetailDto implements WordDetailDto {
-  const _WordDetailDto({required this.id, required this.lemma, @JsonKey(name: 'language_id') required this.languageId, this.notes, @JsonKey(name: 'word_type') required this.wordType, required this.status, @JsonKey(name: 'is_verified') required this.isVerified, @JsonKey(name: 'is_corrected') this.isCorrected = false, @JsonKey(name: 'self_verified') this.selfVerified = false, @JsonKey(name: 'verified_at') this.verifiedAt, @JsonKey(name: 'verified_by') this.verifiedBy, @JsonKey(name: 'created_by') this.createdBy,  List<MeaningDto> meanings = const [],  List<CategoryDto> categories = const [], @JsonKey(name: 'usage_labels')  List<String> usageLabels = const [],  List<PronunciationDto> pronunciations = const [],  List<WordAudioDto> audios = const [],  List<WordImageDto> images = const [], @JsonKey(name: 'related_words')  List<RelatedWordDto> relatedWords = const [], @JsonKey(name: 'appears_in')  List<RelatedWordDto> appearsIn = const [], @JsonKey(name: 'meaning_groups')  List<MeaningGroupDto> meaningGroups = const [],  List<WordVariantDto> variants = const [], this.date, @JsonKey(name: 'is_new_this_week') this.isNewThisWeek = false}): _meanings = meanings,_categories = categories,_usageLabels = usageLabels,_pronunciations = pronunciations,_audios = audios,_images = images,_relatedWords = relatedWords,_appearsIn = appearsIn,_meaningGroups = meaningGroups,_variants = variants;
+  const _WordDetailDto({required this.id, required this.lemma, @JsonKey(name: 'language_id') required this.languageId, this.notes, @JsonKey(name: 'word_type') required this.wordType, required this.status, @JsonKey(name: 'is_verified') required this.isVerified, @JsonKey(name: 'is_corrected') this.isCorrected = false, @JsonKey(name: 'self_verified') this.selfVerified = false, @JsonKey(name: 'verified_at') this.verifiedAt, @JsonKey(name: 'verified_by') this.verifiedBy, @JsonKey(name: 'created_by') this.createdBy,  List<MeaningDto> meanings = const [],  List<CategoryDto> categories = const [], @JsonKey(name: 'usage_labels')  List<String> usageLabels = const [],  List<PronunciationDto> pronunciations = const [],  List<WordAudioDto> audios = const [],  List<WordImageDto> images = const [], @JsonKey(name: 'related_words')  List<RelatedWordDto> relatedWords = const [], @JsonKey(name: 'appears_in')  List<RelatedWordDto> appearsIn = const [], @JsonKey(name: 'appears_in_karya')  List<WordAppearsInKaryaDto> appearsInKarya = const [], @JsonKey(name: 'meaning_groups')  List<MeaningGroupDto> meaningGroups = const [],  List<WordVariantDto> variants = const [], this.date, @JsonKey(name: 'is_new_this_week') this.isNewThisWeek = false}): _meanings = meanings,_categories = categories,_usageLabels = usageLabels,_pronunciations = pronunciations,_audios = audios,_images = images,_relatedWords = relatedWords,_appearsIn = appearsIn,_appearsInKarya = appearsInKarya,_meaningGroups = meaningGroups,_variants = variants;
   factory _WordDetailDto.fromJson(Map<String, dynamic> json) => _$WordDetailDtoFromJson(json);
 
 @override final  String id;
@@ -335,6 +336,13 @@ class _WordDetailDto implements WordDetailDto {
   return EqualUnmodifiableListView(_appearsIn);
 }
 
+ final  List<WordAppearsInKaryaDto> _appearsInKarya;
+@override@JsonKey(name: 'appears_in_karya') List<WordAppearsInKaryaDto> get appearsInKarya {
+  if (_appearsInKarya is EqualUnmodifiableListView) return _appearsInKarya;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_appearsInKarya);
+}
+
 /// PRD relasi-lemma: kelompok makna (published saja).
  final  List<MeaningGroupDto> _meaningGroups;
 /// PRD relasi-lemma: kelompok makna (published saja).
@@ -368,18 +376,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WordDetailDto&&(identical(other.id, id) || other.id == id)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.languageId, languageId) || other.languageId == languageId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.wordType, wordType) || other.wordType == wordType)&&(identical(other.status, status) || other.status == status)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.isCorrected, isCorrected) || other.isCorrected == isCorrected)&&(identical(other.selfVerified, selfVerified) || other.selfVerified == selfVerified)&&(identical(other.verifiedAt, verifiedAt) || other.verifiedAt == verifiedAt)&&(identical(other.verifiedBy, verifiedBy) || other.verifiedBy == verifiedBy)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&const DeepCollectionEquality().equals(other.meanings, _meanings)&&const DeepCollectionEquality().equals(other.categories, _categories)&&const DeepCollectionEquality().equals(other.usageLabels, _usageLabels)&&const DeepCollectionEquality().equals(other.pronunciations, _pronunciations)&&const DeepCollectionEquality().equals(other.audios, _audios)&&const DeepCollectionEquality().equals(other.images, _images)&&const DeepCollectionEquality().equals(other.relatedWords, _relatedWords)&&const DeepCollectionEquality().equals(other.appearsIn, _appearsIn)&&const DeepCollectionEquality().equals(other.meaningGroups, _meaningGroups)&&const DeepCollectionEquality().equals(other.variants, _variants)&&(identical(other.date, date) || other.date == date)&&(identical(other.isNewThisWeek, isNewThisWeek) || other.isNewThisWeek == isNewThisWeek));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WordDetailDto&&(identical(other.id, id) || other.id == id)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.languageId, languageId) || other.languageId == languageId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.wordType, wordType) || other.wordType == wordType)&&(identical(other.status, status) || other.status == status)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.isCorrected, isCorrected) || other.isCorrected == isCorrected)&&(identical(other.selfVerified, selfVerified) || other.selfVerified == selfVerified)&&(identical(other.verifiedAt, verifiedAt) || other.verifiedAt == verifiedAt)&&(identical(other.verifiedBy, verifiedBy) || other.verifiedBy == verifiedBy)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&const DeepCollectionEquality().equals(other.meanings, _meanings)&&const DeepCollectionEquality().equals(other.categories, _categories)&&const DeepCollectionEquality().equals(other.usageLabels, _usageLabels)&&const DeepCollectionEquality().equals(other.pronunciations, _pronunciations)&&const DeepCollectionEquality().equals(other.audios, _audios)&&const DeepCollectionEquality().equals(other.images, _images)&&const DeepCollectionEquality().equals(other.relatedWords, _relatedWords)&&const DeepCollectionEquality().equals(other.appearsIn, _appearsIn)&&const DeepCollectionEquality().equals(other.appearsInKarya, _appearsInKarya)&&const DeepCollectionEquality().equals(other.meaningGroups, _meaningGroups)&&const DeepCollectionEquality().equals(other.variants, _variants)&&(identical(other.date, date) || other.date == date)&&(identical(other.isNewThisWeek, isNewThisWeek) || other.isNewThisWeek == isNewThisWeek));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hashAll([runtimeType,id,lemma,languageId,notes,wordType,status,isVerified,isCorrected,selfVerified,verifiedAt,verifiedBy,createdBy,const DeepCollectionEquality().hash(_meanings),const DeepCollectionEquality().hash(_categories),const DeepCollectionEquality().hash(_usageLabels),const DeepCollectionEquality().hash(_pronunciations),const DeepCollectionEquality().hash(_audios),const DeepCollectionEquality().hash(_images),const DeepCollectionEquality().hash(_relatedWords),const DeepCollectionEquality().hash(_appearsIn),const DeepCollectionEquality().hash(_meaningGroups),const DeepCollectionEquality().hash(_variants),date,isNewThisWeek]);
+    return Object.hashAll([runtimeType,id,lemma,languageId,notes,wordType,status,isVerified,isCorrected,selfVerified,verifiedAt,verifiedBy,createdBy,const DeepCollectionEquality().hash(_meanings),const DeepCollectionEquality().hash(_categories),const DeepCollectionEquality().hash(_usageLabels),const DeepCollectionEquality().hash(_pronunciations),const DeepCollectionEquality().hash(_audios),const DeepCollectionEquality().hash(_images),const DeepCollectionEquality().hash(_relatedWords),const DeepCollectionEquality().hash(_appearsIn),const DeepCollectionEquality().hash(_appearsInKarya),const DeepCollectionEquality().hash(_meaningGroups),const DeepCollectionEquality().hash(_variants),date,isNewThisWeek]);
 }
 
 @override
 String toString() {
-    return 'WordDetailDto(id: $id, lemma: $lemma, languageId: $languageId, notes: $notes, wordType: $wordType, status: $status, isVerified: $isVerified, isCorrected: $isCorrected, selfVerified: $selfVerified, verifiedAt: $verifiedAt, verifiedBy: $verifiedBy, createdBy: $createdBy, meanings: $meanings, categories: $categories, usageLabels: $usageLabels, pronunciations: $pronunciations, audios: $audios, images: $images, relatedWords: $relatedWords, appearsIn: $appearsIn, meaningGroups: $meaningGroups, variants: $variants, date: $date, isNewThisWeek: $isNewThisWeek)';
+    return 'WordDetailDto(id: $id, lemma: $lemma, languageId: $languageId, notes: $notes, wordType: $wordType, status: $status, isVerified: $isVerified, isCorrected: $isCorrected, selfVerified: $selfVerified, verifiedAt: $verifiedAt, verifiedBy: $verifiedBy, createdBy: $createdBy, meanings: $meanings, categories: $categories, usageLabels: $usageLabels, pronunciations: $pronunciations, audios: $audios, images: $images, relatedWords: $relatedWords, appearsIn: $appearsIn, appearsInKarya: $appearsInKarya, meaningGroups: $meaningGroups, variants: $variants, date: $date, isNewThisWeek: $isNewThisWeek)';
 }
 
 
@@ -390,7 +398,7 @@ abstract mixin class _$WordDetailDtoCopyWith<$Res> implements $WordDetailDtoCopy
   factory _$WordDetailDtoCopyWith(_WordDetailDto value, $Res Function(_WordDetailDto) _then) = __$WordDetailDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String lemma,@JsonKey(name: 'language_id') String languageId, String? notes,@JsonKey(name: 'word_type') String wordType, String status,@JsonKey(name: 'is_verified') bool isVerified,@JsonKey(name: 'is_corrected') bool isCorrected,@JsonKey(name: 'self_verified') bool selfVerified,@JsonKey(name: 'verified_at') String? verifiedAt,@JsonKey(name: 'verified_by') WordVerifierDto? verifiedBy,@JsonKey(name: 'created_by') WordVerifierDto? createdBy, List<MeaningDto> meanings, List<CategoryDto> categories,@JsonKey(name: 'usage_labels') List<String> usageLabels, List<PronunciationDto> pronunciations, List<WordAudioDto> audios, List<WordImageDto> images,@JsonKey(name: 'related_words') List<RelatedWordDto> relatedWords,@JsonKey(name: 'appears_in') List<RelatedWordDto> appearsIn,@JsonKey(name: 'meaning_groups') List<MeaningGroupDto> meaningGroups, List<WordVariantDto> variants, String? date,@JsonKey(name: 'is_new_this_week') bool isNewThisWeek
+ String id, String lemma,@JsonKey(name: 'language_id') String languageId, String? notes,@JsonKey(name: 'word_type') String wordType, String status,@JsonKey(name: 'is_verified') bool isVerified,@JsonKey(name: 'is_corrected') bool isCorrected,@JsonKey(name: 'self_verified') bool selfVerified,@JsonKey(name: 'verified_at') String? verifiedAt,@JsonKey(name: 'verified_by') WordVerifierDto? verifiedBy,@JsonKey(name: 'created_by') WordVerifierDto? createdBy, List<MeaningDto> meanings, List<CategoryDto> categories,@JsonKey(name: 'usage_labels') List<String> usageLabels, List<PronunciationDto> pronunciations, List<WordAudioDto> audios, List<WordImageDto> images,@JsonKey(name: 'related_words') List<RelatedWordDto> relatedWords,@JsonKey(name: 'appears_in') List<RelatedWordDto> appearsIn,@JsonKey(name: 'appears_in_karya') List<WordAppearsInKaryaDto> appearsInKarya,@JsonKey(name: 'meaning_groups') List<MeaningGroupDto> meaningGroups, List<WordVariantDto> variants, String? date,@JsonKey(name: 'is_new_this_week') bool isNewThisWeek
 });
 
 
@@ -407,7 +415,7 @@ class __$WordDetailDtoCopyWithImpl<$Res>
 
 /// Create a copy of WordDetailDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? lemma = null,Object? languageId = null,Object? notes = freezed,Object? wordType = null,Object? status = null,Object? isVerified = null,Object? isCorrected = null,Object? selfVerified = null,Object? verifiedAt = freezed,Object? verifiedBy = freezed,Object? createdBy = freezed,Object? meanings = null,Object? categories = null,Object? usageLabels = null,Object? pronunciations = null,Object? audios = null,Object? images = null,Object? relatedWords = null,Object? appearsIn = null,Object? meaningGroups = null,Object? variants = null,Object? date = freezed,Object? isNewThisWeek = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? lemma = null,Object? languageId = null,Object? notes = freezed,Object? wordType = null,Object? status = null,Object? isVerified = null,Object? isCorrected = null,Object? selfVerified = null,Object? verifiedAt = freezed,Object? verifiedBy = freezed,Object? createdBy = freezed,Object? meanings = null,Object? categories = null,Object? usageLabels = null,Object? pronunciations = null,Object? audios = null,Object? images = null,Object? relatedWords = null,Object? appearsIn = null,Object? appearsInKarya = null,Object? meaningGroups = null,Object? variants = null,Object? date = freezed,Object? isNewThisWeek = null,}) {
   return _then(_WordDetailDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,lemma: null == lemma ? _self.lemma : lemma // ignore: cast_nullable_to_non_nullable
@@ -429,7 +437,8 @@ as List<PronunciationDto>,audios: null == audios ? _self._audios : audios // ign
 as List<WordAudioDto>,images: null == images ? _self._images : images // ignore: cast_nullable_to_non_nullable
 as List<WordImageDto>,relatedWords: null == relatedWords ? _self._relatedWords : relatedWords // ignore: cast_nullable_to_non_nullable
 as List<RelatedWordDto>,appearsIn: null == appearsIn ? _self._appearsIn : appearsIn // ignore: cast_nullable_to_non_nullable
-as List<RelatedWordDto>,meaningGroups: null == meaningGroups ? _self._meaningGroups : meaningGroups // ignore: cast_nullable_to_non_nullable
+as List<RelatedWordDto>,appearsInKarya: null == appearsInKarya ? _self._appearsInKarya : appearsInKarya // ignore: cast_nullable_to_non_nullable
+as List<WordAppearsInKaryaDto>,meaningGroups: null == meaningGroups ? _self._meaningGroups : meaningGroups // ignore: cast_nullable_to_non_nullable
 as List<MeaningGroupDto>,variants: null == variants ? _self._variants : variants // ignore: cast_nullable_to_non_nullable
 as List<WordVariantDto>,date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String?,isNewThisWeek: null == isNewThisWeek ? _self.isNewThisWeek : isNewThisWeek // ignore: cast_nullable_to_non_nullable
@@ -747,7 +756,7 @@ as String,
 /// @nodoc
 mixin _$MeaningDto {
 
- String get id;@JsonKey(name: 'word_class') WordClassDto? get wordClass;@JsonKey(name: 'inherited_from_meaning_id') String? get inheritedFromMeaningId; String? get definition;@JsonKey(name: 'order_index') int get orderIndex;@JsonKey(name: 'created_by') WordVerifierDto? get createdBy; List<TranslationDto> get translations; List<ExampleDto> get examples;
+ String get id;@JsonKey(name: 'word_class') WordClassDto? get wordClass;@JsonKey(name: 'inherited_from_meaning_id') String? get inheritedFromMeaningId; String? get definition;@JsonKey(name: 'order_index') int get orderIndex;@JsonKey(name: 'is_verified') bool get isVerified;@JsonKey(name: 'needs_review') bool get needsReview;@JsonKey(name: 'verified_at') String? get verifiedAt;@JsonKey(name: 'verified_by') WordVerifierDto? get verifiedBy;@JsonKey(name: 'created_by') WordVerifierDto? get createdBy; List<TranslationDto> get translations; List<ExampleDto> get examples;
 /// Create a copy of MeaningDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -761,20 +770,20 @@ $MeaningDtoCopyWith<MeaningDto> get copyWith => _$MeaningDtoCopyWithImpl<Meaning
 @override
 bool operator ==(Object other) {
   final _this = this as MeaningDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeaningDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.wordClass, _this.wordClass) || other.wordClass == _this.wordClass)&&(identical(other.inheritedFromMeaningId, _this.inheritedFromMeaningId) || other.inheritedFromMeaningId == _this.inheritedFromMeaningId)&&(identical(other.definition, _this.definition) || other.definition == _this.definition)&&(identical(other.orderIndex, _this.orderIndex) || other.orderIndex == _this.orderIndex)&&(identical(other.createdBy, _this.createdBy) || other.createdBy == _this.createdBy)&&const DeepCollectionEquality().equals(other.translations, _this.translations)&&const DeepCollectionEquality().equals(other.examples, _this.examples));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeaningDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.wordClass, _this.wordClass) || other.wordClass == _this.wordClass)&&(identical(other.inheritedFromMeaningId, _this.inheritedFromMeaningId) || other.inheritedFromMeaningId == _this.inheritedFromMeaningId)&&(identical(other.definition, _this.definition) || other.definition == _this.definition)&&(identical(other.orderIndex, _this.orderIndex) || other.orderIndex == _this.orderIndex)&&(identical(other.isVerified, _this.isVerified) || other.isVerified == _this.isVerified)&&(identical(other.needsReview, _this.needsReview) || other.needsReview == _this.needsReview)&&(identical(other.verifiedAt, _this.verifiedAt) || other.verifiedAt == _this.verifiedAt)&&(identical(other.verifiedBy, _this.verifiedBy) || other.verifiedBy == _this.verifiedBy)&&(identical(other.createdBy, _this.createdBy) || other.createdBy == _this.createdBy)&&const DeepCollectionEquality().equals(other.translations, _this.translations)&&const DeepCollectionEquality().equals(other.examples, _this.examples));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as MeaningDto;
-  return Object.hash(runtimeType,_this.id,_this.wordClass,_this.inheritedFromMeaningId,_this.definition,_this.orderIndex,_this.createdBy,const DeepCollectionEquality().hash(_this.translations),const DeepCollectionEquality().hash(_this.examples));
+  return Object.hash(runtimeType,_this.id,_this.wordClass,_this.inheritedFromMeaningId,_this.definition,_this.orderIndex,_this.isVerified,_this.needsReview,_this.verifiedAt,_this.verifiedBy,_this.createdBy,const DeepCollectionEquality().hash(_this.translations),const DeepCollectionEquality().hash(_this.examples));
 }
 
 @override
 String toString() {
   final _this = this as MeaningDto;
-  return 'MeaningDto(id: ${_this.id}, wordClass: ${_this.wordClass}, inheritedFromMeaningId: ${_this.inheritedFromMeaningId}, definition: ${_this.definition}, orderIndex: ${_this.orderIndex}, createdBy: ${_this.createdBy}, translations: ${_this.translations}, examples: ${_this.examples})';
+  return 'MeaningDto(id: ${_this.id}, wordClass: ${_this.wordClass}, inheritedFromMeaningId: ${_this.inheritedFromMeaningId}, definition: ${_this.definition}, orderIndex: ${_this.orderIndex}, isVerified: ${_this.isVerified}, needsReview: ${_this.needsReview}, verifiedAt: ${_this.verifiedAt}, verifiedBy: ${_this.verifiedBy}, createdBy: ${_this.createdBy}, translations: ${_this.translations}, examples: ${_this.examples})';
 }
 
 
@@ -785,11 +794,11 @@ abstract mixin class $MeaningDtoCopyWith<$Res>  {
   factory $MeaningDtoCopyWith(MeaningDto value, $Res Function(MeaningDto) _then) = _$MeaningDtoCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'word_class') WordClassDto? wordClass,@JsonKey(name: 'inherited_from_meaning_id') String? inheritedFromMeaningId, String? definition,@JsonKey(name: 'order_index') int orderIndex,@JsonKey(name: 'created_by') WordVerifierDto? createdBy, List<TranslationDto> translations, List<ExampleDto> examples
+ String id,@JsonKey(name: 'word_class') WordClassDto? wordClass,@JsonKey(name: 'inherited_from_meaning_id') String? inheritedFromMeaningId, String? definition,@JsonKey(name: 'order_index') int orderIndex,@JsonKey(name: 'is_verified') bool isVerified,@JsonKey(name: 'needs_review') bool needsReview,@JsonKey(name: 'verified_at') String? verifiedAt,@JsonKey(name: 'verified_by') WordVerifierDto? verifiedBy,@JsonKey(name: 'created_by') WordVerifierDto? createdBy, List<TranslationDto> translations, List<ExampleDto> examples
 });
 
 
-$WordClassDtoCopyWith<$Res>? get wordClass;$WordVerifierDtoCopyWith<$Res>? get createdBy;
+$WordClassDtoCopyWith<$Res>? get wordClass;$WordVerifierDtoCopyWith<$Res>? get verifiedBy;$WordVerifierDtoCopyWith<$Res>? get createdBy;
 
 }
 /// @nodoc
@@ -802,14 +811,18 @@ class _$MeaningDtoCopyWithImpl<$Res>
 
 /// Create a copy of MeaningDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? wordClass = freezed,Object? inheritedFromMeaningId = freezed,Object? definition = freezed,Object? orderIndex = null,Object? createdBy = freezed,Object? translations = null,Object? examples = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? wordClass = freezed,Object? inheritedFromMeaningId = freezed,Object? definition = freezed,Object? orderIndex = null,Object? isVerified = null,Object? needsReview = null,Object? verifiedAt = freezed,Object? verifiedBy = freezed,Object? createdBy = freezed,Object? translations = null,Object? examples = null,}) {
   return _then(MeaningDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,wordClass: freezed == wordClass ? _self.wordClass : wordClass // ignore: cast_nullable_to_non_nullable
 as WordClassDto?,inheritedFromMeaningId: freezed == inheritedFromMeaningId ? _self.inheritedFromMeaningId : inheritedFromMeaningId // ignore: cast_nullable_to_non_nullable
 as String?,definition: freezed == definition ? _self.definition : definition // ignore: cast_nullable_to_non_nullable
 as String?,orderIndex: null == orderIndex ? _self.orderIndex : orderIndex // ignore: cast_nullable_to_non_nullable
-as int,createdBy: freezed == createdBy ? _self.createdBy : createdBy // ignore: cast_nullable_to_non_nullable
+as int,isVerified: null == isVerified ? _self.isVerified : isVerified // ignore: cast_nullable_to_non_nullable
+as bool,needsReview: null == needsReview ? _self.needsReview : needsReview // ignore: cast_nullable_to_non_nullable
+as bool,verifiedAt: freezed == verifiedAt ? _self.verifiedAt : verifiedAt // ignore: cast_nullable_to_non_nullable
+as String?,verifiedBy: freezed == verifiedBy ? _self.verifiedBy : verifiedBy // ignore: cast_nullable_to_non_nullable
+as WordVerifierDto?,createdBy: freezed == createdBy ? _self.createdBy : createdBy // ignore: cast_nullable_to_non_nullable
 as WordVerifierDto?,translations: null == translations ? _self.translations : translations // ignore: cast_nullable_to_non_nullable
 as List<TranslationDto>,examples: null == examples ? _self.examples : examples // ignore: cast_nullable_to_non_nullable
 as List<ExampleDto>,
@@ -826,6 +839,18 @@ $WordClassDtoCopyWith<$Res>? get wordClass {
 
   return $WordClassDtoCopyWith<$Res>(_self.wordClass!, (value) {
     return _then(_self.copyWith(wordClass: value));
+  });
+}/// Create a copy of MeaningDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WordVerifierDtoCopyWith<$Res>? get verifiedBy {
+    if (_self.verifiedBy == null) {
+    return null;
+  }
+
+  return $WordVerifierDtoCopyWith<$Res>(_self.verifiedBy!, (value) {
+    return _then(_self.copyWith(verifiedBy: value));
   });
 }/// Create a copy of MeaningDto
 /// with the given fields replaced by the non-null parameter values.
@@ -921,10 +946,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'word_class')  WordClassDto? wordClass, @JsonKey(name: 'inherited_from_meaning_id')  String? inheritedFromMeaningId,  String? definition, @JsonKey(name: 'order_index')  int orderIndex, @JsonKey(name: 'created_by')  WordVerifierDto? createdBy,  List<TranslationDto> translations,  List<ExampleDto> examples)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'word_class')  WordClassDto? wordClass, @JsonKey(name: 'inherited_from_meaning_id')  String? inheritedFromMeaningId,  String? definition, @JsonKey(name: 'order_index')  int orderIndex, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'needs_review')  bool needsReview, @JsonKey(name: 'verified_at')  String? verifiedAt, @JsonKey(name: 'verified_by')  WordVerifierDto? verifiedBy, @JsonKey(name: 'created_by')  WordVerifierDto? createdBy,  List<TranslationDto> translations,  List<ExampleDto> examples)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MeaningDto() when $default != null:
-return $default(_that.id,_that.wordClass,_that.inheritedFromMeaningId,_that.definition,_that.orderIndex,_that.createdBy,_that.translations,_that.examples);case _:
+return $default(_that.id,_that.wordClass,_that.inheritedFromMeaningId,_that.definition,_that.orderIndex,_that.isVerified,_that.needsReview,_that.verifiedAt,_that.verifiedBy,_that.createdBy,_that.translations,_that.examples);case _:
   return orElse();
 
 }
@@ -942,10 +967,10 @@ return $default(_that.id,_that.wordClass,_that.inheritedFromMeaningId,_that.defi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'word_class')  WordClassDto? wordClass, @JsonKey(name: 'inherited_from_meaning_id')  String? inheritedFromMeaningId,  String? definition, @JsonKey(name: 'order_index')  int orderIndex, @JsonKey(name: 'created_by')  WordVerifierDto? createdBy,  List<TranslationDto> translations,  List<ExampleDto> examples)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'word_class')  WordClassDto? wordClass, @JsonKey(name: 'inherited_from_meaning_id')  String? inheritedFromMeaningId,  String? definition, @JsonKey(name: 'order_index')  int orderIndex, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'needs_review')  bool needsReview, @JsonKey(name: 'verified_at')  String? verifiedAt, @JsonKey(name: 'verified_by')  WordVerifierDto? verifiedBy, @JsonKey(name: 'created_by')  WordVerifierDto? createdBy,  List<TranslationDto> translations,  List<ExampleDto> examples)  $default,) {final _that = this;
 switch (_that) {
 case _MeaningDto():
-return $default(_that.id,_that.wordClass,_that.inheritedFromMeaningId,_that.definition,_that.orderIndex,_that.createdBy,_that.translations,_that.examples);case _:
+return $default(_that.id,_that.wordClass,_that.inheritedFromMeaningId,_that.definition,_that.orderIndex,_that.isVerified,_that.needsReview,_that.verifiedAt,_that.verifiedBy,_that.createdBy,_that.translations,_that.examples);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -962,10 +987,10 @@ return $default(_that.id,_that.wordClass,_that.inheritedFromMeaningId,_that.defi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'word_class')  WordClassDto? wordClass, @JsonKey(name: 'inherited_from_meaning_id')  String? inheritedFromMeaningId,  String? definition, @JsonKey(name: 'order_index')  int orderIndex, @JsonKey(name: 'created_by')  WordVerifierDto? createdBy,  List<TranslationDto> translations,  List<ExampleDto> examples)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'word_class')  WordClassDto? wordClass, @JsonKey(name: 'inherited_from_meaning_id')  String? inheritedFromMeaningId,  String? definition, @JsonKey(name: 'order_index')  int orderIndex, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'needs_review')  bool needsReview, @JsonKey(name: 'verified_at')  String? verifiedAt, @JsonKey(name: 'verified_by')  WordVerifierDto? verifiedBy, @JsonKey(name: 'created_by')  WordVerifierDto? createdBy,  List<TranslationDto> translations,  List<ExampleDto> examples)?  $default,) {final _that = this;
 switch (_that) {
 case _MeaningDto() when $default != null:
-return $default(_that.id,_that.wordClass,_that.inheritedFromMeaningId,_that.definition,_that.orderIndex,_that.createdBy,_that.translations,_that.examples);case _:
+return $default(_that.id,_that.wordClass,_that.inheritedFromMeaningId,_that.definition,_that.orderIndex,_that.isVerified,_that.needsReview,_that.verifiedAt,_that.verifiedBy,_that.createdBy,_that.translations,_that.examples);case _:
   return null;
 
 }
@@ -977,7 +1002,7 @@ return $default(_that.id,_that.wordClass,_that.inheritedFromMeaningId,_that.defi
 @JsonSerializable()
 
 class _MeaningDto implements MeaningDto {
-  const _MeaningDto({required this.id, @JsonKey(name: 'word_class') this.wordClass, @JsonKey(name: 'inherited_from_meaning_id') this.inheritedFromMeaningId, this.definition, @JsonKey(name: 'order_index') this.orderIndex = 0, @JsonKey(name: 'created_by') this.createdBy,  List<TranslationDto> translations = const [],  List<ExampleDto> examples = const []}): _translations = translations,_examples = examples;
+  const _MeaningDto({required this.id, @JsonKey(name: 'word_class') this.wordClass, @JsonKey(name: 'inherited_from_meaning_id') this.inheritedFromMeaningId, this.definition, @JsonKey(name: 'order_index') this.orderIndex = 0, @JsonKey(name: 'is_verified') this.isVerified = true, @JsonKey(name: 'needs_review') this.needsReview = false, @JsonKey(name: 'verified_at') this.verifiedAt, @JsonKey(name: 'verified_by') this.verifiedBy, @JsonKey(name: 'created_by') this.createdBy,  List<TranslationDto> translations = const [],  List<ExampleDto> examples = const []}): _translations = translations,_examples = examples;
   factory _MeaningDto.fromJson(Map<String, dynamic> json) => _$MeaningDtoFromJson(json);
 
 @override final  String id;
@@ -985,6 +1010,10 @@ class _MeaningDto implements MeaningDto {
 @override@JsonKey(name: 'inherited_from_meaning_id') final  String? inheritedFromMeaningId;
 @override final  String? definition;
 @override@JsonKey(name: 'order_index') final  int orderIndex;
+@override@JsonKey(name: 'is_verified') final  bool isVerified;
+@override@JsonKey(name: 'needs_review') final  bool needsReview;
+@override@JsonKey(name: 'verified_at') final  String? verifiedAt;
+@override@JsonKey(name: 'verified_by') final  WordVerifierDto? verifiedBy;
 @override@JsonKey(name: 'created_by') final  WordVerifierDto? createdBy;
  final  List<TranslationDto> _translations;
 @override@JsonKey() List<TranslationDto> get translations {
@@ -1014,18 +1043,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MeaningDto&&(identical(other.id, id) || other.id == id)&&(identical(other.wordClass, wordClass) || other.wordClass == wordClass)&&(identical(other.inheritedFromMeaningId, inheritedFromMeaningId) || other.inheritedFromMeaningId == inheritedFromMeaningId)&&(identical(other.definition, definition) || other.definition == definition)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&const DeepCollectionEquality().equals(other.translations, _translations)&&const DeepCollectionEquality().equals(other.examples, _examples));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MeaningDto&&(identical(other.id, id) || other.id == id)&&(identical(other.wordClass, wordClass) || other.wordClass == wordClass)&&(identical(other.inheritedFromMeaningId, inheritedFromMeaningId) || other.inheritedFromMeaningId == inheritedFromMeaningId)&&(identical(other.definition, definition) || other.definition == definition)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.needsReview, needsReview) || other.needsReview == needsReview)&&(identical(other.verifiedAt, verifiedAt) || other.verifiedAt == verifiedAt)&&(identical(other.verifiedBy, verifiedBy) || other.verifiedBy == verifiedBy)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&const DeepCollectionEquality().equals(other.translations, _translations)&&const DeepCollectionEquality().equals(other.examples, _examples));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,wordClass,inheritedFromMeaningId,definition,orderIndex,createdBy,const DeepCollectionEquality().hash(_translations),const DeepCollectionEquality().hash(_examples));
+    return Object.hash(runtimeType,id,wordClass,inheritedFromMeaningId,definition,orderIndex,isVerified,needsReview,verifiedAt,verifiedBy,createdBy,const DeepCollectionEquality().hash(_translations),const DeepCollectionEquality().hash(_examples));
 }
 
 @override
 String toString() {
-    return 'MeaningDto(id: $id, wordClass: $wordClass, inheritedFromMeaningId: $inheritedFromMeaningId, definition: $definition, orderIndex: $orderIndex, createdBy: $createdBy, translations: $translations, examples: $examples)';
+    return 'MeaningDto(id: $id, wordClass: $wordClass, inheritedFromMeaningId: $inheritedFromMeaningId, definition: $definition, orderIndex: $orderIndex, isVerified: $isVerified, needsReview: $needsReview, verifiedAt: $verifiedAt, verifiedBy: $verifiedBy, createdBy: $createdBy, translations: $translations, examples: $examples)';
 }
 
 
@@ -1036,11 +1065,11 @@ abstract mixin class _$MeaningDtoCopyWith<$Res> implements $MeaningDtoCopyWith<$
   factory _$MeaningDtoCopyWith(_MeaningDto value, $Res Function(_MeaningDto) _then) = __$MeaningDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'word_class') WordClassDto? wordClass,@JsonKey(name: 'inherited_from_meaning_id') String? inheritedFromMeaningId, String? definition,@JsonKey(name: 'order_index') int orderIndex,@JsonKey(name: 'created_by') WordVerifierDto? createdBy, List<TranslationDto> translations, List<ExampleDto> examples
+ String id,@JsonKey(name: 'word_class') WordClassDto? wordClass,@JsonKey(name: 'inherited_from_meaning_id') String? inheritedFromMeaningId, String? definition,@JsonKey(name: 'order_index') int orderIndex,@JsonKey(name: 'is_verified') bool isVerified,@JsonKey(name: 'needs_review') bool needsReview,@JsonKey(name: 'verified_at') String? verifiedAt,@JsonKey(name: 'verified_by') WordVerifierDto? verifiedBy,@JsonKey(name: 'created_by') WordVerifierDto? createdBy, List<TranslationDto> translations, List<ExampleDto> examples
 });
 
 
-@override $WordClassDtoCopyWith<$Res>? get wordClass;@override $WordVerifierDtoCopyWith<$Res>? get createdBy;
+@override $WordClassDtoCopyWith<$Res>? get wordClass;@override $WordVerifierDtoCopyWith<$Res>? get verifiedBy;@override $WordVerifierDtoCopyWith<$Res>? get createdBy;
 
 }
 /// @nodoc
@@ -1053,14 +1082,18 @@ class __$MeaningDtoCopyWithImpl<$Res>
 
 /// Create a copy of MeaningDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? wordClass = freezed,Object? inheritedFromMeaningId = freezed,Object? definition = freezed,Object? orderIndex = null,Object? createdBy = freezed,Object? translations = null,Object? examples = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? wordClass = freezed,Object? inheritedFromMeaningId = freezed,Object? definition = freezed,Object? orderIndex = null,Object? isVerified = null,Object? needsReview = null,Object? verifiedAt = freezed,Object? verifiedBy = freezed,Object? createdBy = freezed,Object? translations = null,Object? examples = null,}) {
   return _then(_MeaningDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,wordClass: freezed == wordClass ? _self.wordClass : wordClass // ignore: cast_nullable_to_non_nullable
 as WordClassDto?,inheritedFromMeaningId: freezed == inheritedFromMeaningId ? _self.inheritedFromMeaningId : inheritedFromMeaningId // ignore: cast_nullable_to_non_nullable
 as String?,definition: freezed == definition ? _self.definition : definition // ignore: cast_nullable_to_non_nullable
 as String?,orderIndex: null == orderIndex ? _self.orderIndex : orderIndex // ignore: cast_nullable_to_non_nullable
-as int,createdBy: freezed == createdBy ? _self.createdBy : createdBy // ignore: cast_nullable_to_non_nullable
+as int,isVerified: null == isVerified ? _self.isVerified : isVerified // ignore: cast_nullable_to_non_nullable
+as bool,needsReview: null == needsReview ? _self.needsReview : needsReview // ignore: cast_nullable_to_non_nullable
+as bool,verifiedAt: freezed == verifiedAt ? _self.verifiedAt : verifiedAt // ignore: cast_nullable_to_non_nullable
+as String?,verifiedBy: freezed == verifiedBy ? _self.verifiedBy : verifiedBy // ignore: cast_nullable_to_non_nullable
+as WordVerifierDto?,createdBy: freezed == createdBy ? _self.createdBy : createdBy // ignore: cast_nullable_to_non_nullable
 as WordVerifierDto?,translations: null == translations ? _self._translations : translations // ignore: cast_nullable_to_non_nullable
 as List<TranslationDto>,examples: null == examples ? _self._examples : examples // ignore: cast_nullable_to_non_nullable
 as List<ExampleDto>,
@@ -1078,6 +1111,18 @@ $WordClassDtoCopyWith<$Res>? get wordClass {
 
   return $WordClassDtoCopyWith<$Res>(_self.wordClass!, (value) {
     return _then(_self.copyWith(wordClass: value));
+  });
+}/// Create a copy of MeaningDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WordVerifierDtoCopyWith<$Res>? get verifiedBy {
+    if (_self.verifiedBy == null) {
+    return null;
+  }
+
+  return $WordVerifierDtoCopyWith<$Res>(_self.verifiedBy!, (value) {
+    return _then(_self.copyWith(verifiedBy: value));
   });
 }/// Create a copy of MeaningDto
 /// with the given fields replaced by the non-null parameter values.
@@ -3079,6 +3124,294 @@ class __$RelatedWordDtoCopyWithImpl<$Res>
 wordId: null == wordId ? _self.wordId : wordId // ignore: cast_nullable_to_non_nullable
 as String,lemma: null == lemma ? _self.lemma : lemma // ignore: cast_nullable_to_non_nullable
 as String,relationType: null == relationType ? _self.relationType : relationType // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$WordAppearsInKaryaDto {
+
+@JsonKey(name: 'karya_slug') String get karyaSlug;@JsonKey(name: 'karya_title') String get karyaTitle;@JsonKey(name: 'excerpt_id') String get excerptId;@JsonKey(name: 'excerpt_kind') String get excerptKind; int get start; int get end; String get snippet;
+/// Create a copy of WordAppearsInKaryaDto
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WordAppearsInKaryaDtoCopyWith<WordAppearsInKaryaDto> get copyWith => _$WordAppearsInKaryaDtoCopyWithImpl<WordAppearsInKaryaDto>(this as WordAppearsInKaryaDto, _$identity);
+
+  /// Serializes this WordAppearsInKaryaDto to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as WordAppearsInKaryaDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WordAppearsInKaryaDto&&(identical(other.karyaSlug, _this.karyaSlug) || other.karyaSlug == _this.karyaSlug)&&(identical(other.karyaTitle, _this.karyaTitle) || other.karyaTitle == _this.karyaTitle)&&(identical(other.excerptId, _this.excerptId) || other.excerptId == _this.excerptId)&&(identical(other.excerptKind, _this.excerptKind) || other.excerptKind == _this.excerptKind)&&(identical(other.start, _this.start) || other.start == _this.start)&&(identical(other.end, _this.end) || other.end == _this.end)&&(identical(other.snippet, _this.snippet) || other.snippet == _this.snippet));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as WordAppearsInKaryaDto;
+  return Object.hash(runtimeType,_this.karyaSlug,_this.karyaTitle,_this.excerptId,_this.excerptKind,_this.start,_this.end,_this.snippet);
+}
+
+@override
+String toString() {
+  final _this = this as WordAppearsInKaryaDto;
+  return 'WordAppearsInKaryaDto(karyaSlug: ${_this.karyaSlug}, karyaTitle: ${_this.karyaTitle}, excerptId: ${_this.excerptId}, excerptKind: ${_this.excerptKind}, start: ${_this.start}, end: ${_this.end}, snippet: ${_this.snippet})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $WordAppearsInKaryaDtoCopyWith<$Res>  {
+  factory $WordAppearsInKaryaDtoCopyWith(WordAppearsInKaryaDto value, $Res Function(WordAppearsInKaryaDto) _then) = _$WordAppearsInKaryaDtoCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: 'karya_slug') String karyaSlug,@JsonKey(name: 'karya_title') String karyaTitle,@JsonKey(name: 'excerpt_id') String excerptId,@JsonKey(name: 'excerpt_kind') String excerptKind, int start, int end, String snippet
+});
+
+
+
+
+}
+/// @nodoc
+class _$WordAppearsInKaryaDtoCopyWithImpl<$Res>
+    implements $WordAppearsInKaryaDtoCopyWith<$Res> {
+  _$WordAppearsInKaryaDtoCopyWithImpl(this._self, this._then);
+
+  final WordAppearsInKaryaDto _self;
+  final $Res Function(WordAppearsInKaryaDto) _then;
+
+/// Create a copy of WordAppearsInKaryaDto
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? karyaSlug = null,Object? karyaTitle = null,Object? excerptId = null,Object? excerptKind = null,Object? start = null,Object? end = null,Object? snippet = null,}) {
+  return _then(WordAppearsInKaryaDto(
+karyaSlug: null == karyaSlug ? _self.karyaSlug : karyaSlug // ignore: cast_nullable_to_non_nullable
+as String,karyaTitle: null == karyaTitle ? _self.karyaTitle : karyaTitle // ignore: cast_nullable_to_non_nullable
+as String,excerptId: null == excerptId ? _self.excerptId : excerptId // ignore: cast_nullable_to_non_nullable
+as String,excerptKind: null == excerptKind ? _self.excerptKind : excerptKind // ignore: cast_nullable_to_non_nullable
+as String,start: null == start ? _self.start : start // ignore: cast_nullable_to_non_nullable
+as int,end: null == end ? _self.end : end // ignore: cast_nullable_to_non_nullable
+as int,snippet: null == snippet ? _self.snippet : snippet // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [WordAppearsInKaryaDto].
+extension WordAppearsInKaryaDtoPatterns on WordAppearsInKaryaDto {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WordAppearsInKaryaDto value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WordAppearsInKaryaDto() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WordAppearsInKaryaDto value)  $default,){
+final _that = this;
+switch (_that) {
+case _WordAppearsInKaryaDto():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WordAppearsInKaryaDto value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WordAppearsInKaryaDto() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'karya_slug')  String karyaSlug, @JsonKey(name: 'karya_title')  String karyaTitle, @JsonKey(name: 'excerpt_id')  String excerptId, @JsonKey(name: 'excerpt_kind')  String excerptKind,  int start,  int end,  String snippet)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WordAppearsInKaryaDto() when $default != null:
+return $default(_that.karyaSlug,_that.karyaTitle,_that.excerptId,_that.excerptKind,_that.start,_that.end,_that.snippet);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'karya_slug')  String karyaSlug, @JsonKey(name: 'karya_title')  String karyaTitle, @JsonKey(name: 'excerpt_id')  String excerptId, @JsonKey(name: 'excerpt_kind')  String excerptKind,  int start,  int end,  String snippet)  $default,) {final _that = this;
+switch (_that) {
+case _WordAppearsInKaryaDto():
+return $default(_that.karyaSlug,_that.karyaTitle,_that.excerptId,_that.excerptKind,_that.start,_that.end,_that.snippet);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'karya_slug')  String karyaSlug, @JsonKey(name: 'karya_title')  String karyaTitle, @JsonKey(name: 'excerpt_id')  String excerptId, @JsonKey(name: 'excerpt_kind')  String excerptKind,  int start,  int end,  String snippet)?  $default,) {final _that = this;
+switch (_that) {
+case _WordAppearsInKaryaDto() when $default != null:
+return $default(_that.karyaSlug,_that.karyaTitle,_that.excerptId,_that.excerptKind,_that.start,_that.end,_that.snippet);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _WordAppearsInKaryaDto implements WordAppearsInKaryaDto {
+  const _WordAppearsInKaryaDto({@JsonKey(name: 'karya_slug') required this.karyaSlug, @JsonKey(name: 'karya_title') required this.karyaTitle, @JsonKey(name: 'excerpt_id') required this.excerptId, @JsonKey(name: 'excerpt_kind') required this.excerptKind, required this.start, required this.end, required this.snippet});
+  factory _WordAppearsInKaryaDto.fromJson(Map<String, dynamic> json) => _$WordAppearsInKaryaDtoFromJson(json);
+
+@override@JsonKey(name: 'karya_slug') final  String karyaSlug;
+@override@JsonKey(name: 'karya_title') final  String karyaTitle;
+@override@JsonKey(name: 'excerpt_id') final  String excerptId;
+@override@JsonKey(name: 'excerpt_kind') final  String excerptKind;
+@override final  int start;
+@override final  int end;
+@override final  String snippet;
+
+/// Create a copy of WordAppearsInKaryaDto
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WordAppearsInKaryaDtoCopyWith<_WordAppearsInKaryaDto> get copyWith => __$WordAppearsInKaryaDtoCopyWithImpl<_WordAppearsInKaryaDto>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$WordAppearsInKaryaDtoToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WordAppearsInKaryaDto&&(identical(other.karyaSlug, karyaSlug) || other.karyaSlug == karyaSlug)&&(identical(other.karyaTitle, karyaTitle) || other.karyaTitle == karyaTitle)&&(identical(other.excerptId, excerptId) || other.excerptId == excerptId)&&(identical(other.excerptKind, excerptKind) || other.excerptKind == excerptKind)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.snippet, snippet) || other.snippet == snippet));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,karyaSlug,karyaTitle,excerptId,excerptKind,start,end,snippet);
+}
+
+@override
+String toString() {
+    return 'WordAppearsInKaryaDto(karyaSlug: $karyaSlug, karyaTitle: $karyaTitle, excerptId: $excerptId, excerptKind: $excerptKind, start: $start, end: $end, snippet: $snippet)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WordAppearsInKaryaDtoCopyWith<$Res> implements $WordAppearsInKaryaDtoCopyWith<$Res> {
+  factory _$WordAppearsInKaryaDtoCopyWith(_WordAppearsInKaryaDto value, $Res Function(_WordAppearsInKaryaDto) _then) = __$WordAppearsInKaryaDtoCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: 'karya_slug') String karyaSlug,@JsonKey(name: 'karya_title') String karyaTitle,@JsonKey(name: 'excerpt_id') String excerptId,@JsonKey(name: 'excerpt_kind') String excerptKind, int start, int end, String snippet
+});
+
+
+
+
+}
+/// @nodoc
+class __$WordAppearsInKaryaDtoCopyWithImpl<$Res>
+    implements _$WordAppearsInKaryaDtoCopyWith<$Res> {
+  __$WordAppearsInKaryaDtoCopyWithImpl(this._self, this._then);
+
+  final _WordAppearsInKaryaDto _self;
+  final $Res Function(_WordAppearsInKaryaDto) _then;
+
+/// Create a copy of WordAppearsInKaryaDto
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? karyaSlug = null,Object? karyaTitle = null,Object? excerptId = null,Object? excerptKind = null,Object? start = null,Object? end = null,Object? snippet = null,}) {
+  return _then(_WordAppearsInKaryaDto(
+karyaSlug: null == karyaSlug ? _self.karyaSlug : karyaSlug // ignore: cast_nullable_to_non_nullable
+as String,karyaTitle: null == karyaTitle ? _self.karyaTitle : karyaTitle // ignore: cast_nullable_to_non_nullable
+as String,excerptId: null == excerptId ? _self.excerptId : excerptId // ignore: cast_nullable_to_non_nullable
+as String,excerptKind: null == excerptKind ? _self.excerptKind : excerptKind // ignore: cast_nullable_to_non_nullable
+as String,start: null == start ? _self.start : start // ignore: cast_nullable_to_non_nullable
+as int,end: null == end ? _self.end : end // ignore: cast_nullable_to_non_nullable
+as int,snippet: null == snippet ? _self.snippet : snippet // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

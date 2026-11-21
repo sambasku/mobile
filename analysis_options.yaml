@@ -20,6 +20,8 @@ analyzer:
     - macos/**
     - linux/**
     - '**/*.g.dart'
+    # Generated gen-l10n (header generated, jangan diedit manual)
+    - 'lib/l10n/app_localizations*.dart'
 
 linter:
   # The lint rules applied in this file can be used in the `rules` section

@@ -54,7 +54,7 @@ final class WordCompleteNotifierProvider
 }
 
 String _$wordCompleteNotifierHash() =>
-    r'70c7ec4c88d4745a753aeb9828a6896f21d44a10';
+    r'753026bee4b03a1cc8a81b1daddaaac5242bae8d';
 
 /// State pemilih kata untuk entri "Lengkapi kata" di Area Verifikator.
 ///

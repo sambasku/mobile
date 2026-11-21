@@ -14,5 +14,9 @@ CheckUsernameAvailabilityUseCase checkUsernameAvailabilityUseCase(Ref ref) =>
     CheckUsernameAvailabilityUseCase(ref.watch(editProfileRepositoryProvider));
 
 @riverpod
+GetUsernameHistoryUseCase getUsernameHistoryUseCase(Ref ref) =>
+    GetUsernameHistoryUseCase(ref.watch(editProfileRepositoryProvider));
+
+@riverpod
 UpdateMyProfileUseCase updateMyProfileUseCase(Ref ref) =>
     UpdateMyProfileUseCase(ref.watch(editProfileRepositoryProvider));

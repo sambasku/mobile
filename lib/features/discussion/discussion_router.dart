@@ -2,10 +2,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
 import '../../core/router/route_definer.dart';
+import '../chat/presentation/pages/chat_page.dart';
 import 'presentation/pages/create_discussion_page.dart';
-import 'presentation/pages/my_discussions_page.dart';
-import 'presentation/pages/discussion_detail_page.dart';
 import 'presentation/pages/discussion_feed_page.dart';
+import 'presentation/pages/discussion_hub_shell.dart';
+import 'presentation/pages/discussion_detail_page.dart';
+import 'presentation/pages/my_discussions_page.dart';
 
 class DiscussionRouter {
   DiscussionRouter._();
@@ -13,6 +15,11 @@ class DiscussionRouter {
   static const feed = RouteDefiner(
     path: '/discussions',
     name: 'DiscussionRouter.feed',
+  );
+
+  static const chat = RouteDefiner(
+    path: '/discussions/chat',
+    name: 'DiscussionRouter.chat',
   );
 
   static const create = RouteDefiner(
@@ -32,12 +39,32 @@ class DiscussionRouter {
 
   static String detailPath(String id) => '/discussions/$id';
 
-  static final List<GoRoute> routes = [
-    GoRoute(
-      path: feed.path,
-      name: feed.name,
+  /// Hub (feed + chat) = StatefulShell; create/mine/detail = overlay root.
+  static final List<RouteBase> routes = [
+    StatefulShellRoute.indexedStack(
       parentNavigatorKey: AppRouter.rootNavigatorKey,
-      builder: (context, state) => const DiscussionFeedPage(),
+      builder: (context, state, navigationShell) =>
+          DiscussionHubShell(navigationShell: navigationShell),
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: feed.path,
+              name: feed.name,
+              builder: (context, state) => const DiscussionRoomsPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: chat.path,
+              name: chat.name,
+              builder: (context, state) => const ChatPage(embeddedInHub: true),
+            ),
+          ],
+        ),
+      ],
     ),
     GoRoute(
       path: create.path,

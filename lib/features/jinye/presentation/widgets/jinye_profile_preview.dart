@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart' show showModalBottomSheet;
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
@@ -5,15 +6,139 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../core/utils/display_image_url.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
-import '../../../../shared/widgets/thread_audio_player.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../data/jinye_providers.dart';
 import '../../domain/jinye_models.dart';
 import '../../jinye_router.dart';
 
+String _jinyePreviewLabel(JinyeItem item, AppLocalizations l10n) {
+  final body = item.body.trim();
+  if (body.isNotEmpty) return jinyeProfilePreviewText(body);
+  if (item.hasAudio) return l10n.jinyePreviewVoiceOnly;
+  if (item.images.isNotEmpty) return l10n.jinyePreviewPhotoOnly;
+  return l10n.jinyePreviewEmpty;
+}
+
+/// Label kecil "Jiku" di atas konten Jinye di profil.
+class _JikuLabel extends StatelessWidget {
+  const _JikuLabel();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Text(
+      AppLocalizations.of(context).jinyeProfileJikuLabel,
+      style: theme.typography.body.xs.copyWith(
+        color: theme.colors.mutedForeground,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.2,
+        height: 1.1,
+      ),
+    );
+  }
+}
+
+/// Baris status Jinye di profil: teks kecil, tanpa bubble overlay.
+///
+/// Pin profil bila ada, else Jinye published terbaru. Kosong =
+/// [emptyChild] (mis. CTA buat Jinye di tab Profil) atau tidak dirender.
+class JinyeProfileStatusLine extends ConsumerWidget {
+  const JinyeProfileStatusLine({
+    super.key,
+    required this.username,
+    this.emptyChild,
+  });
+
+  final String username;
+
+  /// Ditampilkan bila user belum punya Jinye published.
+  final Widget? emptyChild;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final async = ref.watch(latestJinyeByUsernameProvider(username));
+    final theme = context.theme;
+
+    return async.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, _) => _wrapWithJiku(emptyChild),
+      data: (item) {
+        if (item == null) return _wrapWithJiku(emptyChild);
+        final preview = _jinyePreviewLabel(item, l10n);
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _JikuLabel(),
+              const Gap(4),
+              FTappable(
+                onPress: () => context.push(JinyeRouter.detailPath(item.id)),
+                child: Semantics(
+                  button: true,
+                  label: l10n.jinyeProfilePreviewSemantics,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 1),
+                        child: Icon(
+                          item.isPinned
+                              ? FLucideIcons.pin
+                              : item.hasAudio
+                              ? FLucideIcons.mic
+                              : item.images.isNotEmpty
+                              ? FLucideIcons.image
+                              : FLucideIcons.quote,
+                          size: 12,
+                          color: item.isPinned
+                              ? theme.colors.primary
+                              : theme.colors.mutedForeground,
+                        ),
+                      ),
+                      const Gap(6),
+                      Expanded(
+                        child: Text(
+                          preview,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.typography.body.xs.copyWith(
+                            color: theme.colors.mutedForeground,
+                            fontStyle: FontStyle.italic,
+                            height: 1.3,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _wrapWithJiku(Widget? child) {
+    if (child == null) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _JikuLabel(),
+        const Gap(4),
+        child,
+      ],
+    );
+  }
+}
+
 /// Bubble chat preview Jinye di kanan atas avatar+border (max 32 char / label media).
+///
+/// Dipasang lewat [ProfileIdentityHeader.avatarOverlay] di profil publik.
+/// Tab Profil pribadi pakai [JinyeProfileStatusLine] + CTA quote, bukan bubble.
 class JinyeProfilePreview extends ConsumerWidget {
   const JinyeProfilePreview({
     super.key,
@@ -43,49 +168,71 @@ class JinyeProfilePreview extends ConsumerWidget {
           return _ChatBubble(
             onTap: () => context.push(JinyeRouter.create.path),
             semanticsLabel: l10n.jinyeCreateTitle,
-            child: Icon(
-              FLucideIcons.penLine,
-              size: 14,
-              color: theme.colors.primary,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const _JikuLabel(),
+                const Gap(3),
+                Icon(
+                  FLucideIcons.penLine,
+                  size: 14,
+                  color: theme.colors.primary,
+                ),
+              ],
             ),
           );
         }
 
-        final preview = _previewLabel(item, l10n);
+        final preview = _jinyePreviewLabel(item, l10n);
         return _ChatBubble(
-          onTap: () => _openSheet(context, item),
+          onTap: () {
+            if (isOwnProfile) {
+              _openOwnerSheet(context, ref, item);
+            } else {
+              context.push(JinyeRouter.detailPath(item.id));
+            }
+          },
           semanticsLabel: l10n.jinyeProfilePreviewSemantics,
-          child: Row(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 1),
-                child: Icon(
-                  item.isPinned
-                      ? FLucideIcons.pin
-                      : item.hasAudio
-                      ? FLucideIcons.mic
-                      : item.images.isNotEmpty
-                      ? FLucideIcons.image
-                      : FLucideIcons.messageCircle,
-                  size: 12,
-                  color: item.isPinned
-                      ? theme.colors.primary
-                      : theme.colors.mutedForeground,
-                ),
-              ),
-              const Gap(5),
-              Flexible(
-                child: Text(
-                  preview,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.typography.body.sm.copyWith(
-                    fontSize: 12,
-                    height: 1.25,
+              const _JikuLabel(),
+              const Gap(3),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 1),
+                    child: Icon(
+                      item.isPinned
+                          ? FLucideIcons.pin
+                          : item.hasAudio
+                          ? FLucideIcons.mic
+                          : item.images.isNotEmpty
+                          ? FLucideIcons.image
+                          : FLucideIcons.messageCircle,
+                      size: 12,
+                      color: item.isPinned
+                          ? theme.colors.primary
+                          : theme.colors.mutedForeground,
+                    ),
                   ),
-                ),
+                  const Gap(5),
+                  Flexible(
+                    child: Text(
+                      preview,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.body.sm.copyWith(
+                        fontSize: 12,
+                        height: 1.25,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -94,26 +241,25 @@ class JinyeProfilePreview extends ConsumerWidget {
     );
   }
 
-  String _previewLabel(JinyeItem item, AppLocalizations l10n) {
-    final body = item.body.trim();
-    if (body.isNotEmpty) return jinyeProfilePreviewText(body);
-    if (item.hasAudio) return l10n.jinyePreviewVoiceOnly;
-    if (item.images.isNotEmpty) return l10n.jinyePreviewPhotoOnly;
-    return l10n.jinyePreviewEmpty;
-  }
-
-  Future<void> _openSheet(BuildContext context, JinyeItem item) async {
+  /// Profil sendiri: sheet aksi (buat baru / kosongkan). Profil orang: tidak dipakai.
+  Future<void> _openOwnerSheet(
+    BuildContext context,
+    WidgetRef ref,
+    JinyeItem item,
+  ) async {
     final l10n = AppLocalizations.of(context);
-    final path = await showModalBottomSheet<String>(
+    var handled = false;
+    final action = await showModalBottomSheet<String>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
       builder: (sheetContext) {
-        final theme = sheetContext.theme;
-        final displayable = item.images
-            .where((i) => i.displaySource != null)
-            .take(4)
-            .toList();
+        void go(String value) {
+          if (handled) return;
+          handled = true;
+          Navigator.of(sheetContext).pop(value);
+        }
+
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.only(
@@ -122,95 +268,101 @@ class JinyeProfilePreview extends ConsumerWidget {
               top: 12,
               bottom: 12 + MediaQuery.viewInsetsOf(sheetContext).bottom,
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    item.displayName?.trim().isNotEmpty == true
-                        ? item.displayName!
-                        : (item.username ?? '-'),
-                    style: theme.typography.body.md.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Gap(8),
-                  if (item.body.trim().isNotEmpty)
-                    Text(item.body, style: theme.typography.body.md)
-                  else if (!item.hasAudio && displayable.isEmpty)
-                    Text(
-                      item.images.isNotEmpty
-                          ? l10n.jinyePhotosPendingReview
-                          : l10n.jinyePreviewEmpty,
-                      style: theme.typography.body.md,
-                    ),
-                  if (item.hasAudio) ...[
-                    const Gap(12),
-                    ThreadAudioPlayer(
-                      url: item.audio!.url,
-                      audioId: 'jinye-sheet:${item.id}',
-                      durationMs: item.audio!.durationMs,
-                    ),
-                  ],
-                  if (displayable.isNotEmpty) ...[
-                    const Gap(12),
-                    SizedBox(
-                      height: 160,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: displayable.length,
-                        separatorBuilder: (_, _) => const Gap(8),
-                        itemBuilder: (context, index) {
-                          final src = displayable[index].displaySource!;
-                          final url =
-                              displayImageUrl(src, width: 400) ?? src;
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: CachedNetworkImageWithFallback(
-                                imageUrl: url,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ] else if (item.images.isNotEmpty) ...[
-                    const Gap(8),
-                    Text(
-                      l10n.jinyePhotosPendingReview,
-                      style: theme.typography.body.sm.copyWith(
-                        color: theme.colors.mutedForeground,
-                      ),
-                    ),
-                  ],
-                  const Gap(16),
-                  FTileGroup(
-                    children: [
-                      FTile(
-                        title: Text(l10n.jinyeSheetReply),
-                        onPress: () => Navigator.of(sheetContext)
-                            .pop(JinyeRouter.detailPath(item.id)),
-                      ),
-                      FTile(
-                        title: Text(l10n.jinyeSheetViewDiscussion),
-                        onPress: () => Navigator.of(sheetContext)
-                            .pop(JinyeRouter.detailPath(item.id)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            child: FTileGroup(
+              children: [
+                FTile(
+                  prefix: const Icon(FLucideIcons.penLine, size: 18),
+                  title: Text(l10n.jinyeSheetCreateNew),
+                  onPress: () => go('create'),
+                ),
+                FTile(
+                  prefix: const Icon(FLucideIcons.archive, size: 18),
+                  title: Text(l10n.jinyeSheetClear),
+                  onPress: () => go('clear'),
+                ),
+                FTile(
+                  prefix: const Icon(FLucideIcons.x, size: 18),
+                  title: Text(l10n.commonCancel),
+                  onPress: () {
+                    if (handled) return;
+                    handled = true;
+                    Navigator.of(sheetContext).pop();
+                  },
+                ),
+              ],
             ),
           ),
         );
       },
     );
-    if (path != null && context.mounted) {
-      context.push(path);
+    if (!context.mounted || action == null) return;
+    if (action == 'create') {
+      context.push(JinyeRouter.create.path);
+      return;
+    }
+    if (action == 'clear') {
+      await _confirmAndClearJinye(context, ref, item);
+    }
+  }
+
+  Future<void> _confirmAndClearJinye(
+    BuildContext context,
+    WidgetRef ref,
+    JinyeItem item,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final ok = await showModalBottomSheet<bool>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      builder: (sheetContext) => Padding(
+        padding: MediaQuery.of(sheetContext).viewInsets,
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FTileGroup(
+                children: [
+                  FTile(
+                    title: Text(l10n.jinyeSheetClearConfirmTitle),
+                    subtitle: Text(l10n.jinyeSheetClearConfirmBody),
+                  ),
+                  FTile(
+                    title: Text(l10n.jinyeSheetClearConfirmAction),
+                    onPress: () => Navigator.pop(sheetContext, true),
+                  ),
+                  FTile(
+                    title: Text(l10n.commonCancel),
+                    onPress: () => Navigator.pop(sheetContext, false),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (ok != true || !context.mounted) return;
+
+    try {
+      await ref.read(jinyeRepositoryProvider).archive(item.id);
+      invalidateJinyeProfileSurfaces(ref, item.username ?? username);
+      if (!context.mounted) return;
+      showFToast(context: context, title: Text(l10n.jinyeClearedSuccess));
+    } on DioException catch (e) {
+      if (!context.mounted) return;
+      final msg = e.response?.data is Map
+          ? (e.response!.data as Map)['message']
+          : null;
+      await showAppErrorSheet(
+        context,
+        message: msg is String && msg.isNotEmpty
+            ? msg
+            : l10n.jinyeOwnerActionFailed,
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      await showAppErrorSheet(context, message: l10n.jinyeOwnerActionFailed);
     }
   }
 }

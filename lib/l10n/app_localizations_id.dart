@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -46,6 +47,31 @@ class AppLocalizationsId extends AppLocalizations {
   String get onboardingLater => 'Nanti';
 
   @override
+  String get onboardingSpeakerTitle => 'Kamu penutur Sambas?';
+
+  @override
+  String get onboardingSpeakerBody =>
+      'Biar sesama pengguna tahu: kamu penutur asli atau sedang belajar bahasa Sambas.';
+
+  @override
+  String get onboardingSpeakerNative => 'Penutur asli';
+
+  @override
+  String get onboardingSpeakerLearner => 'Sedang belajar';
+
+  @override
+  String get profileSpeakerNative => 'Penutur Sambas';
+
+  @override
+  String get profileSpeakerLearner => 'Belajar Sambas';
+
+  @override
+  String get profileSpeakerLabel => 'Status bahasa';
+
+  @override
+  String get profileSpeakerUnset => 'Belum dipilih';
+
+  @override
   String get settingsTitle => 'Pengaturan';
 
   @override
@@ -84,6 +110,731 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get navExplore => 'Eksplorasi';
+
+  @override
+  String get navBaleho => 'Baleho';
+
+  @override
+  String get balehoHeaderTitle => 'Baleho SambasKu';
+
+  @override
+  String get balehoPromoSlide => 'Promosi';
+
+  @override
+  String get balehoInternalSlide => 'Di aplikasi';
+
+  @override
+  String get balehoFooterPromoNote =>
+      'Area Media Promosi · Ruang publikasi dan promosi SambasKu.';
+
+  @override
+  String get balehoSlidePromoCaption => 'Ingin tampil di sini?';
+
+  @override
+  String get balehoSlidePromoBody =>
+      'Jadikan SambasKu ruang untuk memperkenalkan usaha, produk, acara, dan informasi kamu kepada masyarakat.';
+
+  @override
+  String balehoPricingUnitLine(String amount) {
+    return 'Tarif: 1x1 / hari / slide = Rp $amount';
+  }
+
+  @override
+  String balehoQuoteEstimate(String amount, int cells, int days, int slides) {
+    return 'Estimasi: Rp $amount ($cells sel x $days hari x $slides slide)';
+  }
+
+  @override
+  String get balehoQuoteEstimateLoading => 'Menghitung estimasi…';
+
+  @override
+  String get balehoQuoteSectionTitle => 'Estimasi biaya';
+
+  @override
+  String get balehoQuoteUnitLabel => 'Tarif dasar';
+
+  @override
+  String balehoQuoteUnitValue(String amount) {
+    return 'Rp $amount / sel / hari / slide';
+  }
+
+  @override
+  String get balehoQuoteSizeLabel => 'Ukuran';
+
+  @override
+  String balehoQuoteSizeValue(String size, int cells) {
+    return '$size ($cells sel)';
+  }
+
+  @override
+  String get balehoQuoteDaysRowLabel => 'Durasi';
+
+  @override
+  String balehoQuoteDaysRowValue(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String get balehoQuoteSlidesLabel => 'Slide';
+
+  @override
+  String balehoQuoteSlidesValue(int slides) {
+    return '$slides slide';
+  }
+
+  @override
+  String get balehoQuoteTotalLabel => 'Total estimasi';
+
+  @override
+  String balehoQuoteTotalValue(String amount) {
+    return 'Rp $amount';
+  }
+
+  @override
+  String get balehoQuoteFormulaHint =>
+      'Hitungan: jumlah sel x hari x tarif x slide';
+
+  @override
+  String balehoQuoteFooterTotal(String amount) {
+    return 'Estimasi Rp $amount';
+  }
+
+  @override
+  String balehoQuoteFooterBreakdown(int cells, int days, int slides) {
+    return '$cells sel x $days hari x $slides slide';
+  }
+
+  @override
+  String get balehoSlidePromoInfoSemantics => 'Info ingin tampil di sini';
+
+  @override
+  String get balehoSlideInternalCaption => 'Ruang komunitas';
+
+  @override
+  String get balehoWeeklyLeaderboardTitle => 'Peringkat Mingguan';
+
+  @override
+  String get balehoWeeklyLeaderboardCta =>
+      'Siapa kontributor teratas minggu ini?';
+
+  @override
+  String get balehoWeeklyLeaderboardComingSoonBody =>
+      'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.';
+
+  @override
+  String get balehoLeaderboardTabCurrent => 'Minggu ini';
+
+  @override
+  String get balehoLeaderboardTabHistory => 'Riwayat';
+
+  @override
+  String get balehoLeaderboardPickWeek => 'Pilih minggu';
+
+  @override
+  String balehoLeaderboardWeekLabel(String weekId) {
+    return 'Minggu $weekId';
+  }
+
+  @override
+  String balehoLeaderboardResetsAt(String datetime) {
+    return 'Reset $datetime';
+  }
+
+  @override
+  String get balehoLeaderboardResetsSoon => 'Reset sebentar lagi';
+
+  @override
+  String balehoLeaderboardResetsInDaysHours(int days, int hours) {
+    return 'Reset dalam $days hari $hours jam';
+  }
+
+  @override
+  String balehoLeaderboardResetsInHoursMinutes(int hours, int minutes) {
+    return 'Reset dalam $hours jam $minutes menit';
+  }
+
+  @override
+  String balehoLeaderboardResetsInMinutes(int minutes) {
+    return 'Reset dalam $minutes menit';
+  }
+
+  @override
+  String balehoLeaderboardRank(int rank) {
+    return '#$rank';
+  }
+
+  @override
+  String balehoLeaderboardScoreCombined(int score) {
+    return '$score poin';
+  }
+
+  @override
+  String balehoLeaderboardScoreBreakdown(int contrib, int verif) {
+    return '+$contrib kontrib · +$verif verif';
+  }
+
+  @override
+  String get balehoLeaderboardVerifierBadge => 'Verifikator';
+
+  @override
+  String get balehoLeaderboardEmpty => 'Belum ada peringkat minggu ini.';
+
+  @override
+  String get balehoLeaderboardLastWeekTitle => 'Peringkat minggu lalu';
+
+  @override
+  String get balehoLeaderboardLastWeekHint =>
+      'Minggu ini masih jalan. Di bawah ini peringkat minggu sebelumnya.';
+
+  @override
+  String get balehoLeaderboardOpenWeek => 'Buka detail minggu';
+
+  @override
+  String get balehoLeaderboardHistoryEmpty =>
+      'Data peringkat minggu ini belum tersimpan.';
+
+  @override
+  String get balehoLeaderboardLoadFailed => 'Gagal memuat peringkat.';
+
+  @override
+  String get balehoLeaderboardHistoryNoWeeks =>
+      'Minggu ini masih berjalan, jadi riwayatnya masih kosong. Kembali lagi Senin depan ya.';
+
+  @override
+  String get balehoLeaderboardScoreLabel => 'Skor';
+
+  @override
+  String get balehoLeaderboardPodiumTitle => 'Podium minggu ini';
+
+  @override
+  String balehoLeaderboardPodiumPlace(int place) {
+    return 'Peringkat $place';
+  }
+
+  @override
+  String get balehoLeaderboardHistoryWeekHint =>
+      'Pilih minggu untuk lihat peringkatnya';
+
+  @override
+  String get balehoLeaderboardHistoryLoadMore => 'Lihat minggu sebelumnya';
+
+  @override
+  String get balehoSlotAvailable => 'Tersedia';
+
+  @override
+  String get balehoSlotHeld => 'Dipesan';
+
+  @override
+  String get balehoSlotHeldInfoTitle => 'Area sedang dipesan';
+
+  @override
+  String get balehoSlotHeldInfoBody =>
+      'Area ini sedang dipesan dan sedang dalam pengecekan. Pilih area lain yang masih kosong ya.';
+
+  @override
+  String get balehoBoardFullTitle => 'Area Baleho penuh';
+
+  @override
+  String get balehoBoardFullBody =>
+      'Semua area sudah terisi. Coba lagi nanti jika ada yang kosong ya.';
+
+  @override
+  String get balehoPendingBadge => 'Menunggu';
+
+  @override
+  String get balehoPlacementSheetTitle => 'Konten Baleho';
+
+  @override
+  String get balehoPlacementOpen => 'Buka';
+
+  @override
+  String get balehoPlacementPendingHint =>
+      'Pesananmu masih menunggu pengecekan. Belum bisa dibuka publik.';
+
+  @override
+  String get balehoContinueBook => 'Lanjut pesan';
+
+  @override
+  String get balehoCancelSelection => 'Batalkan';
+
+  @override
+  String get balehoEnterPickMode => 'Mulai Promosi';
+
+  @override
+  String get balehoSelectionHint => 'Ketuk atau seret sel kosong';
+
+  @override
+  String get balehoSizePickLabel => 'Ukuran area';
+
+  @override
+  String balehoSizeChip(int w, int h) {
+    return '${w}x$h';
+  }
+
+  @override
+  String balehoSelectionSummary(String size, int col, int row) {
+    return '$size · kolom $col, baris $row';
+  }
+
+  @override
+  String get balehoBookConfirmTitle => 'Pesanan Baleho';
+
+  @override
+  String balehoBookConfirmSubtitle(
+    String size,
+    String position,
+    String referral,
+  ) {
+    return 'Ukuran $size di posisi $position. Referral: $referral';
+  }
+
+  @override
+  String get balehoBookConfirmBody =>
+      'Form unggah media dan aksi frame menyusul. Pesanan masuk antrean moderasi dulu ya.';
+
+  @override
+  String get balehoBookClose => 'Tutup';
+
+  @override
+  String get balehoLoadFailed => 'Gagal memuat papan Baleho';
+
+  @override
+  String get balehoBookPageTitle => 'Pesan area';
+
+  @override
+  String balehoSlotSummary(String size, int col, int row) {
+    return 'Ukuran $size · kolom $col, baris $row';
+  }
+
+  @override
+  String get balehoReferralLabel => 'Kode teman (opsional)';
+
+  @override
+  String get balehoReferralHint => 'Username yang mengajakmu';
+
+  @override
+  String get balehoDaysLabel => 'Berapa hari tayang?';
+
+  @override
+  String get balehoDaysHint => '1 sampai 30';
+
+  @override
+  String balehoDaysChip(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String get balehoDaysUnit => 'hari';
+
+  @override
+  String get balehoContentSection => 'Baleho';
+
+  @override
+  String balehoFrameLabel(int n) {
+    return 'Slide $n';
+  }
+
+  @override
+  String get balehoAddFrame => 'Tambah slide';
+
+  @override
+  String get balehoRemoveFrame => 'Hapus';
+
+  @override
+  String get balehoMediaKindLabel => 'Jenis tampilan';
+
+  @override
+  String get balehoMediaTextCta => 'Teks + tombol';
+
+  @override
+  String get balehoMediaImage => 'Gambar';
+
+  @override
+  String get balehoMediaVideo => 'Video';
+
+  @override
+  String get balehoMediaUrlLabel => 'Alamat media';
+
+  @override
+  String get balehoMediaUrlHint => 'https://…';
+
+  @override
+  String get balehoUploadImage => 'Pilih gambar';
+
+  @override
+  String get balehoReplaceImage => 'Ganti gambar';
+
+  @override
+  String get balehoUploading => 'Mengunggah…';
+
+  @override
+  String get balehoUploadOk => 'Gambar terunggah';
+
+  @override
+  String get balehoTitleLabel => 'Judul (opsional)';
+
+  @override
+  String get balehoBodyLabel => 'Teks body (opsional)';
+
+  @override
+  String get balehoBodyHint =>
+      'Maksimal 320 karakter. Tampil di bawah judul di sheet.';
+
+  @override
+  String get balehoCtaLabel => 'Teks tombol (opsional)';
+
+  @override
+  String get balehoActionKindLabel => 'Saat diketuk buka';
+
+  @override
+  String get balehoActionInApp => 'Halaman di SambasKu';
+
+  @override
+  String get balehoActionExternal => 'Website luar';
+
+  @override
+  String get balehoActionPathLabel => 'Tujuan di app';
+
+  @override
+  String get balehoActionPathHint => '/usaha/nama-slug atau /explore';
+
+  @override
+  String get balehoActionUrlLabel => 'Alamat website';
+
+  @override
+  String get balehoActionUrlHint => 'https://…';
+
+  @override
+  String get balehoDeeplinkPickerTitle => 'Pilih halaman tujuan';
+
+  @override
+  String get balehoDeeplinkPickerSubtitle =>
+      'Pilih dulu, lalu boleh dilengkapi slug di kolom bawah.';
+
+  @override
+  String get balehoDeeplinkPickCta => 'Pilih halaman';
+
+  @override
+  String get balehoDeeplinkEmpty => 'Belum dipilih';
+
+  @override
+  String get balehoEntitySearchUsahaTitle => 'Cari usaha';
+
+  @override
+  String get balehoEntitySearchAcaraTitle => 'Cari acara';
+
+  @override
+  String get balehoEntitySearchWisataTitle => 'Cari wisata';
+
+  @override
+  String get balehoEntitySearchKaryaTitle => 'Cari karya';
+
+  @override
+  String get balehoEntitySearchHint => 'Ketik nama…';
+
+  @override
+  String get balehoEntitySearchPrompt =>
+      'Ketik minimal 2 huruf untuk mencari, atau biarkan kosong untuk melihat daftar.';
+
+  @override
+  String get balehoEntitySearchEmpty => 'Tidak ketemu. Coba kata lain ya.';
+
+  @override
+  String get balehoEntitySearchFailed => 'Gagal memuat daftar. Coba lagi ya.';
+
+  @override
+  String get balehoDeeplinkPickUsaha => 'Pilih usaha (cari)';
+
+  @override
+  String get balehoDeeplinkPickAcara => 'Pilih acara (cari)';
+
+  @override
+  String get balehoDeeplinkPickWisata => 'Pilih wisata (cari)';
+
+  @override
+  String get balehoDeeplinkPickKarya => 'Pilih karya (cari)';
+
+  @override
+  String get balehoDeeplinkPickUsahaDetail => 'Cari lalu pilih satu usaha';
+
+  @override
+  String get balehoDeeplinkPickAcaraDetail => 'Cari lalu pilih satu acara';
+
+  @override
+  String get balehoDeeplinkPickWisataDetail =>
+      'Cari lalu pilih satu tempat wisata';
+
+  @override
+  String get balehoDeeplinkPickKaryaDetail => 'Cari lalu pilih satu karya';
+
+  @override
+  String get balehoDeeplinkHome => 'Beranda';
+
+  @override
+  String get balehoDeeplinkExplore => 'Eksplorasi';
+
+  @override
+  String get balehoDeeplinkUsahaList => 'Daftar usaha';
+
+  @override
+  String get balehoDeeplinkAcaraList => 'Daftar acara';
+
+  @override
+  String get balehoDeeplinkEncyclopedia => 'Ensiklopedia';
+
+  @override
+  String get balehoDeeplinkWords => 'Kamus';
+
+  @override
+  String get balehoDeeplinkBaleho => 'Baleho';
+
+  @override
+  String get balehoReactivateCta => 'Pakai konten lama';
+
+  @override
+  String get balehoReactivateHint => 'Lewati unggah - skip cek konten';
+
+  @override
+  String get balehoReactivateTitle => 'Pilih konten lama';
+
+  @override
+  String get balehoReactivateSubtitle =>
+      'Yang sudah lolos cek bisa dipakai ulang di slot baru.';
+
+  @override
+  String get balehoReactivateEmpty =>
+      'Belum ada konten yang lolos cek. Kirim pesanan baru dulu ya.';
+
+  @override
+  String get balehoReactivateUntitled => 'Konten tanpa judul';
+
+  @override
+  String get balehoReactivateClear => 'Batalkan - unggah baru';
+
+  @override
+  String get balehoReactivateUsingOld =>
+      'Konten lama dipakai. Atur posisi dan hari tayang saja.';
+
+  @override
+  String balehoReactivateRefHint(String username) {
+    return 'Referral: @$username';
+  }
+
+  @override
+  String get balehoActionFailToast =>
+      'Tautan tidak bisa dibuka. Coba lagi nanti ya.';
+
+  @override
+  String balehoSlideContentTitle(int n) {
+    return 'Tampilan slide $n';
+  }
+
+  @override
+  String get balehoSlideContentCta => 'Atur tampilan';
+
+  @override
+  String get balehoSlideContentFilled => 'Gambar siap - ketuk untuk ganti';
+
+  @override
+  String get balehoSlideContentEmpty => 'Belum diisi - ketuk untuk atur';
+
+  @override
+  String get balehoSlideContentDone => 'Selesai';
+
+  @override
+  String get balehoSubmit => 'Kirim pesanan';
+
+  @override
+  String get balehoSubmitting => 'Mengirim…';
+
+  @override
+  String get balehoSubmitOk => 'Pesanan masuk antrean cek';
+
+  @override
+  String get balehoErrorSlotTaken =>
+      'Area ini baru saja terisi. Pilih yang lain ya.';
+
+  @override
+  String get balehoErrorActiveLimit =>
+      'Kamu sudah punya 2 pesanan aktif. Tunggu selesai dulu ya.';
+
+  @override
+  String get balehoErrorFingerprintDup =>
+      'Konten dan aksi ini sama dengan pesanan aktifmu. Ubah dulu ya.';
+
+  @override
+  String get balehoErrorUpload => 'Gagal mengunggah gambar. Coba lagi ya.';
+
+  @override
+  String get balehoErrorCreate => 'Gagal mengirim pesanan. Coba lagi ya.';
+
+  @override
+  String get balehoErrorRateLimited =>
+      'Terlalu sering. Tunggu sebentar lalu coba lagi ya.';
+
+  @override
+  String get balehoHistoryTitle => 'Riwayat Baleho';
+
+  @override
+  String get balehoHistoryDetailTitle => 'Performa Pesanan';
+
+  @override
+  String get balehoHistoryDetailNotFound =>
+      'Pesanan tidak ditemukan atau sudah dihapus. Tarik ke bawah untuk memuat ulang ya.';
+
+  @override
+  String get balehoHistoryDetailEnd => 'Berakhir';
+
+  @override
+  String get balehoHistoryDetailStatus => 'Status';
+
+  @override
+  String get balehoHistoryDetailPosition => 'Posisi';
+
+  @override
+  String get balehoHistoryDetailCreated => 'Dibuat';
+
+  @override
+  String balehoDurationMinutes(int minutes) {
+    return '$minutes menit';
+  }
+
+  @override
+  String balehoDurationHours(int hours) {
+    return '$hours jam';
+  }
+
+  @override
+  String balehoDurationDays(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String balehoDurationDaysHours(int days, int hours) {
+    return '$days hari $hours jam';
+  }
+
+  @override
+  String get balehoHistoryLoginRequired =>
+      'Masuk dulu untuk melihat riwayat pesananmu.';
+
+  @override
+  String get balehoHistoryEmpty =>
+      'Belum ada pesanan. Mulai promosi di papan Baleho ya.';
+
+  @override
+  String get balehoHistoryLoadFailed => 'Gagal memuat riwayat. Coba lagi ya.';
+
+  @override
+  String get balehoHistoryUntitled => 'Tanpa judul';
+
+  @override
+  String balehoHistoryPosition(String size, int col, int row) {
+    return '$size · kolom $col, baris $row';
+  }
+
+  @override
+  String get balehoStatusPendingReview => 'Menunggu cek';
+
+  @override
+  String get balehoStatusAwaitingPayment => 'Menunggu bayar';
+
+  @override
+  String get balehoStatusLive => 'Tayang';
+
+  @override
+  String get balehoStatusPaused => 'Ditahan';
+
+  @override
+  String get balehoStatusRejected => 'Ditolak';
+
+  @override
+  String get balehoStatusCancelled => 'Dibatalkan';
+
+  @override
+  String get balehoStatusExpired => 'Selesai';
+
+  @override
+  String get balehoHistoryEndingSoonHint =>
+      'Berakhir dalam 24 jam. Setelah selesai, pesan lagi dari sini ya.';
+
+  @override
+  String get balehoHistoryRebookCta => 'Pesan lagi';
+
+  @override
+  String get balehoHistoryRebookHint =>
+      'Pilih area kosong di papan, lalu aktifkan ulang creative lama.';
+
+  @override
+  String get balehoHistoryStatsTitle => 'Biaya';
+
+  @override
+  String get balehoHistoryCostEmpty =>
+      'Belum ada ringkasan biaya untuk pesanan ini.';
+
+  @override
+  String get balehoHistoryStatImpressions => 'Tayang';
+
+  @override
+  String get balehoHistoryStatTaps => 'Buka detail';
+
+  @override
+  String get balehoHistoryStatActions => 'Klik tombol';
+
+  @override
+  String balehoHistoryStatCtr(String percent) {
+    return 'CTR $percent%';
+  }
+
+  @override
+  String balehoHistoryStatActionRate(String percent) {
+    return 'Action-rate $percent%';
+  }
+
+  @override
+  String balehoHistoryStatSuccessRate(String percent) {
+    return 'Sukses CTA $percent%';
+  }
+
+  @override
+  String balehoHistoryStatQuoted(String amount) {
+    return 'Biaya Rp $amount';
+  }
+
+  @override
+  String balehoHistoryStatCpc(String amount) {
+    return 'CPC Rp $amount';
+  }
+
+  @override
+  String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';
+
+  @override
+  String get balehoValidationVideoSize =>
+      'Video hanya untuk ukuran 4x2 atau 2x4';
+
+  @override
+  String get balehoValidationVideoMax => 'Maksimal satu video per pesanan';
+
+  @override
+  String get balehoValidationMediaUrl => 'Alamat media wajib diisi';
+
+  @override
+  String get balehoValidationAction => 'Isi tujuan saat Baleho diketuk';
+
+  @override
+  String get balehoValidationExternalUrl =>
+      'Alamat website tidak valid (pakai http/https)';
+
+  @override
+  String get balehoValidationDays => 'Durasi harus 1 sampai 30 hari';
+
+  @override
+  String get balehoTosTitle => 'Tanggung jawab konten';
+
+  @override
+  String get balehoTosBody =>
+      'Isi Baleho dan halaman tujuan tanggung jawabmu. SambasKu boleh menolak atau menurunkan tayangan. Ubah besar setelah lolos cek = ajukan ulang.';
 
   @override
   String get navContribute => 'Kontribusi';
@@ -176,6 +927,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get profileViewPublic => 'Lihat profil publik';
 
   @override
+  String get profileJinyeComposeQuote => 'Agek mikerkan ape insanak';
+
+  @override
   String get profileNotifications => 'Notifikasi';
 
   @override
@@ -257,7 +1011,58 @@ class AppLocalizationsId extends AppLocalizations {
   String get errorSheetRetry => 'Coba lagi';
 
   @override
-  String get offlineBanner => 'Kamu lagi offline. Nampilin data tersimpan.';
+  String get offlineBanner =>
+      'Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.';
+
+  @override
+  String get lemmaLocalModeChip => 'Mode offline';
+
+  @override
+  String get lemmaDatasetGroup => 'Kamus lokal';
+
+  @override
+  String lemmaDatasetVersion(int version) {
+    return 'Versi kamus lokal v$version';
+  }
+
+  @override
+  String get lemmaDatasetVersionUnknown => 'Versi kamus lokal belum terpasang';
+
+  @override
+  String get lemmaDatasetUpdate => 'Perbarui kamus';
+
+  @override
+  String get lemmaDatasetUpdating => 'Memperbarui…';
+
+  @override
+  String get lemmaDatasetUpdated => 'Kamus lokal diperbarui';
+
+  @override
+  String get lemmaDatasetAlreadyLatest => 'Kamus lokal sudah versi terbaru';
+
+  @override
+  String get lemmaDatasetNeedInternet =>
+      'Butuh internet untuk memperbarui kamus';
+
+  @override
+  String get lemmaDatasetUpdateFailed =>
+      'Gagal memperbarui kamus. Coba lagi nanti.';
+
+  @override
+  String get lemmaDatasetHashFailed =>
+      'File kamus rusak atau tidak cocok. Versi lama tetap dipakai.';
+
+  @override
+  String get lemmaDatasetAppUpdateRequired =>
+      'Perbarui aplikasi dulu supaya bisa pakai kamus ini';
+
+  @override
+  String get lemmaDatasetIncompatible =>
+      'Skema kamus tidak didukung aplikasi ini';
+
+  @override
+  String get lemmaSocialNeedsInternet =>
+      'Komentar tidak tersedia di mode offline';
 
   @override
   String routerNotFound(String error) {
@@ -588,6 +1393,22 @@ class AppLocalizationsId extends AppLocalizations {
   String get voteLoginPrompt => 'Masuk dulu untuk memberi vote';
 
   @override
+  String get voteTrustProgressLabel => 'Menuju verifikasi warga';
+
+  @override
+  String get voteTrustProgressInfo =>
+      'Bar kiri hijau (setuju) vs kanan merah (kurang setuju), saling merebut proporsi suara. Terverifikasi otomatis bila net minimal +5 dari sedikitnya 5 pemilih; ditolak otomatis bila net maksimal -5 dari sedikitnya 5 pemilih.';
+
+  @override
+  String get voteTrustProgressInfoSemantics => 'Info verifikasi warga';
+
+  @override
+  String get notificationTypeMeaningAutoVerified => 'Makna terverifikasi warga';
+
+  @override
+  String get notificationTypeMeaningNeedsReview => 'Makna perlu ditinjau';
+
+  @override
   String get voteDeckLoginPrompt => 'Masuk dulu untuk menilai kata';
 
   @override
@@ -695,6 +1516,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get commentAddPhoto => 'Foto';
 
   @override
+  String get commentAddSticker => 'Stiker';
+
+  @override
+  String get commentRemoveSticker => 'Lepas stiker';
+
+  @override
   String get commentPhotoPending => 'Foto menunggu pengecekan';
 
   @override
@@ -710,7 +1537,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get commentRemovePhoto => 'Hapus foto';
 
   @override
-  String get commentBodyOrPhotoRequired => 'Komentar atau foto wajib diisi';
+  String get commentBodyOrPhotoRequired =>
+      'Komentar, foto, atau stiker wajib diisi';
 
   @override
   String get commentRecordTitle => 'Rekam komentar suara';
@@ -1291,6 +2119,19 @@ class AppLocalizationsId extends AppLocalizations {
       'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
 
   @override
+  String get suggestCategoryChangeCategories => 'Ubah kategori';
+
+  @override
+  String get suggestCategoryChangeCategoriesDesc =>
+      'Tambah atau lepas kategori topik di lemma ini';
+
+  @override
+  String get suggestCategoryPickHint => 'Pilih kategori topik';
+
+  @override
+  String get suggestCategoryNoneSelected => 'Belum ada kategori';
+
+  @override
   String get suggestCategoryLemmaNotes => 'Lainnya';
 
   @override
@@ -1847,6 +2688,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get commonReason => 'Alasan';
 
   @override
+  String get commonPaste => 'Tempel';
+
+  @override
+  String get commonClipboardEmpty => 'Clipboard kosong';
+
+  @override
   String get reviewEntityWord => 'Kata';
 
   @override
@@ -2191,6 +3038,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get reviewSessionSkipped => 'Dilewati.';
+
+  @override
+  String get reviewSessionEntityMissingSkipped => 'Usulan tanpa isi dilewati.';
+
+  @override
+  String get reviewSessionEntityMissingFlood =>
+      'Banyak usulan tanpa isi. Kembali ke antrean dulu.';
 
   @override
   String get reviewSessionApprovedToast => 'Usulan disetujui';
@@ -2657,6 +3511,10 @@ class AppLocalizationsId extends AppLocalizations {
   String reviewPreviewNotation(String notation) {
     return 'Notasi: $notation';
   }
+
+  @override
+  String get reviewPreviewEntityMissing =>
+      'Isi usulan tidak bisa dimuat. Lewati kartu ini atau coba lagi nanti.';
 
   @override
   String get reviewPreviewProposedMeaning => 'Makna yang diusulkan';
@@ -3135,6 +3993,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get reviewExploreEventListTitle => 'Usulan acara';
 
   @override
+  String get reviewExploreEventSearchHint => 'Cari nama atau lokasi';
+
+  @override
+  String get reviewExploreEventTabPeriksa => 'Periksa';
+
+  @override
+  String get reviewExploreEventTabRiwayat => 'Riwayat';
+
+  @override
   String get reviewExploreLayananListTitle => 'Usulan layanan publik';
 
   @override
@@ -3457,7 +4324,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String dictAttributionCreatedBy(String name) {
-    return 'Dibuat oleh $name';
+    return 'Diusulkan oleh $name';
   }
 
   @override
@@ -3467,7 +4334,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String dictAttributionCreatedAndVerifiedBy(String name) {
-    return 'Dibuat dan diverifikasi oleh $name';
+    return 'Diusulkan dan diverifikasi oleh $name';
   }
 
   @override
@@ -3646,6 +4513,18 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictSeeVerifiers => 'Lihat verifikator';
 
   @override
+  String get dictLemmaTrustVerified => 'Terverifikasi';
+
+  @override
+  String get dictLemmaTrustPartial => 'Sebagian dicek';
+
+  @override
+  String get dictMeaningVerified => 'Makna terverifikasi';
+
+  @override
+  String get dictMeaningPendingCheck => 'Makna menunggu pengecekan';
+
+  @override
   String dictPronunciationLine(String notation, String value) {
     return '$notation $value';
   }
@@ -3771,6 +4650,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dictCopyMeaning => 'Salin makna';
+
+  @override
+  String get dictSuggestMeaning => 'Usulkan perubahan';
+
+  @override
+  String get dictSuggestMeaningSubtitle =>
+      'Makna ini langsung terpilih di form usulan';
 
   @override
   String get dictMeaningActionsTitle => 'Aksi makna';
@@ -3902,6 +4788,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictSearchSambasHint => 'Cari atau saring kata Sambas...';
 
   @override
+  String get dictSearchCommitHint =>
+      'Tekan Enter atau Cari untuk mencatat kata yang belum ada.';
+
+  @override
   String get dictCategory => 'Kategori';
 
   @override
@@ -3922,6 +4812,73 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dictProposeThisWord => 'Usul kata ini';
+
+  @override
+  String get hotTopicsTitle => 'Sorotan hari ini';
+
+  @override
+  String get hotTopicsTabSearched => 'Dicari';
+
+  @override
+  String get hotTopicsTabProposed => 'Usulan';
+
+  @override
+  String get hotTopicsTabNearThreshold => 'Hits';
+
+  @override
+  String get hotTopicsTabEmpty => 'Belum ada data';
+
+  @override
+  String get hotTopicsTabEmptySearchedBody =>
+      'Belum ada pencarian kosong yang menonjol hari ini.';
+
+  @override
+  String get hotTopicsTabEmptyProposedBody =>
+      'Belum ada usulan kata yang menunggu peninjauan.';
+
+  @override
+  String get hotTopicsTabEmptyNearBody =>
+      'Belum ada hits dalam 2 hari terakhir.';
+
+  @override
+  String get hotTopicsTabCheck => 'Cek';
+
+  @override
+  String get hotTopicsTabEmptyCheckBody =>
+      'Belum ada makna yang perlu dicek hari ini.';
+
+  @override
+  String get hotTopicsBackfillHint => 'Sebagian dari 7 hari terakhir.';
+
+  @override
+  String get hotTopicsProposedSubtitle => 'Usulan baru';
+
+  @override
+  String get hotTopicsEmptySlot => '-';
+
+  @override
+  String hotTopicsViewCount(String count) {
+    return '$count× dibuka';
+  }
+
+  @override
+  String hotTopicsDownvoteCount(String count) {
+    return '$count× perlu di cek';
+  }
+
+  @override
+  String get dictCorrectSpellingCta => 'Koreksi ejaan';
+
+  @override
+  String get contributeSpellCorrectTitle => 'Koreksi ejaan';
+
+  @override
+  String contributeSpellTypedLabel(String term) {
+    return 'Yang kamu ketik: $term';
+  }
+
+  @override
+  String get contributeSpellCorrectHint => 'Ejaan yang benar';
 
   @override
   String dictRelatedMeaningSubtitle(String subtitle) {
@@ -4528,6 +5485,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get feedCategoryExplore => 'Eksplorasi';
 
   @override
+  String get feedCategoryJinye => 'Jinye';
+
+  @override
   String get feedCategoryAnnouncement => 'Pengumuman';
 
   @override
@@ -4771,6 +5731,64 @@ class AppLocalizationsId extends AppLocalizations {
   String get feedContributeSearchMiss => 'Dicari warga';
 
   @override
+  String get feedContributePeriksaKata => 'Periksa kata';
+
+  @override
+  String get feedPeriksaKataStubBody =>
+      'Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.';
+
+  @override
+  String get periksaKataLoginPrompt => 'Masuk dulu untuk memeriksa kata';
+
+  @override
+  String get periksaKataSearchHint => 'Cari lemma…';
+
+  @override
+  String get periksaKataEmpty => 'Belum ada makna menunggu pengecekan';
+
+  @override
+  String get periksaKataSearchEmpty => 'Tidak ketemu lemma itu';
+
+  @override
+  String get periksaKataAgree => 'Sudah pas';
+
+  @override
+  String get periksaKataDisagree => 'Perlu dicek ulang';
+
+  @override
+  String get periksaKataVotedAgree => 'Voting kamu sudah tercatat';
+
+  @override
+  String get periksaKataVotedDisagree => 'Voting kamu sudah tercatat';
+
+  @override
+  String get periksaKataSkip => 'Lewati';
+
+  @override
+  String get periksaKataSkipSemantics => 'Lewati, saya tidak tahu';
+
+  @override
+  String get periksaKataSkipSwipeHint => 'Geser kiri untuk lewati';
+
+  @override
+  String get periksaKataHistoryTitle => 'Riwayat pemeriksaan';
+
+  @override
+  String get periksaKataHistoryEmpty => 'Belum ada riwayat pemeriksaan';
+
+  @override
+  String get periksaKataFilterAll => 'Semua';
+
+  @override
+  String get periksaKataFilterPending => 'Menunggu';
+
+  @override
+  String get periksaKataFilterVerified => 'Terverifikasi';
+
+  @override
+  String get periksaKataFilterRejected => 'Ditolak';
+
+  @override
   String get feedContributeSearchMissSubtitle =>
       'Kata yang dicari warga tapi belum ketemu. Bantu isi artinya';
 
@@ -4868,7 +5886,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get profileUsernameHint =>
-      'a-z, 0-9, titik, underscore (6-30 karakter)';
+      'a-z, 0-9, titik, underscore (6-30; tanpa beruntun)';
 
   @override
   String get profileUsernameChecking => 'Memeriksa ketersediaan…';
@@ -4884,10 +5902,47 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get profileUsernameInvalid =>
-      'Username belum memenuhi aturan (6-30, a-z, 0-9, titik, underscore)';
+      'Username belum memenuhi aturan (6-30, a-z/0-9/titik/underscore, tanpa beruntun)';
 
   @override
   String get profileUsernameCheckFailed => 'Gagal memeriksa username';
+
+  @override
+  String get profileUsernameReclaimable =>
+      'Username lama masih bisa dikembalikan';
+
+  @override
+  String profileUsernameCooldown(String when) {
+    return 'Username baru bisa diganti lagi setelah $when';
+  }
+
+  @override
+  String get profileUsernameHistoryAction => 'Riwayat username';
+
+  @override
+  String get profileUsernameHistoryTitle => 'Riwayat username';
+
+  @override
+  String get profileUsernameHistorySubtitle =>
+      'Hanya kamu yang melihat daftar ini';
+
+  @override
+  String get profileUsernameHistoryEmpty => 'Belum ada perubahan username';
+
+  @override
+  String profileUsernameHistoryRow(String oldUsername, String newUsername) {
+    return '$oldUsername jadi $newUsername';
+  }
+
+  @override
+  String get profileUsernameHistoryCanReclaim => 'Masih bisa dikembalikan';
+
+  @override
+  String get profileUsernameReclaimAction => 'Kembalikan';
+
+  @override
+  String get profileUsernameHistoryLoadFailed =>
+      'Gagal memuat riwayat username';
 
   @override
   String get profileDisplayNameLabel => 'Nama tampilan';
@@ -5279,6 +6334,15 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get notificationTypeEventNeedsRevision => 'Acara perlu revisi';
+
+  @override
+  String get notificationTypeBalehoApproved => 'Baleho disetujui';
+
+  @override
+  String get notificationTypeBalehoRejected => 'Baleho ditolak';
+
+  @override
+  String get notificationTypeBalehoEndingSoon => 'Baleho hampir berakhir';
 
   @override
   String get notificationTypeUpdate => 'Pembaruan';
@@ -6305,16 +7369,566 @@ class AppLocalizationsId extends AppLocalizations {
   String get layananStatusRejected => 'Ditolak';
 
   @override
+  String get exploreCategoryKarya => 'Karya';
+
+  @override
+  String get exploreCategoryKaryaSubtitle => 'Musik dan film berbau Sambas';
+
+  @override
+  String get karyaTitle => 'Karya';
+
+  @override
+  String get karyaLoadFailed => 'Gagal memuat karya';
+
+  @override
+  String get karyaNotFound => 'Karya tidak ditemukan';
+
+  @override
+  String get karyaEmpty => 'Belum ada karya';
+
+  @override
+  String get karyaEmptyHint => 'Tahu lagu atau film Sambas? Kamu bisa usulkan.';
+
+  @override
+  String get karyaEmptyFilter => 'Belum ada karya yang cocok';
+
+  @override
+  String get karyaEmptyFilterHint =>
+      'Coba ubah filter atau cari dengan kata lain ya.';
+
+  @override
+  String get karyaSearchPlaceholder => 'Cari judul karya...';
+
+  @override
+  String get karyaKindMusic => 'Musik';
+
+  @override
+  String get karyaKindFilm => 'Film';
+
+  @override
+  String get karyaYear => 'Tahun';
+
+  @override
+  String karyaYearLabel(int year) {
+    return 'Tahun $year';
+  }
+
+  @override
+  String get karyaCredits => 'Kredit';
+
+  @override
+  String get karyaAccess => 'Akses karya';
+
+  @override
+  String get karyaAccessEmpty => 'Belum ada tautan akses';
+
+  @override
+  String get karyaAccessKindListen => 'Dengarkan';
+
+  @override
+  String get karyaAccessKindWatch => 'Tonton';
+
+  @override
+  String get karyaAccessKindBuy => 'Beli';
+
+  @override
+  String get karyaAccessKindRead => 'Baca';
+
+  @override
+  String get karyaAccessKindStream => 'Streaming';
+
+  @override
+  String get karyaAccessKindOfficial => 'Situs resmi';
+
+  @override
+  String get karyaAccessKindOther => 'Lainnya';
+
+  @override
+  String get karyaContribute => 'Usulkan karya';
+
+  @override
+  String get karyaContributeMusic => 'Usul lagu';
+
+  @override
+  String get karyaContributeFilm => 'Usul film';
+
+  @override
+  String get karyaContributePickTitle => 'Usulkan karya apa?';
+
+  @override
+  String get karyaContributePickSubtitle =>
+      'Pilih musik atau film. Tahun dan kaitan Sambas dilengkapi saat tinjauan.';
+
+  @override
+  String get karyaFormQuickHint =>
+      'Cukup judul dan nama kreator. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.';
+
+  @override
+  String get karyaFormTitleHintMusic => 'Judul lagu';
+
+  @override
+  String get karyaFormTitleHintFilm => 'Judul film';
+
+  @override
+  String get karyaFormCreditNameMusic => 'Nama penyanyi';
+
+  @override
+  String get karyaFormCreditNameFilm => 'Nama kreator';
+
+  @override
+  String get karyaFormCreditNameHintMusic =>
+      'Ketik nama, atau pilih dari saran kreator';
+
+  @override
+  String get karyaFormCreditNameHintFilm =>
+      'Channel, rumah produksi, pembuat, atau nama orang - ketik atau pilih saran';
+
+  @override
+  String get karyaFormCreditNameRequired => 'Nama kreator minimal 2 karakter';
+
+  @override
+  String get karyaFormKreatorSuggestPick => 'Pilih kreator ini';
+
+  @override
+  String get karyaContributeSubmit => 'Kirim usulan';
+
+  @override
+  String get karyaContributeBusy => 'Mengirim...';
+
+  @override
+  String get karyaProposeSuccess => 'Usulan karya kamu sudah dikirim';
+
+  @override
+  String get karyaProposeEdit => 'Usulkan perbaikan';
+
+  @override
+  String get karyaProposeAccessLink => 'Usulkan tautan akses';
+
+  @override
+  String get karyaProposalsTitle => 'Usulan karya saya';
+
+  @override
+  String get karyaProposalsEmpty => 'Kamu belum punya usulan karya';
+
+  @override
+  String get karyaProposalKindNew => 'Usulan karya baru';
+
+  @override
+  String get karyaProposalKindEdit => 'Perbaikan data karya';
+
+  @override
+  String get karyaProposalKindExcerpt => 'Usulan cuplikan';
+
+  @override
+  String get karyaStatusPending => 'Menunggu tinjauan';
+
+  @override
+  String get karyaStatusRevision => 'Perlu perbaikan';
+
+  @override
+  String get karyaStatusApproved => 'Sudah tayang';
+
+  @override
+  String get karyaStatusRejected => 'Ditolak';
+
+  @override
+  String get karyaSambasSection => 'Kaitan dengan Sambas';
+
+  @override
+  String get karyaSambasEmpty => 'Belum ada catatan kaitan';
+
+  @override
+  String get karyaSambasType => 'Jenis kaitan';
+
+  @override
+  String get karyaSambasNote => 'Catatan kaitan';
+
+  @override
+  String get karyaSambasNoteHint =>
+      'Singkat saja, misal asal kreator atau temanya';
+
+  @override
+  String get karyaSambasTypeCreatorOrigin => 'Asal kreator';
+
+  @override
+  String get karyaSambasTypeLanguage => 'Bahasa';
+
+  @override
+  String get karyaSambasTypeLocation => 'Lokasi';
+
+  @override
+  String get karyaSambasTypeTheme => 'Tema';
+
+  @override
+  String get karyaSambasTypeOther => 'Lainnya';
+
+  @override
+  String get karyaFilterTitle => 'Filter karya';
+
+  @override
+  String get karyaFilterApply => 'Terapkan';
+
+  @override
+  String get karyaFilterReset => 'Atur ulang';
+
+  @override
+  String get karyaFilterYear => 'Tahun';
+
+  @override
+  String get karyaFilterYearHint => 'Contoh 2019';
+
+  @override
+  String get karyaFilterLanguage => 'Bahasa';
+
+  @override
+  String get karyaFilterLanguageHint => 'Contoh sbs atau id';
+
+  @override
+  String get karyaFilterSambasType => 'Jenis kaitan Sambas';
+
+  @override
+  String get karyaFilterSambasAll => 'Semua kaitan';
+
+  @override
+  String get karyaRelatedSection => 'Terkait';
+
+  @override
+  String get karyaRelatedKindPlace => 'Tempat';
+
+  @override
+  String get karyaRelatedKindWord => 'Kata';
+
+  @override
+  String get karyaRelatedKindArticle => 'Artikel';
+
+  @override
+  String get karyaRelatedKindEvent => 'Acara';
+
+  @override
+  String get karyaRelatedKindUsaha => 'Usaha';
+
+  @override
+  String get karyaRelatedKindKreator => 'Kreator';
+
+  @override
+  String get karyaRelatedKindKarya => 'Karya';
+
+  @override
+  String get karyaExcerptSection => 'Cuplikan';
+
+  @override
+  String get karyaExcerptEmpty => 'Belum ada cuplikan yang tayang';
+
+  @override
+  String get karyaExcerptEndLabel => 'Label akhir (opsional)';
+
+  @override
+  String get karyaExcerptEndLabelHint => 'Misal bait 2 atau menit 01:35';
+
+  @override
+  String get karyaExcerptFairQuoteTooLong =>
+      'Cuplikan wajar maksimal 4 baris atau 500 karakter. Kurangi teks atau pilih status hak yang cocok.';
+
+  @override
+  String get karyaExcerptFullRequiresA2 =>
+      'Teks sepanjang ini hanya boleh dengan status ada izin, berlisensi, atau domain publik';
+
+  @override
+  String get karyaExcerptHint =>
+      'Cuplikan fair quote maksimal 4 baris atau 500 karakter. Teks lebih panjang hanya kalau haknya jelas (izin, lisensi, atau domain publik) plus catatan hak.';
+
+  @override
+  String get karyaExcerptKind => 'Jenis cuplikan';
+
+  @override
+  String get karyaExcerptKindBookQuote => 'Kutipan buku';
+
+  @override
+  String get karyaExcerptKindDialogue => 'Dialog';
+
+  @override
+  String get karyaExcerptKindLyrics => 'Lirik';
+
+  @override
+  String get karyaExcerptKindOther => 'Lainnya';
+
+  @override
+  String get karyaExcerptRights => 'Status hak';
+
+  @override
+  String get karyaExcerptRightsFairQuote => 'Cuplikan wajar';
+
+  @override
+  String get karyaExcerptRightsLicensed => 'Berlisensi';
+
+  @override
+  String get karyaExcerptRightsNote => 'Catatan hak';
+
+  @override
+  String get karyaExcerptRightsNoteHint =>
+      'Jelaskan izin atau sumber lisensinya';
+
+  @override
+  String get karyaExcerptRightsNoteRequired =>
+      'Catatan hak wajib diisi untuk teks berizin/lisensi/domain publik';
+
+  @override
+  String get karyaExcerptRightsPermission => 'Ada izin';
+
+  @override
+  String get karyaExcerptRightsPublicDomain => 'Domain publik';
+
+  @override
+  String get karyaExcerptRightsUnknown => 'Pilih status hak yang jelas dulu';
+
+  @override
+  String get karyaExcerptSourceUrl => 'URL sumber (opsional)';
+
+  @override
+  String get karyaExcerptSourceUrlHint => 'Tautan sumber asli (https)';
+
+  @override
+  String get karyaExcerptSourceUrlInvalid =>
+      'URL sumber tidak valid. Pakai https yang lengkap ya.';
+
+  @override
+  String get karyaExcerptStartLabel => 'Label awal (opsional)';
+
+  @override
+  String get karyaExcerptStartLabelHint => 'Misal bait 1 atau menit 01:20';
+
+  @override
+  String get karyaExcerptText => 'Teks cuplikan';
+
+  @override
+  String get karyaExcerptTextHint =>
+      'Tempel lirik atau dialog yang mau diusulkan';
+
+  @override
+  String get karyaExcerptTextRequired => 'Teks cuplikan wajib diisi';
+
+  @override
+  String get karyaProposeExcerpt => 'Usulkan cuplikan';
+
+  @override
+  String get karyaAppearsInWordTitle => 'Muncul di karya';
+
+  @override
+  String get karyaLemmaLinkAction => 'Tautkan lemma';
+
+  @override
+  String get karyaLemmaLinkSuccess => 'Lemma ditautkan';
+
+  @override
+  String get karyaLemmaLinkFailed => 'Gagal menautkan lemma';
+
+  @override
+  String get karyaLemmaLinkNotFoundInText =>
+      'Lemma tidak ditemukan di teks cuplikan';
+
+  @override
+  String get karyaLemmaLinkLoginFirst => 'Masuk dulu untuk menautkan lemma';
+
+  @override
+  String get karyaFormInvalid => 'Judul dan nama kreator wajib diisi';
+
+  @override
+  String get karyaFormKindRequired => 'Pilih jenis karya dulu';
+
+  @override
+  String get karyaFormTitleRequired => 'Judul karya minimal 2 karakter';
+
+  @override
+  String get karyaFormYearInvalid => 'Isi tahun rilis yang valid (1800-2100)';
+
+  @override
+  String get karyaFormSambasRequired =>
+      'Minimal satu kaitan dengan Sambas wajib diisi';
+
+  @override
+  String get karyaFormCreditRequired =>
+      'Minimal satu kredit (nama + peran) wajib diisi';
+
+  @override
+  String get karyaFormCreditVocalRequired =>
+      'Untuk musik, minimal satu kredit dengan peran Vokal';
+
+  @override
+  String get karyaFormCreditFilmRequired =>
+      'Untuk film, minimal satu kredit wajib diisi';
+
+  @override
+  String get karyaFormCreditHintMusic =>
+      'Musik wajib punya minimal satu peran Vokal';
+
+  @override
+  String get karyaFormCreditHintFilm =>
+      'Film wajib punya minimal satu kredit (channel, rumah produksi, sutradara, atau peran lain)';
+
+  @override
+  String get kreatorTitle => 'Kreator';
+
+  @override
+  String get kreatorLoadFailed => 'Gagal memuat profil kreator';
+
+  @override
+  String get kreatorNotFound => 'Profil kreator tidak ditemukan';
+
+  @override
+  String get kreatorKindPerson => 'Orang';
+
+  @override
+  String get kreatorKindGroup => 'Grup';
+
+  @override
+  String get kreatorBioEmpty => 'Bio belum diisi. Data bisa dilengkapi nanti.';
+
+  @override
+  String get kreatorLinks => 'Tautan';
+
+  @override
+  String get kreatorKaryaSection => 'Karya';
+
+  @override
+  String get kreatorKaryaEmpty =>
+      'Belum ada karya yang terhubung ke profil ini';
+
+  @override
+  String get kreatorProposeKarya => 'Usulkan karya';
+
+  @override
+  String get kreatorClaimAction => 'Klaim profil ini';
+
+  @override
+  String get kreatorClaimActionHint =>
+      'Kalau ini kamu atau grupmu, kirim bukti singkat';
+
+  @override
+  String get kreatorClaimTitle => 'Klaim profil kreator';
+
+  @override
+  String get kreatorClaimSubtitle =>
+      'Tim akan meninjau dulu. Bukti tidak ditampilkan ke publik.';
+
+  @override
+  String get kreatorClaimProof => 'Catatan bukti';
+
+  @override
+  String get kreatorClaimProofHint =>
+      'Misal akun resmi, tautan, atau penjelasan singkat';
+
+  @override
+  String get kreatorClaimProofShort => 'Catatan bukti minimal 8 karakter';
+
+  @override
+  String get kreatorClaimSubmit => 'Kirim klaim';
+
+  @override
+  String get kreatorClaimSuccess => 'Klaim kamu sudah dikirim';
+
+  @override
+  String get karyaFormKind => 'Jenis karya';
+
+  @override
+  String get karyaFormPickKind => 'Pilih jenis';
+
+  @override
+  String get karyaFormTitle => 'Judul';
+
+  @override
+  String get karyaFormTitleHint => 'Judul lagu atau film';
+
+  @override
+  String get karyaFormYearHint => 'Contoh 2019';
+
+  @override
+  String get karyaFormAddSambas => 'Tambah kaitan Sambas';
+
+  @override
+  String get karyaFormCreditRole => 'Peran';
+
+  @override
+  String get karyaFormCreditName => 'Nama';
+
+  @override
+  String get karyaFormCreditNameHint => 'Nama orang atau grup';
+
+  @override
+  String get karyaFormAddCredit => 'Tambah kredit';
+
+  @override
+  String get karyaFormAccessKind => 'Jenis tautan';
+
+  @override
+  String get karyaFormAccessLabel => 'Label tombol';
+
+  @override
+  String get karyaFormAccessLabelHint => 'Misal Dengarkan di Spotify';
+
+  @override
+  String get karyaFormAccessUrl => 'URL';
+
+  @override
+  String get karyaFormAccessUrlHint => 'Tautan sumber asli (https)';
+
+  @override
+  String get karyaFormAddAccess => 'Tambah tautan akses';
+
+  @override
+  String get karyaCreditRoleVocal => 'Vokal';
+
+  @override
+  String get karyaCreditRoleFeat => 'Feat';
+
+  @override
+  String get karyaCreditRoleSongwriter => 'Penulis lagu';
+
+  @override
+  String get karyaCreditRoleComposer => 'Komposer';
+
+  @override
+  String get karyaCreditRoleProducer => 'Produser';
+
+  @override
+  String get karyaCreditRoleArranger => 'Aransemen';
+
+  @override
+  String get karyaCreditRoleBandMember => 'Anggota band';
+
+  @override
+  String get karyaCreditRoleDirector => 'Sutradara';
+
+  @override
+  String get karyaCreditRoleCast => 'Pemeran';
+
+  @override
+  String get karyaCreditRoleWriter => 'Penulis skenario';
+
+  @override
+  String get karyaCreditRoleCinematographer => 'Sinema';
+
+  @override
+  String get karyaCreditRoleOther => 'Lainnya';
+
+  @override
   String get exploreCategoryAcara => 'Acara';
 
   @override
   String get exploreCategoryAcaraSubtitle => 'Festival, pameran, dan kegiatan';
 
   @override
+  String get exploreCategoryPantun => 'Pantun';
+
+  @override
+  String get exploreCategoryPantunSubtitle =>
+      'Berbalas pantun bersama warga Sambas';
+
+  @override
   String get exploreCategoryPermainan => 'Permainan';
 
   @override
-  String get exploreCategoryPermainanSubtitle => 'Pantun dan permainan Sambas';
+  String get exploreCategoryPermainanSubtitle =>
+      'Teka-teki dan permainan Sambas';
 
   @override
   String get exploreCategoryEnsiklopedia => 'Ensiklopedia';
@@ -6322,6 +7936,19 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get exploreCategoryEnsiklopediaSubtitle =>
       'Sejarah, kisah, karya, dan tradisi';
+
+  @override
+  String get petakateTitle => 'Petakate';
+
+  @override
+  String get petakateListSubtitle => 'Tebak kata Melayu Sambas hari ini';
+
+  @override
+  String get permainanEmptyTitle => 'Belum ada permainan';
+
+  @override
+  String get permainanEmptySubtitle =>
+      'Game Sambas sedang disiapkan. Cek lagi nanti ya.';
 
   @override
   String get encyclopediaTitle => 'Ensiklopedia';
@@ -6365,6 +7992,46 @@ class AppLocalizationsId extends AppLocalizations {
   String get encyclopediaReferencesTitle => 'Referensi & Sumber';
 
   @override
+  String get encyclopediaViewOriginalSource => 'Lihat sumber asli';
+
+  @override
+  String get contentRelatedSection => 'Terkait';
+
+  @override
+  String get contentRelatedArticlesSection => 'Artikel terkait';
+
+  @override
+  String get contentRelatedFormHint =>
+      'Opsional - tautkan lemma, artikel, atau konten lain (maks 12)';
+
+  @override
+  String get contentRelatedAdd => 'Tambah tautan';
+
+  @override
+  String get contentRelatedPickKindTitle => 'Jenis tautan';
+
+  @override
+  String get contentRelatedPickKindSubtitle =>
+      'Pilih jenis konten yang mau ditautkan';
+
+  @override
+  String contentRelatedSearchTitle(String kind) {
+    return 'Cari $kind';
+  }
+
+  @override
+  String get contentRelatedSearchHint => 'Ketik minimal 2 huruf…';
+
+  @override
+  String get contentRelatedSearchEmpty => 'Tidak ada hasil. Coba kata lain.';
+
+  @override
+  String get contentRelatedKindCuisine => 'Kuliner';
+
+  @override
+  String get contentRelatedKindLayanan => 'Layanan';
+
+  @override
   String get encyclopediaCommentsTitle => 'Komentar';
 
   @override
@@ -6388,6 +8055,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get encyclopediaContributeEditTitle => 'Usul Perbaikan Artikel';
+
+  @override
+  String get encyclopediaProposeEdit => 'Usulkan perbaikan';
 
   @override
   String get encyclopediaContributeIntro =>
@@ -6418,6 +8088,38 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get encyclopediaFieldTagsPlaceholder => 'sejarah, istana, budaya';
+
+  @override
+  String get encyclopediaFieldSourceUrl => 'Link sumber';
+
+  @override
+  String get encyclopediaFieldSourceUrlHint => 'https:// (opsional)';
+
+  @override
+  String get encyclopediaSourceUrlPaste => 'Tempel';
+
+  @override
+  String get encyclopediaSourceUrlClipboardEmpty => 'Clipboard kosong';
+
+  @override
+  String get encyclopediaFieldSourceUrlHttpsRequired =>
+      'Link sumber harus diawali https://';
+
+  @override
+  String get encyclopediaStatusNeedsRevision => 'Perlu revisi';
+
+  @override
+  String get encyclopediaContributeUpdateTitle => 'Ubah Usulan';
+
+  @override
+  String get encyclopediaUpdateButton => 'Simpan Perubahan';
+
+  @override
+  String get encyclopediaUpdateFailed => 'Gagal menyimpan perubahan usulan';
+
+  @override
+  String get encyclopediaEditContributionMissing =>
+      'Data usulan belum termuat. Tarik untuk refresh lalu coba lagi.';
 
   @override
   String get encyclopediaFieldBody => 'Isi Artikel (Markdown)';
@@ -6483,6 +8185,47 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get encyclopediaBodyEmpty => 'Belum ada isi.';
+
+  @override
+  String get encyclopediaCoverSemantics => 'Gambar sampul artikel';
+
+  @override
+  String get encyclopediaFieldCover => 'Gambar sampul';
+
+  @override
+  String get encyclopediaFieldCoverHint =>
+      'Opsional - tampil sebagai hero di detail artikel';
+
+  @override
+  String get encyclopediaCoverWaitUpload => 'Tunggu upload sampul selesai';
+
+  @override
+  String get encyclopediaCoverRemoveFailed =>
+      'Hapus sampul yang gagal diunggah dulu';
+
+  @override
+  String get markdownLinkChip => '<link>';
+
+  @override
+  String get markdownLinkChipSemantics => 'Buka tautan';
+
+  @override
+  String get markdownLinkSheetTitle => 'Tautan';
+
+  @override
+  String get markdownLinkOpenBrowser => 'Buka di browser';
+
+  @override
+  String get markdownLinkShowFullSemantics => 'Lihat tautan lengkap';
+
+  @override
+  String get markdownLinkFullUrlTitle => 'Tautan lengkap';
+
+  @override
+  String get markdownLinkCopySemantics => 'Salin tautan';
+
+  @override
+  String get markdownLinkOpenBrowserSemantics => 'Buka di browser';
 
   @override
   String get encyclopediaLoginFirstTitle => 'Masuk dulu ya';
@@ -7065,6 +8808,26 @@ class AppLocalizationsId extends AppLocalizations {
   String get cuisineDetailReportBody => 'Data menyesatkan atau duplikat';
 
   @override
+  String get cuisineActionAddPhoto => 'Tambah foto';
+
+  @override
+  String get cuisineAddPhotoBody => 'Kirim foto kuliner yang sudah terbit';
+
+  @override
+  String get cuisineAddPhotoIntro =>
+      'Pilih hingga 5 foto. Foto langsung tayang setelah terkirim.';
+
+  @override
+  String get cuisineAddPhotoRequired => 'Pilih minimal satu foto dulu ya.';
+
+  @override
+  String get cuisineAddPhotoSentTitle => 'Foto terkirim';
+
+  @override
+  String get cuisineAddPhotoSentBody =>
+      'Terima kasih. Foto kuliner sudah ditambahkan.';
+
+  @override
   String get placePhotosNotFoundTitle => 'Foto tidak ditemukan';
 
   @override
@@ -7452,7 +9215,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get contributeSentGuest =>
-      'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.';
+      'Dikirim sebagai tamu. Katanya sudah tayang, menunggu pengecekan warga.';
 
   @override
   String get contributeBulkTitle => 'Usulkan banyak sekaligus';
@@ -7507,6 +9270,35 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get contributeKindHint =>
       'Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan berupa frasa; kata tunggal tidak perlu dipilih.';
+
+  @override
+  String get contributeCategoryLabel => 'Kategori';
+
+  @override
+  String get contributeCategoryHint =>
+      'Opsional. Tag topik lemma (hewan, budaya, buah-buahan). Satu kata boleh lebih dari satu.';
+
+  @override
+  String get contributeCategoryPick => 'Pilih kategori';
+
+  @override
+  String get contributeCategorySheetTitle => 'Pilih kategori';
+
+  @override
+  String get contributeCategorySheetSubtitle =>
+      'Boleh lebih dari satu. Chip muncul di atas detail kata.';
+
+  @override
+  String get contributeCategorySheetDone => 'Simpan';
+
+  @override
+  String get contributeCategorySearchHint => 'Cari kategori';
+
+  @override
+  String get contributeCategoryEmpty => 'Tidak ada kategori yang cocok';
+
+  @override
+  String get contributeCategoryLoadFailed => 'Gagal memuat kategori';
 
   @override
   String get contributeRegisterLabel => 'Register';
@@ -7767,7 +9559,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get contributeBulkSentGuest =>
-      'Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.';
+      'Dikirim sebagai tamu. Kata sudah tayang, menunggu pengecekan warga.';
 
   @override
   String contributeBulkMaxRowsHint(int max) {
@@ -8560,7 +10352,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventFormCategoryRequired => 'Pilih kategori acara dulu.';
 
   @override
-  String get eventFormStartRequired => 'Tentukan waktu mulai.';
+  String get eventFormStartRequired => 'Tentukan tanggal mulai.';
 
   @override
   String get eventFormEndRequired => 'Tentukan waktu selesai.';
@@ -8593,7 +10385,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get eventFormIntro =>
-      'Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.';
+      'Isi nama, kategori, dan tanggal mulai. Yang lain boleh dikosongkan. Usulan ditinjau dulu sebelum tayang.';
 
   @override
   String get eventFormNameLabel => 'Nama acara';
@@ -8602,7 +10394,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventFormDescLabel => 'Deskripsi';
 
   @override
-  String get eventFormDescHint => 'Ceritakan singkat acaranya';
+  String get eventFormDescHint => 'Opsional - ceritakan singkat acaranya';
 
   @override
   String get eventFormScheduleLabel => 'Jadwal';
@@ -8611,19 +10403,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventFormStartDateLabel => 'Tanggal mulai';
 
   @override
-  String get eventFormStartTimeLabel => 'Jam mulai';
+  String get eventFormStartTimeLabel => 'Jam mulai (opsional)';
 
   @override
-  String get eventFormEndDateLabel => 'Tanggal selesai';
+  String get eventFormEndDateLabel => 'Tanggal selesai (opsional)';
 
   @override
-  String get eventFormEndTimeLabel => 'Jam selesai';
+  String get eventFormEndTimeLabel => 'Jam selesai (opsional)';
 
   @override
   String get eventFormLocationLabel => 'Lokasi';
 
   @override
-  String get eventFormLocationHint => 'Nama tempat atau alamat acara';
+  String get eventFormLocationHint => 'Opsional - nama tempat atau alamat';
 
   @override
   String get eventFormMapHint =>
@@ -9742,6 +11534,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get achievementSeeMore => 'Lihat lainnya';
 
   @override
+  String achievementRepeatCount(int count) {
+    return '×$count';
+  }
+
+  @override
   String get achievementBorderUpdated => 'Bingkai profil diperbarui';
 
   @override
@@ -10041,6 +11838,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get profileStatCorrections => 'perbaikan';
+
+  @override
+  String get infoSheetTitle => 'Informasi';
 
   @override
   String get infoSheetUnderstood => 'Mengerti';
@@ -10397,10 +12197,32 @@ class AppLocalizationsId extends AppLocalizations {
   String get jinyePreviewEmpty => 'Jinye';
 
   @override
+  String get jinyeProfileJikuLabel => 'Jiku';
+
+  @override
   String get jinyeSheetReply => 'Balas';
 
   @override
   String get jinyeSheetViewDiscussion => 'Lihat diskusi';
+
+  @override
+  String get jinyeSheetCreateNew => 'Buat jinye baru';
+
+  @override
+  String get jinyeSheetClear => 'Kosongkan jinye';
+
+  @override
+  String get jinyeSheetClearConfirmTitle => 'Kosongkan jinye?';
+
+  @override
+  String get jinyeSheetClearConfirmBody =>
+      'Status di profil kamu hilang. Jinye tetap tersimpan di arsip.';
+
+  @override
+  String get jinyeSheetClearConfirmAction => 'Kosongkan';
+
+  @override
+  String get jinyeClearedSuccess => 'Jinye dikosongkan';
 
   @override
   String get jinyeDiscussionEmpty =>
@@ -10593,6 +12415,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get jinyeLemmaPickWordTitle => 'Pilih lemma';
 
   @override
+  String get jinyeLemmaPickWordIntro =>
+      'Ketik kata Sambas yang sudah terverifikasi - hasil muncul otomatis.';
+
+  @override
   String get jinyeLemmaPickWordHint => 'Cari kata Sambas…';
 
   @override
@@ -10601,6 +12427,11 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get jinyeLemmaPickWordNoResult =>
       'Tidak ada kata terverifikasi yang cocok';
+
+  @override
+  String jinyeLemmaPickWordCount(int count) {
+    return '$count hasil';
+  }
 
   @override
   String get jinyeLemmaLinkSuccess => 'Lemma ditautkan';
@@ -10824,6 +12655,566 @@ class AppLocalizationsId extends AppLocalizations {
   String jinyeCreateChipPhotoCount(int count) {
     return 'Foto · $count';
   }
+
+  @override
+  String get eventAllPhotos => 'Lihat semua foto & unggah';
+
+  @override
+  String get eventDetailAddressLabel => 'Alamat';
+
+  @override
+  String get eventDetailOrganizerLabel => 'Penyelenggara';
+
+  @override
+  String get eventGoingAction => 'Aku hadir';
+
+  @override
+  String get eventGoingCancel => 'Batal hadir';
+
+  @override
+  String eventGoingCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang hadir';
+  }
+
+  @override
+  String get placeVisitAction => 'Pernah singgah';
+
+  @override
+  String get placeVisitCancel => 'Batal singgah';
+
+  @override
+  String placeVisitCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang pernah singgah';
+  }
+
+  @override
+  String get usahaVisitAction => 'Pernah bertransaksi';
+
+  @override
+  String get usahaVisitCancel => 'Batal transaksi';
+
+  @override
+  String usahaVisitCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang pernah bertransaksi';
+  }
+
+  @override
+  String get placeCommentsTitle => 'Komentar wisata';
+
+  @override
+  String get placeCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get placeCommentHint => 'Tulis komentar tentang tempat ini';
+
+  @override
+  String get usahaCommentsTitle => 'Komentar usaha';
+
+  @override
+  String get usahaCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get usahaCommentHint => 'Tulis komentar tentang usaha ini';
+
+  @override
+  String get cuisineCommentsTitle => 'Komentar kuliner';
+
+  @override
+  String get cuisineCommentsEmpty =>
+      'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get cuisineCommentHint => 'Tulis komentar tentang kuliner ini';
+
+  @override
+  String get eventCommentsTitle => 'Komentar acara';
+
+  @override
+  String get eventCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get eventCommentHint => 'Tulis komentar tentang acara ini';
+
+  @override
+  String eventMorePhotos(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Lihat lainnya ($countString foto)';
+  }
+
+  @override
+  String get eventPhotoSection => 'Foto';
+
+  @override
+  String get eventPhotoUploadFailed => 'Unggah foto gagal. Coba lagi.';
+
+  @override
+  String get eventPhotosAddTitle => 'Tambah Foto Acara';
+
+  @override
+  String get eventPhotosEmpty => 'Belum ada foto untuk acara ini.';
+
+  @override
+  String eventPhotosMaxInfo(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Maksimal $countString foto per kiriman.';
+  }
+
+  @override
+  String get eventPhotosSubmit => 'Kirim';
+
+  @override
+  String get eventPhotosSubmitting => 'Mengirim...';
+
+  @override
+  String get eventPhotosTitle => 'Foto Acara';
+
+  @override
+  String get eventPhotosUpload => 'Unggah foto';
+
+  @override
+  String get layananSearchPlaceholder => 'Cari nama layanan atau kecamatan';
+
+  @override
+  String get eventPhotosSuccess => 'Foto acara berhasil ditambahkan.';
+
+  @override
+  String get discussionHubTitle => 'Diskusi';
+
+  @override
+  String get discussionTabRooms => 'Ruang Diskusi';
+
+  @override
+  String get discussionTabChat => 'Chat';
+
+  @override
+  String discussionTabChatWithCount(int count) {
+    return 'Chat ($count)';
+  }
+
+  @override
+  String get chatLoadFailed => 'Gagal memuat chat';
+
+  @override
+  String get chatRetry => 'Coba lagi';
+
+  @override
+  String get chatEmpty => 'Belum ada pesan';
+
+  @override
+  String get chatEmptyBody => 'Jadi yang pertama menyapa warga di sini.';
+
+  @override
+  String get chatComposerHint => 'Tulis pesan…';
+
+  @override
+  String get chatSend => 'Kirim';
+
+  @override
+  String get chatPrivacyWarningTitle => 'Peringatan Privasi';
+
+  @override
+  String get chatPrivacyWarningBody =>
+      'Ruang chat ini bersifat publik dan tidak dilengkapi enkripsi atau pengamanan khusus. Pastikan kamu tidak mengirimkan informasi pribadi, data sensitif, atau informasi penting lainnya.';
+
+  @override
+  String get chatPrivacyWarningDismiss => 'Tutup peringatan privasi';
+
+  @override
+  String get chatPrivacyWarningHint =>
+      'Chat ini publik. Jangan kirim data pribadi.';
+
+  @override
+  String get chatLoginToSend => 'Masuk dulu untuk ikut chat ya.';
+
+  @override
+  String get chatTombstone => 'Pesan dihapus';
+
+  @override
+  String get chatEdited => 'disunting';
+
+  @override
+  String get chatScrollToLatest => 'Ke pesan terakhir';
+
+  @override
+  String chatNewMessages(int count) {
+    return '$count chat baru';
+  }
+
+  @override
+  String chatReplyBar(String username) {
+    return 'Membalas @$username';
+  }
+
+  @override
+  String get chatReplyCancelSemantics => 'Batalkan balasan';
+
+  @override
+  String get chatReplyJumpSemantics => 'Lihat pesan yang dibalas';
+
+  @override
+  String get chatReplyTargetMissing =>
+      'Pesan itu belum ada di daftar. Gulir ke atas dulu.';
+
+  @override
+  String get chatDeleteConfirmTitle => 'Hapus pesan?';
+
+  @override
+  String get chatDeleteConfirmBody =>
+      'Pesan akan diganti jadi \"Pesan dihapus\".';
+
+  @override
+  String get chatDeleteAction => 'Hapus';
+
+  @override
+  String get chatDeleteFailed => 'Gagal menghapus pesan';
+
+  @override
+  String get chatSendFailed => 'Gagal mengirim pesan';
+
+  @override
+  String get chatVoiceSendFailed => 'Gagal mengirim voice note';
+
+  @override
+  String get chatRecordSheetTitle => 'Rekam voice note';
+
+  @override
+  String get chatRecordSheetSubtitle => 'Maksimal 60 detik.';
+
+  @override
+  String get chatRecordSheetSubmit => 'Kirim voice note';
+
+  @override
+  String get chatStickerSheetTitle => 'Pilih stiker';
+
+  @override
+  String get chatStickerSemantics => 'Stiker';
+
+  @override
+  String get stickerTabAll => 'Semua';
+
+  @override
+  String get stickerSearchHint => 'Cari id stiker';
+
+  @override
+  String get stickerSearchEmpty => 'Tidak ada stiker yang cocok';
+
+  @override
+  String get chatMicSemantics => 'Rekam suara';
+
+  @override
+  String get chatSending => 'Mengirim…';
+
+  @override
+  String get chatReplySnippetSticker => '[stiker]';
+
+  @override
+  String get chatReplySnippetVoice => '[voice note]';
+
+  @override
+  String get chatReplySnippetSystem => '[sistem]';
+
+  @override
+  String get chatLongPressReply => 'Balas';
+
+  @override
+  String get chatLongPressDelete => 'Hapus';
+
+  @override
+  String get chatConnectionFailed => 'Koneksi terputus. Coba lagi ya.';
+
+  @override
+  String get chatServerTimeout => 'Server lambat merespons. Coba lagi ya.';
+
+  @override
+  String get settingsGroupExperiments => 'Eksperimen';
+
+  @override
+  String get settingsVoiceRoomOptIn => 'Voice room';
+
+  @override
+  String get settingsVoiceRoomOptInSubtitle =>
+      'Gabung obrolan suara di tab Chat (experimental).';
+
+  @override
+  String get voiceStripTitle => 'Voice room';
+
+  @override
+  String get voiceStripOptInHint =>
+      'Voice room tersedia. Aktifkan di Pengaturan dulu.';
+
+  @override
+  String get voiceStripOpenSettings => 'Pengaturan';
+
+  @override
+  String voiceStripInRoom(int count) {
+    return '$count di room';
+  }
+
+  @override
+  String voiceStripHearing(String name) {
+    return 'Suara: $name';
+  }
+
+  @override
+  String get voiceStripMicSending => 'Mic mengirim';
+
+  @override
+  String get voiceStripIncomingHint => 'Ada suara masuk';
+
+  @override
+  String get voiceJoin => 'Gabung';
+
+  @override
+  String get voiceJoining => 'Menghubungkan…';
+
+  @override
+  String get voiceLeave => 'Keluar';
+
+  @override
+  String get voiceMute => 'Bisukan';
+
+  @override
+  String get voiceUnmute => 'Bunyikan';
+
+  @override
+  String get voiceJoinFailed => 'Gagal masuk voice room';
+
+  @override
+  String get voiceRoomDisabled => 'Voice room sedang dimatikan.';
+
+  @override
+  String get voiceUnavailable => 'Voice room belum siap. Coba lagi nanti ya.';
+
+  @override
+  String get voiceMicDenied => 'Izin mikrofon dibutuhkan untuk voice room.';
+
+  @override
+  String get voiceMiniBarOpenChat => 'Ketuk untuk buka Chat';
+
+  @override
+  String voiceParticipantsTitle(int count) {
+    return 'Peserta voice ($count)';
+  }
+
+  @override
+  String get voiceParticipantsEmpty => 'Belum ada peserta di room.';
+
+  @override
+  String voiceParticipantYou(String name) {
+    return '$name (kamu)';
+  }
+
+  @override
+  String get voiceParticipantSpeaking => 'Sedang bicara';
+
+  @override
+  String get voiceParticipantMuted => 'Mikrofon dimatikan';
+
+  @override
+  String get voiceParticipantListening => 'Mendengarkan';
+
+  @override
+  String get voiceShowParticipants => 'Lihat peserta';
+
+  @override
+  String chatPresenceCount(int count) {
+    return '$count orang di chat';
+  }
+
+  @override
+  String get chatPresenceGuestName => 'Tamu';
+
+  @override
+  String get chatPingAction => 'Ping';
+
+  @override
+  String chatPingCooldown(String minutes, String seconds) {
+    return '$minutes:$seconds';
+  }
+
+  @override
+  String get chatPingSent => 'Ping terkirim';
+
+  @override
+  String get voiceRoomFull =>
+      'Voice room penuh (maks 15 orang). Coba lagi nanti ya.';
+
+  @override
+  String get voiceAlreadyJoinedOtherDevice =>
+      'Akun ini sudah gabung voice di device lain. Keluar dulu di device itu ya.';
+
+  @override
+  String get voiceDisconnected =>
+      'Koneksi voice putus. Server lagi bermasalah - coba gabung lagi nanti ya.';
+
+  @override
+  String get voiceReconnecting => 'Menyambungkan ulang…';
+
+  @override
+  String get voiceConnectTimeout =>
+      'Gagal terhubung ke voice server. Coba lagi nanti ya.';
+
+  @override
+  String get voiceWsFailed =>
+      'Voice server tidak menerima koneksi WebSocket. Cek proxy/Cloudflare (Upgrade) di homelab.';
+
+  @override
+  String get chatPingCooldownTitle => 'Ping sedang cooldown';
+
+  @override
+  String chatPingCooldownBody(String clock) {
+    return 'Ping baru saja dipakai. Coba lagi dalam $clock.';
+  }
+
+  @override
+  String get chatPingCooldownSheetHint =>
+      'Ping baru saja dipakai. Tunggu timer habis, lalu coba lagi.';
+
+  @override
+  String get chatPingCooldownReady => 'Ping siap dipakai lagi';
+
+  @override
+  String get chatPingCooldownBodyGeneric =>
+      'Ping baru saja dipakai. Tunggu sebentar lalu coba lagi ya.';
+
+  @override
+  String chatPingCooldownSemantics(String clock) {
+    return 'Ping cooldown $clock';
+  }
+
+  @override
+  String get chatSystemVoiceJoinAction => 'bergabung';
+
+  @override
+  String get chatSystemVoiceLeaveAction => 'keluar';
+
+  @override
+  String chatPingSystemLine(String name) {
+    return '$name : PING!!!';
+  }
+
+  @override
+  String chatTypingOne(String name) {
+    return '$name sedang mengetik…';
+  }
+
+  @override
+  String chatTypingTwo(String a, String b) {
+    return '$a dan $b sedang mengetik…';
+  }
+
+  @override
+  String chatTypingMany(int count) {
+    return '$count orang sedang mengetik…';
+  }
+
+  @override
+  String get usahaSponsorBadge => 'Sponsor';
+
+  @override
+  String usahaSponsorBadgeTier(String tier) {
+    return 'Sponsor $tier';
+  }
+
+  @override
+  String get usahaSponsorTierPerak => 'Perak';
+
+  @override
+  String get usahaSponsorTierEmas => 'Emas';
+
+  @override
+  String get usahaSponsorTierIntan => 'Intan';
+
+  @override
+  String get usahaSponsorTierMustika => 'Mustika';
+
+  @override
+  String get periksaKataVoted => 'Voting kamu sudah tercatat';
+
+  @override
+  String voteTrustProgressDetailNeedUp(
+    int need,
+    String netLabel,
+    int unique,
+    int threshold,
+  ) {
+    return 'Butuh +$need poin lagi · net $netLabel · $unique/$threshold pemilih';
+  }
+
+  @override
+  String voteTrustProgressDetailNeedDown(
+    int need,
+    String netLabel,
+    int unique,
+    int threshold,
+  ) {
+    return 'Butuh -$need poin lagi ke penolakan · net $netLabel · $unique/$threshold pemilih';
+  }
+
+  @override
+  String voteTrustProgressDetailNeedVoters(
+    int need,
+    int unique,
+    int threshold,
+  ) {
+    return 'Net sudah cukup · butuh $need pemilih lagi ($unique/$threshold)';
+  }
+
+  @override
+  String get dictCommunityVoteFooterTitle => 'Bantu periksa makna kata ini';
+
+  @override
+  String get periksaKataUnvoteTitle => 'Batalkan vote?';
+
+  @override
+  String get periksaKataUnvoteBody =>
+      'Vote kamu akan dihapus dari riwayat pemeriksaan untuk kata ini.';
+
+  @override
+  String get periksaKataUnvoteConfirm => 'Batalkan vote';
+
+  @override
+  String get periksaKataVoteLockedMeta =>
+      'Tidak bisa diubah - makna sudah selesai dicek';
+
+  @override
+  String get periksaKataVoteLockedTitle => 'Vote tidak bisa diubah';
+
+  @override
+  String get periksaKataVoteLockedBody =>
+      'Makna ini sudah terverifikasi atau ditolak. Vote lama kamu tetap tercatat dan tidak bisa dibatalkan atau diganti.';
+
+  @override
+  String get periksaKataPriorVoteMeta =>
+      'Vote sebelumnya masih aktif - tap tombol yang sama untuk batal';
+
+  @override
+  String get periksaKataUnvoteDone => 'Vote dibatalkan';
+
+  @override
+  String get dictCommunityVoteOpenPeriksa => 'Buka Periksa Kata';
+
+  @override
+  String get dictCommunityVoteNoPendingBody =>
+      'Makna menunggu tidak tampil di sini. Lanjut di Periksa Kata untuk vote.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -10868,6 +13259,31 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get onboardingLater => 'Nanti';
 
   @override
+  String get onboardingSpeakerTitle => 'Kamu penutur Sambas?';
+
+  @override
+  String get onboardingSpeakerBody =>
+      'Biar sesama pengguna tahu: kamu penutur asli atau sedang belajar bahasa Sambas.';
+
+  @override
+  String get onboardingSpeakerNative => 'Penutur asli';
+
+  @override
+  String get onboardingSpeakerLearner => 'Sedang belajar';
+
+  @override
+  String get profileSpeakerNative => 'Penutur Sambas';
+
+  @override
+  String get profileSpeakerLearner => 'Belajar Sambas';
+
+  @override
+  String get profileSpeakerLabel => 'Status bahasa';
+
+  @override
+  String get profileSpeakerUnset => 'Belum dipilih';
+
+  @override
   String get settingsTitle => 'Pengaturan';
 
   @override
@@ -10906,6 +13322,731 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get navExplore => 'Eksplorasi';
+
+  @override
+  String get navBaleho => 'Baleho';
+
+  @override
+  String get balehoHeaderTitle => 'Baleho SambasKu';
+
+  @override
+  String get balehoPromoSlide => 'Promosi';
+
+  @override
+  String get balehoInternalSlide => 'Di aplikasi';
+
+  @override
+  String get balehoFooterPromoNote =>
+      'Area Media Promosi · Ruang publikasi dan promosi SambasKu.';
+
+  @override
+  String get balehoSlidePromoCaption => 'Ingin tampil di sini?';
+
+  @override
+  String get balehoSlidePromoBody =>
+      'Jadikan SambasKu ruang untuk memperkenalkan usaha, produk, acara, dan informasi kamu kepada masyarakat.';
+
+  @override
+  String balehoPricingUnitLine(String amount) {
+    return 'Tarif: 1x1 / hari / slide = Rp $amount';
+  }
+
+  @override
+  String balehoQuoteEstimate(String amount, int cells, int days, int slides) {
+    return 'Estimasi: Rp $amount ($cells sel x $days hari x $slides slide)';
+  }
+
+  @override
+  String get balehoQuoteEstimateLoading => 'Menghitung estimasi…';
+
+  @override
+  String get balehoQuoteSectionTitle => 'Estimasi biaya';
+
+  @override
+  String get balehoQuoteUnitLabel => 'Tarif dasar';
+
+  @override
+  String balehoQuoteUnitValue(String amount) {
+    return 'Rp $amount / sel / hari / slide';
+  }
+
+  @override
+  String get balehoQuoteSizeLabel => 'Ukuran';
+
+  @override
+  String balehoQuoteSizeValue(String size, int cells) {
+    return '$size ($cells sel)';
+  }
+
+  @override
+  String get balehoQuoteDaysRowLabel => 'Durasi';
+
+  @override
+  String balehoQuoteDaysRowValue(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String get balehoQuoteSlidesLabel => 'Slide';
+
+  @override
+  String balehoQuoteSlidesValue(int slides) {
+    return '$slides slide';
+  }
+
+  @override
+  String get balehoQuoteTotalLabel => 'Total estimasi';
+
+  @override
+  String balehoQuoteTotalValue(String amount) {
+    return 'Rp $amount';
+  }
+
+  @override
+  String get balehoQuoteFormulaHint =>
+      'Hitungan: jumlah sel x hari x tarif x slide';
+
+  @override
+  String balehoQuoteFooterTotal(String amount) {
+    return 'Estimasi Rp $amount';
+  }
+
+  @override
+  String balehoQuoteFooterBreakdown(int cells, int days, int slides) {
+    return '$cells sel x $days hari x $slides slide';
+  }
+
+  @override
+  String get balehoSlidePromoInfoSemantics => 'Info ingin tampil di sini';
+
+  @override
+  String get balehoSlideInternalCaption => 'Ruang komunitas';
+
+  @override
+  String get balehoWeeklyLeaderboardTitle => 'Peringkat Mingguan';
+
+  @override
+  String get balehoWeeklyLeaderboardCta =>
+      'Siapa kontributor teratas minggu ini?';
+
+  @override
+  String get balehoWeeklyLeaderboardComingSoonBody =>
+      'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.';
+
+  @override
+  String get balehoLeaderboardTabCurrent => 'Minggu ini';
+
+  @override
+  String get balehoLeaderboardTabHistory => 'Riwayat';
+
+  @override
+  String get balehoLeaderboardPickWeek => 'Pilih minggu';
+
+  @override
+  String balehoLeaderboardWeekLabel(String weekId) {
+    return 'Minggu $weekId';
+  }
+
+  @override
+  String balehoLeaderboardResetsAt(String datetime) {
+    return 'Reset $datetime';
+  }
+
+  @override
+  String get balehoLeaderboardResetsSoon => 'Reset sebentar lagi';
+
+  @override
+  String balehoLeaderboardResetsInDaysHours(int days, int hours) {
+    return 'Reset dalam $days hari $hours jam';
+  }
+
+  @override
+  String balehoLeaderboardResetsInHoursMinutes(int hours, int minutes) {
+    return 'Reset dalam $hours jam $minutes menit';
+  }
+
+  @override
+  String balehoLeaderboardResetsInMinutes(int minutes) {
+    return 'Reset dalam $minutes menit';
+  }
+
+  @override
+  String balehoLeaderboardRank(int rank) {
+    return '#$rank';
+  }
+
+  @override
+  String balehoLeaderboardScoreCombined(int score) {
+    return '$score poin';
+  }
+
+  @override
+  String balehoLeaderboardScoreBreakdown(int contrib, int verif) {
+    return '+$contrib kontrib · +$verif verif';
+  }
+
+  @override
+  String get balehoLeaderboardVerifierBadge => 'Verifikator';
+
+  @override
+  String get balehoLeaderboardEmpty => 'Belum ada peringkat minggu ini.';
+
+  @override
+  String get balehoLeaderboardLastWeekTitle => 'Peringkat minggu lalu';
+
+  @override
+  String get balehoLeaderboardLastWeekHint =>
+      'Minggu ini masih jalan. Di bawah ini peringkat minggu sebelumnya.';
+
+  @override
+  String get balehoLeaderboardOpenWeek => 'Buka detail minggu';
+
+  @override
+  String get balehoLeaderboardHistoryEmpty =>
+      'Data peringkat minggu ini belum tersimpan.';
+
+  @override
+  String get balehoLeaderboardLoadFailed => 'Gagal memuat peringkat.';
+
+  @override
+  String get balehoLeaderboardHistoryNoWeeks =>
+      'Minggu ini masih berjalan, jadi riwayatnya masih kosong. Kembali lagi Senin depan ya.';
+
+  @override
+  String get balehoLeaderboardScoreLabel => 'Skor';
+
+  @override
+  String get balehoLeaderboardPodiumTitle => 'Podium minggu ini';
+
+  @override
+  String balehoLeaderboardPodiumPlace(int place) {
+    return 'Peringkat $place';
+  }
+
+  @override
+  String get balehoLeaderboardHistoryWeekHint =>
+      'Pilih minggu untuk lihat peringkatnya';
+
+  @override
+  String get balehoLeaderboardHistoryLoadMore => 'Lihat minggu sebelumnya';
+
+  @override
+  String get balehoSlotAvailable => 'Tersedia';
+
+  @override
+  String get balehoSlotHeld => 'Dipesan';
+
+  @override
+  String get balehoSlotHeldInfoTitle => 'Area sedang dipesan';
+
+  @override
+  String get balehoSlotHeldInfoBody =>
+      'Area ini sedang dipesan dan sedang dalam pengecekan. Pilih area lain yang masih kosong ya.';
+
+  @override
+  String get balehoBoardFullTitle => 'Area Baleho penuh';
+
+  @override
+  String get balehoBoardFullBody =>
+      'Semua area sudah terisi. Coba lagi nanti jika ada yang kosong ya.';
+
+  @override
+  String get balehoPendingBadge => 'Menunggu';
+
+  @override
+  String get balehoPlacementSheetTitle => 'Konten Baleho';
+
+  @override
+  String get balehoPlacementOpen => 'Buka';
+
+  @override
+  String get balehoPlacementPendingHint =>
+      'Pesananmu masih menunggu pengecekan. Belum bisa dibuka publik.';
+
+  @override
+  String get balehoContinueBook => 'Lanjut pesan';
+
+  @override
+  String get balehoCancelSelection => 'Batalkan';
+
+  @override
+  String get balehoEnterPickMode => 'Mulai Promosi';
+
+  @override
+  String get balehoSelectionHint => 'Ketuk atau seret sel kosong';
+
+  @override
+  String get balehoSizePickLabel => 'Ukuran area';
+
+  @override
+  String balehoSizeChip(int w, int h) {
+    return '${w}x$h';
+  }
+
+  @override
+  String balehoSelectionSummary(String size, int col, int row) {
+    return '$size · kolom $col, baris $row';
+  }
+
+  @override
+  String get balehoBookConfirmTitle => 'Pesanan Baleho';
+
+  @override
+  String balehoBookConfirmSubtitle(
+    String size,
+    String position,
+    String referral,
+  ) {
+    return 'Ukuran $size di posisi $position. Referral: $referral';
+  }
+
+  @override
+  String get balehoBookConfirmBody =>
+      'Form unggah media dan aksi frame menyusul. Pesanan masuk antrean moderasi dulu ya.';
+
+  @override
+  String get balehoBookClose => 'Tutup';
+
+  @override
+  String get balehoLoadFailed => 'Gagal memuat papan Baleho';
+
+  @override
+  String get balehoBookPageTitle => 'Pesan area';
+
+  @override
+  String balehoSlotSummary(String size, int col, int row) {
+    return 'Ukuran $size · kolom $col, baris $row';
+  }
+
+  @override
+  String get balehoReferralLabel => 'Kode teman (opsional)';
+
+  @override
+  String get balehoReferralHint => 'Username yang mengajakmu';
+
+  @override
+  String get balehoDaysLabel => 'Berapa hari tayang?';
+
+  @override
+  String get balehoDaysHint => '1 sampai 30';
+
+  @override
+  String balehoDaysChip(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String get balehoDaysUnit => 'hari';
+
+  @override
+  String get balehoContentSection => 'Baleho';
+
+  @override
+  String balehoFrameLabel(int n) {
+    return 'Slide $n';
+  }
+
+  @override
+  String get balehoAddFrame => 'Tambah slide';
+
+  @override
+  String get balehoRemoveFrame => 'Hapus';
+
+  @override
+  String get balehoMediaKindLabel => 'Jenis tampilan';
+
+  @override
+  String get balehoMediaTextCta => 'Teks + tombol';
+
+  @override
+  String get balehoMediaImage => 'Gambar';
+
+  @override
+  String get balehoMediaVideo => 'Video';
+
+  @override
+  String get balehoMediaUrlLabel => 'Alamat media';
+
+  @override
+  String get balehoMediaUrlHint => 'https://…';
+
+  @override
+  String get balehoUploadImage => 'Pilih gambar';
+
+  @override
+  String get balehoReplaceImage => 'Ganti gambar';
+
+  @override
+  String get balehoUploading => 'Mengunggah…';
+
+  @override
+  String get balehoUploadOk => 'Gambar terunggah';
+
+  @override
+  String get balehoTitleLabel => 'Judul (opsional)';
+
+  @override
+  String get balehoBodyLabel => 'Teks body (opsional)';
+
+  @override
+  String get balehoBodyHint =>
+      'Maksimal 320 karakter. Tampil di bawah judul di sheet.';
+
+  @override
+  String get balehoCtaLabel => 'Teks tombol (opsional)';
+
+  @override
+  String get balehoActionKindLabel => 'Saat diketuk buka';
+
+  @override
+  String get balehoActionInApp => 'Halaman di SambasKu';
+
+  @override
+  String get balehoActionExternal => 'Website luar';
+
+  @override
+  String get balehoActionPathLabel => 'Tujuan di app';
+
+  @override
+  String get balehoActionPathHint => '/usaha/nama-slug atau /explore';
+
+  @override
+  String get balehoActionUrlLabel => 'Alamat website';
+
+  @override
+  String get balehoActionUrlHint => 'https://…';
+
+  @override
+  String get balehoDeeplinkPickerTitle => 'Pilih halaman tujuan';
+
+  @override
+  String get balehoDeeplinkPickerSubtitle =>
+      'Pilih dulu, lalu boleh dilengkapi slug di kolom bawah.';
+
+  @override
+  String get balehoDeeplinkPickCta => 'Pilih halaman';
+
+  @override
+  String get balehoDeeplinkEmpty => 'Belum dipilih';
+
+  @override
+  String get balehoEntitySearchUsahaTitle => 'Cari usaha';
+
+  @override
+  String get balehoEntitySearchAcaraTitle => 'Cari acara';
+
+  @override
+  String get balehoEntitySearchWisataTitle => 'Cari wisata';
+
+  @override
+  String get balehoEntitySearchKaryaTitle => 'Cari karya';
+
+  @override
+  String get balehoEntitySearchHint => 'Ketik nama…';
+
+  @override
+  String get balehoEntitySearchPrompt =>
+      'Ketik minimal 2 huruf untuk mencari, atau biarkan kosong untuk melihat daftar.';
+
+  @override
+  String get balehoEntitySearchEmpty => 'Tidak ketemu. Coba kata lain ya.';
+
+  @override
+  String get balehoEntitySearchFailed => 'Gagal memuat daftar. Coba lagi ya.';
+
+  @override
+  String get balehoDeeplinkPickUsaha => 'Pilih usaha (cari)';
+
+  @override
+  String get balehoDeeplinkPickAcara => 'Pilih acara (cari)';
+
+  @override
+  String get balehoDeeplinkPickWisata => 'Pilih wisata (cari)';
+
+  @override
+  String get balehoDeeplinkPickKarya => 'Pilih karya (cari)';
+
+  @override
+  String get balehoDeeplinkPickUsahaDetail => 'Cari lalu pilih satu usaha';
+
+  @override
+  String get balehoDeeplinkPickAcaraDetail => 'Cari lalu pilih satu acara';
+
+  @override
+  String get balehoDeeplinkPickWisataDetail =>
+      'Cari lalu pilih satu tempat wisata';
+
+  @override
+  String get balehoDeeplinkPickKaryaDetail => 'Cari lalu pilih satu karya';
+
+  @override
+  String get balehoDeeplinkHome => 'Beranda';
+
+  @override
+  String get balehoDeeplinkExplore => 'Eksplorasi';
+
+  @override
+  String get balehoDeeplinkUsahaList => 'Daftar usaha';
+
+  @override
+  String get balehoDeeplinkAcaraList => 'Daftar acara';
+
+  @override
+  String get balehoDeeplinkEncyclopedia => 'Ensiklopedia';
+
+  @override
+  String get balehoDeeplinkWords => 'Kamus';
+
+  @override
+  String get balehoDeeplinkBaleho => 'Baleho';
+
+  @override
+  String get balehoReactivateCta => 'Pakai konten lama';
+
+  @override
+  String get balehoReactivateHint => 'Lewati unggah - skip cek konten';
+
+  @override
+  String get balehoReactivateTitle => 'Pilih konten lama';
+
+  @override
+  String get balehoReactivateSubtitle =>
+      'Yang sudah lolos cek bisa dipakai ulang di slot baru.';
+
+  @override
+  String get balehoReactivateEmpty =>
+      'Belum ada konten yang lolos cek. Kirim pesanan baru dulu ya.';
+
+  @override
+  String get balehoReactivateUntitled => 'Konten tanpa judul';
+
+  @override
+  String get balehoReactivateClear => 'Batalkan - unggah baru';
+
+  @override
+  String get balehoReactivateUsingOld =>
+      'Konten lama dipakai. Atur posisi dan hari tayang saja.';
+
+  @override
+  String balehoReactivateRefHint(String username) {
+    return 'Referral: @$username';
+  }
+
+  @override
+  String get balehoActionFailToast =>
+      'Tautan tidak bisa dibuka. Coba lagi nanti ya.';
+
+  @override
+  String balehoSlideContentTitle(int n) {
+    return 'Tampilan slide $n';
+  }
+
+  @override
+  String get balehoSlideContentCta => 'Atur tampilan';
+
+  @override
+  String get balehoSlideContentFilled => 'Gambar siap - ketuk untuk ganti';
+
+  @override
+  String get balehoSlideContentEmpty => 'Belum diisi - ketuk untuk atur';
+
+  @override
+  String get balehoSlideContentDone => 'Selesai';
+
+  @override
+  String get balehoSubmit => 'Kirim pesanan';
+
+  @override
+  String get balehoSubmitting => 'Mengirim…';
+
+  @override
+  String get balehoSubmitOk => 'Pesanan masuk antrean cek';
+
+  @override
+  String get balehoErrorSlotTaken =>
+      'Area ini baru saja terisi. Pilih yang lain ya.';
+
+  @override
+  String get balehoErrorActiveLimit =>
+      'Kamu sudah punya 2 pesanan aktif. Tunggu selesai dulu ya.';
+
+  @override
+  String get balehoErrorFingerprintDup =>
+      'Konten dan aksi ini sama dengan pesanan aktifmu. Ubah dulu ya.';
+
+  @override
+  String get balehoErrorUpload => 'Gagal mengunggah gambar. Coba lagi ya.';
+
+  @override
+  String get balehoErrorCreate => 'Gagal mengirim pesanan. Coba lagi ya.';
+
+  @override
+  String get balehoErrorRateLimited =>
+      'Terlalu sering. Tunggu sebentar lalu coba lagi ya.';
+
+  @override
+  String get balehoHistoryTitle => 'Riwayat Baleho';
+
+  @override
+  String get balehoHistoryDetailTitle => 'Performa Pesanan';
+
+  @override
+  String get balehoHistoryDetailNotFound =>
+      'Pesanan tidak ditemukan atau sudah dihapus. Tarik ke bawah untuk memuat ulang ya.';
+
+  @override
+  String get balehoHistoryDetailEnd => 'Berakhir';
+
+  @override
+  String get balehoHistoryDetailStatus => 'Status';
+
+  @override
+  String get balehoHistoryDetailPosition => 'Posisi';
+
+  @override
+  String get balehoHistoryDetailCreated => 'Dibuat';
+
+  @override
+  String balehoDurationMinutes(int minutes) {
+    return '$minutes menit';
+  }
+
+  @override
+  String balehoDurationHours(int hours) {
+    return '$hours jam';
+  }
+
+  @override
+  String balehoDurationDays(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String balehoDurationDaysHours(int days, int hours) {
+    return '$days hari $hours jam';
+  }
+
+  @override
+  String get balehoHistoryLoginRequired =>
+      'Masuk dulu untuk melihat riwayat pesananmu.';
+
+  @override
+  String get balehoHistoryEmpty =>
+      'Belum ada pesanan. Mulai promosi di papan Baleho ya.';
+
+  @override
+  String get balehoHistoryLoadFailed => 'Gagal memuat riwayat. Coba lagi ya.';
+
+  @override
+  String get balehoHistoryUntitled => 'Tanpa judul';
+
+  @override
+  String balehoHistoryPosition(String size, int col, int row) {
+    return '$size · kolom $col, baris $row';
+  }
+
+  @override
+  String get balehoStatusPendingReview => 'Menunggu cek';
+
+  @override
+  String get balehoStatusAwaitingPayment => 'Menunggu bayar';
+
+  @override
+  String get balehoStatusLive => 'Tayang';
+
+  @override
+  String get balehoStatusPaused => 'Ditahan';
+
+  @override
+  String get balehoStatusRejected => 'Ditolak';
+
+  @override
+  String get balehoStatusCancelled => 'Dibatalkan';
+
+  @override
+  String get balehoStatusExpired => 'Selesai';
+
+  @override
+  String get balehoHistoryEndingSoonHint =>
+      'Berakhir dalam 24 jam. Setelah selesai, pesan lagi dari sini ya.';
+
+  @override
+  String get balehoHistoryRebookCta => 'Pesan lagi';
+
+  @override
+  String get balehoHistoryRebookHint =>
+      'Pilih area kosong di papan, lalu aktifkan ulang creative lama.';
+
+  @override
+  String get balehoHistoryStatsTitle => 'Biaya';
+
+  @override
+  String get balehoHistoryCostEmpty =>
+      'Belum ada ringkasan biaya untuk pesanan ini.';
+
+  @override
+  String get balehoHistoryStatImpressions => 'Tayang';
+
+  @override
+  String get balehoHistoryStatTaps => 'Buka detail';
+
+  @override
+  String get balehoHistoryStatActions => 'Klik tombol';
+
+  @override
+  String balehoHistoryStatCtr(String percent) {
+    return 'CTR $percent%';
+  }
+
+  @override
+  String balehoHistoryStatActionRate(String percent) {
+    return 'Action-rate $percent%';
+  }
+
+  @override
+  String balehoHistoryStatSuccessRate(String percent) {
+    return 'Sukses CTA $percent%';
+  }
+
+  @override
+  String balehoHistoryStatQuoted(String amount) {
+    return 'Biaya Rp $amount';
+  }
+
+  @override
+  String balehoHistoryStatCpc(String amount) {
+    return 'CPC Rp $amount';
+  }
+
+  @override
+  String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';
+
+  @override
+  String get balehoValidationVideoSize =>
+      'Video hanya untuk ukuran 4x2 atau 2x4';
+
+  @override
+  String get balehoValidationVideoMax => 'Maksimal satu video per pesanan';
+
+  @override
+  String get balehoValidationMediaUrl => 'Alamat media wajib diisi';
+
+  @override
+  String get balehoValidationAction => 'Isi tujuan saat Baleho diketuk';
+
+  @override
+  String get balehoValidationExternalUrl =>
+      'Alamat website tidak valid (pakai http/https)';
+
+  @override
+  String get balehoValidationDays => 'Durasi harus 1 sampai 30 hari';
+
+  @override
+  String get balehoTosTitle => 'Tanggung jawab konten';
+
+  @override
+  String get balehoTosBody =>
+      'Isi Baleho dan halaman tujuan tanggung jawabmu. SambasKu boleh menolak atau menurunkan tayangan. Ubah besar setelah lolos cek = ajukan ulang.';
 
   @override
   String get navContribute => 'Kontribusi';
@@ -10998,6 +14139,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get profileViewPublic => 'Lihat profil publik';
 
   @override
+  String get profileJinyeComposeQuote => 'Agek mikerkan ape insanak';
+
+  @override
   String get profileNotifications => 'Notifikasi';
 
   @override
@@ -11079,7 +14223,58 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get errorSheetRetry => 'Coba lagi';
 
   @override
-  String get offlineBanner => 'Kamu lagi offline. Nampilin data tersimpan.';
+  String get offlineBanner =>
+      'Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.';
+
+  @override
+  String get lemmaLocalModeChip => 'Mode offline';
+
+  @override
+  String get lemmaDatasetGroup => 'Kamus lokal';
+
+  @override
+  String lemmaDatasetVersion(int version) {
+    return 'Versi kamus lokal v$version';
+  }
+
+  @override
+  String get lemmaDatasetVersionUnknown => 'Versi kamus lokal belum terpasang';
+
+  @override
+  String get lemmaDatasetUpdate => 'Perbarui kamus';
+
+  @override
+  String get lemmaDatasetUpdating => 'Memperbarui…';
+
+  @override
+  String get lemmaDatasetUpdated => 'Kamus lokal diperbarui';
+
+  @override
+  String get lemmaDatasetAlreadyLatest => 'Kamus lokal sudah versi terbaru';
+
+  @override
+  String get lemmaDatasetNeedInternet =>
+      'Butuh internet untuk memperbarui kamus';
+
+  @override
+  String get lemmaDatasetUpdateFailed =>
+      'Gagal memperbarui kamus. Coba lagi nanti.';
+
+  @override
+  String get lemmaDatasetHashFailed =>
+      'File kamus rusak atau tidak cocok. Versi lama tetap dipakai.';
+
+  @override
+  String get lemmaDatasetAppUpdateRequired =>
+      'Perbarui aplikasi dulu supaya bisa pakai kamus ini';
+
+  @override
+  String get lemmaDatasetIncompatible =>
+      'Skema kamus tidak didukung aplikasi ini';
+
+  @override
+  String get lemmaSocialNeedsInternet =>
+      'Komentar tidak tersedia di mode offline';
 
   @override
   String routerNotFound(String error) {
@@ -11410,6 +14605,22 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get voteLoginPrompt => 'Masuk dulu untuk memberi vote';
 
   @override
+  String get voteTrustProgressLabel => 'Menuju verifikasi warga';
+
+  @override
+  String get voteTrustProgressInfo =>
+      'Bar kiri hijau (setuju) vs kanan merah (kurang setuju), saling merebut proporsi suara. Terverifikasi otomatis bila net minimal +5 dari sedikitnya 5 pemilih; ditolak otomatis bila net maksimal -5 dari sedikitnya 5 pemilih.';
+
+  @override
+  String get voteTrustProgressInfoSemantics => 'Info verifikasi warga';
+
+  @override
+  String get notificationTypeMeaningAutoVerified => 'Makna terverifikasi warga';
+
+  @override
+  String get notificationTypeMeaningNeedsReview => 'Makna perlu ditinjau';
+
+  @override
   String get voteDeckLoginPrompt => 'Masuk dulu untuk menilai kata';
 
   @override
@@ -11517,6 +14728,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get commentAddPhoto => 'Foto';
 
   @override
+  String get commentAddSticker => 'Stiker';
+
+  @override
+  String get commentRemoveSticker => 'Lepas stiker';
+
+  @override
   String get commentPhotoPending => 'Foto menunggu pengecekan';
 
   @override
@@ -11532,7 +14749,8 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get commentRemovePhoto => 'Hapus foto';
 
   @override
-  String get commentBodyOrPhotoRequired => 'Komentar atau foto wajib diisi';
+  String get commentBodyOrPhotoRequired =>
+      'Komentar, foto, atau stiker wajib diisi';
 
   @override
   String get commentRecordTitle => 'Rekam komentar suara';
@@ -12113,6 +15331,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
 
   @override
+  String get suggestCategoryChangeCategories => 'Ubah kategori';
+
+  @override
+  String get suggestCategoryChangeCategoriesDesc =>
+      'Tambah atau lepas kategori topik di lemma ini';
+
+  @override
+  String get suggestCategoryPickHint => 'Pilih kategori topik';
+
+  @override
+  String get suggestCategoryNoneSelected => 'Belum ada kategori';
+
+  @override
   String get suggestCategoryLemmaNotes => 'Lainnya';
 
   @override
@@ -12669,6 +15900,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get commonReason => 'Alasan';
 
   @override
+  String get commonPaste => 'Tempel';
+
+  @override
+  String get commonClipboardEmpty => 'Clipboard kosong';
+
+  @override
   String get reviewEntityWord => 'Kata';
 
   @override
@@ -13013,6 +16250,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get reviewSessionSkipped => 'Dilewati.';
+
+  @override
+  String get reviewSessionEntityMissingSkipped => 'Usulan tanpa isi dilewati.';
+
+  @override
+  String get reviewSessionEntityMissingFlood =>
+      'Banyak usulan tanpa isi. Kembali ke antrean dulu.';
 
   @override
   String get reviewSessionApprovedToast => 'Usulan disetujui';
@@ -13479,6 +16723,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String reviewPreviewNotation(String notation) {
     return 'Notasi: $notation';
   }
+
+  @override
+  String get reviewPreviewEntityMissing =>
+      'Isi usulan tidak bisa dimuat. Lewati kartu ini atau coba lagi nanti.';
 
   @override
   String get reviewPreviewProposedMeaning => 'Makna yang diusulkan';
@@ -13957,6 +17205,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reviewExploreEventListTitle => 'Usulan acara';
 
   @override
+  String get reviewExploreEventSearchHint => 'Cari nama atau lokasi';
+
+  @override
+  String get reviewExploreEventTabPeriksa => 'Periksa';
+
+  @override
+  String get reviewExploreEventTabRiwayat => 'Riwayat';
+
+  @override
   String get reviewExploreLayananListTitle => 'Usulan layanan publik';
 
   @override
@@ -14279,7 +17536,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String dictAttributionCreatedBy(String name) {
-    return 'Dibuat oleh $name';
+    return 'Diusulkan oleh $name';
   }
 
   @override
@@ -14289,7 +17546,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String dictAttributionCreatedAndVerifiedBy(String name) {
-    return 'Dibuat dan diverifikasi oleh $name';
+    return 'Diusulkan dan diverifikasi oleh $name';
   }
 
   @override
@@ -14468,6 +17725,18 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictSeeVerifiers => 'Lihat verifikator';
 
   @override
+  String get dictLemmaTrustVerified => 'Terverifikasi';
+
+  @override
+  String get dictLemmaTrustPartial => 'Sebagian dicek';
+
+  @override
+  String get dictMeaningVerified => 'Makna terverifikasi';
+
+  @override
+  String get dictMeaningPendingCheck => 'Makna menunggu pengecekan';
+
+  @override
   String dictPronunciationLine(String notation, String value) {
     return '$notation $value';
   }
@@ -14593,6 +17862,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get dictCopyMeaning => 'Salin makna';
+
+  @override
+  String get dictSuggestMeaning => 'Usulkan perubahan';
+
+  @override
+  String get dictSuggestMeaningSubtitle =>
+      'Makna ini langsung terpilih di form usulan';
 
   @override
   String get dictMeaningActionsTitle => 'Aksi makna';
@@ -14724,6 +18000,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictSearchSambasHint => 'Cari atau saring kata Sambas...';
 
   @override
+  String get dictSearchCommitHint =>
+      'Tekan Enter atau Cari untuk mencatat kata yang belum ada.';
+
+  @override
   String get dictCategory => 'Kategori';
 
   @override
@@ -14746,74 +18026,57 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictProposeThisWord => 'Usul kata ini';
 
   @override
-  String dictRelatedMeaningSubtitle(String subtitle) {
-    return 'Makna terkait · $subtitle';
+  String get hotTopicsTitle => 'Sorotan hari ini';
+
+  @override
+  String get hotTopicsTabSearched => 'Dicari';
+
+  @override
+  String get hotTopicsTabProposed => 'Usulan';
+
+  @override
+  String get hotTopicsTabNearThreshold => 'Hits';
+
+  @override
+  String get hotTopicsTabEmpty => 'Belum ada data';
+
+  @override
+  String get hotTopicsTabEmptySearchedBody =>
+      'Belum ada pencarian kosong yang menonjol hari ini.';
+
+  @override
+  String get hotTopicsTabEmptyProposedBody =>
+      'Belum ada usulan kata yang menunggu peninjauan.';
+
+  @override
+  String get hotTopicsTabEmptyNearBody =>
+      'Belum ada hits dalam 2 hari terakhir.';
+
+  @override
+  String get hotTopicsTabCheck => 'Cek';
+
+  @override
+  String get hotTopicsTabEmptyCheckBody =>
+      'Belum ada makna yang perlu dicek hari ini.';
+
+  @override
+  String get hotTopicsBackfillHint => 'Sebagian dari 7 hari terakhir.';
+
+  @override
+  String get hotTopicsProposedSubtitle => 'Usulan baru';
+
+  @override
+  String get hotTopicsEmptySlot => '-';
+
+  @override
+  String hotTopicsViewCount(String count) {
+    return '$count× dibuka';
   }
 
   @override
-  String get dictSearchHistory => 'Riwayat pencarian';
-
-  @override
-  String get dictRemove => 'Hapus';
-
-  @override
-  String dictAudioPlay(String meta) {
-    return 'Putar audio $meta';
+  String hotTopicsDownvoteCount(String count) {
+    return '$count× perlu di cek';
   }
-
-  @override
-  String dictAudioPause(String meta) {
-    return 'Jeda audio $meta';
-  }
-
-  @override
-  String dictAudioResume(String meta) {
-    return 'Lanjutkan audio $meta';
-  }
-
-  @override
-  String dictAudioLoading(String meta) {
-    return 'Memuat audio $meta';
-  }
-
-  @override
-  String dictAudioError(String meta) {
-    return 'Gagal memutar $meta, ketuk untuk coba lagi';
-  }
-
-  @override
-  String get dictAudioErrorRetry =>
-      'Gagal memutar audio. Coba lagi dalam beberapa saat.';
-
-  @override
-  String get dictAudioProgress => 'Progres pemutaran';
-
-  @override
-  String dictAudioProgressPercent(int percent) {
-    final intl.NumberFormat percentNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
-    final String percentString = percentNumberFormat.format(percent);
-
-    return '$percentString persen';
-  }
-
-  @override
-  String get dictPronunciationSection => 'Pelafalan';
-
-  @override
-  String get dictNoPronunciationAudio => 'Belum ada audio pelafalan kata';
-
-  @override
-  String get dictRecordExampleAudio => 'Rekam audio contoh';
-
-  @override
-  String get dictRecordPronunciation => 'Rekam pelafalan';
-
-  @override
-  String get dictLoginToRecord => 'Masuk dulu untuk rekam pelafalan';
-
-  @override
-  String get dictAddPronunciation => 'Tambah pelafalan';
 
   @override
   String get dictAddPronunciationTitle => 'Tambah pelafalan';
@@ -15350,6 +18613,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get feedCategoryExplore => 'Eksplorasi';
 
   @override
+  String get feedCategoryJinye => 'Jinye';
+
+  @override
   String get feedCategoryAnnouncement => 'Pengumuman';
 
   @override
@@ -15593,6 +18859,64 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get feedContributeSearchMiss => 'Dicari warga';
 
   @override
+  String get feedContributePeriksaKata => 'Periksa kata';
+
+  @override
+  String get feedPeriksaKataStubBody =>
+      'Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.';
+
+  @override
+  String get periksaKataLoginPrompt => 'Masuk dulu untuk memeriksa kata';
+
+  @override
+  String get periksaKataSearchHint => 'Cari lemma…';
+
+  @override
+  String get periksaKataEmpty => 'Belum ada makna menunggu pengecekan';
+
+  @override
+  String get periksaKataSearchEmpty => 'Tidak ketemu lemma itu';
+
+  @override
+  String get periksaKataAgree => 'Sudah pas';
+
+  @override
+  String get periksaKataDisagree => 'Perlu dicek ulang';
+
+  @override
+  String get periksaKataVotedAgree => 'Voting kamu sudah tercatat';
+
+  @override
+  String get periksaKataVotedDisagree => 'Voting kamu sudah tercatat';
+
+  @override
+  String get periksaKataSkip => 'Lewati';
+
+  @override
+  String get periksaKataSkipSemantics => 'Lewati, saya tidak tahu';
+
+  @override
+  String get periksaKataSkipSwipeHint => 'Geser kiri untuk lewati';
+
+  @override
+  String get periksaKataHistoryTitle => 'Riwayat pemeriksaan';
+
+  @override
+  String get periksaKataHistoryEmpty => 'Belum ada riwayat pemeriksaan';
+
+  @override
+  String get periksaKataFilterAll => 'Semua';
+
+  @override
+  String get periksaKataFilterPending => 'Menunggu';
+
+  @override
+  String get periksaKataFilterVerified => 'Terverifikasi';
+
+  @override
+  String get periksaKataFilterRejected => 'Ditolak';
+
+  @override
   String get feedContributeSearchMissSubtitle =>
       'Kata yang dicari warga tapi belum ketemu. Bantu isi artinya';
 
@@ -15690,7 +19014,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get profileUsernameHint =>
-      'a-z, 0-9, titik, underscore (6-30 karakter)';
+      'a-z, 0-9, titik, underscore (6-30; tanpa beruntun)';
 
   @override
   String get profileUsernameChecking => 'Memeriksa ketersediaan…';
@@ -15706,10 +19030,47 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get profileUsernameInvalid =>
-      'Username belum memenuhi aturan (6-30, a-z, 0-9, titik, underscore)';
+      'Username belum memenuhi aturan (6-30, a-z/0-9/titik/underscore, tanpa beruntun)';
 
   @override
   String get profileUsernameCheckFailed => 'Gagal memeriksa username';
+
+  @override
+  String get profileUsernameReclaimable =>
+      'Username lama masih bisa dikembalikan';
+
+  @override
+  String profileUsernameCooldown(String when) {
+    return 'Username baru bisa diganti lagi setelah $when';
+  }
+
+  @override
+  String get profileUsernameHistoryAction => 'Riwayat username';
+
+  @override
+  String get profileUsernameHistoryTitle => 'Riwayat username';
+
+  @override
+  String get profileUsernameHistorySubtitle =>
+      'Hanya kamu yang melihat daftar ini';
+
+  @override
+  String get profileUsernameHistoryEmpty => 'Belum ada perubahan username';
+
+  @override
+  String profileUsernameHistoryRow(String oldUsername, String newUsername) {
+    return '$oldUsername jadi $newUsername';
+  }
+
+  @override
+  String get profileUsernameHistoryCanReclaim => 'Masih bisa dikembalikan';
+
+  @override
+  String get profileUsernameReclaimAction => 'Kembalikan';
+
+  @override
+  String get profileUsernameHistoryLoadFailed =>
+      'Gagal memuat riwayat username';
 
   @override
   String get profileDisplayNameLabel => 'Nama tampilan';
@@ -16101,6 +19462,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get notificationTypeEventNeedsRevision => 'Acara perlu revisi';
+
+  @override
+  String get notificationTypeBalehoApproved => 'Baleho disetujui';
+
+  @override
+  String get notificationTypeBalehoRejected => 'Baleho ditolak';
+
+  @override
+  String get notificationTypeBalehoEndingSoon => 'Baleho hampir berakhir';
 
   @override
   String get notificationTypeUpdate => 'Pembaruan';
@@ -17127,16 +20497,566 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get layananStatusRejected => 'Ditolak';
 
   @override
+  String get exploreCategoryKarya => 'Karya';
+
+  @override
+  String get exploreCategoryKaryaSubtitle => 'Musik dan film berbau Sambas';
+
+  @override
+  String get karyaTitle => 'Karya';
+
+  @override
+  String get karyaLoadFailed => 'Gagal memuat karya';
+
+  @override
+  String get karyaNotFound => 'Karya tidak ditemukan';
+
+  @override
+  String get karyaEmpty => 'Belum ada karya';
+
+  @override
+  String get karyaEmptyHint => 'Tahu lagu atau film Sambas? Kamu bisa usulkan.';
+
+  @override
+  String get karyaEmptyFilter => 'Belum ada karya yang cocok';
+
+  @override
+  String get karyaEmptyFilterHint =>
+      'Coba ubah filter atau cari dengan kata lain ya.';
+
+  @override
+  String get karyaSearchPlaceholder => 'Cari judul karya...';
+
+  @override
+  String get karyaKindMusic => 'Musik';
+
+  @override
+  String get karyaKindFilm => 'Film';
+
+  @override
+  String get karyaYear => 'Tahun';
+
+  @override
+  String karyaYearLabel(int year) {
+    return 'Tahun $year';
+  }
+
+  @override
+  String get karyaCredits => 'Kredit';
+
+  @override
+  String get karyaAccess => 'Akses karya';
+
+  @override
+  String get karyaAccessEmpty => 'Belum ada tautan akses';
+
+  @override
+  String get karyaAccessKindListen => 'Dengarkan';
+
+  @override
+  String get karyaAccessKindWatch => 'Tonton';
+
+  @override
+  String get karyaAccessKindBuy => 'Beli';
+
+  @override
+  String get karyaAccessKindRead => 'Baca';
+
+  @override
+  String get karyaAccessKindStream => 'Streaming';
+
+  @override
+  String get karyaAccessKindOfficial => 'Situs resmi';
+
+  @override
+  String get karyaAccessKindOther => 'Lainnya';
+
+  @override
+  String get karyaContribute => 'Usulkan karya';
+
+  @override
+  String get karyaContributeMusic => 'Usul lagu';
+
+  @override
+  String get karyaContributeFilm => 'Usul film';
+
+  @override
+  String get karyaContributePickTitle => 'Usulkan karya apa?';
+
+  @override
+  String get karyaContributePickSubtitle =>
+      'Pilih musik atau film. Tahun dan kaitan Sambas dilengkapi saat tinjauan.';
+
+  @override
+  String get karyaFormQuickHint =>
+      'Cukup judul dan nama kreator. Tim akan melengkapi tahun dan kaitan Sambas sebelum tayang.';
+
+  @override
+  String get karyaFormTitleHintMusic => 'Judul lagu';
+
+  @override
+  String get karyaFormTitleHintFilm => 'Judul film';
+
+  @override
+  String get karyaFormCreditNameMusic => 'Nama penyanyi';
+
+  @override
+  String get karyaFormCreditNameFilm => 'Nama kreator';
+
+  @override
+  String get karyaFormCreditNameHintMusic =>
+      'Ketik nama, atau pilih dari saran kreator';
+
+  @override
+  String get karyaFormCreditNameHintFilm =>
+      'Channel, rumah produksi, pembuat, atau nama orang - ketik atau pilih saran';
+
+  @override
+  String get karyaFormCreditNameRequired => 'Nama kreator minimal 2 karakter';
+
+  @override
+  String get karyaFormKreatorSuggestPick => 'Pilih kreator ini';
+
+  @override
+  String get karyaContributeSubmit => 'Kirim usulan';
+
+  @override
+  String get karyaContributeBusy => 'Mengirim...';
+
+  @override
+  String get karyaProposeSuccess => 'Usulan karya kamu sudah dikirim';
+
+  @override
+  String get karyaProposeEdit => 'Usulkan perbaikan';
+
+  @override
+  String get karyaProposeAccessLink => 'Usulkan tautan akses';
+
+  @override
+  String get karyaProposalsTitle => 'Usulan karya saya';
+
+  @override
+  String get karyaProposalsEmpty => 'Kamu belum punya usulan karya';
+
+  @override
+  String get karyaProposalKindNew => 'Usulan karya baru';
+
+  @override
+  String get karyaProposalKindEdit => 'Perbaikan data karya';
+
+  @override
+  String get karyaProposalKindExcerpt => 'Usulan cuplikan';
+
+  @override
+  String get karyaStatusPending => 'Menunggu tinjauan';
+
+  @override
+  String get karyaStatusRevision => 'Perlu perbaikan';
+
+  @override
+  String get karyaStatusApproved => 'Sudah tayang';
+
+  @override
+  String get karyaStatusRejected => 'Ditolak';
+
+  @override
+  String get karyaSambasSection => 'Kaitan dengan Sambas';
+
+  @override
+  String get karyaSambasEmpty => 'Belum ada catatan kaitan';
+
+  @override
+  String get karyaSambasType => 'Jenis kaitan';
+
+  @override
+  String get karyaSambasNote => 'Catatan kaitan';
+
+  @override
+  String get karyaSambasNoteHint =>
+      'Singkat saja, misal asal kreator atau temanya';
+
+  @override
+  String get karyaSambasTypeCreatorOrigin => 'Asal kreator';
+
+  @override
+  String get karyaSambasTypeLanguage => 'Bahasa';
+
+  @override
+  String get karyaSambasTypeLocation => 'Lokasi';
+
+  @override
+  String get karyaSambasTypeTheme => 'Tema';
+
+  @override
+  String get karyaSambasTypeOther => 'Lainnya';
+
+  @override
+  String get karyaFilterTitle => 'Filter karya';
+
+  @override
+  String get karyaFilterApply => 'Terapkan';
+
+  @override
+  String get karyaFilterReset => 'Atur ulang';
+
+  @override
+  String get karyaFilterYear => 'Tahun';
+
+  @override
+  String get karyaFilterYearHint => 'Contoh 2019';
+
+  @override
+  String get karyaFilterLanguage => 'Bahasa';
+
+  @override
+  String get karyaFilterLanguageHint => 'Contoh sbs atau id';
+
+  @override
+  String get karyaFilterSambasType => 'Jenis kaitan Sambas';
+
+  @override
+  String get karyaFilterSambasAll => 'Semua kaitan';
+
+  @override
+  String get karyaRelatedSection => 'Terkait';
+
+  @override
+  String get karyaRelatedKindPlace => 'Tempat';
+
+  @override
+  String get karyaRelatedKindWord => 'Kata';
+
+  @override
+  String get karyaRelatedKindArticle => 'Artikel';
+
+  @override
+  String get karyaRelatedKindEvent => 'Acara';
+
+  @override
+  String get karyaRelatedKindUsaha => 'Usaha';
+
+  @override
+  String get karyaRelatedKindKreator => 'Kreator';
+
+  @override
+  String get karyaRelatedKindKarya => 'Karya';
+
+  @override
+  String get karyaExcerptSection => 'Cuplikan';
+
+  @override
+  String get karyaExcerptEmpty => 'Belum ada cuplikan yang tayang';
+
+  @override
+  String get karyaExcerptEndLabel => 'Label akhir (opsional)';
+
+  @override
+  String get karyaExcerptEndLabelHint => 'Misal bait 2 atau menit 01:35';
+
+  @override
+  String get karyaExcerptFairQuoteTooLong =>
+      'Cuplikan wajar maksimal 4 baris atau 500 karakter. Kurangi teks atau pilih status hak yang cocok.';
+
+  @override
+  String get karyaExcerptFullRequiresA2 =>
+      'Teks sepanjang ini hanya boleh dengan status ada izin, berlisensi, atau domain publik';
+
+  @override
+  String get karyaExcerptHint =>
+      'Cuplikan fair quote maksimal 4 baris atau 500 karakter. Teks lebih panjang hanya kalau haknya jelas (izin, lisensi, atau domain publik) plus catatan hak.';
+
+  @override
+  String get karyaExcerptKind => 'Jenis cuplikan';
+
+  @override
+  String get karyaExcerptKindBookQuote => 'Kutipan buku';
+
+  @override
+  String get karyaExcerptKindDialogue => 'Dialog';
+
+  @override
+  String get karyaExcerptKindLyrics => 'Lirik';
+
+  @override
+  String get karyaExcerptKindOther => 'Lainnya';
+
+  @override
+  String get karyaExcerptRights => 'Status hak';
+
+  @override
+  String get karyaExcerptRightsFairQuote => 'Cuplikan wajar';
+
+  @override
+  String get karyaExcerptRightsLicensed => 'Berlisensi';
+
+  @override
+  String get karyaExcerptRightsNote => 'Catatan hak';
+
+  @override
+  String get karyaExcerptRightsNoteHint =>
+      'Jelaskan izin atau sumber lisensinya';
+
+  @override
+  String get karyaExcerptRightsNoteRequired =>
+      'Catatan hak wajib diisi untuk teks berizin/lisensi/domain publik';
+
+  @override
+  String get karyaExcerptRightsPermission => 'Ada izin';
+
+  @override
+  String get karyaExcerptRightsPublicDomain => 'Domain publik';
+
+  @override
+  String get karyaExcerptRightsUnknown => 'Pilih status hak yang jelas dulu';
+
+  @override
+  String get karyaExcerptSourceUrl => 'URL sumber (opsional)';
+
+  @override
+  String get karyaExcerptSourceUrlHint => 'Tautan sumber asli (https)';
+
+  @override
+  String get karyaExcerptSourceUrlInvalid =>
+      'URL sumber tidak valid. Pakai https yang lengkap ya.';
+
+  @override
+  String get karyaExcerptStartLabel => 'Label awal (opsional)';
+
+  @override
+  String get karyaExcerptStartLabelHint => 'Misal bait 1 atau menit 01:20';
+
+  @override
+  String get karyaExcerptText => 'Teks cuplikan';
+
+  @override
+  String get karyaExcerptTextHint =>
+      'Tempel lirik atau dialog yang mau diusulkan';
+
+  @override
+  String get karyaExcerptTextRequired => 'Teks cuplikan wajib diisi';
+
+  @override
+  String get karyaProposeExcerpt => 'Usulkan cuplikan';
+
+  @override
+  String get karyaAppearsInWordTitle => 'Muncul di karya';
+
+  @override
+  String get karyaLemmaLinkAction => 'Tautkan lemma';
+
+  @override
+  String get karyaLemmaLinkSuccess => 'Lemma ditautkan';
+
+  @override
+  String get karyaLemmaLinkFailed => 'Gagal menautkan lemma';
+
+  @override
+  String get karyaLemmaLinkNotFoundInText =>
+      'Lemma tidak ditemukan di teks cuplikan';
+
+  @override
+  String get karyaLemmaLinkLoginFirst => 'Masuk dulu untuk menautkan lemma';
+
+  @override
+  String get karyaFormInvalid => 'Judul dan nama kreator wajib diisi';
+
+  @override
+  String get karyaFormKindRequired => 'Pilih jenis karya dulu';
+
+  @override
+  String get karyaFormTitleRequired => 'Judul karya minimal 2 karakter';
+
+  @override
+  String get karyaFormYearInvalid => 'Isi tahun rilis yang valid (1800-2100)';
+
+  @override
+  String get karyaFormSambasRequired =>
+      'Minimal satu kaitan dengan Sambas wajib diisi';
+
+  @override
+  String get karyaFormCreditRequired =>
+      'Minimal satu kredit (nama + peran) wajib diisi';
+
+  @override
+  String get karyaFormCreditVocalRequired =>
+      'Untuk musik, minimal satu kredit dengan peran Vokal';
+
+  @override
+  String get karyaFormCreditFilmRequired =>
+      'Untuk film, minimal satu kredit wajib diisi';
+
+  @override
+  String get karyaFormCreditHintMusic =>
+      'Musik wajib punya minimal satu peran Vokal';
+
+  @override
+  String get karyaFormCreditHintFilm =>
+      'Film wajib punya minimal satu kredit (channel, rumah produksi, sutradara, atau peran lain)';
+
+  @override
+  String get kreatorTitle => 'Kreator';
+
+  @override
+  String get kreatorLoadFailed => 'Gagal memuat profil kreator';
+
+  @override
+  String get kreatorNotFound => 'Profil kreator tidak ditemukan';
+
+  @override
+  String get kreatorKindPerson => 'Orang';
+
+  @override
+  String get kreatorKindGroup => 'Grup';
+
+  @override
+  String get kreatorBioEmpty => 'Bio belum diisi. Data bisa dilengkapi nanti.';
+
+  @override
+  String get kreatorLinks => 'Tautan';
+
+  @override
+  String get kreatorKaryaSection => 'Karya';
+
+  @override
+  String get kreatorKaryaEmpty =>
+      'Belum ada karya yang terhubung ke profil ini';
+
+  @override
+  String get kreatorProposeKarya => 'Usulkan karya';
+
+  @override
+  String get kreatorClaimAction => 'Klaim profil ini';
+
+  @override
+  String get kreatorClaimActionHint =>
+      'Kalau ini kamu atau grupmu, kirim bukti singkat';
+
+  @override
+  String get kreatorClaimTitle => 'Klaim profil kreator';
+
+  @override
+  String get kreatorClaimSubtitle =>
+      'Tim akan meninjau dulu. Bukti tidak ditampilkan ke publik.';
+
+  @override
+  String get kreatorClaimProof => 'Catatan bukti';
+
+  @override
+  String get kreatorClaimProofHint =>
+      'Misal akun resmi, tautan, atau penjelasan singkat';
+
+  @override
+  String get kreatorClaimProofShort => 'Catatan bukti minimal 8 karakter';
+
+  @override
+  String get kreatorClaimSubmit => 'Kirim klaim';
+
+  @override
+  String get kreatorClaimSuccess => 'Klaim kamu sudah dikirim';
+
+  @override
+  String get karyaFormKind => 'Jenis karya';
+
+  @override
+  String get karyaFormPickKind => 'Pilih jenis';
+
+  @override
+  String get karyaFormTitle => 'Judul';
+
+  @override
+  String get karyaFormTitleHint => 'Judul lagu atau film';
+
+  @override
+  String get karyaFormYearHint => 'Contoh 2019';
+
+  @override
+  String get karyaFormAddSambas => 'Tambah kaitan Sambas';
+
+  @override
+  String get karyaFormCreditRole => 'Peran';
+
+  @override
+  String get karyaFormCreditName => 'Nama';
+
+  @override
+  String get karyaFormCreditNameHint => 'Nama orang atau grup';
+
+  @override
+  String get karyaFormAddCredit => 'Tambah kredit';
+
+  @override
+  String get karyaFormAccessKind => 'Jenis tautan';
+
+  @override
+  String get karyaFormAccessLabel => 'Label tombol';
+
+  @override
+  String get karyaFormAccessLabelHint => 'Misal Dengarkan di Spotify';
+
+  @override
+  String get karyaFormAccessUrl => 'URL';
+
+  @override
+  String get karyaFormAccessUrlHint => 'Tautan sumber asli (https)';
+
+  @override
+  String get karyaFormAddAccess => 'Tambah tautan akses';
+
+  @override
+  String get karyaCreditRoleVocal => 'Vokal';
+
+  @override
+  String get karyaCreditRoleFeat => 'Feat';
+
+  @override
+  String get karyaCreditRoleSongwriter => 'Penulis lagu';
+
+  @override
+  String get karyaCreditRoleComposer => 'Komposer';
+
+  @override
+  String get karyaCreditRoleProducer => 'Produser';
+
+  @override
+  String get karyaCreditRoleArranger => 'Aransemen';
+
+  @override
+  String get karyaCreditRoleBandMember => 'Anggota band';
+
+  @override
+  String get karyaCreditRoleDirector => 'Sutradara';
+
+  @override
+  String get karyaCreditRoleCast => 'Pemeran';
+
+  @override
+  String get karyaCreditRoleWriter => 'Penulis skenario';
+
+  @override
+  String get karyaCreditRoleCinematographer => 'Sinema';
+
+  @override
+  String get karyaCreditRoleOther => 'Lainnya';
+
+  @override
   String get exploreCategoryAcara => 'Acara';
 
   @override
   String get exploreCategoryAcaraSubtitle => 'Festival, pameran, dan kegiatan';
 
   @override
+  String get exploreCategoryPantun => 'Pantun';
+
+  @override
+  String get exploreCategoryPantunSubtitle =>
+      'Berbalas pantun bersama warga Sambas';
+
+  @override
   String get exploreCategoryPermainan => 'Permainan';
 
   @override
-  String get exploreCategoryPermainanSubtitle => 'Pantun dan permainan Sambas';
+  String get exploreCategoryPermainanSubtitle =>
+      'Teka-teki dan permainan Sambas';
 
   @override
   String get exploreCategoryEnsiklopedia => 'Ensiklopedia';
@@ -17144,6 +21064,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get exploreCategoryEnsiklopediaSubtitle =>
       'Sejarah, kisah, karya, dan tradisi';
+
+  @override
+  String get petakateTitle => 'Petakate';
+
+  @override
+  String get petakateListSubtitle => 'Tebak kata Melayu Sambas hari ini';
+
+  @override
+  String get permainanEmptyTitle => 'Belum ada permainan';
+
+  @override
+  String get permainanEmptySubtitle =>
+      'Game Sambas sedang disiapkan. Cek lagi nanti ya.';
 
   @override
   String get encyclopediaTitle => 'Ensiklopedia';
@@ -17187,6 +21120,46 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get encyclopediaReferencesTitle => 'Referensi & Sumber';
 
   @override
+  String get encyclopediaViewOriginalSource => 'Lihat sumber asli';
+
+  @override
+  String get contentRelatedSection => 'Terkait';
+
+  @override
+  String get contentRelatedArticlesSection => 'Artikel terkait';
+
+  @override
+  String get contentRelatedFormHint =>
+      'Opsional - tautkan lemma, artikel, atau konten lain (maks 12)';
+
+  @override
+  String get contentRelatedAdd => 'Tambah tautan';
+
+  @override
+  String get contentRelatedPickKindTitle => 'Jenis tautan';
+
+  @override
+  String get contentRelatedPickKindSubtitle =>
+      'Pilih jenis konten yang mau ditautkan';
+
+  @override
+  String contentRelatedSearchTitle(String kind) {
+    return 'Cari $kind';
+  }
+
+  @override
+  String get contentRelatedSearchHint => 'Ketik minimal 2 huruf…';
+
+  @override
+  String get contentRelatedSearchEmpty => 'Tidak ada hasil. Coba kata lain.';
+
+  @override
+  String get contentRelatedKindCuisine => 'Kuliner';
+
+  @override
+  String get contentRelatedKindLayanan => 'Layanan';
+
+  @override
   String get encyclopediaCommentsTitle => 'Komentar';
 
   @override
@@ -17210,6 +21183,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get encyclopediaContributeEditTitle => 'Usul Perbaikan Artikel';
+
+  @override
+  String get encyclopediaProposeEdit => 'Usulkan perbaikan';
 
   @override
   String get encyclopediaContributeIntro =>
@@ -17240,6 +21216,38 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get encyclopediaFieldTagsPlaceholder => 'sejarah, istana, budaya';
+
+  @override
+  String get encyclopediaFieldSourceUrl => 'Link sumber';
+
+  @override
+  String get encyclopediaFieldSourceUrlHint => 'https:// (opsional)';
+
+  @override
+  String get encyclopediaSourceUrlPaste => 'Tempel';
+
+  @override
+  String get encyclopediaSourceUrlClipboardEmpty => 'Clipboard kosong';
+
+  @override
+  String get encyclopediaFieldSourceUrlHttpsRequired =>
+      'Link sumber harus diawali https://';
+
+  @override
+  String get encyclopediaStatusNeedsRevision => 'Perlu revisi';
+
+  @override
+  String get encyclopediaContributeUpdateTitle => 'Ubah Usulan';
+
+  @override
+  String get encyclopediaUpdateButton => 'Simpan Perubahan';
+
+  @override
+  String get encyclopediaUpdateFailed => 'Gagal menyimpan perubahan usulan';
+
+  @override
+  String get encyclopediaEditContributionMissing =>
+      'Data usulan belum termuat. Tarik untuk refresh lalu coba lagi.';
 
   @override
   String get encyclopediaFieldBody => 'Isi Artikel (Markdown)';
@@ -17305,6 +21313,47 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get encyclopediaBodyEmpty => 'Belum ada isi.';
+
+  @override
+  String get encyclopediaCoverSemantics => 'Gambar sampul artikel';
+
+  @override
+  String get encyclopediaFieldCover => 'Gambar sampul';
+
+  @override
+  String get encyclopediaFieldCoverHint =>
+      'Opsional - tampil sebagai hero di detail artikel';
+
+  @override
+  String get encyclopediaCoverWaitUpload => 'Tunggu upload sampul selesai';
+
+  @override
+  String get encyclopediaCoverRemoveFailed =>
+      'Hapus sampul yang gagal diunggah dulu';
+
+  @override
+  String get markdownLinkChip => '<link>';
+
+  @override
+  String get markdownLinkChipSemantics => 'Buka tautan';
+
+  @override
+  String get markdownLinkSheetTitle => 'Tautan';
+
+  @override
+  String get markdownLinkOpenBrowser => 'Buka di browser';
+
+  @override
+  String get markdownLinkShowFullSemantics => 'Lihat tautan lengkap';
+
+  @override
+  String get markdownLinkFullUrlTitle => 'Tautan lengkap';
+
+  @override
+  String get markdownLinkCopySemantics => 'Salin tautan';
+
+  @override
+  String get markdownLinkOpenBrowserSemantics => 'Buka di browser';
 
   @override
   String get encyclopediaLoginFirstTitle => 'Masuk dulu ya';
@@ -17887,6 +21936,26 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get cuisineDetailReportBody => 'Data menyesatkan atau duplikat';
 
   @override
+  String get cuisineActionAddPhoto => 'Tambah foto';
+
+  @override
+  String get cuisineAddPhotoBody => 'Kirim foto kuliner yang sudah terbit';
+
+  @override
+  String get cuisineAddPhotoIntro =>
+      'Pilih hingga 5 foto. Foto langsung tayang setelah terkirim.';
+
+  @override
+  String get cuisineAddPhotoRequired => 'Pilih minimal satu foto dulu ya.';
+
+  @override
+  String get cuisineAddPhotoSentTitle => 'Foto terkirim';
+
+  @override
+  String get cuisineAddPhotoSentBody =>
+      'Terima kasih. Foto kuliner sudah ditambahkan.';
+
+  @override
   String get placePhotosNotFoundTitle => 'Foto tidak ditemukan';
 
   @override
@@ -18274,7 +22343,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get contributeSentGuest =>
-      'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.';
+      'Dikirim sebagai tamu. Katanya sudah tayang, menunggu pengecekan warga.';
 
   @override
   String get contributeBulkTitle => 'Usulkan banyak sekaligus';
@@ -18329,6 +22398,35 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get contributeKindHint =>
       'Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan berupa frasa; kata tunggal tidak perlu dipilih.';
+
+  @override
+  String get contributeCategoryLabel => 'Kategori';
+
+  @override
+  String get contributeCategoryHint =>
+      'Opsional. Tag topik lemma (hewan, budaya, buah-buahan). Satu kata boleh lebih dari satu.';
+
+  @override
+  String get contributeCategoryPick => 'Pilih kategori';
+
+  @override
+  String get contributeCategorySheetTitle => 'Pilih kategori';
+
+  @override
+  String get contributeCategorySheetSubtitle =>
+      'Boleh lebih dari satu. Chip muncul di atas detail kata.';
+
+  @override
+  String get contributeCategorySheetDone => 'Simpan';
+
+  @override
+  String get contributeCategorySearchHint => 'Cari kategori';
+
+  @override
+  String get contributeCategoryEmpty => 'Tidak ada kategori yang cocok';
+
+  @override
+  String get contributeCategoryLoadFailed => 'Gagal memuat kategori';
 
   @override
   String get contributeRegisterLabel => 'Register';
@@ -18589,7 +22687,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get contributeBulkSentGuest =>
-      'Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.';
+      'Dikirim sebagai tamu. Kata sudah tayang, menunggu pengecekan warga.';
 
   @override
   String contributeBulkMaxRowsHint(int max) {
@@ -19382,7 +23480,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventFormCategoryRequired => 'Pilih kategori acara dulu.';
 
   @override
-  String get eventFormStartRequired => 'Tentukan waktu mulai.';
+  String get eventFormStartRequired => 'Tentukan tanggal mulai.';
 
   @override
   String get eventFormEndRequired => 'Tentukan waktu selesai.';
@@ -19415,7 +23513,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get eventFormIntro =>
-      'Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.';
+      'Isi nama, kategori, dan tanggal mulai. Yang lain boleh dikosongkan. Usulan ditinjau dulu sebelum tayang.';
 
   @override
   String get eventFormNameLabel => 'Nama acara';
@@ -19424,7 +23522,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventFormDescLabel => 'Deskripsi';
 
   @override
-  String get eventFormDescHint => 'Ceritakan singkat acaranya';
+  String get eventFormDescHint => 'Opsional - ceritakan singkat acaranya';
 
   @override
   String get eventFormScheduleLabel => 'Jadwal';
@@ -19433,19 +23531,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventFormStartDateLabel => 'Tanggal mulai';
 
   @override
-  String get eventFormStartTimeLabel => 'Jam mulai';
+  String get eventFormStartTimeLabel => 'Jam mulai (opsional)';
 
   @override
-  String get eventFormEndDateLabel => 'Tanggal selesai';
+  String get eventFormEndDateLabel => 'Tanggal selesai (opsional)';
 
   @override
-  String get eventFormEndTimeLabel => 'Jam selesai';
+  String get eventFormEndTimeLabel => 'Jam selesai (opsional)';
 
   @override
   String get eventFormLocationLabel => 'Lokasi';
 
   @override
-  String get eventFormLocationHint => 'Nama tempat atau alamat acara';
+  String get eventFormLocationHint => 'Opsional - nama tempat atau alamat';
 
   @override
   String get eventFormMapHint =>
@@ -20564,6 +24662,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get achievementSeeMore => 'Lihat lainnya';
 
   @override
+  String achievementRepeatCount(int count) {
+    return '×$count';
+  }
+
+  @override
   String get achievementBorderUpdated => 'Bingkai profil diperbarui';
 
   @override
@@ -20863,6 +24966,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get profileStatCorrections => 'perbaikan';
+
+  @override
+  String get infoSheetTitle => 'Informasi';
 
   @override
   String get infoSheetUnderstood => 'Mengerti';
@@ -21219,10 +25325,32 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get jinyePreviewEmpty => 'Jinye';
 
   @override
+  String get jinyeProfileJikuLabel => 'Jiku';
+
+  @override
   String get jinyeSheetReply => 'Balas';
 
   @override
   String get jinyeSheetViewDiscussion => 'Lihat diskusi';
+
+  @override
+  String get jinyeSheetCreateNew => 'Buat jinye baru';
+
+  @override
+  String get jinyeSheetClear => 'Kosongkan jinye';
+
+  @override
+  String get jinyeSheetClearConfirmTitle => 'Kosongkan jinye?';
+
+  @override
+  String get jinyeSheetClearConfirmBody =>
+      'Status di profil kamu hilang. Jinye tetap tersimpan di arsip.';
+
+  @override
+  String get jinyeSheetClearConfirmAction => 'Kosongkan';
+
+  @override
+  String get jinyeClearedSuccess => 'Jinye dikosongkan';
 
   @override
   String get jinyeDiscussionEmpty =>
@@ -21415,6 +25543,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get jinyeLemmaPickWordTitle => 'Pilih lemma';
 
   @override
+  String get jinyeLemmaPickWordIntro =>
+      'Ketik kata Sambas yang sudah terverifikasi - hasil muncul otomatis.';
+
+  @override
   String get jinyeLemmaPickWordHint => 'Cari kata Sambas…';
 
   @override
@@ -21423,6 +25555,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get jinyeLemmaPickWordNoResult =>
       'Tidak ada kata terverifikasi yang cocok';
+
+  @override
+  String jinyeLemmaPickWordCount(int count) {
+    return '$count hasil';
+  }
 
   @override
   String get jinyeLemmaLinkSuccess => 'Lemma ditautkan';
@@ -21646,4 +25783,564 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String jinyeCreateChipPhotoCount(int count) {
     return 'Foto · $count';
   }
+
+  @override
+  String get eventAllPhotos => 'Lihat semua foto & unggah';
+
+  @override
+  String get eventDetailAddressLabel => 'Alamat';
+
+  @override
+  String get eventDetailOrganizerLabel => 'Penyelenggara';
+
+  @override
+  String get eventGoingAction => 'Aku hadir';
+
+  @override
+  String get eventGoingCancel => 'Batal hadir';
+
+  @override
+  String eventGoingCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang hadir';
+  }
+
+  @override
+  String get placeVisitAction => 'Pernah singgah';
+
+  @override
+  String get placeVisitCancel => 'Batal singgah';
+
+  @override
+  String placeVisitCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang pernah singgah';
+  }
+
+  @override
+  String get usahaVisitAction => 'Pernah bertransaksi';
+
+  @override
+  String get usahaVisitCancel => 'Batal transaksi';
+
+  @override
+  String usahaVisitCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang pernah bertransaksi';
+  }
+
+  @override
+  String get placeCommentsTitle => 'Komentar wisata';
+
+  @override
+  String get placeCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get placeCommentHint => 'Tulis komentar tentang tempat ini';
+
+  @override
+  String get usahaCommentsTitle => 'Komentar usaha';
+
+  @override
+  String get usahaCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get usahaCommentHint => 'Tulis komentar tentang usaha ini';
+
+  @override
+  String get cuisineCommentsTitle => 'Komentar kuliner';
+
+  @override
+  String get cuisineCommentsEmpty =>
+      'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get cuisineCommentHint => 'Tulis komentar tentang kuliner ini';
+
+  @override
+  String get eventCommentsTitle => 'Komentar acara';
+
+  @override
+  String get eventCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get eventCommentHint => 'Tulis komentar tentang acara ini';
+
+  @override
+  String eventMorePhotos(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Lihat lainnya ($countString foto)';
+  }
+
+  @override
+  String get eventPhotoSection => 'Foto';
+
+  @override
+  String get eventPhotoUploadFailed => 'Unggah foto gagal. Coba lagi.';
+
+  @override
+  String get eventPhotosAddTitle => 'Tambah Foto Acara';
+
+  @override
+  String get eventPhotosEmpty => 'Belum ada foto untuk acara ini.';
+
+  @override
+  String eventPhotosMaxInfo(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Maksimal $countString foto per kiriman.';
+  }
+
+  @override
+  String get eventPhotosSubmit => 'Kirim';
+
+  @override
+  String get eventPhotosSubmitting => 'Mengirim...';
+
+  @override
+  String get eventPhotosTitle => 'Foto Acara';
+
+  @override
+  String get eventPhotosUpload => 'Unggah foto';
+
+  @override
+  String get layananSearchPlaceholder => 'Cari nama layanan atau kecamatan';
+
+  @override
+  String get eventPhotosSuccess => 'Foto acara berhasil ditambahkan.';
+
+  @override
+  String get discussionHubTitle => 'Diskusi';
+
+  @override
+  String get discussionTabRooms => 'Ruang Diskusi';
+
+  @override
+  String get discussionTabChat => 'Chat';
+
+  @override
+  String discussionTabChatWithCount(int count) {
+    return 'Chat ($count)';
+  }
+
+  @override
+  String get chatLoadFailed => 'Gagal memuat chat';
+
+  @override
+  String get chatRetry => 'Coba lagi';
+
+  @override
+  String get chatEmpty => 'Belum ada pesan';
+
+  @override
+  String get chatEmptyBody => 'Jadi yang pertama menyapa warga di sini.';
+
+  @override
+  String get chatComposerHint => 'Tulis pesan…';
+
+  @override
+  String get chatSend => 'Kirim';
+
+  @override
+  String get chatPrivacyWarningTitle => 'Peringatan Privasi';
+
+  @override
+  String get chatPrivacyWarningBody =>
+      'Ruang chat ini bersifat publik dan tidak dilengkapi enkripsi atau pengamanan khusus. Pastikan kamu tidak mengirimkan informasi pribadi, data sensitif, atau informasi penting lainnya.';
+
+  @override
+  String get chatPrivacyWarningDismiss => 'Tutup peringatan privasi';
+
+  @override
+  String get chatPrivacyWarningHint =>
+      'Chat ini publik. Jangan kirim data pribadi.';
+
+  @override
+  String get chatLoginToSend => 'Masuk dulu untuk ikut chat ya.';
+
+  @override
+  String get chatTombstone => 'Pesan dihapus';
+
+  @override
+  String get chatEdited => 'disunting';
+
+  @override
+  String get chatScrollToLatest => 'Ke pesan terakhir';
+
+  @override
+  String chatNewMessages(int count) {
+    return '$count chat baru';
+  }
+
+  @override
+  String chatReplyBar(String username) {
+    return 'Membalas @$username';
+  }
+
+  @override
+  String get chatReplyCancelSemantics => 'Batalkan balasan';
+
+  @override
+  String get chatReplyJumpSemantics => 'Lihat pesan yang dibalas';
+
+  @override
+  String get chatReplyTargetMissing =>
+      'Pesan itu belum ada di daftar. Gulir ke atas dulu.';
+
+  @override
+  String get chatDeleteConfirmTitle => 'Hapus pesan?';
+
+  @override
+  String get chatDeleteConfirmBody =>
+      'Pesan akan diganti jadi \"Pesan dihapus\".';
+
+  @override
+  String get chatDeleteAction => 'Hapus';
+
+  @override
+  String get chatDeleteFailed => 'Gagal menghapus pesan';
+
+  @override
+  String get chatSendFailed => 'Gagal mengirim pesan';
+
+  @override
+  String get chatVoiceSendFailed => 'Gagal mengirim voice note';
+
+  @override
+  String get chatRecordSheetTitle => 'Rekam voice note';
+
+  @override
+  String get chatRecordSheetSubtitle => 'Maksimal 60 detik.';
+
+  @override
+  String get chatRecordSheetSubmit => 'Kirim voice note';
+
+  @override
+  String get chatStickerSheetTitle => 'Pilih stiker';
+
+  @override
+  String get chatStickerSemantics => 'Stiker';
+
+  @override
+  String get stickerTabAll => 'Semua';
+
+  @override
+  String get stickerSearchHint => 'Cari id stiker';
+
+  @override
+  String get stickerSearchEmpty => 'Tidak ada stiker yang cocok';
+
+  @override
+  String get chatMicSemantics => 'Rekam suara';
+
+  @override
+  String get chatSending => 'Mengirim…';
+
+  @override
+  String get chatReplySnippetSticker => '[stiker]';
+
+  @override
+  String get chatReplySnippetVoice => '[voice note]';
+
+  @override
+  String get chatReplySnippetSystem => '[sistem]';
+
+  @override
+  String get chatLongPressReply => 'Balas';
+
+  @override
+  String get chatLongPressDelete => 'Hapus';
+
+  @override
+  String get chatConnectionFailed => 'Koneksi terputus. Coba lagi ya.';
+
+  @override
+  String get chatServerTimeout => 'Server lambat merespons. Coba lagi ya.';
+
+  @override
+  String get settingsGroupExperiments => 'Eksperimen';
+
+  @override
+  String get settingsVoiceRoomOptIn => 'Voice room';
+
+  @override
+  String get settingsVoiceRoomOptInSubtitle =>
+      'Gabung obrolan suara di tab Chat (experimental).';
+
+  @override
+  String get voiceStripTitle => 'Voice room';
+
+  @override
+  String get voiceStripOptInHint =>
+      'Voice room tersedia. Aktifkan di Pengaturan dulu.';
+
+  @override
+  String get voiceStripOpenSettings => 'Pengaturan';
+
+  @override
+  String voiceStripInRoom(int count) {
+    return '$count di room';
+  }
+
+  @override
+  String voiceStripHearing(String name) {
+    return 'Suara: $name';
+  }
+
+  @override
+  String get voiceStripMicSending => 'Mic mengirim';
+
+  @override
+  String get voiceStripIncomingHint => 'Ada suara masuk';
+
+  @override
+  String get voiceJoin => 'Gabung';
+
+  @override
+  String get voiceJoining => 'Menghubungkan…';
+
+  @override
+  String get voiceLeave => 'Keluar';
+
+  @override
+  String get voiceMute => 'Bisukan';
+
+  @override
+  String get voiceUnmute => 'Bunyikan';
+
+  @override
+  String get voiceJoinFailed => 'Gagal masuk voice room';
+
+  @override
+  String get voiceRoomDisabled => 'Voice room sedang dimatikan.';
+
+  @override
+  String get voiceUnavailable => 'Voice room belum siap. Coba lagi nanti ya.';
+
+  @override
+  String get voiceMicDenied => 'Izin mikrofon dibutuhkan untuk voice room.';
+
+  @override
+  String get voiceMiniBarOpenChat => 'Ketuk untuk buka Chat';
+
+  @override
+  String voiceParticipantsTitle(int count) {
+    return 'Peserta voice ($count)';
+  }
+
+  @override
+  String get voiceParticipantsEmpty => 'Belum ada peserta di room.';
+
+  @override
+  String voiceParticipantYou(String name) {
+    return '$name (kamu)';
+  }
+
+  @override
+  String get voiceParticipantSpeaking => 'Sedang bicara';
+
+  @override
+  String get voiceParticipantMuted => 'Mikrofon dimatikan';
+
+  @override
+  String get voiceParticipantListening => 'Mendengarkan';
+
+  @override
+  String get voiceShowParticipants => 'Lihat peserta';
+
+  @override
+  String chatPresenceCount(int count) {
+    return '$count orang di chat';
+  }
+
+  @override
+  String get chatPresenceGuestName => 'Tamu';
+
+  @override
+  String get chatPingAction => 'Ping';
+
+  @override
+  String chatPingCooldown(String minutes, String seconds) {
+    return '$minutes:$seconds';
+  }
+
+  @override
+  String get chatPingSent => 'Ping terkirim';
+
+  @override
+  String get voiceRoomFull =>
+      'Voice room penuh (maks 15 orang). Coba lagi nanti ya.';
+
+  @override
+  String get voiceAlreadyJoinedOtherDevice =>
+      'Akun ini sudah gabung voice di device lain. Keluar dulu di device itu ya.';
+
+  @override
+  String get voiceDisconnected =>
+      'Koneksi voice putus. Server lagi bermasalah - coba gabung lagi nanti ya.';
+
+  @override
+  String get voiceReconnecting => 'Menyambungkan ulang…';
+
+  @override
+  String get voiceConnectTimeout =>
+      'Gagal terhubung ke voice server. Coba lagi nanti ya.';
+
+  @override
+  String get voiceWsFailed =>
+      'Voice server tidak menerima koneksi WebSocket. Cek proxy/Cloudflare (Upgrade) di homelab.';
+
+  @override
+  String get chatPingCooldownTitle => 'Ping sedang cooldown';
+
+  @override
+  String chatPingCooldownBody(String clock) {
+    return 'Ping baru saja dipakai. Coba lagi dalam $clock.';
+  }
+
+  @override
+  String get chatPingCooldownSheetHint =>
+      'Ping baru saja dipakai. Tunggu timer habis, lalu coba lagi.';
+
+  @override
+  String get chatPingCooldownReady => 'Ping siap dipakai lagi';
+
+  @override
+  String get chatPingCooldownBodyGeneric =>
+      'Ping baru saja dipakai. Tunggu sebentar lalu coba lagi ya.';
+
+  @override
+  String chatPingCooldownSemantics(String clock) {
+    return 'Ping cooldown $clock';
+  }
+
+  @override
+  String get chatSystemVoiceJoinAction => 'bergabung';
+
+  @override
+  String get chatSystemVoiceLeaveAction => 'keluar';
+
+  @override
+  String chatPingSystemLine(String name) {
+    return '$name : PING!!!';
+  }
+
+  @override
+  String chatTypingOne(String name) {
+    return '$name sedang mengetik…';
+  }
+
+  @override
+  String chatTypingTwo(String a, String b) {
+    return '$a dan $b sedang mengetik…';
+  }
+
+  @override
+  String chatTypingMany(int count) {
+    return '$count orang sedang mengetik…';
+  }
+
+  @override
+  String get usahaSponsorBadge => 'Sponsor';
+
+  @override
+  String usahaSponsorBadgeTier(String tier) {
+    return 'Sponsor $tier';
+  }
+
+  @override
+  String get usahaSponsorTierPerak => 'Perak';
+
+  @override
+  String get usahaSponsorTierEmas => 'Emas';
+
+  @override
+  String get usahaSponsorTierIntan => 'Intan';
+
+  @override
+  String get usahaSponsorTierMustika => 'Mustika';
+
+  @override
+  String get periksaKataVoted => 'Voting kamu sudah tercatat';
+
+  @override
+  String voteTrustProgressDetailNeedUp(
+    int need,
+    String netLabel,
+    int unique,
+    int threshold,
+  ) {
+    return 'Butuh +$need poin lagi · net $netLabel · $unique/$threshold pemilih';
+  }
+
+  @override
+  String voteTrustProgressDetailNeedDown(
+    int need,
+    String netLabel,
+    int unique,
+    int threshold,
+  ) {
+    return 'Butuh -$need poin lagi ke penolakan · net $netLabel · $unique/$threshold pemilih';
+  }
+
+  @override
+  String voteTrustProgressDetailNeedVoters(
+    int need,
+    int unique,
+    int threshold,
+  ) {
+    return 'Net sudah cukup · butuh $need pemilih lagi ($unique/$threshold)';
+  }
+
+  @override
+  String get dictCommunityVoteFooterTitle => 'Bantu periksa makna kata ini';
+
+  @override
+  String get periksaKataUnvoteTitle => 'Batalkan vote?';
+
+  @override
+  String get periksaKataUnvoteBody =>
+      'Vote kamu akan dihapus dari riwayat pemeriksaan untuk kata ini.';
+
+  @override
+  String get periksaKataUnvoteConfirm => 'Batalkan vote';
+
+  @override
+  String get periksaKataVoteLockedMeta =>
+      'Tidak bisa diubah - makna sudah selesai dicek';
+
+  @override
+  String get periksaKataVoteLockedTitle => 'Vote tidak bisa diubah';
+
+  @override
+  String get periksaKataVoteLockedBody =>
+      'Makna ini sudah terverifikasi atau ditolak. Vote lama kamu tetap tercatat dan tidak bisa dibatalkan atau diganti.';
+
+  @override
+  String get periksaKataPriorVoteMeta =>
+      'Vote sebelumnya masih aktif - tap tombol yang sama untuk batal';
+
+  @override
+  String get periksaKataUnvoteDone => 'Vote dibatalkan';
+
+  @override
+  String get dictCommunityVoteOpenPeriksa => 'Buka Periksa Kata';
+
+  @override
+  String get dictCommunityVoteNoPendingBody =>
+      'Makna menunggu tidak tampil di sini. Lanjut di Periksa Kata untuk vote.';
 }

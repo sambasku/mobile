@@ -35,6 +35,7 @@ import 'features/device/data/repositories/device_repository_impl.dart';
 import 'features/dictionary/presentation/providers/search_history_provider.dart';
 import 'features/notification/presentation/providers/notification_providers.dart';
 import 'features/onboarding/data/onboarding_prefs.dart';
+import 'features/onboarding/data/speaker_status_prefs.dart';
 import 'features/verifier_application/presentation/providers/verifier_application_providers.dart';
 import 'flavors.dart';
 import 'shared/dev_tool/dev_tool_overlay.dart';
@@ -96,8 +97,10 @@ Future<void> main() async {
   await ForuiPaletteController.preload(prefs);
   await FontScaleController.preload(prefs);
   await LocalePrefs.preload(prefs);
+  // #296: hapus sisa key disk lama; riwayat pencarian hanya in-memory.
   await SearchHistoryController.preload(prefs);
   await OnboardingPrefs.preload(prefs);
+  await SpeakerStatusPrefs.preload(prefs);
 
   // L1 response cache (hive_ce) sebelum frame pertama - cold start
   // boleh menyajikan reference/WOTD dari disk.

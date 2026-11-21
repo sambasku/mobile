@@ -26,6 +26,8 @@ void main() {
       ),
     );
     expect(withDef.firstSense, 'Aktivitas memasukkan makanan ke mulut');
+    expect(withDef.firstDefinition, 'Aktivitas memasukkan makanan ke mulut');
+    expect(withDef.firstTranslation, 'makan');
 
     final fallback = WordOfDay(
       date: '2026-09-21',
@@ -48,6 +50,8 @@ void main() {
       ),
     );
     expect(fallback.firstSense, 'makan');
+    expect(fallback.firstDefinition, '');
+    expect(fallback.firstTranslation, 'makan');
     expect(fallback.isNewThisWeek, isTrue);
   });
 }

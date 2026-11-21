@@ -22,7 +22,16 @@ class ContributionRouter {
     GoRoute(
       path: contributeBulk.path,
       name: contributeBulk.name,
-      builder: (context, state) => const BulkContributePage(),
+      builder: (context, state) {
+        final q = state.uri.queryParameters;
+        final correction = q['correction'] == '1' || q['correction'] == 'true';
+        return BulkContributePage(
+          initialLemma: q['lemma'],
+          initialSearchIn: q['search_in'],
+          initialSearchMissId: q['miss_id'] ?? q['search_miss_id'],
+          spellCorrection: correction,
+        );
+      },
     ),
     GoRoute(
       path: contribute.path,
@@ -32,10 +41,12 @@ class ContributionRouter {
         final lemma = q['lemma'];
         final searchIn = q['search_in'];
         final missId = q['miss_id'] ?? q['search_miss_id'];
+        final correction = q['correction'] == '1' || q['correction'] == 'true';
         return ContributePage(
           initialLemma: lemma,
           initialSearchIn: searchIn,
           initialSearchMissId: missId,
+          spellCorrection: correction,
         );
       },
     ),

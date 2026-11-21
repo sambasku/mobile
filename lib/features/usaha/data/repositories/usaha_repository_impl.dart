@@ -34,6 +34,8 @@ class UsahaRepositoryImpl {
 
   Future<Usaha?> getBySlug(String slug) => _datasource.fetchBySlug(slug);
 
+  Future<void> recordView(String slug) => _datasource.recordView(slug);
+
   Future<List<UsahaCategoryRef>> categories() => _datasource.fetchCategories();
 
   Future<UsahaMine> mine() => _datasource.fetchMine();
@@ -46,6 +48,10 @@ class UsahaRepositoryImpl {
 
   Future<void> appendImages(String slug, List<String> urls) =>
       _datasource.appendImages(slug, urls);
+
+  Future<void> markVisit(String usahaId) => _datasource.markVisit(usahaId);
+
+  Future<void> unmarkVisit(String usahaId) => _datasource.unmarkVisit(usahaId);
 
   Future<String> uploadImage(File file) => _datasource.uploadImage(file);
 }

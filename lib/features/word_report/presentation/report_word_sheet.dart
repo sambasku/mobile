@@ -49,6 +49,7 @@ Future<bool> showReportWordSheet(
 }) async {
   final sent = await showModalBottomSheet<bool>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) => _ReportWordSheet(

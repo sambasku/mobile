@@ -316,6 +316,8 @@ class _LayananContributePageState extends ConsumerState<LayananContributePage> {
           FTextField(
             control: FTextFieldControl.managed(controller: _address),
             label: Text(l10n.layananAddress),
+            minLines: 1,
+            maxLines: 4,
           ),
           const SizedBox(height: 12),
           FTextField(

@@ -355,6 +355,7 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
   void _showDetailSheet(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
+      useRootNavigator: true,
       showDragHandle: true,
       isScrollControlled: true,
       builder: (sheetContext) {

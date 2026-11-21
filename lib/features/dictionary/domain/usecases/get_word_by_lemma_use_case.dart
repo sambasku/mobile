@@ -12,6 +12,13 @@ class GetWordByLemmaUseCase {
   Future<Either<DictionaryFailure, WordDetail>> call(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) =>
-      _repository.getWordByLemma(lemma, forceRefresh: forceRefresh);
+      _repository.getWordByLemma(
+        lemma,
+        forceRefresh: forceRefresh,
+        focusMeaningId: focusMeaningId,
+        includeUnverified: includeUnverified,
+      );
 }

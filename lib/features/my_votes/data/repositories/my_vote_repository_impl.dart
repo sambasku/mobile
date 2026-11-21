@@ -19,13 +19,35 @@ MyVoteItem parseMyVoteItem(Map<String, dynamic> map) {
       isVerified: wordMap['is_verified'] == true,
     );
   }
+  final rawStatus = map['community_status']?.toString();
+  String? optionalText(Object? raw) {
+    final s = raw?.toString().trim() ?? '';
+    return s.isEmpty || s == 'null' ? null : s;
+  }
+
   return MyVoteItem(
     id: map['id']?.toString() ?? '',
     targetType: map['target_type']?.toString() ?? '',
     targetId: map['target_id']?.toString() ?? '',
-    value: map['value'] is int ? map['value'] as int : int.tryParse('${map['value']}') ?? 0,
+    value: map['value'] is int
+        ? map['value'] as int
+        : int.tryParse('${map['value']}') ?? 0,
     votedAt: map['voted_at']?.toString() ?? '',
     word: word,
+    communityStatus:
+        (rawStatus == null || rawStatus.isEmpty || rawStatus == 'null')
+        ? null
+        : rawStatus,
+    upvotes: map['upvotes'] is int
+        ? map['upvotes'] as int
+        : int.tryParse('${map['upvotes']}') ?? 0,
+    downvotes: map['downvotes'] is int
+        ? map['downvotes'] as int
+        : int.tryParse('${map['downvotes']}') ?? 0,
+    definition: optionalText(map['definition']),
+    translation: optionalText(map['translation']),
+    contributorUsername: optionalText(map['contributor_username']),
+    contributorDisplayName: optionalText(map['contributor_display_name']),
   );
 }
 
@@ -38,6 +60,9 @@ class MyVoteRepositoryImpl implements MyVoteRepository {
   Future<Either<MyVoteFailure, MyVotePage>> listHistory({
     int limit = 20,
     String? cursor,
+    String? targetType,
+    String? communityStatus,
+    String? q,
   }) async {
     try {
       final res = await _dio.get<Map<String, dynamic>>(
@@ -45,6 +70,11 @@ class MyVoteRepositoryImpl implements MyVoteRepository {
         queryParameters: {
           'limit': limit,
           if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
+          if (targetType != null && targetType.isNotEmpty)
+            'target_type': targetType,
+          if (communityStatus != null && communityStatus.isNotEmpty)
+            'community_status': communityStatus,
+          if (q != null && q.trim().isNotEmpty) 'q': q.trim(),
         },
       );
       final body = res.data ?? const <String, dynamic>{};

@@ -22,11 +22,14 @@ import '../../../activity/presentation/activity_labels.dart';
 import '../../../activity/presentation/providers/announcement_detail_provider.dart';
 import '../../../activity/presentation/widgets/activity_feed_tile.dart';
 import '../../../activity/presentation/widgets/pinned_home_banner.dart';
+import '../../../hot_topics/presentation/providers/hot_topics_providers.dart';
+import '../../../hot_topics/presentation/widgets/hot_topics_card.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../encyclopedia/encyclopedia_router.dart';
 import '../../../entertainment/entertainment_router.dart';
 import '../../dictionary_router.dart';
+import '../providers/word_list_providers.dart';
 import '../providers/word_of_day_providers.dart';
 import '../widgets/word_of_day_card.dart';
 
@@ -85,6 +88,7 @@ class HomeSearchPage extends HookConsumerWidget {
       // Pengumuman pinned bisa expired saat app di background; invalidate
       // (data lama tetap tampil selagi reload, tanpa skeleton berkedip).
       ref.invalidate(pinnedAnnouncementsProvider);
+      ref.invalidate(hotTopicsProvider);
       ref.read(activityFeedProvider(selectedCategory.value).notifier).load();
     });
 
@@ -213,6 +217,7 @@ class HomeSearchPage extends HookConsumerWidget {
               child: Padding(padding: _hPad, child: WordOfDayCard()),
             ),
             const SliverToBoxAdapter(child: PinnedHomeBanner()),
+            const SliverToBoxAdapter(child: HotTopicsCard()),
             const SliverToBoxAdapter(
               child: Padding(padding: _hPad, child: _FeedHeading()),
             ),
@@ -288,18 +293,20 @@ class HomeSearchPage extends HookConsumerWidget {
     await store.deleteByPrefix('GET|/api/v1/activity');
     ref.invalidate(wordOfDayProvider);
     ref.invalidate(pinnedAnnouncementsProvider);
+    ref.invalidate(hotTopicsProvider);
     await Future.wait([
       ref
           .read(activityFeedProvider(category).notifier)
           .load(forceRefresh: true),
       ref.read(wordOfDayProvider.future),
+      ref.read(hotTopicsProvider.future),
     ]);
   }
 }
 
 /// Satu baris tile aksi beranda (Cari / A-Z / Usulkan / Diskusi / Pantun /
 /// Ensiklopedia). Scroll horizontal; kotak ikon 1:1; label di bawahnya.
-class _HomeActionChips extends StatelessWidget {
+class _HomeActionChips extends ConsumerWidget {
   const _HomeActionChips();
 
   /// Lebar kotak ikon (= tinggi, rasio 1:1). Sama dengan lebar kolom
@@ -313,14 +320,18 @@ class _HomeActionChips extends StatelessWidget {
   static const double height = _tileSize + 6 + _labelSlot;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final items = <_HomeActionChip>[
       _HomeActionChip(
         icon: FLucideIcons.search,
         label: l10n.dictSearchChip,
         semanticsLabel: l10n.dictSearchHint,
-        onPress: () => context.push('${DictionaryRouter.list.path}?focus=1'),
+        onPress: () {
+          // #296: jangan bawa query keepAlive / riwayat disk ke field baru.
+          ref.read(wordListProvider.notifier).clearSearchSession();
+          context.push('${DictionaryRouter.list.path}?focus=1');
+        },
       ),
       _HomeActionChip(
         icon: FLucideIcons.aLargeSmall,
@@ -458,7 +469,7 @@ class _FeedCategoryChips extends StatelessWidget {
   final ValueChanged<FeedCategory>? onChanged;
 
   /// Tinggi baris chip (dipakai delegate pinned).
-  static const double height = 36;
+  static const double height = 32;
 
   @override
   Widget build(BuildContext context) {
@@ -477,14 +488,17 @@ class _FeedCategoryChips extends StatelessWidget {
         itemBuilder: (context, i) {
           final category = FeedCategory.values[i];
           final isSelected = category == selected;
-          return FButton(
-            size: .xs,
-            variant: isSelected
-                ? FButtonVariant.primary
-                : FButtonVariant.outline,
-            onPress: onChanged == null ? null : () => onChanged!(category),
-            child: Text(
-              feedCategoryLabel(AppLocalizations.of(context), category),
+          // Pill rounded sama chip label Seksual ([FBadge]), bukan FButton.
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onChanged == null ? null : () => onChanged!(category),
+            child: FBadge(
+              variant: isSelected
+                  ? FBadgeVariant.primary
+                  : FBadgeVariant.secondary,
+              child: Text(
+                feedCategoryLabel(AppLocalizations.of(context), category),
+              ),
             ),
           );
         },

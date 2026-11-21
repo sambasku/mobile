@@ -53,7 +53,7 @@ class _VoteButtonsState extends State<VoteButtons> {
 
   Future<void> _vote(int value) async {
     if (_disabled) return;
-    unawaited(HapticFeedback.lightImpact());
+    unawaited(HapticFeedback.mediumImpact());
     setState(() => _inFlight = true);
     try {
       await widget.onVote(value);

@@ -6,11 +6,18 @@ import '../../../../core/cache/cache_key.dart';
 import '../../../../core/cache/cached_json_client.dart';
 import '../../../../core/models/api_response.dart';
 import '../../../../core/models/image_attribution.dart';
+import '../../../../shared/models/content_related_link.dart';
 import '../../domain/entities/word_detail.dart';
+import '../../domain/entities/meaning_visibility.dart';
 import '../../domain/entities/word_of_day.dart';
 import '../../domain/entities/word_summary.dart';
 import '../../domain/failures/dictionary_failure.dart';
 import '../../domain/repositories/dictionary_repository.dart';
+import '../dataset/lemma_data_source_kind.dart';
+import '../dataset/lemma_dataset_constants.dart';
+import '../dataset/lemma_hybrid.dart';
+import '../dataset/lemma_sticky_store.dart';
+import '../datasources/dictionary_local_datasource.dart';
 import '../datasources/dictionary_remote_datasource.dart';
 import '../models/word_audio_dto.dart';
 import '../models/word_detail_dto.dart';
@@ -20,14 +27,23 @@ import '../../../../core/i18n/l10n.dart';
 class DictionaryRepositoryImpl implements DictionaryRepository {
   DictionaryRepositoryImpl(
     this._remoteDatasource, {
-    Dio? dio,
-    CachedJsonClient? cache,
-  }) : _dio = dio,
-       _cache = cache;
+    this._dio,
+    this._cache,
+    this._local,
+    LemmaStickyStore? sticky,
+    bool Function()? isOffline,
+    void Function(LemmaDataSourceKind kind)? onSource,
+  }) : _gate = LemmaHybridGate(
+         sticky: sticky ?? LemmaStickyStore(),
+         isOffline: isOffline ?? () => false,
+         onSource: onSource,
+       );
 
   final DictionaryRemoteDatasource _remoteDatasource;
   final Dio? _dio;
   final CachedJsonClient? _cache;
+  final DictionaryLocalDatasource? _local;
+  final LemmaHybridGate _gate;
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> searchWords({
@@ -35,14 +51,55 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    bool recordMiss = true,
+    CancelToken? cancelToken,
+  }) {
+    return _gate.read(
+      budget: LemmaDatasetConstants.searchTimeout,
+      // Search miss = side-effect server; jangan bypass API karena sticky lokal.
+      forceRemote: true,
+      remote: () => _searchWordsRemote(
+        query: query,
+        limit: limit,
+        cursor: cursor,
+        searchIn: searchIn,
+        recordMiss: recordMiss,
+        cancelToken: cancelToken,
+      ),
+      local: () async {
+        final local = _local;
+        if (local == null) return null;
+        return local.searchWords(
+          query: query,
+          limit: limit,
+          cursor: cursor,
+          searchIn: searchIn,
+        );
+      },
+      localUnavailableMessage:
+          'Kamus lokal belum siap. Coba lagi setelah online.',
+    );
+  }
+
+  Future<Either<DictionaryFailure, WordSearchPage>> _searchWordsRemote({
+    required String query,
+    required int limit,
+    String? cursor,
+    String searchIn = 'lemma',
+    bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async {
     try {
-      final response = await _remoteDatasource.searchWords({
-        'q': query,
-        'limit': limit,
-        'cursor': ?cursor,
-        'search_in': searchIn,
-      });
+      final response = await _remoteDatasource.searchWords(
+        {
+          'q': query,
+          'limit': limit,
+          'cursor': ?cursor,
+          'search_in': searchIn,
+          'record_miss': recordMiss ? '1' : '0',
+        },
+        cancelToken: cancelToken,
+      );
 
       if (response.success == false) {
         return Either.left(
@@ -83,9 +140,15 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
               .toList(),
           nextCursor: meta?['next_cursor'] as String?,
           hasMore: meta?['has_more'] as bool? ?? false,
+          searchMissId: meta?['search_miss_id'] as String?,
         ),
       );
     } on DioException catch (error) {
+      if (CancelToken.isCancel(error)) {
+        return Either.left(
+          const DictionaryFailure('', errorCode: 'REQUEST_CANCELLED'),
+        );
+      }
       return Either.left(
         _mapDio(
           error,
@@ -105,16 +168,57 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     String? letter,
     bool? isVerified,
     String? category,
+    CancelToken? cancelToken,
+  }) {
+    return _gate.read(
+      budget: LemmaDatasetConstants.searchTimeout,
+      remote: () => _listWordsRemote(
+        q: q,
+        limit: limit,
+        cursor: cursor,
+        letter: letter,
+        isVerified: isVerified,
+        category: category,
+        cancelToken: cancelToken,
+      ),
+      local: () async {
+        final local = _local;
+        if (local == null) return null;
+        return local.listWords(
+          q: q,
+          limit: limit,
+          cursor: cursor,
+          letter: letter,
+          isVerified: isVerified,
+          category: category,
+        );
+      },
+      localUnavailableMessage:
+          'Kamus lokal belum siap. Coba lagi setelah online.',
+    );
+  }
+
+  Future<Either<DictionaryFailure, WordSearchPage>> _listWordsRemote({
+    required String q,
+    required int limit,
+    String? cursor,
+    String? letter,
+    bool? isVerified,
+    String? category,
+    CancelToken? cancelToken,
   }) async {
     try {
-      final response = await _remoteDatasource.listWords({
-        'q': q,
-        'limit': limit,
-        'cursor': ?cursor,
-        'letter': ?letter,
-        'is_verified': ?isVerified,
-        'category': ?category,
-      });
+      final response = await _remoteDatasource.listWords(
+        {
+          'q': q,
+          'limit': limit,
+          'cursor': ?cursor,
+          'letter': ?letter,
+          'is_verified': ?isVerified,
+          'category': ?category,
+        },
+        cancelToken: cancelToken,
+      );
 
       if (response.success == false) {
         return Either.left(
@@ -157,6 +261,11 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         ),
       );
     } on DioException catch (error) {
+      if (CancelToken.isCancel(error)) {
+        return Either.left(
+          const DictionaryFailure('', errorCode: 'REQUEST_CANCELLED'),
+        );
+      }
       return Either.left(
         _mapDio(
           error,
@@ -170,6 +279,28 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> listLatest({
+    required int limit,
+    String? cursor,
+    bool forceRefresh = false,
+  }) {
+    return _gate.read(
+      budget: LemmaDatasetConstants.searchTimeout,
+      remote: () => _listLatestRemote(
+        limit: limit,
+        cursor: cursor,
+        forceRefresh: forceRefresh,
+      ),
+      local: () async {
+        final local = _local;
+        if (local == null) return null;
+        return local.listLatest(limit: limit, cursor: cursor);
+      },
+      localUnavailableMessage:
+          'Kamus lokal belum siap. Coba lagi setelah online.',
+    );
+  }
+
+  Future<Either<DictionaryFailure, WordSearchPage>> _listLatestRemote({
     required int limit,
     String? cursor,
     bool forceRefresh = false,
@@ -278,6 +409,38 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
+  }) {
+    return _gate.read(
+      budget: LemmaDatasetConstants.detailTimeout,
+      remote: () => _getWordByIdRemote(
+        id,
+        forceRefresh: forceRefresh,
+        focusMeaningId: focusMeaningId,
+        includeUnverified: includeUnverified,
+      ),
+      local: () async {
+        final local = _local;
+        if (local == null) return null;
+        final detail = await local.getWordById(id);
+        if (detail == null) return null;
+        return _withPublicMeaningVisibility(
+          detail,
+          focusMeaningId: focusMeaningId,
+          includeUnverified: includeUnverified,
+        );
+      },
+      localUnavailableMessage: 'Kata tidak tersedia di kamus lokal',
+      localUnavailableCode: 'WORD_NOT_FOUND',
+    );
+  }
+
+  Future<Either<DictionaryFailure, WordDetail>> _getWordByIdRemote(
+    String id, {
+    bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async {
     try {
       final cache = _cache;
@@ -286,15 +449,29 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       String? errorMessage;
       String? errorCode;
       var success = true;
+      final focus = focusMeaningId?.trim();
+      final query = <String, dynamic>{
+        if (focus != null && focus.isNotEmpty) 'meaning': focus,
+        if (includeUnverified) 'include_unverified': '1',
+      };
 
+      var relatedRaw = const <ContentRelatedLink>[];
       if (cache != null && dio != null) {
-        final key = buildCacheKey(method: 'GET', path: '/api/v1/words/$id');
+        final key = buildCacheKey(
+          method: 'GET',
+          path: '/api/v1/words/$id',
+          query: query.isEmpty ? null : query,
+        );
         final envelope = await cache.getOrFetch(
           key: key,
           cacheClass: CacheClass.dictionaryDetail,
-          forceRefresh: forceRefresh,
+          // Fokus makna = payload beda; jangan pakai cache verified-only.
+          forceRefresh: forceRefresh || query.isNotEmpty,
           fetch: () async {
-            final resp = await dio.get<dynamic>('/api/v1/words/$id');
+            final resp = await dio.get<dynamic>(
+              '/api/v1/words/$id',
+              queryParameters: query.isEmpty ? null : query,
+            );
             final body = resp.data;
             if (body is! Map) {
               throw StateError('Envelope detail kata tidak valid');
@@ -307,7 +484,9 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         errorCode = envelope['error_code'] as String?;
         final raw = envelope['data'];
         if (raw is Map) {
-          dto = WordDetailDto.fromJson(Map<String, dynamic>.from(raw));
+          final map = Map<String, dynamic>.from(raw);
+          dto = WordDetailDto.fromJson(map);
+          relatedRaw = ContentRelatedLink.listFromJson(map['related']);
         }
       } else {
         final response = await _remoteDatasource.getWordById(id);
@@ -335,7 +514,13 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         );
       }
 
-      return Either.right(_mapDetail(dto));
+      return Either.right(
+        _withPublicMeaningVisibility(
+          _mapDetail(dto, related: relatedRaw),
+          focusMeaningId: focus,
+          includeUnverified: includeUnverified,
+        ),
+      );
     } on DioException catch (error) {
       return Either.left(
         _mapDio(
@@ -353,6 +538,38 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
+  }) {
+    return _gate.read(
+      budget: LemmaDatasetConstants.detailTimeout,
+      remote: () => _getWordByLemmaRemote(
+        lemma,
+        forceRefresh: forceRefresh,
+        focusMeaningId: focusMeaningId,
+        includeUnverified: includeUnverified,
+      ),
+      local: () async {
+        final local = _local;
+        if (local == null) return null;
+        final detail = await local.getWordByLemma(lemma);
+        if (detail == null) return null;
+        return _withPublicMeaningVisibility(
+          detail,
+          focusMeaningId: focusMeaningId,
+          includeUnverified: includeUnverified,
+        );
+      },
+      localUnavailableMessage: 'Kata tidak tersedia di kamus lokal',
+      localUnavailableCode: 'WORD_NOT_FOUND',
+    );
+  }
+
+  Future<Either<DictionaryFailure, WordDetail>> _getWordByLemmaRemote(
+    String lemma, {
+    bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async {
     try {
       final encoded = Uri.encodeComponent(lemma);
@@ -362,18 +579,28 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       String? errorMessage;
       String? errorCode;
       var success = true;
+      final focus = focusMeaningId?.trim();
+      final query = <String, dynamic>{
+        if (focus != null && focus.isNotEmpty) 'meaning': focus,
+        if (includeUnverified) 'include_unverified': '1',
+      };
+      var relatedRaw = const <ContentRelatedLink>[];
 
       if (cache != null && dio != null) {
         final key = buildCacheKey(
           method: 'GET',
           path: '/api/v1/words/lemma/$encoded',
+          query: query.isEmpty ? null : query,
         );
         final envelope = await cache.getOrFetch(
           key: key,
           cacheClass: CacheClass.dictionaryDetail,
-          forceRefresh: forceRefresh,
+          forceRefresh: forceRefresh || query.isNotEmpty,
           fetch: () async {
-            final resp = await dio.get<dynamic>('/api/v1/words/lemma/$encoded');
+            final resp = await dio.get<dynamic>(
+              '/api/v1/words/lemma/$encoded',
+              queryParameters: query.isEmpty ? null : query,
+            );
             final body = resp.data;
             if (body is! Map) {
               throw StateError('Envelope detail lemma tidak valid');
@@ -386,7 +613,9 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         errorCode = envelope['error_code'] as String?;
         final raw = envelope['data'];
         if (raw is Map) {
-          dto = WordDetailDto.fromJson(Map<String, dynamic>.from(raw));
+          final map = Map<String, dynamic>.from(raw);
+          dto = WordDetailDto.fromJson(map);
+          relatedRaw = ContentRelatedLink.listFromJson(map['related']);
         }
       } else {
         final response = await _remoteDatasource.getWordByLemma(lemma);
@@ -414,7 +643,13 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         );
       }
 
-      return Either.right(_mapDetail(dto));
+      return Either.right(
+        _withPublicMeaningVisibility(
+          _mapDetail(dto, related: relatedRaw),
+          focusMeaningId: focus,
+          includeUnverified: includeUnverified,
+        ),
+      );
     } on DioException catch (error) {
       return Either.left(
         _mapDio(
@@ -429,7 +664,21 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   }
 
   @override
-  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() async {
+  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() {
+    return _gate.read(
+      budget: LemmaDatasetConstants.searchTimeout,
+      remote: _listCategoriesRemote,
+      local: () async {
+        final local = _local;
+        if (local == null) return null;
+        return local.listCategories();
+      },
+      localUnavailableMessage: l10n.dictCategoryLoadFailed,
+    );
+  }
+
+  Future<Either<DictionaryFailure, List<WordCategory>>>
+  _listCategoriesRemote() async {
     try {
       final response = await _remoteDatasource.listCategories();
 
@@ -467,6 +716,29 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
 
   @override
   Future<Either<DictionaryFailure, WordOfDay?>> getWordOfDay({
+    bool forceRefresh = false,
+  }) async {
+    // WOTD tidak di-fake dari SQLite (plan Fase 1).
+    if (_gate.preferLocal) {
+      return Either.right(null);
+    }
+    try {
+      final result = await _getWordOfDayRemote(
+        forceRefresh: forceRefresh,
+      ).timeout(LemmaDatasetConstants.detailTimeout);
+      return switch (result) {
+        Left(value: final failure) =>
+          failure.errorCode == 'WORD_NOT_FOUND'
+              ? Either.left(failure)
+              : Either.right(null),
+        Right(value: final value) => Either.right(value),
+      };
+    } catch (_) {
+      return Either.right(null);
+    }
+  }
+
+  Future<Either<DictionaryFailure, WordOfDay?>> _getWordOfDayRemote({
     bool forceRefresh = false,
   }) async {
     try {
@@ -534,7 +806,25 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     }
   }
 
-  WordDetail _mapDetail(WordDetailDto dto) => WordDetail(
+  WordDetail _withPublicMeaningVisibility(
+    WordDetail detail, {
+    String? focusMeaningId,
+    bool includeUnverified = false,
+  }) {
+    final visible = visibleMeaningsForPublicDetail(
+      detail.meanings,
+      viewerIsVerifier: false,
+      focusMeaningId: focusMeaningId,
+      includeUnverified: includeUnverified,
+    );
+    if (visible.length == detail.meanings.length) return detail;
+    return detail.withMeanings(visible);
+  }
+
+    WordDetail _mapDetail(
+    WordDetailDto dto, {
+    List<ContentRelatedLink> related = const [],
+  }) => WordDetail(
     id: dto.id,
     lemma: dto.lemma,
     languageId: dto.languageId,
@@ -578,6 +868,20 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
                 : '${m.wordClass!.name} (${m.wordClass!.alias})',
             definition: m.definition,
             orderIndex: m.orderIndex,
+            isVerified: m.isVerified,
+            needsReview: m.needsReview,
+            verifiedAt: m.verifiedAt,
+            verifiedBy: m.verifiedBy == null
+                ? null
+                : WordVerifier(
+                    username: m.verifiedBy!.username,
+                    displayName:
+                        (m.verifiedBy!.displayName?.trim().isNotEmpty == true)
+                        ? m.verifiedBy!.displayName!.trim()
+                        : m.verifiedBy!.username,
+                    avatarUrl: m.verifiedBy!.avatarUrl,
+                    role: m.verifiedBy!.role,
+                  ),
             // WIP review-flow: kontributor per makna (belum di-commit).
             createdBy: m.createdBy == null
                 ? null
@@ -657,6 +961,19 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
           ),
         )
         .toList(),
+    appearsInKarya: dto.appearsInKarya
+        .map(
+          (r) => WordAppearsInKarya(
+            karyaSlug: r.karyaSlug,
+            karyaTitle: r.karyaTitle,
+            excerptId: r.excerptId,
+            excerptKind: r.excerptKind,
+            start: r.start,
+            end: r.end,
+            snippet: r.snippet,
+          ),
+        )
+        .toList(),
     // PRD relasi-lemma: kelompok makna published. Grup tanpa anggota lain
     // tidak berguna di UI (kata ini satu-satunya anggota) -> dibuang.
     meaningGroups: dto.meaningGroups
@@ -689,6 +1006,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
           ),
         )
         .toList(),
+    related: related,
   );
 
   WordAudio _mapAudio(WordAudioDto dto) => WordAudio(
@@ -724,5 +1042,15 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       }
     }
     return DictionaryFailure(fallback);
+  }
+
+  @override
+  Future<void> recordView(String wordId) async {
+    final dio = _dio;
+    if (dio == null) return;
+    await dio.post<dynamic>(
+      '/api/v1/words/${Uri.encodeComponent(wordId)}/view',
+      options: Options(sendTimeout: const Duration(seconds: 5)),
+    );
   }
 }

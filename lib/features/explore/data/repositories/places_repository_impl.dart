@@ -49,6 +49,10 @@ class PlacesRepositoryImpl {
 
   Future<void> recordView(String slug) => _datasource.recordView(slug);
 
+  Future<void> markVisit(String placeId) => _datasource.markVisit(placeId);
+
+  Future<void> unmarkVisit(String placeId) => _datasource.unmarkVisit(placeId);
+
   /// #187: halaman galeri foto (offset server-side). Error dilempar supaya
   /// grid bisa menampilkan tombol coba lagi, bukan senyap kosong.
   Future<({List<PlaceImage> items, int total, int? nextOffset})> imagePage(

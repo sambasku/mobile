@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,7 +35,7 @@ void main() {
     await _pumpPage(tester, repo);
 
     await tester.enterText(find.byType(FTextField), 'zzz');
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump(const Duration(milliseconds: 850));
     await tester.pump();
 
     // Satu assertion: pesan ikut menyebut query yang diketik.
@@ -50,7 +51,7 @@ void main() {
     final router = await _pumpPage(tester, _FakeDictionaryRepository());
 
     await tester.enterText(find.byType(FTextField), 'bakat');
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump(const Duration(milliseconds: 850));
     await tester.pump();
 
     final tile = find.widgetWithText(FTile, 'bakat');
@@ -77,7 +78,7 @@ void main() {
     await _pumpPage(tester, repo);
 
     await tester.enterText(find.byType(FTextField), 'bakat');
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump(const Duration(milliseconds: 850));
     await tester.pump();
 
     expect(find.text('Gagal memuat kata'), findsOneWidget);
@@ -137,6 +138,8 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async {
     if (fail) return Either.left(const DictionaryFailure('Gagal memuat kata'));
     return Either.right(
@@ -163,12 +166,16 @@ class _FakeDictionaryRepository implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) => throw UnimplementedError();
 
   @override
@@ -184,6 +191,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    CancelToken? cancelToken,
   }) => throw UnimplementedError();
 
   @override
@@ -196,4 +204,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     String? cursor,
     bool forceRefresh = false,
   }) => throw UnimplementedError();
+
+  @override
+  Future<void> recordView(String wordId) async {}
 }

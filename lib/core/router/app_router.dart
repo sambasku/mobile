@@ -9,6 +9,8 @@ import 'package:go_router/go_router.dart';
 import '../../features/about/about_router.dart';
 import '../../features/achievement/achievement_router.dart';
 import '../../features/activity/presentation/pages/activity_page.dart';
+import '../../features/baleho/baleho_router.dart';
+import '../../features/baleho/presentation/pages/baleho_page.dart';
 import '../../features/admin_analytics/admin_analytics_router.dart';
 import '../../features/auth/auth_router.dart';
 import '../../features/auth/presentation/providers/auth_status_providers.dart';
@@ -31,6 +33,7 @@ import '../../features/explore/explore_router.dart';
 import '../../features/explore/presentation/pages/explore_page.dart';
 import '../../features/event/event_router.dart';
 import '../../features/layanan/layanan_router.dart';
+import '../../features/karya/karya_router.dart';
 import '../../features/usaha/usaha_router.dart';
 import '../../features/dictionary/presentation/pages/home_search_page.dart';
 import '../../features/dictionary/presentation/providers/latest_words_providers.dart';
@@ -45,11 +48,14 @@ import '../../features/report_bug/report_bug_router.dart';
 import '../../features/review/presentation/providers/review_suggestions_providers.dart';
 import '../../features/review/review_router.dart';
 import '../../features/search_miss/search_miss_router.dart';
+import '../../features/vote/periksa_kata_router.dart';
 import '../../features/activity/activity_router.dart';
 import '../../features/discussion/discussion_router.dart';
 import '../../features/jinye/jinye_router.dart';
 import '../../features/entertainment/entertainment_router.dart';
 import '../../features/user_profile/user_profile_router.dart';
+import '../../features/voice/presentation/providers/voice_room_provider.dart';
+import '../../features/voice/presentation/widgets/voice_room_mini_bar.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
 import '../../shared/splash/splash_router.dart';
 import '../network/auth_token_storage.dart';
@@ -100,10 +106,13 @@ class AppRouter {
       ...ReviewRouter.routes,
       ...AdminAnalyticsRouter.routes,
       ...SearchMissRouter.routes,
+      ...PeriksaKataRouter.routes,
       ...ExploreRouter.routes,
       ...EventRouter.routes,
       ...UsahaRouter.routes,
+      ...BalehoRouter.routes,
       ...LayananRouter.routes,
+      ...KaryaRouter.routes,
       ...ActivityRouter.routes,
       ...AchievementRouter.routes,
   ...SettingsRouter.routes,
@@ -130,6 +139,25 @@ class AppRouter {
                   padding: EdgeInsets.symmetric(horizontal: 12),
                   child: ExplorePage(),
                 ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/baleho',
+                name: 'BalehoRouter.hub',
+                builder: (context, state) {
+                  final slide = int.tryParse(
+                        state.uri.queryParameters['slide'] ?? '',
+                      ) ??
+                      1;
+                  final refName = state.uri.queryParameters['ref'];
+                  return BalehoPage(
+                    initialSlide: slide == 2 ? 1 : 0,
+                    referralUsername: refName,
+                  );
+                },
               ),
             ],
           ),
@@ -303,21 +331,44 @@ class AppRouter {
   }
 }
 
-/// Buka tab Profil: cek token storage (sama seperti redirect), baru goBranch.
+/// Buka tab Profil: tunggu hydrate auth bila masih loading, lalu gate
+/// storage (sama seperti redirect). Jangan treat AsyncLoading sebagai tamu.
 Future<void> _openProfileBranch(
   BuildContext context,
+  WidgetRef ref,
   StatefulNavigationShell navigationShell,
 ) async {
+  final async = ref.read(authStatusProvider);
+  if (async.isLoading) {
+    try {
+      final status = await ref
+          .read(authStatusProvider.future)
+          .timeout(const Duration(seconds: 5));
+      if (!context.mounted) return;
+      if (status.isAuth) {
+        navigationShell.goBranch(4);
+        return;
+      }
+    } on TimeoutException {
+      tfLog('profile authStatus timeout');
+    } catch (_) {
+      // Fall through ke gate storage.
+    }
+  } else if (async.value?.isAuth == true) {
+    navigationShell.goBranch(4);
+    return;
+  }
+
   final ok = await AppRouter._tokenStorage.getIsAuthForGate();
   if (!context.mounted) return;
   if (!ok) {
     context.push(AuthRouter.login.path);
     return;
   }
-  navigationShell.goBranch(3);
+  navigationShell.goBranch(4);
 }
 
-/// Shell 4 tab bottom navigation (Forui).
+/// Shell 5 tab bottom navigation (Forui) - Baleho di posisi ke-3.
 class _HomeShell extends ConsumerWidget {
   const _HomeShell({required this.navigationShell});
 
@@ -327,6 +378,9 @@ class _HomeShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final pendingReview = ref.watch(reviewHubHasPendingProvider).value ?? false;
+    final voiceConnected = ref.watch(
+      voiceRoomProvider.select((s) => s.isInSession),
+    );
 
     // Consent legal: server (GET /users/me) yang jadi sumber kebenaran.
     // Sheet non-dismissible - user agree dulu atau keluar.
@@ -371,16 +425,15 @@ class _HomeShell extends ConsumerWidget {
               // IndexedStack menyimpan fokus search → keyboard ikut "nempel"
               // saat ganti tab / setelah hot reload. Unfocus dulu.
               FocusManager.instance.primaryFocus?.unfocus();
-              // Tamu ketuk Profil → login. Jangan andalkan authStatus.value saja:
-              // saat AsyncLoading value bisa null → salah kirim ke login / tab macet.
-              if (index == 3) {
-                final authed =
-                    ref.read(authStatusProvider).value?.isAuth ?? false;
-                if (authed) {
-                  navigationShell.goBranch(3);
+              // Tamu ketuk Profil → login. AsyncLoading ≠ tamu: tunggu
+              // hydrate / gate di _openProfileBranch (#301).
+              if (index == 4) {
+                final async = ref.read(authStatusProvider);
+                if (async case AsyncData(:final value) when value.isAuth) {
+                  navigationShell.goBranch(4);
                   return;
                 }
-                unawaited(_openProfileBranch(context, navigationShell));
+                unawaited(_openProfileBranch(context, ref, navigationShell));
                 return;
               }
               final openingHome =
@@ -405,6 +458,10 @@ class _HomeShell extends ConsumerWidget {
                 label: Text(l10n.navExplore),
               ),
               FBottomNavigationBarItem(
+                icon: const Icon(FLucideIcons.layoutGrid),
+                label: Text(l10n.navBaleho),
+              ),
+              FBottomNavigationBarItem(
                 icon: const Icon(FLucideIcons.circlePlus),
                 label: Text(l10n.navContribute),
               ),
@@ -416,7 +473,25 @@ class _HomeShell extends ConsumerWidget {
               ),
             ],
           ),
-          child: navigationShell,
+          child: Builder(
+            builder: (context) {
+              final onChatTab =
+                  GoRouterState.of(context).uri.path ==
+                  DiscussionRouter.chat.path;
+              return Stack(
+                children: [
+                  navigationShell,
+                  if (voiceConnected && !onChatTab)
+                    const Positioned(
+                      left: 12,
+                      right: 12,
+                      bottom: 8,
+                      child: VoiceRoomMiniBar(),
+                    ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

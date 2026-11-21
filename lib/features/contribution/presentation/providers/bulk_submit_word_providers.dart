@@ -26,6 +26,41 @@ class BulkSubmitWordNotifier extends _$BulkSubmitWordNotifier {
     return BulkSubmitWordState(rows: _initialRows());
   }
 
+  /// Prefill baris pertama dari search miss / koreksi ejaan (G3b).
+  void seedFromMiss({
+    String? lemma,
+    String? searchIn,
+    String? searchMissId,
+    bool spellCorrection = false,
+  }) {
+    if (state.isSubmitting) return;
+    final typed = (lemma ?? '').trim();
+    if (typed.isEmpty && searchMissId == null) return;
+
+    final isTranslation = searchIn == 'translation';
+    final rows = [...state.rows];
+    if (rows.isEmpty) return;
+
+    final first = rows.first;
+    if (!first.isEditable) return;
+
+    rows[0] = first.copyWith(
+      lemma: spellCorrection
+          ? ''
+          : (isTranslation ? first.lemma : (typed.isNotEmpty ? typed : first.lemma)),
+      translation: spellCorrection
+          ? ''
+          : (isTranslation
+                ? (typed.isNotEmpty ? typed : first.translation)
+                : first.translation),
+      searchMissId: searchMissId,
+      typedTypo: spellCorrection && typed.isNotEmpty ? typed : null,
+      missSearchIn: searchIn,
+      clearError: true,
+    );
+    state = state.copyWith(rows: rows, clearBatchFinished: true);
+  }
+
   void clearError() {
     state = state.copyWith(clearErrorMessage: true);
   }
@@ -130,6 +165,21 @@ class BulkSubmitWordNotifier extends _$BulkSubmitWordNotifier {
 
       await AnalyticsService.instance.logContributeSubmit(guest: guest);
 
+      final typedTypo = (row.typedTypo ?? '').trim();
+      final missIn = row.missSearchIn;
+      final spellLemma =
+          typedTypo.isNotEmpty && missIn != 'translation';
+      final spellTranslation =
+          typedTypo.isNotEmpty && missIn == 'translation';
+
+      final translationTexts = <String>[row.translation.trim()];
+      if (spellTranslation &&
+          !translationTexts.any(
+            (t) => t.toLowerCase() == typedTypo.toLowerCase(),
+          )) {
+        translationTexts.add(typedTypo);
+      }
+
       final result = await usecase(
         SubmitAnonWordParams(
           lemma: row.lemma.trim(),
@@ -144,9 +194,11 @@ class BulkSubmitWordNotifier extends _$BulkSubmitWordNotifier {
               isHaveDefinition: false,
               isHaveTranslation: true,
               meaningSource: 'manual',
-              translationTexts: [row.translation.trim()],
+              translationTexts: translationTexts,
             ),
           ],
+          spellingVariants: spellLemma ? [typedTypo] : const [],
+          searchMissId: row.searchMissId,
         ),
       );
 
@@ -212,6 +264,9 @@ class BulkSubmitWordNotifier extends _$BulkSubmitWordNotifier {
   }
 
   String _rowErrorMessage(ContributionFailure failure) {
+    if (failure.errorCode == 'SEARCH_MISS_TERM_MISMATCH') {
+      return failure.message;
+    }
     if (failure.isValidationError) {
       return failure.errorFor('lemma') ??
           failure.errorForMeaning(0, 'translation_texts') ??

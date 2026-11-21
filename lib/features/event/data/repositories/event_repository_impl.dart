@@ -1,4 +1,5 @@
 import '../../domain/entities/event.dart';
+import '../../domain/entities/event_image.dart';
 import '../datasources/event_remote_datasource.dart';
 
 /// Repository katalog acara (API publik).
@@ -42,4 +43,17 @@ class EventRepositoryImpl {
   Future<Event?> getBySlug(String slug) => _datasource.fetchBySlug(slug);
 
   Future<List<EventCategoryRef>> categories() => _datasource.fetchCategories();
+
+  /// Halaman galeri foto acara. Error dilempar supaya grid bisa
+  /// menampilkan tombol coba lagi (pola PlacePhotosPage).
+  Future<EventImagePage> imagePage(String slug, {int offset = 0}) =>
+      _datasource.fetchImagePage(slug, offset: offset);
+
+  /// Tandai "Aku hadir" (login).
+  Future<void> markGoing(String eventId) =>
+      _datasource.markGoing(eventId);
+
+  /// Batalkan "Aku hadir".
+  Future<void> unmarkGoing(String eventId) =>
+      _datasource.unmarkGoing(eventId);
 }

@@ -39,6 +39,7 @@ Future<void> showWordShareSheet(
   );
   return showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     clipBehavior: Clip.none,
@@ -420,6 +421,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
 
       final choice = await showModalBottomSheet<String>(
         context: context,
+        useRootNavigator: true,
         builder: (ctx) {
           return SafeArea(
             child: Column(

@@ -12,6 +12,7 @@ abstract class CreateCommentRequestDto with _$CreateCommentRequestDto {
     @Default('') String body,
     // Jangan serialize null - API Zod .optional() menolak "image": null.
     @JsonKey(includeIfNull: false) CreateCommentImageInputDto? image,
+    @JsonKey(name: 'sticker_id', includeIfNull: false) String? stickerId,
   }) = _CreateCommentRequestDto;
 
   factory CreateCommentRequestDto.fromJson(Map<String, dynamic> json) =>

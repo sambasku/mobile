@@ -24,6 +24,7 @@ Future<DialectPickItem?> showDialectPickerSheet(
 }) {
   return showModalBottomSheet<DialectPickItem>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) {

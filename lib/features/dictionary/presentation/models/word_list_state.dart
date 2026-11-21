@@ -15,6 +15,7 @@ class WordListState {
     this.isLoading = false,
     this.isLoadingMore = false,
     this.errorMessage,
+    this.lastSearchMissId,
   });
 
   final String q;
@@ -35,6 +36,9 @@ class WordListState {
   final bool isLoadingMore;
   final String? errorMessage;
 
+  /// Miss id terakhir dari search 0 hasil (G3b koreksi ejaan).
+  final String? lastSearchMissId;
+
   WordListState copyWith({
     String? q,
     String? category,
@@ -48,6 +52,8 @@ class WordListState {
     bool? isLoadingMore,
     String? errorMessage,
     bool clearErrorMessage = false,
+    String? lastSearchMissId,
+    bool clearLastSearchMissId = false,
   }) {
     return WordListState(
       q: q ?? this.q,
@@ -62,6 +68,9 @@ class WordListState {
       errorMessage: clearErrorMessage
           ? null
           : errorMessage ?? this.errorMessage,
+      lastSearchMissId: clearLastSearchMissId
+          ? null
+          : lastSearchMissId ?? this.lastSearchMissId,
     );
   }
 }

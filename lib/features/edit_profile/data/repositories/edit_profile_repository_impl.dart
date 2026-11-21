@@ -3,11 +3,13 @@ import 'package:fpdart/fpdart.dart';
 
 import '../../domain/entities/my_profile.dart';
 import '../../domain/entities/username_availability.dart';
+import '../../domain/entities/username_history_item.dart';
 import '../../domain/failures/edit_profile_failure.dart';
 import '../../domain/repositories/edit_profile_repository.dart';
 import '../datasources/edit_profile_remote_datasource.dart';
 import '../models/my_profile_dto.dart';
 import '../../../../core/i18n/l10n.dart';
+import '../../../../core/models/speaker_status.dart';
 
 class EditProfileRepositoryImpl implements EditProfileRepository {
   EditProfileRepositoryImpl(this._remote);
@@ -62,10 +64,43 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
   }
 
   @override
+  Future<Either<EditProfileFailure, List<UsernameHistoryItem>>>
+      getUsernameHistory() async {
+    try {
+      final response = await _remote.getUsernameHistory();
+      if (response.success == false || response.data == null) {
+        return Either.left(
+          EditProfileFailure(
+            response.message ?? l10n.profileUsernameHistoryLoadFailed,
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+      final items = response.data!.items
+          .map(
+            (item) => UsernameHistoryItem(
+              oldUsername: item.oldUsername,
+              newUsername: item.newUsername,
+              changedAt: DateTime.tryParse(item.changedAt) ?? DateTime.fromMillisecondsSinceEpoch(0),
+              holdUntil: DateTime.tryParse(item.holdUntil) ?? DateTime.fromMillisecondsSinceEpoch(0),
+              canReclaim: item.canReclaim,
+            ),
+          )
+          .toList();
+      return Either.right(items);
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error));
+    } catch (error) {
+      return Either.left(EditProfileFailure(error.toString()));
+    }
+  }
+
+  @override
   Future<Either<EditProfileFailure, MyProfile>> updateMyProfile({
     String? username,
     String? displayName,
     String? bio,
+    String? speakerStatus,
     String? regionId,
     String? villageId,
     bool? hasReadContributionGuide,
@@ -78,6 +113,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
           username: username,
           displayName: displayName,
           bio: bio,
+          speakerStatus: speakerStatus,
           regionId: regionId,
           villageId: villageId,
           hasReadContributionGuide: hasReadContributionGuide,
@@ -105,6 +141,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
     username: dto.username,
     displayName: dto.displayName,
     bio: dto.bio,
+    speakerStatus: SpeakerStatus.tryParse(dto.speakerStatus),
     regionId: dto.regionId,
     villageId: dto.villageId,
     avatarUrl: dto.avatarUrl,
@@ -112,7 +149,15 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
     requiresConsent: dto.requiresConsent,
     notifyStreakReminder: dto.notifyStreakReminder,
     notifyLevelUp: dto.notifyLevelUp,
+    usernameChangedAt: _parseIso(dto.usernameChangedAt),
+    usernameChangeAllowedAt: _parseIso(dto.usernameChangeAllowedAt),
+    usernameChangeCooldownDays: dto.usernameChangeCooldownDays,
   );
+
+  DateTime? _parseIso(String? raw) {
+    if (raw == null || raw.isEmpty) return null;
+    return DateTime.tryParse(raw);
+  }
 
   EditProfileFailure _mapDio(DioException error) {
     final data = error.response?.data;

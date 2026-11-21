@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -67,6 +68,7 @@ class _EmptyLatestRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    CancelToken? cancelToken,
   }) async => throw UnimplementedError();
 
   @override
@@ -77,12 +79,16 @@ class _EmptyLatestRepository implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => throw UnimplementedError();
 
   @override
@@ -96,7 +102,12 @@ class _EmptyLatestRepository implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async => throw UnimplementedError();
+
+  @override
+  Future<void> recordView(String wordId) async {}
 }
 
 void main() {

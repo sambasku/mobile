@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 Future<String?> showExplorationRevisionSheet(BuildContext context) {
   return showModalBottomSheet<String>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) => const _ExplorationRevisionSheet(),

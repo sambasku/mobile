@@ -20,6 +20,7 @@ Future<String?> showAddWrittenPronunciationSheet(
 }) {
   return showModalBottomSheet<String>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) => Padding(

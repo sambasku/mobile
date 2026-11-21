@@ -22,9 +22,9 @@ import '../providers/discussion_list_providers.dart';
 import '../widgets/discussion_image_thumb.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Feed publik ruang diskusi yang sudah tayang.
-class DiscussionFeedPage extends HookConsumerWidget {
-  const DiscussionFeedPage({super.key});
+/// Isi tab Ruang Diskusi (feed). Chrome hub ada di [DiscussionHubShell].
+class DiscussionRoomsPage extends HookConsumerWidget {
+  const DiscussionRoomsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,157 +52,154 @@ class DiscussionFeedPage extends HookConsumerWidget {
       return () => scroll.removeListener(listener);
     }, [scroll]);
 
-    return FScaffold(
-      childPad: true,
-      header: FHeader.nested(
-        title: Text(AppLocalizations.of(context).discussionFeedTitle),
-        prefixes: [FHeaderAction.back(onPress: () => context.pop())],
-        suffixes: [
-          FHeaderAction(
-            icon: const Icon(FLucideIcons.history),
-            onPress: () => context.push(DiscussionRouter.mine.path),
-          ),
-        ],
-      ),
-      child: ScrollWithBackToTop(
-        controller: scroll,
-        child: RefreshIndicator(
-          onRefresh: () async {
-            await ref
-                .read(responseCacheStoreProvider)
-                .deleteByPrefix('GET|/api/v1/discussions');
-            ref.invalidate(discussionFeedProvider);
-            await ref.read(discussionFeedProvider.future);
-          },
-          child: async.when(
-            loading: () => const _FeedSkeleton(),
-            error: (error, _) => ListView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(vertical: 24),
-              children: [
-                const _NewThreadComposer(),
-                const Gap(24),
-                Icon(
-                  FLucideIcons.circleAlert,
-                  size: 40,
+    return ScrollWithBackToTop(
+      controller: scroll,
+      child: RefreshIndicator(
+        onRefresh: () async {
+          await ref
+              .read(responseCacheStoreProvider)
+              .deleteByPrefix('GET|/api/v1/discussions');
+          ref.invalidate(discussionFeedProvider);
+          await ref.read(discussionFeedProvider.future);
+        },
+        child: async.when(
+          // Sort/refresh: tetap tampilkan data lama, jangan flash skeleton.
+          skipLoadingOnReload: true,
+          skipLoadingOnRefresh: true,
+          loading: () => const _FeedSkeleton(),
+          error: (error, _) => ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            children: [
+              const _NewThreadComposer(),
+              const Gap(24),
+              Icon(
+                FLucideIcons.circleAlert,
+                size: 40,
+                color: context.theme.colors.mutedForeground,
+              ),
+              const Gap(10),
+              Text(
+                error is DiscussionFailure
+                    ? error.message
+                    : AppLocalizations.of(context).discussionFeedLoadFailed,
+                textAlign: TextAlign.center,
+                style: context.theme.typography.body.sm.copyWith(
                   color: context.theme.colors.mutedForeground,
                 ),
-                const Gap(10),
-                Text(
-                  error is DiscussionFailure
-                      ? error.message
-                      : AppLocalizations.of(context).discussionFeedLoadFailed,
-                  textAlign: TextAlign.center,
-                  style: context.theme.typography.body.sm.copyWith(
-                    color: context.theme.colors.mutedForeground,
-                  ),
-                ),
-                const Gap(16),
-                FButton(
-                  variant: FButtonVariant.outline,
-                  onPress: () => ref.invalidate(discussionFeedProvider),
-                  child: Text(AppLocalizations.of(context).discussionFeedRetry),
-                ),
-              ],
-            ),
-            data: (state) {
-              if (state.items.isEmpty) {
-                return ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
-                  children: [
-                    const _NewThreadComposer(),
-                    const Gap(16),
-                    _SortChips(
-                      sort: sortState.sort,
-                      order: sortState.order,
-                      onSelectSort: (s) => applySortChange(
-                        () => ref
-                            .read(discussionFeedSortProvider.notifier)
-                            .selectSort(s),
-                      ),
-                      onToggleOrder: () => applySortChange(
-                        () => ref
-                            .read(discussionFeedSortProvider.notifier)
-                            .toggleOrder(),
-                      ),
-                    ),
-                    const Gap(24),
-                    Icon(
-                      FLucideIcons.messagesSquare,
-                      size: 40,
-                      color: context.theme.colors.mutedForeground,
-                    ),
-                    const Gap(10),
-                    Text(
-                      AppLocalizations.of(context).discussionFeedEmpty,
-                      textAlign: TextAlign.center,
-                      style: context.theme.typography.body.md.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const Gap(6),
-                    Text(
-                      AppLocalizations.of(context).discussionFeedEmptyBody,
-                      textAlign: TextAlign.center,
-                      style: context.theme.typography.body.sm.copyWith(
-                        color: context.theme.colors.mutedForeground,
-                      ),
-                    ),
-                  ],
-                );
-              }
-
-              // index 0 = composer, 1 = sort, lalu items (+ loading footer)
-              return ListView.separated(
-                controller: scroll,
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
-                itemCount:
-                    state.items.length + 2 + (state.isLoadingMore ? 1 : 0),
-                separatorBuilder: (context, index) {
-                  // Pemisah hanya antar tile feed (bukan di atas composer/sort).
-                  if (index < 1) return const SizedBox.shrink();
-                  return Divider(height: 1, color: context.theme.colors.border);
-                },
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return const Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: _NewThreadComposer(),
-                    );
-                  }
-                  if (index == 1) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: _SortChips(
-                        sort: sortState.sort,
-                        order: sortState.order,
-                        onSelectSort: (s) => applySortChange(
-                          () => ref
-                              .read(discussionFeedSortProvider.notifier)
-                              .selectSort(s),
-                        ),
-                        onToggleOrder: () => applySortChange(
-                          () => ref
-                              .read(discussionFeedSortProvider.notifier)
-                              .toggleOrder(),
-                        ),
-                      ),
-                    );
-                  }
-                  final itemIndex = index - 2;
-                  if (itemIndex >= state.items.length) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Center(child: FCircularProgress()),
-                    );
-                  }
-                  return _FeedTile(item: state.items[itemIndex]);
-                },
-              );
-            },
+              ),
+              const Gap(16),
+              FButton(
+                variant: FButtonVariant.outline,
+                onPress: () => ref.invalidate(discussionFeedProvider),
+                child: Text(AppLocalizations.of(context).discussionFeedRetry),
+              ),
+            ],
           ),
+          data: (state) {
+                    if (state.items.isEmpty) {
+                      return ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.fromLTRB(0, 4, 0, 32),
+                        children: [
+                          const _NewThreadComposer(),
+                          const Gap(12),
+                          _SortChips(
+                            sort: sortState.sort,
+                            order: sortState.order,
+                            onSelectSort: (s) => applySortChange(
+                              () => ref
+                                  .read(discussionFeedSortProvider.notifier)
+                                  .selectSort(s),
+                            ),
+                            onToggleOrder: () => applySortChange(
+                              () => ref
+                                  .read(discussionFeedSortProvider.notifier)
+                                  .toggleOrder(),
+                            ),
+                          ),
+                          const Gap(24),
+                          Icon(
+                            FLucideIcons.messagesSquare,
+                            size: 40,
+                            color: context.theme.colors.mutedForeground,
+                          ),
+                          const Gap(10),
+                          Text(
+                            AppLocalizations.of(context).discussionFeedEmpty,
+                            textAlign: TextAlign.center,
+                            style: context.theme.typography.body.md.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Gap(6),
+                          Text(
+                            AppLocalizations.of(
+                              context,
+                            ).discussionFeedEmptyBody,
+                            textAlign: TextAlign.center,
+                            style: context.theme.typography.body.sm.copyWith(
+                              color: context.theme.colors.mutedForeground,
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+
+                    // index 0 = composer, 1 = sort, lalu items (+ loading footer)
+                    return ListView.separated(
+                      controller: scroll,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.fromLTRB(0, 4, 0, 32),
+                      itemCount:
+                          state.items.length +
+                          2 +
+                          (state.isLoadingMore ? 1 : 0),
+                      separatorBuilder: (context, index) {
+                        // Pemisah hanya antar tile feed (bukan di atas composer/sort).
+                        if (index < 1) return const SizedBox.shrink();
+                        return Divider(
+                          height: 1,
+                          color: context.theme.colors.border,
+                        );
+                      },
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return const Padding(
+                            padding: EdgeInsets.only(bottom: 6),
+                            child: _NewThreadComposer(),
+                          );
+                        }
+                        if (index == 1) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: _SortChips(
+                              sort: sortState.sort,
+                              order: sortState.order,
+                              onSelectSort: (s) => applySortChange(
+                                () => ref
+                                    .read(discussionFeedSortProvider.notifier)
+                                    .selectSort(s),
+                              ),
+                              onToggleOrder: () => applySortChange(
+                                () => ref
+                                    .read(discussionFeedSortProvider.notifier)
+                                    .toggleOrder(),
+                              ),
+                            ),
+                          );
+                        }
+                        final itemIndex = index - 2;
+                        if (itemIndex >= state.items.length) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(child: FCircularProgress()),
+                          );
+                        }
+                        return _FeedTile(item: state.items[itemIndex]);
+                      },
+                    );
+                  },
         ),
       ),
     );
@@ -589,33 +586,59 @@ class _FeedSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Skeletonizer(
-      child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
-        itemCount: 6,
-        itemBuilder: (_, _) => const Padding(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(0, 4, 0, 32),
+        children: [
+          // Composer stub
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                Bone.circle(size: 40),
+                Gap(12),
+                Expanded(child: Bone(height: 40, uniRadius: 10)),
+              ],
+            ),
+          ),
+          const Gap(8),
+          // Sort chips stub
+          const Row(
             children: [
-              Bone.circle(size: 40),
-              Gap(12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Bone.text(words: 2),
-                    Gap(4),
-                    Bone.multiText(lines: 2),
-                    Gap(4),
-                    Bone.text(words: 2),
-                  ],
-                ),
-              ),
-              Gap(12),
-              Bone(width: 72, height: 72),
+              Bone(width: 72, height: 28, uniRadius: 14),
+              Gap(8),
+              Bone(width: 64, height: 28, uniRadius: 14),
+              Gap(8),
+              Bone(width: 80, height: 28, uniRadius: 14),
             ],
           ),
-        ),
+          const Gap(8),
+          for (var i = 0; i < 5; i++)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Bone.circle(size: 40),
+                  Gap(12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Bone.text(words: 2),
+                        Gap(4),
+                        Bone.multiText(lines: 2),
+                        Gap(4),
+                        Bone.text(words: 2),
+                      ],
+                    ),
+                  ),
+                  Gap(12),
+                  Bone(width: 72, height: 72, uniRadius: 8),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }

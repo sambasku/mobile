@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -15,8 +17,8 @@ import 'layanan_logo.dart';
 import 'layanan_providers.dart';
 import 'widgets/layanan_filter_sheet.dart';
 
-/// Ukuran cover list - sama dengan ensiklopedia.
-const _kCoverSize = 64.0;
+/// Ukuran avatar list - pola kontak.
+const _kCoverSize = 40.0;
 
 class LayananPage extends ConsumerStatefulWidget {
   const LayananPage({super.key});
@@ -28,11 +30,28 @@ class LayananPage extends ConsumerStatefulWidget {
 class _LayananPageState extends ConsumerState<LayananPage> {
   String? _regionId;
   String? _category;
+  String _q = '';
+  Timer? _debounce;
 
   LayananBrowseQuery get _query => LayananBrowseQuery(
         regionId: _regionId,
         category: _category,
+        q: _q.trim().isEmpty ? null : _q.trim(),
       );
+
+  void _onSearchChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 350), () {
+      if (!mounted) return;
+      setState(() => _q = value);
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
 
   Future<void> _openFilter() async {
     final selection = await showLayananFilterSheet(
@@ -106,6 +125,22 @@ class _LayananPageState extends ConsumerState<LayananPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          FTextField(
+            control: FTextFieldControl.managed(
+              onChange: (value) => _onSearchChanged(value.text),
+            ),
+            hint: l10n.layananSearchPlaceholder,
+            textInputAction: TextInputAction.search,
+            clearable: (value) => value.text.isNotEmpty,
+            prefixBuilder: (context, style, variants) =>
+                FTextField.prefixIconBuilder(
+              context,
+              style,
+              variants,
+              const Icon(FLucideIcons.search),
+            ),
+          ),
+          const Gap(8),
           if (_regionId != null && regionName != null) ...[
             Wrap(
               spacing: 8,
@@ -147,7 +182,8 @@ class _LayananPageState extends ConsumerState<LayananPage> {
                 };
                 if (visible.isEmpty) {
                   return _EmptyBody(
-                    hasFilter: _regionId != null || _category != null,
+                    hasFilter:
+                        _regionId != null || _category != null || _q.trim().isNotEmpty,
                     onPropose: _propose,
                     onRefresh: _reload,
                   );
@@ -242,19 +278,17 @@ class _LayananListTile extends StatelessWidget {
     );
   }
 
-  /// Alamat/kecamatan; saat filter Semua, sisip kategori di depan.
-  String? _subtitle(AppLocalizations l10n) {
-    final address = (item.addressText ?? '').trim();
-    final region = (item.regionName ?? '').trim();
-    final place = address.isNotEmpty
-        ? address
-        : (region.isNotEmpty ? region : null);
-    if (!showCategory) return place;
-    final category =
-        item.isAmbulance ? l10n.layananAmbulance : l10n.layananFire;
-    if (place == null) return category;
-    return '$category · $place';
-  }
+/// Kecamatan dulu; fallback alamat kalau kecamatan kosong. Kategori di belakang.
+String? _subtitle(AppLocalizations l10n) {
+  final address = (item.addressText ?? '').trim();
+  final region = (item.regionName ?? '').trim();
+  final place = region.isNotEmpty ? region : (address.isNotEmpty ? address : null);
+  if (!showCategory) return place;
+  final category =
+      item.isAmbulance ? l10n.layananAmbulance : l10n.layananFire;
+  if (place == null) return category;
+  return '$place · $category';
+}
 }
 
 class _CategoryBar extends StatelessWidget {

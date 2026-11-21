@@ -69,4 +69,33 @@ void main() {
     expect(await storage.getIsAuthForGate(), isTrue);
     expect(storage.reads, 1);
   });
+
+  test('timeout + prefs isAuth -> retry sekali (#301)', () async {
+    SharedPreferences.setMockInitialValues({'isAuth': true});
+    final storage = _GateStorage(
+      (call) => call == 1
+          ? Completer<bool>().future
+          : Future.value(true),
+    );
+
+    final v = await storage.getIsAuthForGate(
+      timeout: const Duration(milliseconds: 50),
+    );
+    expect(v, isTrue);
+    expect(storage.reads, 2);
+  });
+
+  test('getIsAuth: refresh saja cukup; tanpa token heal prefs', () async {
+    SharedPreferences.setMockInitialValues({'isAuth': true});
+    FlutterSecureStorage.setMockInitialValues({'refreshToken': 'r1'});
+    final withRefresh = AuthTokenStorage();
+    expect(await withRefresh.getIsAuth(), isTrue);
+
+    SharedPreferences.setMockInitialValues({'isAuth': true});
+    FlutterSecureStorage.setMockInitialValues({});
+    final empty = AuthTokenStorage();
+    expect(await empty.getIsAuth(), isFalse);
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getBool('isAuth'), isFalse);
+  });
 }

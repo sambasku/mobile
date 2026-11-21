@@ -1,35 +1,47 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 import 'package:sambasku_mobile/core/widgets/brand_logo.dart';
 import 'package:sambasku_mobile/shared/splash/presentation/splash_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../helpers/l10n_delegates.dart';
 
 Future<void> _pump(WidgetTester tester, {Brightness brightness = Brightness.light}) async {
   await tester.pumpWidget(
-    FTheme(
-      data: brightness == Brightness.dark
-          ? foruiPalettes['zinc']!.dark.touch
-          : foruiPalettes['zinc']!.light.touch,
-      child: MaterialApp(
-        themeMode: brightness == Brightness.dark
-            ? ThemeMode.dark
-            : ThemeMode.light,
-        theme: ThemeData.light(),
-        darkTheme: ThemeData.dark(),
-        localizationsDelegates: appLocalizationDelegates,
-        supportedLocales: appTestSupportedLocales,
-        locale: appTestLocale,
-        home: const SplashPage(),
+    ProviderScope(
+      child: FTheme(
+        data: brightness == Brightness.dark
+            ? foruiPalettes['zinc']!.dark.touch
+            : foruiPalettes['zinc']!.light.touch,
+        child: MaterialApp(
+          themeMode: brightness == Brightness.dark
+              ? ThemeMode.dark
+              : ThemeMode.light,
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          localizationsDelegates: appLocalizationDelegates,
+          supportedLocales: appTestSupportedLocales,
+          locale: appTestLocale,
+          home: const SplashPage(),
+        ),
       ),
     ),
   );
   await tester.pump();
+  // Selesaikan warm-up gate (#301) supaya tidak ada Timer pending.
+  await tester.pump(const Duration(milliseconds: 100));
 }
 
 void main() {
+  setUp(() {
+    SharedPreferences.setMockInitialValues({});
+    FlutterSecureStorage.setMockInitialValues({});
+  });
+
   testWidgets('splash light: latar, BrandMark, slot sponsor, spinner, tagline', (
     tester,
   ) async {

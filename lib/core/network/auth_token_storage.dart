@@ -149,9 +149,15 @@ class AuthTokenStorage {
 
   /// Flag prefs bisa stale-true saat secure store ter-wipe (reinstall,
   /// signing key berganti) - keberadaan token adalah kebenaran akhir.
+  /// Access ATAU refresh cukup: access bisa hilang sementara refresh
+  /// masih ada; interceptor yang me-refresh. Keduanya hilang = heal
+  /// prefs supaya flag tidak menyesatkan gate berikutnya (#301).
   Future<bool> getIsAuth() async {
     if (!((await _sharedPrefs).getBool(_isAuthKey) ?? false)) return false;
-    return await getAccessToken() != null;
+    if (await getAccessToken() != null) return true;
+    if (await getRefreshToken() != null) return true;
+    await setIsAuth(false);
+    return false;
   }
 
   DateTime? _isAuthGateCachedAt;
@@ -159,8 +165,10 @@ class AuthTokenStorage {
 
   /// getIsAuth untuk gerbang router (redirect /profile, tab Profil):
   /// platform channel yang macet tidak boleh mengunci GoRouter selamanya.
-  /// Cache singkat + timeout. Timeout = fail-closed (tamu -> /login);
-  /// hasil timeout sengaja tidak di-cache.
+  /// Cache singkat + timeout. Timeout = fail-closed (tamu -> /login),
+  /// kecuali prefs masih `isAuth` - retry sekali dengan deadline lebih
+  /// panjang (cold Keystore OEM) sebelum fail-closed. Hasil timeout
+  /// sengaja tidak di-cache (#301).
   Future<bool> getIsAuthForGate({
     Duration ttl = const Duration(seconds: 2),
     Duration timeout = const Duration(seconds: 3),
@@ -180,7 +188,20 @@ class AuthTokenStorage {
       return v;
     } on TimeoutException {
       tfLog('isAuth timeout');
-      return false;
+      final prefsAuth = (await _sharedPrefs).getBool(_isAuthKey) ?? false;
+      if (!prefsAuth) return false;
+      tfLog('isAuth retry');
+      try {
+        final retryTimeout = timeout + const Duration(seconds: 2);
+        final v = await getIsAuth().timeout(retryTimeout);
+        _isAuthGateCached = v;
+        _isAuthGateCachedAt = DateTime.now();
+        tfLog('isAuth retry ok v=$v ms=${sw.elapsedMilliseconds}');
+        return v;
+      } on TimeoutException {
+        tfLog('isAuth timeout retry');
+        return false;
+      }
     }
   }
 

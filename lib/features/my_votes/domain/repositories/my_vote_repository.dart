@@ -7,5 +7,8 @@ abstract interface class MyVoteRepository {
   Future<Either<MyVoteFailure, MyVotePage>> listHistory({
     int limit = 20,
     String? cursor,
+    String? targetType,
+    String? communityStatus,
+    String? q,
   });
 }

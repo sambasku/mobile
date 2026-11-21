@@ -29,6 +29,7 @@ Future<WordClassPickItem?> showWordClassPickerSheet(
 }) {
   return showModalBottomSheet<WordClassPickItem>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) {
@@ -200,10 +201,11 @@ class _WordClassPickerSheetBody extends StatelessWidget {
   }
 }
 
-/// Urutan yang diminta di sheet: Kata Kerja, Kata Sifat, Kata Benda.
-const _shortcutCodes = ['v', 'adj', 'n'];
+/// #276: Umum dulu (paling sering), lalu Kerja / Sifat / Benda.
+const _shortcutCodes = ['umum', 'v', 'adj', 'n'];
 
 const _shortcutAliases = {
+  'umum': 'umum',
   'v': 'kata kerja',
   'adj': 'kata sifat',
   'n': 'kata benda',
@@ -227,6 +229,9 @@ List<WordClassPickItem> _shortcuts(List<WordClassPickItem> items) {
 }
 
 String _shortcutLabel(WordClassPickItem item) {
+  // Alias seed `umum` = "Belum Diketahui" - terlalu panjang untuk chip.
+  final code = item.code?.trim().toLowerCase() ?? '';
+  if (code == 'umum') return item.name;
   final alias = item.alias?.trim() ?? '';
   if (alias.isNotEmpty) return alias;
   return item.name;

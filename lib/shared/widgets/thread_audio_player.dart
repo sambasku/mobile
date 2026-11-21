@@ -19,6 +19,8 @@ class ThreadAudioPlayer extends ConsumerWidget {
     required this.url,
     this.audioId,
     this.durationMs,
+    this.compact = false,
+    this.color,
   });
 
   final String url;
@@ -26,6 +28,12 @@ class ThreadAudioPlayer extends ConsumerWidget {
   /// Kunci exclusive-play. Default [url].
   final String? audioId;
   final int? durationMs;
+
+  /// Pola tile pelafalan lemma ([AudioPlayerTile]): ikon kecil, progress saat aktif.
+  final bool compact;
+
+  /// Latar container non-compact. Compact selalu secondary lemma (abaikan).
+  final Color? color;
 
   String get _id => (audioId ?? url).trim();
 
@@ -72,11 +80,111 @@ class ThreadAudioPlayer extends ConsumerWidget {
       durationMs: durationMs,
     );
 
+    // Compact = visual AudioPlayerTile (pelafalan lemma).
+    if (compact) {
+      final showBar = isActive && (playing ||
+          playback == ThreadAudioPlaybackState.paused ||
+          loading ||
+          progress > 0);
+      return Semantics(
+        button: true,
+        label: semanticsLabel,
+        child: Material(
+          color: theme.colors.secondary.withValues(alpha: 0.4),
+          borderRadius: BorderRadius.circular(8),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: () => unawaitedToggle(ref, seed),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: loading
+                            ? Center(
+                                child: SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: theme.colors.primary,
+                                  ),
+                                ),
+                              )
+                            : Icon(
+                                error
+                                    ? FLucideIcons.circleAlert
+                                    : playing
+                                        ? FLucideIcons.pause
+                                        : FLucideIcons.play,
+                                size: 18,
+                                color: iconColor,
+                              ),
+                      ),
+                      const Gap(6),
+                      Expanded(
+                        child: Text(
+                          statusText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.typography.body.xs.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      if (timeLabel.isNotEmpty) ...[
+                        const Gap(6),
+                        Text(
+                          timeLabel,
+                          maxLines: 1,
+                          softWrap: false,
+                          style: theme.typography.body.xs.copyWith(
+                            color: theme.colors.mutedForeground,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  if (showBar) ...[
+                    const Gap(4),
+                    _ThreadProgressBar(
+                      progress: progress,
+                      color: theme.colors.primary,
+                      trackColor: theme.colors.border,
+                      compact: true,
+                      bar: 3,
+                      enabled: canSeek,
+                      onSeek: canSeek
+                          ? (ratio) {
+                              ref
+                                  .read(threadAudioPlayerProvider.notifier)
+                                  .seekRatio(ratio);
+                            }
+                          : null,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final surface = color ?? theme.colors.secondary.withValues(alpha: 0.55);
+
     return Semantics(
       button: true,
       label: semanticsLabel,
       child: Material(
-        color: theme.colors.secondary.withValues(alpha: 0.55),
+        color: surface,
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
@@ -106,15 +214,15 @@ class ThreadAudioPlayer extends ConsumerWidget {
                                   height: 20,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2.2,
-                                    color: theme.colors.primary,
+                                    color: iconColor,
                                   ),
                                 )
                               : Icon(
                                   error
                                       ? FLucideIcons.circleAlert
                                       : playing
-                                      ? FLucideIcons.pause
-                                      : FLucideIcons.play,
+                                          ? FLucideIcons.pause
+                                          : FLucideIcons.play,
                                   size: 22,
                                   color: iconColor,
                                 ),
@@ -217,6 +325,8 @@ class _ThreadProgressBar extends StatelessWidget {
     required this.color,
     required this.trackColor,
     required this.enabled,
+    this.compact = false,
+    this.bar,
     this.onSeek,
   });
 
@@ -224,10 +334,16 @@ class _ThreadProgressBar extends StatelessWidget {
   final Color color;
   final Color trackColor;
   final bool enabled;
+  final bool compact;
+
+  /// Tinggi garis. Kosong = 2 saat compact, 4 saat biasa.
+  final double? bar;
   final ValueChanged<double>? onSeek;
 
   @override
   Widget build(BuildContext context) {
+    final hit = compact ? 12.0 : 16.0;
+    final bar = this.bar ?? (compact ? 2.0 : 4.0);
     return LayoutBuilder(
       builder: (context, constraints) {
         final w = constraints.maxWidth;
@@ -246,12 +362,12 @@ class _ThreadProgressBar extends StatelessWidget {
                 }
               : null,
           child: SizedBox(
-            height: 16,
+            height: hit,
             child: Center(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(3),
+                borderRadius: BorderRadius.circular(compact ? 2 : 3),
                 child: SizedBox(
-                  height: 4,
+                  height: bar,
                   width: w,
                   child: Stack(
                     fit: StackFit.expand,
@@ -329,7 +445,9 @@ class _PlayingBarsState extends State<_PlayingBars>
             crossAxisAlignment: CrossAxisAlignment.end,
             children: List.generate(4, (i) {
               final wave = math.sin((_ctrl.value * 2 * math.pi) + i * 0.9);
-              final h = widget.active ? 6.0 + (wave.abs() * 14.0) : 6.0;
+              final h = widget.active
+                  ? 6.0 + (wave.abs() * 14.0)
+                  : 6.0;
               return Container(
                 width: 4,
                 height: h,

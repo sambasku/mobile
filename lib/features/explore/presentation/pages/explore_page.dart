@@ -132,34 +132,35 @@ class ExplorePage extends HookConsumerWidget {
                       }, childCount: categories.length),
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: GestureDetector(
-                          onTap: () {
-                            AnalyticsService.instance.log(
-                              'explore_coming_soon_toggle',
-                              params: {
-                                'show': showComingSoon.value ? 0 : 1,
-                              },
-                            );
-                            showComingSoon.value = !showComingSoon.value;
-                          },
-                          child: FBadge(
-                            variant: showComingSoon.value
-                                ? FBadgeVariant.primary
-                                : FBadgeVariant.outline,
-                            child: Text(
-                              showComingSoon.value
-                                  ? l10n.exploreHideComingSoon
-                                  : l10n.exploreShowComingSoon,
+                  if (soon.isNotEmpty)
+                    SliverToBoxAdapter(
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: GestureDetector(
+                            onTap: () {
+                              AnalyticsService.instance.log(
+                                'explore_coming_soon_toggle',
+                                params: {
+                                  'show': showComingSoon.value ? 0 : 1,
+                                },
+                              );
+                              showComingSoon.value = !showComingSoon.value;
+                            },
+                            child: FBadge(
+                              variant: showComingSoon.value
+                                  ? FBadgeVariant.primary
+                                  : FBadgeVariant.outline,
+                              child: Text(
+                                showComingSoon.value
+                                    ? l10n.exploreHideComingSoon
+                                    : l10n.exploreShowComingSoon,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
                   const SliverPadding(padding: EdgeInsets.only(bottom: 32)),
                 ],
               );

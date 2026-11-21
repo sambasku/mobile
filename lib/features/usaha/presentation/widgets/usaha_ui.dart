@@ -57,6 +57,39 @@ FBadge? usahaOperationalBadge(
   );
 }
 
+String? _sponsorTierLabel(AppLocalizations l10n, String tier) {
+  return switch (tier) {
+    'perak' => l10n.usahaSponsorTierPerak,
+    'emas' => l10n.usahaSponsorTierEmas,
+    'intan' => l10n.usahaSponsorTierIntan,
+    'mustika' => l10n.usahaSponsorTierMustika,
+    _ => null,
+  };
+}
+
+/// Listing: lencana "Sponsor" bila ada sponsor_tier.
+FBadge? usahaSponsorListBadge(AppLocalizations l10n, String? tier) {
+  if (tier == null || tier.isEmpty) return null;
+  return FBadge(
+    variant: FBadgeVariant.primary,
+    child: Text(l10n.usahaSponsorBadge),
+  );
+}
+
+/// Detail: "Sponsor Mustika" (+ warna primary).
+FBadge? usahaSponsorDetailBadge(AppLocalizations l10n, String? tier) {
+  if (tier == null || tier.isEmpty) return null;
+  final label = _sponsorTierLabel(l10n, tier);
+  return FBadge(
+    variant: FBadgeVariant.primary,
+    child: Text(
+      label == null
+          ? l10n.usahaSponsorBadge
+          : l10n.usahaSponsorBadgeTier(label),
+    ),
+  );
+}
+
 /// Baris meta tile: kategori · desa · kecamatan.
 String usahaMetaLine(Usaha usaha) {
   final parts = <String>[
@@ -132,6 +165,14 @@ class UsahaCard extends StatelessWidget {
                 style: titleStyle,
               ),
             ),
+            if (usahaSponsorListBadge(
+                  AppLocalizations.of(context),
+                  usaha.sponsorTier,
+                )
+                case final sponsorBadge?) ...[
+              const Gap(4),
+              sponsorBadge,
+            ],
           ],
         ),
       ),

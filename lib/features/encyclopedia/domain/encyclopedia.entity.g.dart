@@ -104,6 +104,7 @@ EncyclopediaArticle _$EncyclopediaArticleFromJson(Map<String, dynamic> json) =>
       referencesMd: json['references_md'] as String?,
       publishedAt: json['published_at'] as String?,
       bookmarked: json['bookmarked'] as bool?,
+      related: _relatedFromJson(json['related']),
     );
 
 Map<String, dynamic> _$EncyclopediaArticleToJson(
@@ -123,6 +124,17 @@ Map<String, dynamic> _$EncyclopediaArticleToJson(
   'references_md': instance.referencesMd,
   'published_at': instance.publishedAt,
   'bookmarked': instance.bookmarked,
+  'related': instance.related
+      .map(
+        (e) => <String, dynamic>{
+          'kind': e.kind,
+          'id': e.id,
+          'title': e.title,
+          'slug': e.slug,
+          'cover_url': e.coverUrl,
+        },
+      )
+      .toList(),
 };
 
 EncyclopediaBookmarkResult _$EncyclopediaBookmarkResultFromJson(
@@ -216,6 +228,10 @@ ArticleComment _$ArticleCommentFromJson(Map<String, dynamic> json) =>
       body: json['body'] as String,
       status: json['status'] as String,
       imageUrl: json['image_url'] as String?,
+      stickerId: json['sticker_id'] as String?,
+      audioUrl: json['audio_url'] as String?,
+      audioMimeType: json['audio_mime_type'] as String?,
+      audioDurationMs: (json['audio_duration_ms'] as num?)?.toInt(),
       isEdited: json['is_edited'] as bool? ?? false,
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
@@ -229,6 +245,10 @@ Map<String, dynamic> _$ArticleCommentToJson(ArticleComment instance) =>
       'body': instance.body,
       'status': instance.status,
       'image_url': instance.imageUrl,
+      'sticker_id': instance.stickerId,
+      'audio_url': instance.audioUrl,
+      'audio_mime_type': instance.audioMimeType,
+      'audio_duration_ms': instance.audioDurationMs,
       'is_edited': instance.isEdited,
       'created_at': instance.createdAt,
       'updated_at': instance.updatedAt,
@@ -249,6 +269,9 @@ _$SubmitEncyclopediaContributionPayloadFromJson(Map<String, dynamic> json) =>
       coverUrl: json['cover_url'] as String?,
       sourceUrl: json['source_url'] as String?,
       referencesMd: json['references_md'] as String?,
+      related: json['related'] == null
+          ? null
+          : _relatedFromJson(json['related']),
     );
 
 Map<String, dynamic> _$SubmitEncyclopediaContributionPayloadToJson(
@@ -264,6 +287,37 @@ Map<String, dynamic> _$SubmitEncyclopediaContributionPayloadToJson(
   'cover_url': instance.coverUrl,
   'source_url': instance.sourceUrl,
   'references_md': instance.referencesMd,
+  if (instance.related != null) 'related': _relatedToJson(instance.related),
+};
+
+EncyclopediaContributionPayload _$EncyclopediaContributionPayloadFromJson(
+  Map<String, dynamic> json,
+) => EncyclopediaContributionPayload(
+  title: json['title'] as String,
+  excerpt: json['excerpt'] as String,
+  bodyMd: json['body_md'] as String,
+  categoryId: json['category_id'] as String,
+  tags:
+      (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+  coverUrl: json['cover_url'] as String?,
+  sourceUrl: json['source_url'] as String?,
+  referencesMd: json['references_md'] as String?,
+  related: _relatedFromJson(json['related']),
+);
+
+Map<String, dynamic> _$EncyclopediaContributionPayloadToJson(
+  EncyclopediaContributionPayload instance,
+) => <String, dynamic>{
+  'title': instance.title,
+  'excerpt': instance.excerpt,
+  'body_md': instance.bodyMd,
+  'category_id': instance.categoryId,
+  'tags': instance.tags,
+  'cover_url': instance.coverUrl,
+  'source_url': instance.sourceUrl,
+  'references_md': instance.referencesMd,
+  'related': _relatedToJson(instance.related),
 };
 
 MyContributionItem _$MyContributionItemFromJson(Map<String, dynamic> json) =>
@@ -273,6 +327,12 @@ MyContributionItem _$MyContributionItemFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String,
       articleId: json['article_id'] as String?,
       article: json['article'] as Map<String, dynamic>?,
+      payload: json['payload'] == null
+          ? null
+          : EncyclopediaContributionPayload.fromJson(
+              json['payload'] as Map<String, dynamic>,
+            ),
+      revisionNote: json['revision_note'] as String?,
       rejectReasonCode: json['reject_reason_code'] as String?,
       rejectReasonText: json['reject_reason_text'] as String?,
       resultArticleId: json['result_article_id'] as String?,
@@ -287,6 +347,8 @@ Map<String, dynamic> _$MyContributionItemToJson(MyContributionItem instance) =>
       'status': instance.status,
       'article_id': instance.articleId,
       'article': instance.article,
+      'payload': instance.payload,
+      'revision_note': instance.revisionNote,
       'reject_reason_code': instance.rejectReasonCode,
       'reject_reason_text': instance.rejectReasonText,
       'result_article_id': instance.resultArticleId,

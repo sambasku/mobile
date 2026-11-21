@@ -214,6 +214,14 @@ class CulinaryContributionApi {
     ),
   );
 
+  /// #281: tambah foto ke kuliner published (wajib login).
+  Future<void> appendImages(String slug, List<String> urls) => _send(
+    () => _dio.post<dynamic>(
+      '/api/v1/culinary/cuisines/${Uri.encodeComponent(slug)}/images',
+      data: {'urls': urls},
+    ),
+  );
+
   /// Unggah foto usulan kuliner (maks 5 MB, anonim boleh) - URL https.
   Future<String> uploadImage(File file) async {
     final form = FormData.fromMap({

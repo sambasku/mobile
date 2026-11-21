@@ -12,18 +12,31 @@ class WordOfDay {
   final String date;
   final bool isNewThisWeek;
 
-/// Arti pertama (definition), fallback terjemahan pertama.
-/// Treats '-' (API placeholder for empty) as empty.
-String get firstSense {
-if (word.meanings.isEmpty) return '';
-final meaning = word.meanings.first;
-final definition = meaning.definition?.trim();
-if (definition != null && definition.isNotEmpty && definition != '-') {
-return definition;
+  /// Definisi makna pertama. Treats '-' (API placeholder) as empty.
+  String get firstDefinition {
+    if (word.meanings.isEmpty) return '';
+    return _nonEmpty(word.meanings.first.definition) ?? '';
+  }
+
+  /// Terjemahan pertama dari makna pertama. Treats '-' as empty.
+  String get firstTranslation {
+    if (word.meanings.isEmpty) return '';
+    final translations = word.meanings.first.translations;
+    if (translations.isEmpty) return '';
+    return _nonEmpty(translations.first.text) ?? '';
+  }
+
+  /// Arti pertama (definition), fallback terjemahan pertama.
+  /// Treats '-' (API placeholder for empty) as empty.
+  String get firstSense {
+    final definition = firstDefinition;
+    if (definition.isNotEmpty) return definition;
+    return firstTranslation;
+  }
 }
-if (meaning.translations.isEmpty) return '';
-final translation = meaning.translations.first.text.trim();
-if (translation.isEmpty || translation == '-') return '';
-return translation;
-}
+
+String? _nonEmpty(String? value) {
+  final trimmed = value?.trim();
+  if (trimmed == null || trimmed.isEmpty || trimmed == '-') return null;
+  return trimmed;
 }

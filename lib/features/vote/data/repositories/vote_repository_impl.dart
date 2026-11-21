@@ -25,6 +25,10 @@ VoteDeckItem parseVoteDeckItem(Map<String, dynamic> map) {
     isVerified: map['is_verified'] == true,
     approvedAt: map['approved_at']?.toString() ?? '',
     sense: map['sense']?.toString(),
+    definition: _parseOptionalText(map['definition']),
+    translation: _parseOptionalText(map['translation']),
+    contributorUsername: _parseOptionalText(map['contributor_username']),
+    contributorDisplayName: _parseOptionalText(map['contributor_display_name']),
     orderIndex: map['order_index'] is int
         ? map['order_index'] as int
         : int.tryParse('${map['order_index']}') ?? 1,
@@ -43,9 +47,11 @@ VoteDeckItem parseVoteDeckItem(Map<String, dynamic> map) {
   );
 }
 
-String? _parsePronunciationValue(Object? raw) {
+String? _parsePronunciationValue(Object? raw) => _parseOptionalText(raw);
+
+String? _parseOptionalText(Object? raw) {
   final text = raw?.toString().trim();
-  if (text == null || text.isEmpty) return null;
+  if (text == null || text.isEmpty || text == 'null') return null;
   return text;
 }
 
@@ -116,7 +122,9 @@ class VoteRepositoryImpl implements VoteRepository {
     List<VoteTarget> targets,
   ) async {
     try {
-      final response = await _remoteDatasource.getCounts(_targetsQuery(targets));
+      final response = await _remoteDatasource.getCounts(
+        _targetsQuery(targets),
+      );
 
       if (response.success == false) {
         return Either.left(
@@ -217,6 +225,46 @@ class VoteRepositoryImpl implements VoteRepository {
   }
 
   @override
+  Future<Either<VoteFailure, VoteDeckPage>> getCheckDeck({
+    int limit = 20,
+    String? cursor,
+    String? q,
+    bool randomize = false,
+  }) async {
+    try {
+      final res = await _dio.get<Map<String, dynamic>>(
+        '/api/v1/votes/check-deck',
+        queryParameters: {
+          'limit': limit,
+          'randomize': randomize,
+          if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
+          if (q != null && q.trim().isNotEmpty) 'q': q.trim(),
+        },
+      );
+      final body = res.data ?? const <String, dynamic>{};
+      final data = body['data'];
+      final meta = body['meta'];
+      final items = <VoteDeckItem>[];
+      if (data is List) {
+        for (final raw in data.whereType<Map>()) {
+          items.add(parseVoteDeckItem(Map<String, dynamic>.from(raw)));
+        }
+      }
+      return Either.right(
+        VoteDeckPage(
+          items: items,
+          nextCursor: meta is Map ? meta['next_cursor']?.toString() : null,
+          hasMore: meta is Map && meta['has_more'] == true,
+        ),
+      );
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error));
+    } catch (error) {
+      return Either.left(const VoteFailure('Terjadi kesalahan'));
+    }
+  }
+
+  @override
   Future<Either<VoteFailure, Unit>> skipMeaning(String meaningId) async {
     try {
       await _dio.post<Map<String, dynamic>>(
@@ -250,8 +298,8 @@ class VoteRepositoryImpl implements VoteRepository {
   /// Query param `targets` = daftar "type:id" dipisah koma (max 50 pasang,
   /// validator backend yang menegakkan).
   Map<String, dynamic> _targetsQuery(List<VoteTarget> targets) => {
-        'targets': targets.map((t) => '${t.type}:${t.id}').join(','),
-      };
+    'targets': targets.map((t) => '${t.type}:${t.id}').join(','),
+  };
 
   VoteFailure _mapDio(DioException error) {
     final data = error.response?.data;

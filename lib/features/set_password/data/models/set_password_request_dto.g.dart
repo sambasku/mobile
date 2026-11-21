@@ -23,11 +23,11 @@ Map<String, dynamic> _$SetPasswordRequestDtoToJson(
   _SetPasswordRequestDto instance,
 ) => <String, dynamic>{
   'provider': instance.provider,
-  'id_token': instance.idToken,
-  'access_token': instance.accessToken,
-  'code': instance.code,
-  'redirect_uri': instance.redirectUri,
-  'code_verifier': instance.codeVerifier,
+  'id_token': ?instance.idToken,
+  'access_token': ?instance.accessToken,
+  'code': ?instance.code,
+  'redirect_uri': ?instance.redirectUri,
+  'code_verifier': ?instance.codeVerifier,
   'new_password': instance.newPassword,
   'confirm_password': instance.confirmPassword,
 };

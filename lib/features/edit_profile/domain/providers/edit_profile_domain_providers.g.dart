@@ -81,8 +81,7 @@ final class CheckUsernameAvailabilityUseCaseProvider
       );
 
   @override
-  String debugGetCreateSourceHash() =>
-      _$checkUsernameAvailabilityUseCaseHash();
+  String debugGetCreateSourceHash() => _$checkUsernameAvailabilityUseCaseHash();
 
   @$internal
   @override
@@ -99,14 +98,63 @@ final class CheckUsernameAvailabilityUseCaseProvider
   Override overrideWithValue(CheckUsernameAvailabilityUseCase value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $SyncValueProvider<CheckUsernameAvailabilityUseCase>(value),
+      providerOverride: $SyncValueProvider<CheckUsernameAvailabilityUseCase>(
+        value,
+      ),
     );
   }
 }
 
 String _$checkUsernameAvailabilityUseCaseHash() =>
-    r'checkUsernameAvailabilityUseCaseManual';
+    r'73b13aa25c688882049a52726068efae0440d2f7';
+
+@ProviderFor(getUsernameHistoryUseCase)
+final getUsernameHistoryUseCaseProvider = GetUsernameHistoryUseCaseProvider._();
+
+final class GetUsernameHistoryUseCaseProvider
+    extends
+        $FunctionalProvider<
+          GetUsernameHistoryUseCase,
+          GetUsernameHistoryUseCase,
+          GetUsernameHistoryUseCase
+        >
+    with $Provider<GetUsernameHistoryUseCase> {
+  GetUsernameHistoryUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getUsernameHistoryUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getUsernameHistoryUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<GetUsernameHistoryUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  GetUsernameHistoryUseCase create(Ref ref) {
+    return getUsernameHistoryUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GetUsernameHistoryUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GetUsernameHistoryUseCase>(value),
+    );
+  }
+}
+
+String _$getUsernameHistoryUseCaseHash() =>
+    r'6359ceaada869e1640dfefa56a9bba24a4de700a';
 
 @ProviderFor(updateMyProfileUseCase)
 final updateMyProfileUseCaseProvider = UpdateMyProfileUseCaseProvider._();

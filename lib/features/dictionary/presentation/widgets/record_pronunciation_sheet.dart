@@ -54,6 +54,7 @@ Future<bool?> showRecordPronunciationSheet(
 
   return showModalBottomSheet<bool>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     // Dismiss dikontrol PopScope di dalam sheet saat merekam/mengirim.
@@ -608,6 +609,7 @@ class _RecordPronunciationSheetState
     final theme = FTheme.of(context);
     final agreed = await showModalBottomSheet<bool>(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
       builder: (sheetCtx) => Padding(

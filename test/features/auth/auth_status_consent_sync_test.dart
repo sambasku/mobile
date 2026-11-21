@@ -7,6 +7,7 @@ import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status_providers.dart';
 import 'package:sambasku_mobile/features/edit_profile/domain/entities/my_profile.dart';
 import 'package:sambasku_mobile/features/edit_profile/domain/entities/username_availability.dart';
+import 'package:sambasku_mobile/features/edit_profile/domain/entities/username_history_item.dart';
 import 'package:sambasku_mobile/features/edit_profile/domain/failures/edit_profile_failure.dart';
 import 'package:sambasku_mobile/features/edit_profile/domain/providers/edit_profile_domain_providers.dart';
 import 'package:sambasku_mobile/features/edit_profile/domain/repositories/edit_profile_repository.dart';
@@ -104,10 +105,15 @@ class _FakeEditProfileRepository implements EditProfileRepository {
           );
 
   @override
+  Future<Either<EditProfileFailure, List<UsernameHistoryItem>>>
+      getUsernameHistory() async => Either.right(const []);
+
+  @override
   Future<Either<EditProfileFailure, MyProfile>> updateMyProfile({
     String? username,
     String? displayName,
     String? bio,
+    String? speakerStatus,
     String? regionId,
     String? villageId,
     bool? hasReadContributionGuide,

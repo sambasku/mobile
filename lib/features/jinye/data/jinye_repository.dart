@@ -240,6 +240,7 @@ class JinyeRepository {
     required int start,
     required int end,
     required String wordId,
+    String? commentId,
   }) async {
     final res = await _dio.post<Map<String, dynamic>>(
       '$_base/$jinyeId/lemma-links',
@@ -247,6 +248,7 @@ class JinyeRepository {
         'start': start,
         'end': end,
         'word_id': wordId,
+        'comment_id': ?commentId,
       },
     );
     final data = res.data?['data'];
@@ -443,13 +445,16 @@ class JinyeRepository {
     required String jinyeId,
     String body = '',
     String? parentId,
+    String? stickerId,
     List<JinyeImageRef> images = const [],
   }) async {
+    final sid = stickerId?.trim();
     final res = await _dio.post<Map<String, dynamic>>(
       '$_base/$jinyeId/comments',
       data: {
         'body': body.trim(),
         if (parentId != null && parentId.isNotEmpty) 'parent_id': parentId,
+        if (sid != null && sid.isNotEmpty) 'sticker_id': sid,
         if (images.isNotEmpty)
           'images': [for (final i in images) i.toJson()],
       },
@@ -471,6 +476,42 @@ class JinyeRepository {
     await _dio.delete<Map<String, dynamic>>(
       '$_base/$jinyeId/comments/$commentId',
     );
+  }
+
+  Future<JinyeComment> updateComment({
+    required String jinyeId,
+    required String commentId,
+    required String body,
+  }) async {
+    final res = await _dio.patch<Map<String, dynamic>>(
+      '$_base/$jinyeId/comments/$commentId',
+      data: {'body': body},
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeComment.fromJson(data);
+  }
+
+  Future<JinyeEditHistory> commentEditHistory({
+    required String jinyeId,
+    required String commentId,
+  }) async {
+    final res = await _dio.get<Map<String, dynamic>>(
+      '$_base/$jinyeId/comments/$commentId/edit-history',
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeEditHistory.fromJson(data);
   }
 
   /// Laporkan Jinye / komen. [targetType] `jinye` | `jinye_comment`.

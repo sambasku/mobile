@@ -1,6 +1,14 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../../shared/models/content_related_link.dart';
+
 part 'encyclopedia.entity.g.dart';
+
+List<ContentRelatedLink> _relatedFromJson(Object? json) =>
+    ContentRelatedLink.listFromJson(json);
+
+List<Map<String, dynamic>>? _relatedToJson(List<ContentRelatedLink>? related) =>
+    related?.map((e) => e.toRefJson()).toList();
 
 /// Kategori = katalog `encyclopedia_categories` (slug, bukan ULID).
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -107,6 +115,7 @@ class EncyclopediaArticle {
     this.referencesMd,
     this.publishedAt,
     this.bookmarked,
+    this.related = const [],
   });
   factory EncyclopediaArticle.fromJson(Map<String, dynamic> json) =>
       _$EncyclopediaArticleFromJson(json);
@@ -132,6 +141,8 @@ class EncyclopediaArticle {
   final String? publishedAt;
   /// null = tamu / tidak dicek; true/false = status bookmark user login.
   final bool? bookmarked;
+  @JsonKey(fromJson: _relatedFromJson, toJson: _relatedToJson)
+  final List<ContentRelatedLink> related;
 }
 
 /// Response toggle bookmark - `POST /articles/:id/bookmark`.
@@ -228,6 +239,10 @@ class ArticleComment {
     required this.body,
     required this.status,
     this.imageUrl,
+    this.stickerId,
+    this.audioUrl,
+    this.audioMimeType,
+    this.audioDurationMs,
     this.isEdited = false,
     this.createdAt,
     this.updatedAt,
@@ -244,6 +259,14 @@ class ArticleComment {
   final String status;
   @JsonKey(name: 'image_url')
   final String? imageUrl;
+  @JsonKey(name: 'sticker_id')
+  final String? stickerId;
+  @JsonKey(name: 'audio_url')
+  final String? audioUrl;
+  @JsonKey(name: 'audio_mime_type')
+  final String? audioMimeType;
+  @JsonKey(name: 'audio_duration_ms')
+  final int? audioDurationMs;
   @JsonKey(name: 'is_edited')
   final bool isEdited;
   @JsonKey(name: 'created_at')
@@ -254,6 +277,10 @@ class ArticleComment {
   bool get isPublished => status == 'published';
   bool get isTakenDown => status == 'taken_down';
   bool get isDeletedByAuthor => status == 'deleted_by_author';
+  bool get hasSticker =>
+      stickerId != null && stickerId!.trim().isNotEmpty;
+  bool get hasAudio => audioUrl != null && audioUrl!.trim().isNotEmpty;
+  bool get hasImage => imageUrl != null && imageUrl!.trim().isNotEmpty;
   bool isOwner(String? actorId) =>
       actorId != null && actorId.isNotEmpty && actorId == user.userId;
 }
@@ -272,6 +299,7 @@ class SubmitEncyclopediaContributionPayload {
     this.coverUrl,
     this.sourceUrl,
     this.referencesMd,
+    this.related,
   });
   factory SubmitEncyclopediaContributionPayload.fromJson(
     Map<String, dynamic> json,
@@ -295,6 +323,44 @@ class SubmitEncyclopediaContributionPayload {
   final String? sourceUrl;
   @JsonKey(name: 'references_md')
   final String? referencesMd;
+  @JsonKey(toJson: _relatedToJson, includeIfNull: false)
+  final List<ContentRelatedLink>? related;
+}
+
+/// Payload tersimpan di usulan (wire `toContributionWire.payload`).
+@JsonSerializable(fieldRename: FieldRename.snake)
+class EncyclopediaContributionPayload {
+  const EncyclopediaContributionPayload({
+    required this.title,
+    required this.excerpt,
+    required this.bodyMd,
+    required this.categoryId,
+    this.tags = const [],
+    this.coverUrl,
+    this.sourceUrl,
+    this.referencesMd,
+    this.related = const [],
+  });
+  factory EncyclopediaContributionPayload.fromJson(Map<String, dynamic> json) =>
+      _$EncyclopediaContributionPayloadFromJson(json);
+  Map<String, dynamic> toJson() =>
+      _$EncyclopediaContributionPayloadToJson(this);
+
+  final String title;
+  final String excerpt;
+  @JsonKey(name: 'body_md')
+  final String bodyMd;
+  @JsonKey(name: 'category_id')
+  final String categoryId;
+  final List<String> tags;
+  @JsonKey(name: 'cover_url')
+  final String? coverUrl;
+  @JsonKey(name: 'source_url')
+  final String? sourceUrl;
+  @JsonKey(name: 'references_md')
+  final String? referencesMd;
+  @JsonKey(fromJson: _relatedFromJson, toJson: _relatedToJson)
+  final List<ContentRelatedLink> related;
 }
 
 /// Riwayat usulan milik user (wire `toContributionWire`).
@@ -306,6 +372,8 @@ class MyContributionItem {
     required this.status,
     this.articleId,
     this.article,
+    this.payload,
+    this.revisionNote,
     this.rejectReasonCode,
     this.rejectReasonText,
     this.resultArticleId,
@@ -322,6 +390,9 @@ class MyContributionItem {
   @JsonKey(name: 'article_id')
   final String? articleId;
   final Map<String, dynamic>? article;
+  final EncyclopediaContributionPayload? payload;
+  @JsonKey(name: 'revision_note')
+  final String? revisionNote;
   @JsonKey(name: 'reject_reason_code')
   final String? rejectReasonCode;
   @JsonKey(name: 'reject_reason_text')
@@ -332,4 +403,16 @@ class MyContributionItem {
   final String? createdAt;
   @JsonKey(name: 'reviewed_at')
   final String? reviewedAt;
+
+  bool get canEdit => status == 'pending' || status == 'needs_revision';
+
+  String get displayTitle {
+    final fromPayload = payload?.title.trim();
+    if (fromPayload != null && fromPayload.isNotEmpty) return fromPayload;
+    final fromArticle = article?['title'];
+    if (fromArticle is String && fromArticle.trim().isNotEmpty) {
+      return fromArticle.trim();
+    }
+    return '';
+  }
 }

@@ -26,6 +26,7 @@ _AchievementDto _$AchievementDtoFromJson(Map<String, dynamic> json) =>
           : AchievementProgressDto.fromJson(
               json['progress'] as Map<String, dynamic>,
             ),
+      repeatCount: (json['repeat_count'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$AchievementDtoToJson(_AchievementDto instance) =>
@@ -44,6 +45,7 @@ Map<String, dynamic> _$AchievementDtoToJson(_AchievementDto instance) =>
       'awarded_at': instance.awardedAt,
       'is_active_border': instance.isActiveBorder,
       'progress': instance.progress,
+      'repeat_count': instance.repeatCount,
     };
 
 _AchievementProgressDto _$AchievementProgressDtoFromJson(

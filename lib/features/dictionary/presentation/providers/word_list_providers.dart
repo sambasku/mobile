@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/services/analytics_service.dart';
@@ -13,8 +14,13 @@ import '../providers/search_history_provider.dart';
 
 part 'word_list_providers.g.dart';
 
-/// Debounce filter q - sama dengan pencarian beranda (400 ms).
-const _kDebounceMs = 400;
+/// Debounce filter q. 700 ms = jeda ketikan; setelah settle baru fetch +
+/// boleh rekam miss. Hit tengah ("sa" saat mengetik "sapaka") dibatalkan
+/// lewat CancelToken, bukan lewat wajib tekan Enter.
+const _kDebounceMs = 700;
+
+/// Min huruf untuk commit miss (selaras API; lemma Sambas bisa 2 huruf).
+const _kMinCommitLen = 2;
 
 /// Notifier halaman Daftar Kata A-Z (18-api-list-words.md). Meniru
 /// DictionarySearchNotifier: debounce, req id guard anti stale response,
@@ -30,16 +36,22 @@ const _kDebounceMs = 400;
 @Riverpod(keepAlive: true)
 class WordListNotifier extends _$WordListNotifier {
   Timer? _debounce;
+  CancelToken? _httpCancel;
   int _loadReqId = 0;
   int _loadMoreReqId = 0;
   bool _isLoadingSync = false;
   bool _isLoadingMoreSync = false;
+
+  /// Query terakhir yang sudah di-commit (debounce settle / Enter / blur).
+  String? _missCommittedQ;
 
   @override
   WordListState build() {
     ref.onDispose(() {
       _debounce?.cancel();
       _debounce = null;
+      _httpCancel?.cancel('dispose');
+      _httpCancel = null;
     });
 
     // keepAlive: listener hilang saat pop, kembali saat push. Jika state
@@ -62,13 +74,25 @@ class WordListNotifier extends _$WordListNotifier {
   /// Batalkan request yang masih di udara. Dipakai saat mode atau q
   /// berubah supaya jawaban lama tidak menimpa state yang baru.
   void _dropInFlight() {
+    _httpCancel?.cancel('superseded');
+    _httpCancel = null;
     _loadReqId++;
     _loadMoreReqId++;
     _isLoadingSync = false;
     _isLoadingMoreSync = false;
   }
 
-  /// Filter q berubah (dari search box halaman list). Debounce 400 ms →
+  CancelToken _nextHttpToken() {
+    _httpCancel?.cancel('superseded');
+    final token = CancelToken();
+    _httpCancel = token;
+    return token;
+  }
+
+  bool _isCancelled(DictionaryFailure failure) =>
+      failure.errorCode == 'REQUEST_CANCELLED';
+
+  /// Filter q berubah (dari search box halaman list). Debounce 700 ms →
   /// reset + fetch halaman pertama dengan q baru (server-side). q kosong
   /// di mode Sambas → kembali full A-Z tanpa menunggu debounce.
   void onQueryChanged(String q) {
@@ -89,6 +113,7 @@ class WordListNotifier extends _$WordListNotifier {
     }
 
     state = state.copyWith(q: q, clearErrorMessage: true);
+    _missCommittedQ = null;
     if (nextEmpty) {
       _debounce?.cancel();
       if (state.searchIn == 'translation') {
@@ -112,7 +137,35 @@ class WordListNotifier extends _$WordListNotifier {
       return;
     }
     _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: _kDebounceMs), load);
+    // Setelah jeda ketikan: fetch + boleh rekam miss (0 hasil). Tidak perlu
+    // Enter - user yang berhenti mengetik = sudah "mencari".
+    _dropInFlight();
+    if (state.isLoading) {
+      state = state.copyWith(isLoading: false);
+    }
+    _debounce = Timer(const Duration(milliseconds: _kDebounceMs), () {
+      final settled = state.q.trim();
+      if (settled.length >= _kMinCommitLen) {
+        _missCommittedQ = settled;
+      }
+      load(recordMiss: true);
+    });
+  }
+
+  /// Commit segera: Enter, tombol Cari, blur idle, atau pilih riwayat.
+  /// Debounce settle sudah merekam miss; ini untuk commit tanpa menunggu jeda.
+  void commitSearch() {
+    final q = state.q.trim();
+    if (q.length < _kMinCommitLen) return;
+    if (_missCommittedQ == q) return;
+    _missCommittedQ = q;
+    _debounce?.cancel();
+    // Ada hasil → tidak perlu hit lagi hanya untuk miss.
+    if (state.items.isNotEmpty && !state.isLoading && !_isLoadingSync) {
+      return;
+    }
+    _dropInFlight();
+    scheduleMicrotask(() => load(recordMiss: true));
   }
 
   /// Filter kategori berubah (#50). Reset + fetch halaman pertama.
@@ -129,6 +182,16 @@ class WordListNotifier extends _$WordListNotifier {
       viaSearch: false,
       clearErrorMessage: true,
     );
+    scheduleMicrotask(load);
+  }
+
+  /// Bersihkan field pencarian + reset ke A-Z (issue mobile#296).
+  /// Dipanggil sebelum buka `/words` dari beranda supaya query lama di
+  /// keepAlive tidak ikut tampil lagi.
+  void clearSearchSession() {
+    _debounce?.cancel();
+    _dropInFlight();
+    state = const WordListState(isLoading: true);
     scheduleMicrotask(load);
   }
 
@@ -176,6 +239,7 @@ class WordListNotifier extends _$WordListNotifier {
                 query: state.q,
                 cursor: state.nextCursor,
                 searchIn: state.searchIn,
+                recordMiss: false,
               ),
             )
           : await ref.read(listWordsUseCaseProvider)(
@@ -227,6 +291,8 @@ class WordListNotifier extends _$WordListNotifier {
       clearNextCursor: page.nextCursor == null,
       hasMore: page.hasMore,
       viaSearch: viaSearch,
+      lastSearchMissId: page.searchMissId,
+      clearLastSearchMissId: page.searchMissId == null,
     );
     if (viaSearch && state.q.trim().isNotEmpty) {
       AnalyticsService.instance.logSearchSubmit(
@@ -245,13 +311,15 @@ class WordListNotifier extends _$WordListNotifier {
     }
   }
 
-  /// Halaman pertama (buka halaman / q berubah / pull-to-refresh).
-  Future<void> load() async {
+  /// Halaman pertama (buka halaman / q berubah / pull-to-refresh / commit).
+  /// [recordMiss] true setelah debounce settle atau [commitSearch].
+  Future<void> load({bool recordMiss = false}) async {
     if (_isLoadingSync || !ref.mounted) return;
     _isLoadingSync = true;
     final reqId = ++_loadReqId;
     _loadMoreReqId++;
     _isLoadingMoreSync = false;
+    final token = _nextHttpToken();
 
     final q = state.q;
     final searchIn = state.searchIn;
@@ -277,21 +345,33 @@ class WordListNotifier extends _$WordListNotifier {
 
       if (searchIn == 'translation') {
         final result = await ref.read(searchWordsUseCaseProvider)(
-          SearchWordsParams(query: q, searchIn: 'translation'),
+          SearchWordsParams(
+            query: q,
+            searchIn: 'translation',
+            recordMiss: recordMiss,
+            cancelToken: token,
+          ),
         );
         if (!ref.mounted || reqId != _loadReqId) return;
         result.match(
-          (failure) => state = state.copyWith(
-            isLoading: false,
-            errorMessage: failure.message,
-          ),
+          (failure) {
+            if (_isCancelled(failure)) return;
+            state = state.copyWith(
+              isLoading: false,
+              errorMessage: failure.message,
+            );
+          },
           (page) => _applyPage(page, viaSearch: true),
         );
         return;
       }
 
       final listed = await ref.read(listWordsUseCaseProvider)(
-        ListWordsParams(q: q, category: state.category),
+        ListWordsParams(
+          q: q,
+          category: state.category,
+          cancelToken: token,
+        ),
       );
       if (!ref.mounted || reqId != _loadReqId) return;
 
@@ -300,6 +380,7 @@ class WordListNotifier extends _$WordListNotifier {
       listed.match((error) => failure = error, (value) => page = value);
       final error = failure;
       if (error != null) {
+        if (_isCancelled(error)) return;
         state = state.copyWith(isLoading: false, errorMessage: error.message);
         return;
       }
@@ -307,14 +388,22 @@ class WordListNotifier extends _$WordListNotifier {
       final found = page;
       if (found == null) return;
       // Saringan Sambas kosong + q cukup panjang: coba pencarian lemma
-      // (variasi penulisan + rekam search-miss bila tetap kosong).
+      // (variasi + miss hanya bila [recordMiss]).
       if (found.items.isEmpty && q.trim().length >= 2) {
         final searched = await ref.read(searchWordsUseCaseProvider)(
-          SearchWordsParams(query: q, searchIn: 'lemma'),
+          SearchWordsParams(
+            query: q,
+            searchIn: 'lemma',
+            recordMiss: recordMiss,
+            cancelToken: token,
+          ),
         );
         if (!ref.mounted || reqId != _loadReqId) return;
         searched.match(
-          (_) => _applyPage(found, viaSearch: false),
+          (fail) {
+            if (_isCancelled(fail)) return;
+            _applyPage(found, viaSearch: false);
+          },
           (hits) => _applyPage(hits, viaSearch: true),
         );
         return;

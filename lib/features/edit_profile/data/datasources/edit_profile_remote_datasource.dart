@@ -4,6 +4,7 @@ import 'package:retrofit/retrofit.dart';
 import '../../../../core/models/api_response.dart';
 import '../models/my_profile_dto.dart';
 import '../models/username_availability_dto.dart';
+import '../models/username_history_dto.dart';
 
 part 'edit_profile_remote_datasource.g.dart';
 
@@ -22,6 +23,9 @@ abstract interface class EditProfileRemoteDatasource {
   Future<ApiResponse<UsernameAvailabilityDto>> checkUsernameAvailability(
     @Query('username') String username,
   );
+
+  @GET('/api/v1/users/me/username-history')
+  Future<ApiResponse<UsernameHistoryDto>> getUsernameHistory();
 
   @PATCH('/api/v1/users/me')
   Future<ApiResponse<MyProfileDto>> updateMyProfile(

@@ -8,6 +8,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/network/network_providers.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/compact_search_hit_tile.dart';
 
 /// Satu hasil cari lemma di kamus (untuk chip / list sheet).
 class LemmaSearchHit {
@@ -26,6 +27,7 @@ class LemmaSearchHit {
 ///
 /// Return lemma terpilih, atau teks query bila user pilih "pakai sebagai
 /// lemma baru". Null = batal.
+/// Chrome + densitas baris = pola [showKbbiDefinitionSheet].
 Future<String?> showLemmaSearchPickerSheet(
   BuildContext context, {
   Set<String> excludeLemmas = const {},
@@ -100,8 +102,8 @@ class _LemmaSearchPickerSheetBodyState
     // mengangkat sheet (bukan di dalam - itu menyusutkan Column → overflow).
     final available = media.size.height - media.viewInsets.bottom;
     if (available <= 0) return 0;
-    final target = available * 0.7;
-    final minH = available < 320 ? available : 320.0;
+    final target = available * 0.75;
+    final minH = available < 320 ? available : 280.0;
     return target.clamp(minH, available);
   }
 
@@ -118,7 +120,10 @@ class _LemmaSearchPickerSheetBodyState
       return;
     }
     final seq = ++_seq;
-    setState(() => _loading = true);
+    setState(() {
+      _loading = true;
+      _searched = true;
+    });
     try {
       final res = await ref.read(dioProvider).get<Map<String, dynamic>>(
             '/api/v1/words/search',
@@ -176,7 +181,8 @@ class _LemmaSearchPickerSheetBodyState
     final exactHit = _hits.any((h) => h.lemma.toLowerCase() == q.toLowerCase());
     final canUseNew = q.length >= 2 &&
         !widget.excludeLemmas.contains(q.toLowerCase()) &&
-        !exactHit;
+        !exactHit &&
+        !_loading;
 
     // Padding di luar: angkat seluruh sheet di atas keyboard.
     // (Pola sama option_picker_sheet - Padding di dalam SizedBox = overflow.)
@@ -210,7 +216,7 @@ class _LemmaSearchPickerSheetBodyState
                   ),
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(FLucideIcons.x),
                   ),
                 ],
               ),
@@ -259,14 +265,26 @@ class _LemmaSearchPickerSheetBodyState
               ),
             const Gap(8),
             Expanded(
-              child: _loading
-                  ? const Center(child: FCircularProgress())
-                  : !_searched
+              // Spinner hanya di suffix field (hindari dobel dengan center).
+              child: !_searched
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Text(
+                          l10n.lemmaSearchSheetPrompt,
+                          textAlign: TextAlign.center,
+                          style: theme.typography.body.sm.copyWith(
+                            color: theme.colors.mutedForeground,
+                          ),
+                        ),
+                      ),
+                    )
+                  : _hits.isEmpty && !canUseNew && !_loading
                       ? Center(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 24),
                             child: Text(
-                              l10n.lemmaSearchSheetPrompt,
+                              l10n.lemmaSearchSheetEmpty,
                               textAlign: TextAlign.center,
                               style: theme.typography.body.sm.copyWith(
                                 color: theme.colors.mutedForeground,
@@ -274,97 +292,34 @@ class _LemmaSearchPickerSheetBodyState
                             ),
                           ),
                         )
-                      : _hits.isEmpty && !canUseNew
-                          ? Center(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 24),
-                                child: Text(
-                                  l10n.lemmaSearchSheetEmpty,
-                                  textAlign: TextAlign.center,
-                                  style: theme.typography.body.sm.copyWith(
-                                    color: theme.colors.mutedForeground,
-                                  ),
-                                ),
+                      : ListView.builder(
+                          itemCount: _hits.length + (canUseNew ? 1 : 0),
+                          padding: const EdgeInsets.fromLTRB(8, 0, 8, 24),
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior.onDrag,
+                          itemBuilder: (context, index) {
+                            if (index < _hits.length) {
+                              final hit = _hits[index];
+                              return CompactSearchHitTile(
+                                title: hit.lemma,
+                                subtitle: hit.sense,
+                                titleBold: true,
+                                onTap: () =>
+                                    Navigator.of(context).pop(hit.lemma),
+                              );
+                            }
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                              child: FButton(
+                                variant: FButtonVariant.outline,
+                                onPress: () => Navigator.of(context).pop(q),
+                                child: Text(l10n.lemmaSearchSheetUseNew(q)),
                               ),
-                            )
-                          : ListView(
-                              padding: const EdgeInsets.fromLTRB(8, 0, 8, 24),
-                              keyboardDismissBehavior:
-                                  ScrollViewKeyboardDismissBehavior.onDrag,
-                              children: [
-                                for (final hit in _hits)
-                                  _LemmaHitTile(
-                                    hit: hit,
-                                    onTap: () =>
-                                        Navigator.of(context).pop(hit.lemma),
-                                  ),
-                                if (canUseNew)
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                      8,
-                                      8,
-                                      8,
-                                      0,
-                                    ),
-                                    child: FButton(
-                                      variant: FButtonVariant.outline,
-                                      onPress: () =>
-                                          Navigator.of(context).pop(q),
-                                      child: Text(
-                                        l10n.lemmaSearchSheetUseNew(q),
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
+                            );
+                          },
+                        ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LemmaHitTile extends StatelessWidget {
-  const _LemmaHitTile({required this.hit, required this.onTap});
-
-  final LemmaSearchHit hit;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final sense = hit.sense?.trim();
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                hit.lemma,
-                style: theme.typography.body.sm.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              if (sense != null && sense.isNotEmpty) ...[
-                const Gap(2),
-                Text(
-                  sense,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.typography.body.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ],
-          ),
         ),
       ),
     );

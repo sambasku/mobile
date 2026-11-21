@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -22,7 +23,8 @@ WordSummary _word(String lemma) => WordSummary(
 /// habis). Mencatat tiap panggilan listWords untuk assert filter/pagination.
 class _FakeDictionaryRepository implements DictionaryRepository {
   final calls = <({String q, String? cursor})>[];
-  final searchCalls = <({String query, String searchIn, String? cursor})>[];
+  final searchCalls =
+      <({String query, String searchIn, String? cursor, bool recordMiss})>[];
   bool failNext = false;
   bool empty = false;
   bool searchReturnsVariant = false;
@@ -35,6 +37,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    CancelToken? cancelToken,
   }) async {
     calls.add((q: q, cursor: cursor));
     if (failNext) {
@@ -72,12 +75,16 @@ class _FakeDictionaryRepository implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => throw UnimplementedError();
 
   @override
@@ -91,8 +98,15 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async {
-    searchCalls.add((query: query, searchIn: searchIn, cursor: cursor));
+    searchCalls.add((
+      query: query,
+      searchIn: searchIn,
+      cursor: cursor,
+      recordMiss: recordMiss,
+    ));
     if (searchReturnsVariant && cursor == null) {
       return Either.right(
         WordSearchPage(
@@ -113,6 +127,9 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     String? cursor,
     bool forceRefresh = false,
   }) async => throw UnimplementedError();
+
+  @override
+  Future<void> recordView(String wordId) async {}
 }
 
 Future<void> _flush() async {
@@ -173,7 +190,7 @@ void main() {
     sub.close();
   });
 
-  test('onQueryChanged: q berisi → debounce 400ms → fetch dengan q', () async {
+  test('onQueryChanged: q berisi → debounce 700ms → fetch dengan q', () async {
     final repo = _FakeDictionaryRepository();
     final container = ProviderContainer(
       overrides: [dictionaryRepositoryProvider.overrideWithValue(repo)],
@@ -186,11 +203,11 @@ void main() {
 
     container.read(wordListProvider.notifier).onQueryChanged('  ke  ');
 
-    // Sebelum 400ms: belum ada request baru.
-    await Future<void>.delayed(const Duration(milliseconds: 100));
+    // Sebelum 700ms: belum ada request baru.
+    await Future<void>.delayed(const Duration(milliseconds: 300));
     expect(repo.calls.length, callsBefore);
 
-    await Future<void>.delayed(const Duration(milliseconds: 400));
+    await Future<void>.delayed(const Duration(milliseconds: 450));
     expect(repo.calls.length, callsBefore + 1);
     // q ter-trim sebelum sampai repo (dilakukan use case).
     expect(repo.calls.last.q, 'ke');
@@ -278,7 +295,7 @@ void main() {
     await _flush();
 
     container.read(wordListProvider.notifier).onQueryChanged('ketex');
-    await Future<void>.delayed(const Duration(milliseconds: 500));
+    await Future<void>.delayed(const Duration(milliseconds: 800));
 
     expect(repo.searchCalls, hasLength(1));
     expect(repo.searchCalls.single.searchIn, 'lemma');
@@ -301,7 +318,7 @@ void main() {
     await _flush();
 
     container.read(wordListProvider.notifier).onQueryChanged('ketex');
-    await Future<void>.delayed(const Duration(milliseconds: 500));
+    await Future<void>.delayed(const Duration(milliseconds: 800));
 
     expect(container.read(wordListProvider).items.map((w) => w.lemma), [
       'ketek',
@@ -334,7 +351,7 @@ void main() {
       expect(container.read(wordListProvider).items, isEmpty);
 
       container.read(wordListProvider.notifier).onQueryChanged('makan');
-      await Future<void>.delayed(const Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 800));
 
       expect(repo.searchCalls, hasLength(1));
       expect(repo.searchCalls.single.searchIn, 'translation');
@@ -343,4 +360,56 @@ void main() {
       sub.close();
     },
   );
+
+  test('ketikan bertahap hanya fetch query terakhir', () async {
+    final repo = _FakeDictionaryRepository();
+    final container = ProviderContainer(
+      overrides: [dictionaryRepositoryProvider.overrideWithValue(repo)],
+    );
+    addTearDown(container.dispose);
+
+    final sub = container.listen(wordListProvider, (_, _) {});
+    await _flush();
+    final callsBefore = repo.calls.length;
+
+    final notifier = container.read(wordListProvider.notifier);
+    notifier.onQueryChanged('sa');
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    notifier.onQueryChanged('sapa');
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    notifier.onQueryChanged('sapaka');
+    await Future<void>.delayed(const Duration(milliseconds: 800));
+
+    expect(repo.calls.length, callsBefore + 1);
+    expect(repo.calls.last.q, 'sapaka');
+    sub.close();
+  });
+
+  test('debounce settle merekam miss; commitSearch idempoten', () async {
+    final repo = _FakeDictionaryRepository()..empty = true;
+    final container = ProviderContainer(
+      overrides: [dictionaryRepositoryProvider.overrideWithValue(repo)],
+    );
+    addTearDown(container.dispose);
+
+    final sub = container.listen(wordListProvider, (_, _) {});
+    await _flush();
+
+    final notifier = container.read(wordListProvider.notifier);
+    notifier.onQueryChanged('sapaka');
+    await Future<void>.delayed(const Duration(milliseconds: 800));
+
+    expect(repo.searchCalls, isNotEmpty);
+    expect(repo.searchCalls.last.recordMiss, isTrue);
+    expect(repo.searchCalls.last.query, 'sapaka');
+    final callsAfterDebounce = repo.searchCalls.length;
+
+    // Debounce sudah commit miss untuk q yang sama → commitSearch no-op.
+    notifier.commitSearch();
+    await _flush();
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+
+    expect(repo.searchCalls.length, callsAfterDebounce);
+    sub.close();
+  });
 }

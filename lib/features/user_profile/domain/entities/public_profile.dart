@@ -1,3 +1,5 @@
+import '../../../../core/models/speaker_status.dart';
+
 /// Leveling derived (docs/LEVELING_AND_STREAK_IMPLEMENT.md).
 class PublicProfileLeveling {
   const PublicProfileLeveling({
@@ -35,6 +37,7 @@ class PublicProfile {
     required this.verificationsDone,
     required this.commentsPublished,
     this.bio,
+    this.speakerStatus,
     this.avatarUrl,
     this.activeBorderUrl,
     this.leveling,
@@ -42,6 +45,7 @@ class PublicProfile {
   final String username;
   final String displayName;
   final String? bio;
+  final SpeakerStatus? speakerStatus;
   final String role;
   final bool isVerifier;
   final String joinedAt;

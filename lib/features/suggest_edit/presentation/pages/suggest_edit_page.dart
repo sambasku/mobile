@@ -15,11 +15,13 @@ import '../../../../shared/widgets/word_type_picker_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
 import '../../../contribution/presentation/utils/invalidate_word_detail.dart';
+import '../../../contribution/presentation/widgets/category_multi_picker_sheet.dart';
 import '../../../contribution/presentation/widgets/contribute_images_field.dart';
 import '../../../contribution/presentation/widgets/kbbi_definition_sheet.dart';
 import '../../../contribution/presentation/widgets/kbbi_translation_field.dart';
 import '../../../contribution/presentation/widgets/word_class_picker_sheet.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
+import '../../../dictionary/presentation/providers/categories_provider.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
 import '../../../dictionary/presentation/utils/pronunciation_format.dart';
 import '../../domain/meaning_edit_order.dart';
@@ -123,6 +125,10 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   final _lemmaCtrl = TextEditingController();
   final _notesCtrl = TextEditingController();
 
+  // Kategori topik lemma (chip).
+  final Set<String> _topicCategoryIds = {};
+  final Set<String> _originalTopicCategoryIds = {};
+
   final _reasonTextCtrl = TextEditingController();
 
   @override
@@ -162,6 +168,15 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   void _selectMeaning(WordMeaning m) {
     _meaningId = m.id;
     _wordClassId = m.wordClassId;
+  }
+
+  void _initTopicCategories(WordDetail detail) {
+    _originalTopicCategoryIds
+      ..clear()
+      ..addAll(detail.categories.map((c) => c.id));
+    _topicCategoryIds
+      ..clear()
+      ..addAll(_originalTopicCategoryIds);
   }
 
   /// Lazy: makna baru setelah detail di-refetch tetap dapat draft.
@@ -205,6 +220,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     );
     if (!available.contains(requested)) return;
     _category = requested;
+    if (requested == SuggestCategory.changeCategories) {
+      _initTopicCategories(detail);
+    }
     if (requested == SuggestCategory.changePronunciation) {
       _prefillPronunciation(detail);
     }
@@ -291,6 +309,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   Future<void> _pickMeaning(WordDetail detail) async {
     final picked = await showModalBottomSheet<WordMeaning>(
       context: context,
+      useRootNavigator: true,
       useSafeArea: true,
       builder: (sheetContext) => SafeArea(
         child: Padding(
@@ -467,6 +486,11 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           originalNotes: detail.notes ?? '',
           notes: _notesCtrl.text,
         );
+      case SuggestCategory.changeCategories:
+        return buildChangeCategories(
+          originalIds: _originalTopicCategoryIds,
+          selectedIds: _topicCategoryIds,
+        );
       case SuggestCategory.changeExample:
         final id = _exampleId;
         if (id == null) {
@@ -513,6 +537,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           'sha': ?slot.uploaded!.sha,
           'alt_text': ?slot.uploaded!.altText,
           'is_primary': slot.uploaded!.isPrimary,
+          // Kredit Media Explorer (Unsplash/Pixabay/Openverse) - wajib supaya
+          // apply usulan tidak kehilangan atribusi di word_images.
+          'attribution': ?slot.uploaded!.attribution?.toJson(),
         },
   ];
 
@@ -812,6 +839,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                   if (c == SuggestCategory.changePronunciation) {
                     _pronunciationCtrl.clear();
                     _prefillPronunciation(detail);
+                  }
+                  if (c == SuggestCategory.changeCategories) {
+                    _initTopicCategories(detail);
                   }
                 }),
               ),
@@ -1183,7 +1213,101 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             minLines: 2,
           ),
         ];
+      case SuggestCategory.changeCategories:
+        return [_topicCategoryField()];
     }
+  }
+
+  Widget _topicCategoryField() {
+    final categoriesAsync = ref.watch(categoriesProvider);
+    return categoriesAsync.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: 12),
+        child: Center(child: FCircularProgress()),
+      ),
+      error: (_, _) => FAlert(
+        variant: FAlertVariant.destructive,
+        title: Text(_l10n.contributeCategoryLoadFailed),
+      ),
+      data: (items) {
+        final selectedNames = [
+          for (final c in items)
+            if (_topicCategoryIds.contains(c.id)) c.name,
+        ];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _FieldCaption(
+              _l10n.suggestCategoryChangeCategories,
+              info: _l10n.suggestCategoryChangeCategoriesDesc,
+            ),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: items.isEmpty
+                    ? null
+                    : () async {
+                        final picked = await showCategoryMultiPickerSheet(
+                          context,
+                          items: categoryPickItemsFrom(items),
+                          selectedIds: _topicCategoryIds,
+                        );
+                        if (!mounted || picked == null) return;
+                        setState(() {
+                          _topicCategoryIds
+                            ..clear()
+                            ..addAll(picked);
+                        });
+                      },
+                borderRadius: BorderRadius.circular(8),
+                child: Ink(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: context.theme.colors.border),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          selectedNames.isEmpty
+                              ? _l10n.suggestCategoryPickHint
+                              : selectedNames.join(', '),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: context.theme.typography.body.sm.copyWith(
+                            color: selectedNames.isEmpty
+                                ? context.theme.colors.mutedForeground
+                                : context.theme.colors.foreground,
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        FLucideIcons.chevronsUpDown,
+                        size: 16,
+                        color: context.theme.colors.mutedForeground,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (selectedNames.isEmpty) ...[
+              const Gap(6),
+              Text(
+                _l10n.suggestCategoryNoneSelected,
+                style: context.theme.typography.body.sm.copyWith(
+                  color: context.theme.colors.mutedForeground,
+                ),
+              ),
+            ],
+          ],
+        );
+      },
+    );
   }
 
   Widget _padananField(
@@ -1219,12 +1343,15 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           _l10n.suggestDefinitionLabel,
           info: _l10n.suggestDefinitionHint,
         ),
-        FTextField.multiline(
+        // #271: mulai 1 baris, tumbuh sampai 4 (pola terjemahan).
+        FTextField(
           control: FTextFieldControl.managed(controller: ctrl),
           hint: _l10n.suggestDefinitionPlaceholder,
           error: _errorText('definition'),
-          minLines: 4,
-          maxLines: 8,
+          minLines: 1,
+          maxLines: 4,
+          keyboardType: TextInputType.text,
+          textAlignVertical: TextAlignVertical.top,
         ),
       ],
     );

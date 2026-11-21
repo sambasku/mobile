@@ -98,6 +98,12 @@ static const localeChosen = 'locale_chosen';
   static const placePhotosOpen = 'place_photos_open';
   static const pantunReportSubmit = 'pantun_report_submit';
   static const pantunDelete = 'pantun_delete';
+
+  /// Voice room (LiveKit) - analitik produk, bukan feed.
+  static const voiceJoin = 'voice_join';
+  static const voiceLeave = 'voice_leave';
+  static const voiceDisconnect = 'voice_disconnect';
+  static const voiceJoinFail = 'voice_join_fail';
 }
 
 /// Abstraksi Firebase Analytics. Page/notifier memanggil ini, bukan
@@ -344,6 +350,22 @@ class AnalyticsService {
     AnalyticsEvents.pantunReportSubmit,
     params: {'target_type': targetType},
   );
+
+  Future<void> logVoiceJoin({required String room}) =>
+      log(AnalyticsEvents.voiceJoin, params: {'room': room});
+
+  Future<void> logVoiceLeave({required String room}) =>
+      log(AnalyticsEvents.voiceLeave, params: {'room': room});
+
+  Future<void> logVoiceDisconnect({required String room}) =>
+      log(AnalyticsEvents.voiceDisconnect, params: {'room': room});
+
+  Future<void> logVoiceJoinFail({String? errorCode}) => log(
+        AnalyticsEvents.voiceJoinFail,
+        params: {
+          if (errorCode != null && errorCode.isNotEmpty) 'error_code': errorCode,
+        },
+      );
 
   Future<void> logPantunDelete({required bool isReply}) => log(
     AnalyticsEvents.pantunDelete,

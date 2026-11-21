@@ -9,6 +9,8 @@ abstract class MyProfileDto with _$MyProfileDto {
     required String username,
     @JsonKey(name: 'display_name') required String displayName,
     String? bio,
+    /// `native` | `learner` | null.
+    @JsonKey(name: 'speaker_status') String? speakerStatus,
     @JsonKey(name: 'region_id') String? regionId,
     @JsonKey(name: 'village_id') String? villageId,
     @JsonKey(name: 'avatar_url') String? avatarUrl,
@@ -19,6 +21,11 @@ abstract class MyProfileDto with _$MyProfileDto {
     @Default(true)
     bool notifyStreakReminder,
     @JsonKey(name: 'notify_level_up') @Default(true) bool notifyLevelUp,
+    @JsonKey(name: 'username_changed_at') String? usernameChangedAt,
+    @JsonKey(name: 'username_change_allowed_at') String? usernameChangeAllowedAt,
+    @JsonKey(name: 'username_change_cooldown_days')
+    @Default(7)
+    int usernameChangeCooldownDays,
   }) = _MyProfileDto;
 
   factory MyProfileDto.fromJson(Map<String, dynamic> json) =>
@@ -32,6 +39,8 @@ abstract class UpdateMyProfileRequestDto with _$UpdateMyProfileRequestDto {
     @JsonKey(includeIfNull: false) String? username,
     @JsonKey(name: 'display_name') String? displayName,
     String? bio,
+    /// `native` | `learner`. Null = tidak diubah (jangan kirim key).
+    @JsonKey(name: 'speaker_status', includeIfNull: false) String? speakerStatus,
     // null ikut terkirim supaya user bisa mengosongkan kecamatan/desa.
     @JsonKey(name: 'region_id') String? regionId,
     @JsonKey(name: 'village_id') String? villageId,

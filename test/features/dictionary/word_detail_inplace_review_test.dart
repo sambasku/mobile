@@ -37,7 +37,14 @@ WordDetail _pendingDetail() => WordDetail(
     role: 'contributor',
   ),
   images: const [],
-  meanings: const [],
+  meanings: const [
+    WordMeaning(
+      id: 'm1',
+      definition: 'kue',
+      orderIndex: 1,
+      isVerified: false,
+    ),
+  ],
 );
 
 WordDetail _verifiedDetail() => WordDetail(
@@ -54,7 +61,15 @@ WordDetail _verifiedDetail() => WordDetail(
     role: 'contributor',
   ),
   images: const [],
-  meanings: const [],
+  // Trust chip / WordApprovedBadgeIcon mengikuti makna, bukan flag lemma.
+  meanings: const [
+    WordMeaning(
+      id: 'm1',
+      definition: 'kue',
+      orderIndex: 1,
+      isVerified: true,
+    ),
+  ],
 );
 
 class _FakeAuthStatus extends AuthStatusNotifier {
@@ -79,12 +94,16 @@ class _StubRepo implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => Either.right(_detail);
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => Either.right(_detail);
 
   @override
@@ -211,8 +230,8 @@ void main() {
     // Badge pending tampil untuk verifikator
     expect(find.text('apam'), findsWidgets);
 
-    // Tap badge pending → bottom sheet muncul
-    await tester.tap(find.byType(PendingReviewBadgeIcon));
+    // Tap badge pending lemma (bukan badge makna) → bottom sheet muncul
+    await tester.tap(find.byType(PendingReviewBadgeIcon).first);
     await tester.pumpAndSettle();
     expect(find.text('Menunggu pengecekan'), findsOneWidget);
 
@@ -220,6 +239,11 @@ void main() {
     await tester.tap(find.text('Setujui'));
     await tester.pumpAndSettle();
     expect(reviewRepo.approved, 1);
+    // Badge verified kini icon + Semantics label (tanpa teks terlihat).
+    expect(
+      find.bySemanticsLabel(RegExp('terverifikasi', caseSensitive: false)),
+      findsWidgets,
+    );
     expect(find.byType(WordApprovedBadgeIcon), findsOneWidget);
     expect(find.byType(PendingReviewBadgeIcon), findsNothing);
   });

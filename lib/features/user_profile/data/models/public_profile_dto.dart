@@ -8,6 +8,8 @@ abstract class PublicProfileDto with _$PublicProfileDto {
     required String username,
     @JsonKey(name: 'display_name') String? displayName,
     String? bio,
+    /// `native` | `learner` | null.
+    @JsonKey(name: 'speaker_status') String? speakerStatus,
     required String role,
     @JsonKey(name: 'is_verifier') @Default(false) bool isVerifier,
     @JsonKey(name: 'joined_at') required String joinedAt,

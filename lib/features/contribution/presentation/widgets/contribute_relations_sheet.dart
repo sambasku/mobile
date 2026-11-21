@@ -55,6 +55,7 @@ Future<ContributeRelationsDraft?> showContributeRelationsSheet(
 }) {
   return showModalBottomSheet<ContributeRelationsDraft>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) {

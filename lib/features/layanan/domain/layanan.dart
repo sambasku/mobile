@@ -1,3 +1,5 @@
+import '../../../core/models/public_author_ref.dart';
+
 class LayananPhone {
   const LayananPhone({
     required this.phone,
@@ -24,11 +26,12 @@ class LayananEntry {
     this.lat,
     this.lng,
     this.mapsUrl,
-    this.regionName,
-    this.regionSlug,
-    this.villageName,
-    this.note,
-  });
+this.regionName,
+this.regionSlug,
+this.villageName,
+this.note,
+this.author,
+});
 
   final String id;
   final String slug;
@@ -46,6 +49,9 @@ class LayananEntry {
   final String? villageName;
   final String? note;
   final DateTime updatedAt;
+
+  /// Pengusul live dari API detail (null bila anonim / admin).
+  final PublicAuthorRef? author;
 
   bool get isAmbulance => category == 'ambulance';
 

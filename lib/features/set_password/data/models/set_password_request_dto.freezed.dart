@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SetPasswordRequestDto {
 
- String get provider;@JsonKey(name: 'id_token') String? get idToken;@JsonKey(name: 'access_token') String? get accessToken; String? get code;@JsonKey(name: 'redirect_uri') String? get redirectUri;@JsonKey(name: 'code_verifier') String? get codeVerifier;@JsonKey(name: 'new_password') String get newPassword;@JsonKey(name: 'confirm_password') String get confirmPassword;
+ String get provider;@JsonKey(name: 'id_token', includeIfNull: false) String? get idToken;@JsonKey(name: 'access_token', includeIfNull: false) String? get accessToken;@JsonKey(includeIfNull: false) String? get code;@JsonKey(name: 'redirect_uri', includeIfNull: false) String? get redirectUri;@JsonKey(name: 'code_verifier', includeIfNull: false) String? get codeVerifier;@JsonKey(name: 'new_password') String get newPassword;@JsonKey(name: 'confirm_password') String get confirmPassword;
 /// Create a copy of SetPasswordRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -54,7 +54,7 @@ abstract mixin class $SetPasswordRequestDtoCopyWith<$Res>  {
   factory $SetPasswordRequestDtoCopyWith(SetPasswordRequestDto value, $Res Function(SetPasswordRequestDto) _then) = _$SetPasswordRequestDtoCopyWithImpl;
 @useResult
 $Res call({
- String provider,@JsonKey(name: 'id_token') String? idToken,@JsonKey(name: 'access_token') String? accessToken, String? code,@JsonKey(name: 'redirect_uri') String? redirectUri,@JsonKey(name: 'code_verifier') String? codeVerifier,@JsonKey(name: 'new_password') String newPassword,@JsonKey(name: 'confirm_password') String confirmPassword
+ String provider,@JsonKey(name: 'id_token', includeIfNull: false) String? idToken,@JsonKey(name: 'access_token', includeIfNull: false) String? accessToken,@JsonKey(includeIfNull: false) String? code,@JsonKey(name: 'redirect_uri', includeIfNull: false) String? redirectUri,@JsonKey(name: 'code_verifier', includeIfNull: false) String? codeVerifier,@JsonKey(name: 'new_password') String newPassword,@JsonKey(name: 'confirm_password') String confirmPassword
 });
 
 
@@ -166,7 +166,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String provider, @JsonKey(name: 'id_token')  String? idToken, @JsonKey(name: 'access_token')  String? accessToken,  String? code, @JsonKey(name: 'redirect_uri')  String? redirectUri, @JsonKey(name: 'code_verifier')  String? codeVerifier, @JsonKey(name: 'new_password')  String newPassword, @JsonKey(name: 'confirm_password')  String confirmPassword)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String provider, @JsonKey(name: 'id_token', includeIfNull: false)  String? idToken, @JsonKey(name: 'access_token', includeIfNull: false)  String? accessToken, @JsonKey(includeIfNull: false)  String? code, @JsonKey(name: 'redirect_uri', includeIfNull: false)  String? redirectUri, @JsonKey(name: 'code_verifier', includeIfNull: false)  String? codeVerifier, @JsonKey(name: 'new_password')  String newPassword, @JsonKey(name: 'confirm_password')  String confirmPassword)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SetPasswordRequestDto() when $default != null:
 return $default(_that.provider,_that.idToken,_that.accessToken,_that.code,_that.redirectUri,_that.codeVerifier,_that.newPassword,_that.confirmPassword);case _:
@@ -187,7 +187,7 @@ return $default(_that.provider,_that.idToken,_that.accessToken,_that.code,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String provider, @JsonKey(name: 'id_token')  String? idToken, @JsonKey(name: 'access_token')  String? accessToken,  String? code, @JsonKey(name: 'redirect_uri')  String? redirectUri, @JsonKey(name: 'code_verifier')  String? codeVerifier, @JsonKey(name: 'new_password')  String newPassword, @JsonKey(name: 'confirm_password')  String confirmPassword)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String provider, @JsonKey(name: 'id_token', includeIfNull: false)  String? idToken, @JsonKey(name: 'access_token', includeIfNull: false)  String? accessToken, @JsonKey(includeIfNull: false)  String? code, @JsonKey(name: 'redirect_uri', includeIfNull: false)  String? redirectUri, @JsonKey(name: 'code_verifier', includeIfNull: false)  String? codeVerifier, @JsonKey(name: 'new_password')  String newPassword, @JsonKey(name: 'confirm_password')  String confirmPassword)  $default,) {final _that = this;
 switch (_that) {
 case _SetPasswordRequestDto():
 return $default(_that.provider,_that.idToken,_that.accessToken,_that.code,_that.redirectUri,_that.codeVerifier,_that.newPassword,_that.confirmPassword);case _:
@@ -207,7 +207,7 @@ return $default(_that.provider,_that.idToken,_that.accessToken,_that.code,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String provider, @JsonKey(name: 'id_token')  String? idToken, @JsonKey(name: 'access_token')  String? accessToken,  String? code, @JsonKey(name: 'redirect_uri')  String? redirectUri, @JsonKey(name: 'code_verifier')  String? codeVerifier, @JsonKey(name: 'new_password')  String newPassword, @JsonKey(name: 'confirm_password')  String confirmPassword)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String provider, @JsonKey(name: 'id_token', includeIfNull: false)  String? idToken, @JsonKey(name: 'access_token', includeIfNull: false)  String? accessToken, @JsonKey(includeIfNull: false)  String? code, @JsonKey(name: 'redirect_uri', includeIfNull: false)  String? redirectUri, @JsonKey(name: 'code_verifier', includeIfNull: false)  String? codeVerifier, @JsonKey(name: 'new_password')  String newPassword, @JsonKey(name: 'confirm_password')  String confirmPassword)?  $default,) {final _that = this;
 switch (_that) {
 case _SetPasswordRequestDto() when $default != null:
 return $default(_that.provider,_that.idToken,_that.accessToken,_that.code,_that.redirectUri,_that.codeVerifier,_that.newPassword,_that.confirmPassword);case _:
@@ -222,15 +222,15 @@ return $default(_that.provider,_that.idToken,_that.accessToken,_that.code,_that.
 @JsonSerializable()
 
 class _SetPasswordRequestDto implements SetPasswordRequestDto {
-  const _SetPasswordRequestDto({required this.provider, @JsonKey(name: 'id_token') this.idToken, @JsonKey(name: 'access_token') this.accessToken, this.code, @JsonKey(name: 'redirect_uri') this.redirectUri, @JsonKey(name: 'code_verifier') this.codeVerifier, @JsonKey(name: 'new_password') required this.newPassword, @JsonKey(name: 'confirm_password') required this.confirmPassword});
+  const _SetPasswordRequestDto({required this.provider, @JsonKey(name: 'id_token', includeIfNull: false) this.idToken, @JsonKey(name: 'access_token', includeIfNull: false) this.accessToken, @JsonKey(includeIfNull: false) this.code, @JsonKey(name: 'redirect_uri', includeIfNull: false) this.redirectUri, @JsonKey(name: 'code_verifier', includeIfNull: false) this.codeVerifier, @JsonKey(name: 'new_password') required this.newPassword, @JsonKey(name: 'confirm_password') required this.confirmPassword});
   factory _SetPasswordRequestDto.fromJson(Map<String, dynamic> json) => _$SetPasswordRequestDtoFromJson(json);
 
 @override final  String provider;
-@override@JsonKey(name: 'id_token') final  String? idToken;
-@override@JsonKey(name: 'access_token') final  String? accessToken;
-@override final  String? code;
-@override@JsonKey(name: 'redirect_uri') final  String? redirectUri;
-@override@JsonKey(name: 'code_verifier') final  String? codeVerifier;
+@override@JsonKey(name: 'id_token', includeIfNull: false) final  String? idToken;
+@override@JsonKey(name: 'access_token', includeIfNull: false) final  String? accessToken;
+@override@JsonKey(includeIfNull: false) final  String? code;
+@override@JsonKey(name: 'redirect_uri', includeIfNull: false) final  String? redirectUri;
+@override@JsonKey(name: 'code_verifier', includeIfNull: false) final  String? codeVerifier;
 @override@JsonKey(name: 'new_password') final  String newPassword;
 @override@JsonKey(name: 'confirm_password') final  String confirmPassword;
 
@@ -269,7 +269,7 @@ abstract mixin class _$SetPasswordRequestDtoCopyWith<$Res> implements $SetPasswo
   factory _$SetPasswordRequestDtoCopyWith(_SetPasswordRequestDto value, $Res Function(_SetPasswordRequestDto) _then) = __$SetPasswordRequestDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String provider,@JsonKey(name: 'id_token') String? idToken,@JsonKey(name: 'access_token') String? accessToken, String? code,@JsonKey(name: 'redirect_uri') String? redirectUri,@JsonKey(name: 'code_verifier') String? codeVerifier,@JsonKey(name: 'new_password') String newPassword,@JsonKey(name: 'confirm_password') String confirmPassword
+ String provider,@JsonKey(name: 'id_token', includeIfNull: false) String? idToken,@JsonKey(name: 'access_token', includeIfNull: false) String? accessToken,@JsonKey(includeIfNull: false) String? code,@JsonKey(name: 'redirect_uri', includeIfNull: false) String? redirectUri,@JsonKey(name: 'code_verifier', includeIfNull: false) String? codeVerifier,@JsonKey(name: 'new_password') String newPassword,@JsonKey(name: 'confirm_password') String confirmPassword
 });
 
 

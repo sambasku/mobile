@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../entities/word_summary.dart';
@@ -22,6 +23,7 @@ class ListWordsUseCase {
       letter: params.letter,
       isVerified: true,
       category: params.category,
+      cancelToken: params.cancelToken,
     );
   }
 }
@@ -34,6 +36,7 @@ class ListWordsParams {
     this.letter,
     this.isVerified,
     this.category,
+    this.cancelToken,
   });
 
   final String q;
@@ -48,4 +51,5 @@ class ListWordsParams {
 
   /// Filter kategori (fitur #50): id ULID atau nama case-insensitive.
   final String? category;
+  final CancelToken? cancelToken;
 }

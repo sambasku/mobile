@@ -104,4 +104,4 @@ final class DictionaryRepositoryProvider
 }
 
 String _$dictionaryRepositoryHash() =>
-    r'ebfe0a1507715bfc26a622f0d1651b4475f2443c';
+    r'4b524cf0d1710730cae34086146b0de171db6a00';

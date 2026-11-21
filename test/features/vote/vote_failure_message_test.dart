@@ -37,6 +37,15 @@ class _FailDeckRepo implements VoteRepository {
       Either.left(failure);
 
   @override
+  Future<Either<VoteFailure, VoteDeckPage>> getCheckDeck({
+    int limit = 20,
+    String? cursor,
+    String? q,
+    bool randomize = false,
+  }) async =>
+      Either.left(failure);
+
+  @override
   Future<Either<VoteFailure, Map<String, VoteCounts>>> countMany(
     List<VoteTarget> targets,
   ) async =>

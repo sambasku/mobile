@@ -191,6 +191,7 @@ class _BlurredViolenceThumb extends StatelessWidget {
 Future<bool> confirmRevealViolenceImage(BuildContext context) async {
   final result = await showModalBottomSheet<bool>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) {

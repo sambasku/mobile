@@ -562,8 +562,8 @@ dictActivitySkeletonLine,aktivitas singkat satu baris,,
 dictActivitySkeletonSubtitle,lading,,
 dictAppearsIn,Muncul dalam,,
 dictAttribution,Atribusi,,
-dictAttributionCreatedAndVerifiedBy,Dibuat dan diverifikasi oleh {name},,Pertahankan placeholder: {name}
-dictAttributionCreatedBy,Dibuat oleh {name},,Pertahankan placeholder: {name}
+dictAttributionCreatedAndVerifiedBy,Diusulkan dan diverifikasi oleh {name},,Pertahankan placeholder: {name}
+dictAttributionCreatedBy,Diusulkan oleh {name},,Pertahankan placeholder: {name}
 dictAttributionVerifiedBy,Diverifikasi oleh {name},,Pertahankan placeholder: {name}
 dictAudioError,"Gagal memutar {meta}, ketuk untuk coba lagi",,Pertahankan placeholder: {meta}
 dictAudioErrorRetry,Gagal memutar audio. Coba lagi dalam beberapa saat.,,

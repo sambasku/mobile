@@ -144,6 +144,7 @@ class AchievementBadgeGrid extends StatelessWidget {
               color: theme.colors.mutedForeground,
             ),
           );
+    final repeat = item.repeatCount;
     final cell = SizedBox(
       width: width,
       child: Stack(
@@ -193,6 +194,16 @@ class AchievementBadgeGrid extends StatelessWidget {
                       ),
                     ),
                   ),
+                if (repeat != null && repeat > 1) ...[
+                  Gap(compact ? 2 : 4),
+                  Text(
+                    AppLocalizations.of(context).achievementRepeatCount(repeat),
+                    style: theme.typography.body.xs.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: theme.colors.primary,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

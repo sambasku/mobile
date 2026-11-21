@@ -110,6 +110,20 @@ class PlacesRemoteDatasource {
     );
   }
 
+  /// Tandai pernah singgah (login). Path pakai place id.
+  Future<void> markVisit(String placeId) async {
+    await _dio.post<dynamic>(
+      '/api/v1/places/${Uri.encodeComponent(placeId)}/visits',
+    );
+  }
+
+  /// Batalkan tandai pernah singgah.
+  Future<void> unmarkVisit(String placeId) async {
+    await _dio.delete<dynamic>(
+      '/api/v1/places/${Uri.encodeComponent(placeId)}/visits',
+    );
+  }
+
   /// Detail satu place by slug. Null jika 404 / body tidak valid.
   Future<Map<String, dynamic>?> fetchBySlug(String slug) async {
     try {
@@ -269,5 +283,7 @@ Map<String, dynamic> _wirePlaceToCamel(Map<String, dynamic> w) {
     'sources': sources,
     'related': related,
     'relatedWordIds': <dynamic>[],
+    'visitCount': (w['visit_count'] as num?)?.toInt() ?? 0,
+    'viewerVisited': w['viewer_visited'] == true,
   };
 }

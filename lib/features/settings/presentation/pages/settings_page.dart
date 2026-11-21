@@ -8,10 +8,12 @@ import '../../../../core/feature_flags.dart';
 import '../../../../core/i18n/locale_controller.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../about/about_router.dart';
+import '../../../dictionary/presentation/widgets/lemma_dataset_settings_section.dart';
 import '../../../profile/presentation/widgets/appearance_tiles.dart';
 import '../../../report_bug/report_bug_router.dart';
 import '../../settings_router.dart';
 import 'notification_prefs_section.dart';
+import 'voice_opt_in_section.dart';
 
 /// Pengaturan aplikasi: preferensi non-identitas (bahasa, tampilan,
 /// dukungan, tentang). Guest dan user login sama-sama boleh masuk
@@ -35,8 +37,9 @@ class SettingsPage extends ConsumerWidget {
           ),
         ],
       ),
+      // childPad sudah kasih inset horizontal; ListView hanya vertical scroll end.
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(12, 4, 12, 32),
+        padding: const EdgeInsets.fromLTRB(0, 4, 0, 32),
         children: [
           if (FeatureFlags.multiLanguageEnabled) ...[
             FTileGroup(
@@ -63,6 +66,8 @@ class SettingsPage extends ConsumerWidget {
           ),
           const Gap(8),
           const NotificationPrefsSection(),
+          const LemmaDatasetSettingsSection(),
+          const VoiceOptInSection(),
           FTileGroup(
             label: Text(l10n.settingsGroupSupport),
             children: [

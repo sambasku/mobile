@@ -24,6 +24,8 @@ String notificationTypeLabel(AppLocalizations l10n, String type) =>
       'campaign' => l10n.notificationTypeCampaign,
       'word_comment' => l10n.notificationTypeComment,
       'word_vote' => l10n.notificationTypeVote,
+      'meaning_auto_verified' => l10n.notificationTypeMeaningAutoVerified,
+      'meaning_needs_review' => l10n.notificationTypeMeaningNeedsReview,
       'word_example' => l10n.notificationTypeExample,
       'word_audio' => l10n.notificationTypeAudio,
       'place_contribution_approved' => l10n.notificationTypePlaceApproved,
@@ -32,5 +34,8 @@ String notificationTypeLabel(AppLocalizations l10n, String type) =>
       'event_contribution_rejected' => l10n.notificationTypeEventRejected,
       'event_contribution_needs_revision' =>
         l10n.notificationTypeEventNeedsRevision,
+      'baleho_placement_approved' => l10n.notificationTypeBalehoApproved,
+      'baleho_placement_rejected' => l10n.notificationTypeBalehoRejected,
+      'baleho_placement_ending_soon' => l10n.notificationTypeBalehoEndingSoon,
       _ => l10n.notificationTypeUpdate,
     };

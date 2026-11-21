@@ -4,6 +4,7 @@ import '../../data/providers/vote_data_providers.dart';
 import '../usecases/get_my_votes_use_case.dart';
 import '../usecases/get_vote_counts_use_case.dart';
 import '../usecases/get_vote_deck_use_case.dart';
+import '../usecases/get_vote_check_deck_use_case.dart';
 import '../usecases/toggle_vote_use_case.dart';
 
 part 'vote_domain_providers.g.dart';
@@ -23,3 +24,7 @@ GetMyVotesUseCase getMyVotesUseCase(Ref ref) =>
 @riverpod
 GetVoteDeckUseCase getVoteDeckUseCase(Ref ref) =>
     GetVoteDeckUseCase(ref.watch(voteRepositoryProvider));
+
+@riverpod
+GetVoteCheckDeckUseCase getVoteCheckDeckUseCase(Ref ref) =>
+    GetVoteCheckDeckUseCase(ref.watch(voteRepositoryProvider));

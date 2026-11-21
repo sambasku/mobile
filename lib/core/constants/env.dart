@@ -56,6 +56,21 @@ abstract final class Env {
   @EnviedField(varName: 'SAMBASKU_WEB_APP_URL_PRODUCTION', optional: true)
   static const String? webAppUrlProduction = _Env.webAppUrlProduction;
 
+  /// Supabase project URL (cermin realtime chat). Publishable, bukan secret.
+  @EnviedField(varName: 'SUPABASE_URL_STAGING', optional: true)
+  static const String? supabaseUrlStaging = _Env.supabaseUrlStaging;
+
+  @EnviedField(varName: 'SUPABASE_URL_PRODUCTION', optional: true)
+  static const String? supabaseUrlProduction = _Env.supabaseUrlProduction;
+
+  /// Supabase anon/publishable key. Jangan pakai service_role di mobile.
+  @EnviedField(varName: 'SUPABASE_ANON_KEY_STAGING', optional: true)
+  static const String? supabaseAnonKeyStaging = _Env.supabaseAnonKeyStaging;
+
+  @EnviedField(varName: 'SUPABASE_ANON_KEY_PRODUCTION', optional: true)
+  static const String? supabaseAnonKeyProduction =
+      _Env.supabaseAnonKeyProduction;
+
   /// Base URL API sesuai flavor aktif (staging build → staging host, dst.).
   static String get apiHost {
     return F.isStaging || apiHostProduction == null
@@ -107,6 +122,23 @@ abstract final class Env {
     }
     return _nonEmpty(githubClientIdProduction) ??
         _nonEmpty(githubClientIdStaging);
+  }
+
+  /// URL Supabase per flavor. Kosong = chat tetap REST (tanpa realtime).
+  static String? get supabaseUrl {
+    if (F.isStaging || supabaseUrlProduction == null) {
+      return _nonEmpty(supabaseUrlStaging);
+    }
+    return _nonEmpty(supabaseUrlProduction) ?? _nonEmpty(supabaseUrlStaging);
+  }
+
+  /// Anon key Supabase per flavor. Pasangan [supabaseUrl].
+  static String? get supabaseAnonKey {
+    if (F.isStaging || supabaseAnonKeyProduction == null) {
+      return _nonEmpty(supabaseAnonKeyStaging);
+    }
+    return _nonEmpty(supabaseAnonKeyProduction) ??
+        _nonEmpty(supabaseAnonKeyStaging);
   }
 
   static String? _nonEmpty(String? value) {

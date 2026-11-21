@@ -66,8 +66,9 @@ void main() {
   ) async {
     await pump(tester, 'hiburan');
 
-    // Hub: judul header + kartu pantun. Feed pantun langsung = bug lama.
+    // Hub Permainan: Petakate. Pantun sudah kategori Eksplorasi sendiri.
     expect(find.text('Permainan'), findsWidgets);
-    expect(find.text('Pantun'), findsOneWidget);
+    expect(find.text('Petakate'), findsOneWidget);
+    expect(find.text('Pantun'), findsNothing);
   });
 }

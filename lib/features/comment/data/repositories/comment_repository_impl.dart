@@ -98,6 +98,7 @@ class CommentRepositoryImpl implements CommentRepository {
     required String wordId,
     required String body,
     CommentImageStaging? image,
+    String? stickerId,
   }) async {
     try {
       final response = await _remoteDatasource.create(
@@ -110,6 +111,7 @@ class CommentRepositoryImpl implements CommentRepository {
                   url: image.url,
                   providerFileId: image.providerFileId,
                 ),
+          stickerId: stickerId,
         ),
       );
 
@@ -325,6 +327,7 @@ class CommentRepositoryImpl implements CommentRepository {
                 publicUrl: dto.image!.publicUrl,
                 contentWarnings: dto.image!.contentWarnings,
               ),
+        stickerId: dto.stickerId,
         createdAt: dto.createdAt,
         status: dto.status,
         upvotes: dto.upvotes,

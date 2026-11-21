@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/network/network_providers.dart';
 import '../../data/encyclopedia_providers.dart';
 import '../../domain/encyclopedia.entity.dart';
 
@@ -65,19 +69,67 @@ class ArticleCommentListController
     );
   }
 
-  Future<String?> create(String body) async {
+  Future<String?> create(
+    String body, {
+    String? stickerId,
+    String? imageUrl,
+  }) async {
     final current = state.value;
     if (current == null || current.isSubmitting) return null;
     final trimmed = body.trim();
-    if (trimmed.isEmpty) return 'empty';
+    final sid = stickerId?.trim();
+    final img = imageUrl?.trim();
+    final hasSticker = sid != null && sid.isNotEmpty;
+    final hasImage = img != null && img.isNotEmpty;
+    if (trimmed.isEmpty && !hasSticker && !hasImage) return 'empty';
 
     state = AsyncData(current.copyWith(isSubmitting: true));
     try {
+      final payload = <String, dynamic>{'body': trimmed};
+      if (hasSticker) payload['sticker_id'] = sid;
+      if (hasImage) payload['image_url'] = img;
       final resp = await ref
           .read(encyclopediaRepositoryProvider)
-          .postComment(articleId, {'body': trimmed});
+          .postComment(articleId, payload);
       if (!ref.mounted) return null;
       if (resp.data == null) {
+        state = AsyncData(current.copyWith(isSubmitting: false));
+        return 'failed';
+      }
+      ref.invalidateSelf();
+      return null;
+    } catch (_) {
+      if (!ref.mounted) return null;
+      state = AsyncData(current.copyWith(isSubmitting: false));
+      return 'failed';
+    }
+  }
+
+  Future<String?> createAudio({
+    required File audioFile,
+    required int durationMs,
+    String? body,
+  }) async {
+    final current = state.value;
+    if (current == null || current.isSubmitting) return null;
+    state = AsyncData(current.copyWith(isSubmitting: true));
+    try {
+      final form = FormData.fromMap({
+        'audio': await MultipartFile.fromFile(
+          audioFile.path,
+          filename: audioFile.uri.pathSegments.last,
+        ),
+        'duration_ms': durationMs,
+        if (body != null && body.trim().isNotEmpty) 'body': body.trim(),
+      });
+      final dio = ref.read(dioProvider);
+      final res = await dio.post<dynamic>(
+        '/api/v1/encyclopedia/articles/${Uri.encodeComponent(articleId)}/comments/audio',
+        data: form,
+      );
+      if (!ref.mounted) return null;
+      final data = res.data;
+      if (data is! Map || data['data'] == null) {
         state = AsyncData(current.copyWith(isSubmitting: false));
         return 'failed';
       }

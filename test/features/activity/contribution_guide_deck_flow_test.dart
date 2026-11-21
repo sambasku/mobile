@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'dart:ui' show Size;
 
 import 'package:material_ui/material_ui.dart' show debugDumpApp;
@@ -72,6 +73,7 @@ class _EmptyLatestRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    CancelToken? cancelToken,
   }) async =>
       const Right(WordSearchPage(items: [], nextCursor: null, hasMore: false));
 
@@ -83,12 +85,16 @@ class _EmptyLatestRepository implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   }) async => throw UnimplementedError();
 
   @override
@@ -104,7 +110,12 @@ class _EmptyLatestRepository implements DictionaryRepository {
     String? letter,
     bool? isVerified,
     String searchIn = 'lemma',
+    bool recordMiss = true,
+    CancelToken? cancelToken,
   }) async => throw UnimplementedError();
+
+  @override
+  Future<void> recordView(String wordId) async {}
 }
 
 Finder tabItem(String label) => find.descendant(

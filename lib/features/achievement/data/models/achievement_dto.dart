@@ -26,6 +26,7 @@ abstract class AchievementDto with _$AchievementDto {
     @JsonKey(name: 'awarded_at') int? awardedAt,
     @JsonKey(name: 'is_active_border') @Default(false) bool isActiveBorder,
     AchievementProgressDto? progress,
+    @JsonKey(name: 'repeat_count') int? repeatCount,
   }) = _AchievementDto;
 
   factory AchievementDto.fromJson(Map<String, dynamic> json) =>

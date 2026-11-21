@@ -451,7 +451,9 @@ class _CategoryBar extends StatelessWidget {
 /// Subtitle kartu grid: tanggal mulai singkat, mis. `17 Nov`. Jam dan status
 /// lengkap ada di halaman detail.
 String _gridSchedule(Event event) {
-  return formatDateShort(event.startsAt);
+  final start = event.startsAt;
+  if (start == null) return '';
+  return formatDateShort(start);
 }
 
 /// Kartu acara di grid 3 kolom, bentuk sama dengan kartu wisata/kuliner:

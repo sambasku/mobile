@@ -12,6 +12,7 @@ void main() {
     expect(none, isNot(contains(SuggestCategory.changePronunciation)));
     expect(none, contains(SuggestCategory.addMeaning));
     expect(none, contains(SuggestCategory.changeWordType));
+    expect(none, contains(SuggestCategory.changeCategories));
     expect(
       availableSuggestCategories(
         hasMeaning: true,
@@ -253,5 +254,44 @@ void main() {
     expect(out, [
       {'action': 'add', 'group_id': 'g1'},
     ]);
+  });
+
+  test('ubah kategori topik lemma: diff add/remove', () {
+    expect(
+      buildChangeCategories(
+        originalIds: {'a', 'b'},
+        selectedIds: {'a', 'b'},
+      ),
+      isNull,
+    );
+    expect(
+      buildChangeCategories(
+        originalIds: {'a'},
+        selectedIds: {'a', 'b'},
+      ),
+      {
+        'category_ids_to_add': ['b'],
+      },
+    );
+    expect(
+      buildChangeCategories(
+        originalIds: {'a', 'b'},
+        selectedIds: {'b'},
+      ),
+      {
+        'category_ids_to_remove': ['a'],
+      },
+    );
+    expect(
+      buildChangeCategories(
+        originalIds: {'a'},
+        selectedIds: {'b'},
+      ),
+      {
+        'category_ids_to_add': ['b'],
+        'category_ids_to_remove': ['a'],
+      },
+    );
+    expect(SuggestCategory.changeCategories.code, 'change_categories');
   });
 }

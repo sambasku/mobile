@@ -10,6 +10,8 @@ import 'package:sambasku_mobile/features/dictionary/domain/entities/word_detail.
 import 'package:sambasku_mobile/features/dictionary/domain/entities/word_of_day.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/pages/home_search_page.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/providers/word_of_day_providers.dart';
+import 'package:sambasku_mobile/features/hot_topics/domain/hot_topics.dart';
+import 'package:sambasku_mobile/features/hot_topics/presentation/providers/hot_topics_providers.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 /// #193: chips kategori feed beranda.
@@ -61,17 +63,19 @@ void main() {
     final repo = RecordingRepository();
     await pumpHome(tester, repo);
 
-    // Kelima chip ada (viewport test 560px → semua muat).
+    // Semua chip ada (viewport test 1000px → semua muat).
     expect(find.text('Semua'), findsOneWidget);
     expect(find.text('Pencarian warga'), findsOneWidget);
     expect(find.text('Perbaikan'), findsOneWidget);
+    expect(find.text('Eksplorasi'), findsOneWidget);
+    expect(find.text('Jinye'), findsOneWidget);
     expect(find.text('Pengumuman'), findsOneWidget);
     expect(find.text('Warga'), findsOneWidget);
 
     // Full-bleed: ListView chips menempel tepi kiri viewport (gutter 12
     // hanya padding internal scroll view, bukan margin konten). Diukur di
     // container scroll-nya, bukan text chip - offset text ikut padding
-    // internal FButton yang bisa berubah antar versi forui.
+    // internal FBadge yang bisa berubah antar versi forui.
     final screenLeft = tester.getTopLeft(find.byType(FTheme)).dx;
     final listLeft = tester
         .getTopLeft(find.byKey(const ValueKey('feed_category_chips')))
@@ -160,11 +164,11 @@ void main() {
     expect(find.byKey(const ValueKey('feed_category_chips')), findsOneWidget);
     final wargaChip = find.ancestor(
       of: find.text('Warga'),
-      matching: find.byType(FButton),
+      matching: find.byType(FBadge),
     );
     expect(
-      tester.widget<FButton>(wargaChip).variant,
-      FButtonVariant.primary,
+      tester.widget<FBadge>(wargaChip).variant,
+      FBadgeVariant.primary,
       reason: 'chip yang di-tap harus tampil terpilih selama loading',
     );
     await tester.pumpAndSettle();
@@ -237,11 +241,32 @@ Future<void> pumpHome(
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
 
+  const emptyHot = HotTopicsBundle(
+    searched: HotTopicTab(
+      items: [],
+      meta: HotTopicTabMeta(inWindow: 0, backfilled: 0, backfillUsed: false),
+    ),
+    proposed: HotTopicTab(
+      items: [],
+      meta: HotTopicTabMeta(inWindow: 0, backfilled: 0, backfillUsed: false),
+    ),
+    viewed: HotTopicTab(
+      items: [],
+      meta: HotTopicTabMeta(inWindow: 0, backfilled: 0, backfillUsed: false),
+    ),
+    check: HotTopicTab(
+      items: [],
+      meta: HotTopicTabMeta(inWindow: 0, backfilled: 0, backfillUsed: false),
+    ),
+  );
+
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
         activityFeedRepositoryProvider.overrideWithValue(repo),
         wordOfDayProvider.overrideWith((ref) async => wotd),
+        // Tanpa override: keepAlive 90 dtk → Timer pending di akhir tes.
+        hotTopicsProvider.overrideWith((ref) async => emptyHot),
       ],
       child: FTheme(
         data: foruiPalettes['zinc']!.light.touch,

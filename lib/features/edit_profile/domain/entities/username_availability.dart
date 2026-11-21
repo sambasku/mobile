@@ -5,6 +5,8 @@ enum UsernameAvailabilityStatus {
   invalid,
   reserved,
   taken,
+  /// Hold aktif milik sendiri - boleh reclaim tanpa cooldown (#257).
+  reclaimable,
   /// Sedang menunggu respons server (debounce).
   checking,
   /// Belum dicek / idle.
@@ -18,6 +20,7 @@ UsernameAvailabilityStatus usernameAvailabilityFromWire(String raw) {
     'invalid' => UsernameAvailabilityStatus.invalid,
     'reserved' => UsernameAvailabilityStatus.reserved,
     'taken' => UsernameAvailabilityStatus.taken,
+    'reclaimable' => UsernameAvailabilityStatus.reclaimable,
     _ => UsernameAvailabilityStatus.invalid,
   };
 }

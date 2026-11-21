@@ -19,6 +19,7 @@ Future<DuplicateMeaningVoteChoice?> showDuplicateMeaningVoteSheet({
 }) {
   return showModalBottomSheet<DuplicateMeaningVoteChoice>(
     context: context,
+    useRootNavigator: true,
     showDragHandle: true,
     builder: (sheetContext) {
       final l10n = AppLocalizations.of(sheetContext);

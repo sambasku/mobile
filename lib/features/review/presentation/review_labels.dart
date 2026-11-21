@@ -31,6 +31,38 @@ String reviewTitle(ReviewItem item, AppLocalizations l10n) {
   return reviewEntityLabel(item.entityType, l10n);
 }
 
+/// Judul kartu detail: lemma kontribusi, fallback lemma di entity, baru label tipe.
+/// Jangan tampilkan kode mentah seperti "meaning" di UI.
+String reviewDetailTitle(ReviewDetail detail, AppLocalizations l10n) {
+  final fromContribution = detail.contribution.wordLemma?.trim();
+  if (fromContribution != null && fromContribution.isNotEmpty) {
+    return fromContribution;
+  }
+  final entity = detail.entity;
+  for (final key in const ['wordLemma', 'word_lemma', 'lemma']) {
+    final raw = entity[key]?.toString().trim();
+    if (raw != null && raw.isNotEmpty) return raw;
+  }
+  return reviewEntityLabel(detail.contribution.entityType, l10n);
+}
+
+/// Entity anak gagal dimuat (API null → map kosong) - preview kosong menyesatkan.
+bool reviewEntityPayloadMissing(ReviewDetail detail) {
+  final entity = detail.entity;
+  if (entity['payload_missing'] == true || entity['payloadMissing'] == true) {
+    return true;
+  }
+  if (detail.contribution.entityType == 'word') {
+    final lemma = entity['lemma']?.toString().trim();
+    return entity.isEmpty || lemma == null || lemma.isEmpty;
+  }
+  if (entity.isEmpty) return true;
+  final data = entity['data'];
+  final hasData = data is Map && data.isNotEmpty;
+  final hasId = entity['id'] != null;
+  return !hasData && !hasId;
+}
+
 /// Nama tampilan kontributor; fallback username lalu label netral.
 String reviewContributorLabel(ReviewItem item, AppLocalizations l10n) =>
     item.contributorLabel ?? l10n.reviewContributorFallback;

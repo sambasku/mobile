@@ -1,0 +1,407 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+
+import '../../../core/network/api_error_text.dart';
+import '../domain/baleho_models.dart';
+
+class BalehoApiException implements Exception {
+  BalehoApiException(this.message, {this.code});
+
+  final String message;
+  final String? code;
+
+  @override
+  String toString() => message;
+}
+
+class BalehoCreateResult {
+  const BalehoCreateResult({
+    required this.placementId,
+    required this.creativeId,
+  });
+
+  final String placementId;
+  final String creativeId;
+}
+
+class BalehoCreativeSummary {
+  const BalehoCreativeSummary({
+    required this.id,
+    required this.fingerprint,
+    this.title,
+    this.mediaUrl,
+    this.frameCount = 1,
+    this.lastReferralUsername,
+  });
+
+  final String id;
+  final String fingerprint;
+  final String? title;
+  final String? mediaUrl;
+  final int frameCount;
+  final String? lastReferralUsername;
+
+  factory BalehoCreativeSummary.fromJson(Map<String, dynamic> json) {
+    return BalehoCreativeSummary(
+      id: '${json['id']}',
+      fingerprint: '${json['fingerprint'] ?? ''}',
+      title: json['title'] as String?,
+      mediaUrl: json['media_url'] as String?,
+      frameCount: (json['frame_count'] as num?)?.toInt() ?? 1,
+      lastReferralUsername: json['last_referral_username'] as String?,
+    );
+  }
+}
+
+class BalehoPlacementDailyBucket {
+  const BalehoPlacementDailyBucket({
+    required this.date,
+    required this.impressions,
+    required this.taps,
+    required this.actions,
+  });
+
+  final String date;
+  final int impressions;
+  final int taps;
+  final int actions;
+
+  factory BalehoPlacementDailyBucket.fromJson(Map<String, dynamic> json) {
+    return BalehoPlacementDailyBucket(
+      date: '${json['date'] ?? ''}',
+      impressions: (json['impressions'] as num?)?.toInt() ?? 0,
+      taps: (json['taps'] as num?)?.toInt() ?? 0,
+      actions: (json['actions'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
+
+class BalehoPlacementHistoryItem {
+  const BalehoPlacementHistoryItem({
+    required this.id,
+    required this.slide,
+    required this.col,
+    required this.row,
+    required this.w,
+    required this.h,
+    required this.status,
+    required this.createdAt,
+    this.title,
+    this.mediaUrl,
+    this.endsAt,
+    this.impressions = 0,
+    this.taps = 0,
+    this.actions = 0,
+    this.actionSuccess = 0,
+    this.actionFail = 0,
+    this.ctrPercent = 0,
+    this.actionRatePercent = 0,
+    this.successRatePercent = 0,
+    this.quotedAmount,
+    this.cpmIdr,
+    this.cpcIdr,
+    this.daily = const [],
+  });
+
+  final String id;
+  final int slide;
+  final int col;
+  final int row;
+  final int w;
+  final int h;
+  final String status;
+  final String? title;
+  final String? mediaUrl;
+  final DateTime createdAt;
+  final DateTime? endsAt;
+
+  /// Tampil di viewport papan.
+  final int impressions;
+
+  /// Tap membuka sheet detail.
+  final int taps;
+
+  /// Klik tombol CTA di sheet.
+  final int actions;
+
+  final int actionSuccess;
+  final int actionFail;
+
+  /// CTR tap/impresi (%), 1 desimal dari API.
+  final double ctrPercent;
+
+  /// Action-rate actions/taps (%).
+  final double actionRatePercent;
+
+  /// Success-rate action_success/actions (%).
+  final double successRatePercent;
+
+  final int? quotedAmount;
+  final int? cpmIdr;
+  final int? cpcIdr;
+  final List<BalehoPlacementDailyBucket> daily;
+
+  factory BalehoPlacementHistoryItem.fromJson(Map<String, dynamic> json) {
+    final dailyRaw = json['daily'];
+    final daily = dailyRaw is List
+        ? dailyRaw
+            .whereType<Map>()
+            .map(
+              (e) => BalehoPlacementDailyBucket.fromJson(
+                Map<String, dynamic>.from(e),
+              ),
+            )
+            .toList()
+        : const <BalehoPlacementDailyBucket>[];
+    return BalehoPlacementHistoryItem(
+      id: '${json['id']}',
+      slide: (json['slide'] as num?)?.toInt() ?? 1,
+      col: (json['col'] as num?)?.toInt() ?? 0,
+      row: (json['row'] as num?)?.toInt() ?? 0,
+      w: (json['w'] as num?)?.toInt() ?? 1,
+      h: (json['h'] as num?)?.toInt() ?? 1,
+      status: '${json['status'] ?? ''}',
+      title: json['title'] as String?,
+      mediaUrl: json['media_url'] as String?,
+      createdAt: DateTime.tryParse('${json['created_at'] ?? ''}') ??
+          DateTime.fromMillisecondsSinceEpoch(0),
+      endsAt: json['ends_at'] == null
+          ? null
+          : DateTime.tryParse('${json['ends_at']}'),
+      impressions: (json['impressions'] as num?)?.toInt() ?? 0,
+      taps: (json['taps'] as num?)?.toInt() ?? 0,
+      actions: (json['actions'] as num?)?.toInt() ?? 0,
+      actionSuccess: (json['action_success'] as num?)?.toInt() ?? 0,
+      actionFail: (json['action_fail'] as num?)?.toInt() ?? 0,
+      ctrPercent: (json['ctr_percent'] as num?)?.toDouble() ?? 0,
+      actionRatePercent:
+          (json['action_rate_percent'] as num?)?.toDouble() ?? 0,
+      successRatePercent:
+          (json['success_rate_percent'] as num?)?.toDouble() ?? 0,
+      quotedAmount: (json['quoted_amount'] as num?)?.toInt(),
+      cpmIdr: (json['cpm_idr'] as num?)?.toInt(),
+      cpcIdr: (json['cpc_idr'] as num?)?.toInt(),
+      daily: daily,
+    );
+  }
+}
+
+class BalehoFrameDraft {
+  const BalehoFrameDraft({
+    required this.mediaType,
+    required this.actionType,
+    required this.actionPayload,
+    this.mediaUrl,
+    this.title,
+    this.body,
+    this.ctaLabel,
+  });
+
+  final String mediaType;
+  final String? mediaUrl;
+  final String? title;
+  final String? body;
+  final String? ctaLabel;
+  final String actionType;
+  final String actionPayload;
+
+  Map<String, dynamic> toJson() => {
+        'media_type': mediaType,
+        if (mediaUrl != null && mediaUrl!.isNotEmpty) 'media_url': mediaUrl,
+        if (title != null && title!.isNotEmpty) 'title': title,
+        if (body != null && body!.isNotEmpty) 'body': body,
+        if (ctaLabel != null && ctaLabel!.isNotEmpty) 'cta_label': ctaLabel,
+        'action_type': actionType,
+        'action_payload': actionPayload,
+      };
+}
+
+class BalehoApi {
+  BalehoApi(this._dio);
+
+  final Dio _dio;
+
+  Future<BalehoBoard> fetchBoard(int slide) async {
+    final res = await _dio.get<dynamic>(
+      '/api/v1/baleho/boards/$slide',
+      options: Options(receiveTimeout: const Duration(seconds: 8)),
+    );
+    final data = _dataMap(res.data);
+    return BalehoBoard.fromJson(data);
+  }
+
+  /// Tarif IDR per sel 1x1 per hari. Default 3000 bila API gagal.
+  Future<int> fetchPricePerCellPerDay() async {
+    try {
+      final res = await _dio.get<dynamic>(
+        '/api/v1/baleho/pricing',
+        options: Options(receiveTimeout: const Duration(seconds: 8)),
+      );
+      final data = _dataMap(res.data);
+      final n = data['price_per_cell_per_day'];
+      if (n is int && n >= 0) return n;
+      if (n is num && n >= 0) return n.toInt();
+      return 3000;
+    } catch (_) {
+      return 3000;
+    }
+  }
+
+  Future<BalehoCreateResult> createPlacement({
+    required int col,
+    required int row,
+    required int w,
+    required int h,
+    required List<BalehoFrameDraft> frames,
+    String? referralUsername,
+    String? creativeId,
+    String? entityType,
+    String? entityId,
+    int days = 30,
+  }) async {
+    try {
+      final res = await _dio.post<dynamic>(
+        '/api/v1/baleho/placements',
+        data: {
+          'slide': 1,
+          'col': col,
+          'row': row,
+          'w': w,
+          'h': h,
+          'days': days,
+          if (referralUsername != null && referralUsername.trim().isNotEmpty)
+            'referral_username': referralUsername.trim(),
+          if (creativeId != null && creativeId.isNotEmpty)
+            'creative_id': creativeId,
+          if (entityType != null && entityType.isNotEmpty)
+            'entity_type': entityType,
+          if (entityId != null && entityId.isNotEmpty) 'entity_id': entityId,
+          'frames': creativeId != null && creativeId.isNotEmpty
+              ? <Map<String, dynamic>>[]
+              : [for (final f in frames) f.toJson()],
+        },
+      );
+      final data = _dataMap(res.data);
+      return BalehoCreateResult(
+        placementId: '${data['placement_id']}',
+        creativeId: '${data['creative_id']}',
+      );
+    } on DioException catch (e) {
+      throw _fromDio(e, codeFallback: 'BALEHO_CREATE_FAILED');
+    }
+  }
+
+  Future<List<BalehoCreativeSummary>> listMyCreatives() async {
+    try {
+      final res = await _dio.get<dynamic>('/api/v1/baleho/creatives');
+      final data = _dataMap(res.data);
+      final items = data['items'];
+      if (items is! List) return const [];
+      return [
+        for (final raw in items)
+          if (raw is Map)
+            BalehoCreativeSummary.fromJson(Map<String, dynamic>.from(raw)),
+      ];
+    } on DioException catch (e) {
+      throw _fromDio(e, codeFallback: 'BALEHO_CREATE_FAILED');
+    }
+  }
+
+  Future<List<BalehoPlacementHistoryItem>> listMyPlacements() async {
+    try {
+      final res = await _dio.get<dynamic>('/api/v1/baleho/placements/mine');
+      final data = _dataMap(res.data);
+      final items = data['items'];
+      if (items is! List) return const [];
+      return [
+        for (final raw in items)
+          if (raw is Map)
+            BalehoPlacementHistoryItem.fromJson(
+              Map<String, dynamic>.from(raw),
+            ),
+      ];
+    } on DioException catch (e) {
+      throw _fromDio(e, codeFallback: 'BALEHO_HISTORY_FAILED');
+    }
+  }
+
+  /// Fire-and-forget aman: gagal jaringan tidak dilempar ke UI.
+  Future<void> recordEvent({
+    required String placementId,
+    String? frameId,
+    required String eventType,
+  }) async {
+    // Placement client-only (slide 2 curated) tidak ada di DB.
+    if (placementId.startsWith('baleho_fixed_')) return;
+    try {
+      await _dio.post<dynamic>(
+        '/api/v1/baleho/events',
+        data: {
+          'placement_id': placementId,
+          if (frameId != null && frameId.isNotEmpty) 'frame_id': frameId,
+          'event_type': eventType,
+        },
+      );
+    } catch (_) {
+      // Telemetri - jangan ganggu UX.
+    }
+  }
+
+  Future<String> uploadImage(File file) async {
+    final name = file.uri.pathSegments.isNotEmpty
+        ? file.uri.pathSegments.last
+        : 'baleho.webp';
+    final lower = name.toLowerCase();
+    final mediaType = lower.endsWith('.png')
+        ? DioMediaType('image', 'png')
+        : lower.endsWith('.webp')
+            ? DioMediaType('image', 'webp')
+            : DioMediaType('image', 'jpeg');
+    final form = FormData.fromMap({
+      'file': await MultipartFile.fromFile(
+        file.path,
+        filename: name,
+        contentType: mediaType,
+      ),
+    });
+    try {
+      final res = await _dio.post<dynamic>(
+        '/api/v1/images',
+        queryParameters: {'purpose': 'baleho'},
+        data: form,
+        options: Options(
+          contentType: Headers.multipartFormDataContentType,
+          headers: {Headers.contentTypeHeader: null},
+        ),
+      );
+      final url = _dataMap(res.data)['url'];
+      if (url is! String || url.isEmpty) {
+        throw BalehoApiException(
+          'BALEHO_UPLOAD_FAILED',
+          code: 'BALEHO_UPLOAD_FAILED',
+        );
+      }
+      return url;
+    } on DioException catch (e) {
+      throw _fromDio(e, codeFallback: 'BALEHO_UPLOAD_FAILED');
+    }
+  }
+
+  BalehoApiException _fromDio(DioException e, {required String codeFallback}) {
+    final data = e.response?.data;
+    final code = data is Map
+        ? (data['error_code'] as String? ?? codeFallback)
+        : codeFallback;
+    final message = apiErrorText(data, code);
+    return BalehoApiException(message, code: code);
+  }
+
+  Map<String, dynamic> _dataMap(dynamic raw) {
+    if (raw is Map && raw['data'] is Map) {
+      return Map<String, dynamic>.from(raw['data'] as Map);
+    }
+    if (raw is Map) return Map<String, dynamic>.from(raw);
+    return {};
+  }
+}

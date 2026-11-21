@@ -14,6 +14,7 @@ import '../../dictionary_router.dart';
 import '../../domain/entities/word_summary.dart';
 import '../models/letter_words_state.dart';
 import '../providers/letter_words_providers.dart';
+import '../providers/word_list_providers.dart';
 import '../widgets/alphabet_letter_strip.dart';
 
 /// Direktori kata per huruf - setara web `/huruf/:letter`.
@@ -171,7 +172,10 @@ class LetterWordsPage extends HookConsumerWidget {
               ),
               const Gap(12),
               FButton(
-                onPress: () => context.push(DictionaryRouter.list.path),
+                onPress: () {
+                  ref.read(wordListProvider.notifier).clearSearchSession();
+                  context.push(DictionaryRouter.list.path);
+                },
                 variant: FButtonVariant.outline,
                 child: Text(AppLocalizations.of(context).dictSeeAllWords),
               ),

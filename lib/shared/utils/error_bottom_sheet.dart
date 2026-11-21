@@ -16,8 +16,11 @@ Future<void> showAppErrorSheet(
   String? title,
   VoidCallback? onRetry,
 }) {
+  // useRootNavigator: barrier menutup seluruh layar (termasuk bottom nav
+  // shell). Tanpa ini, sheet dari tab nested hanya dim di area navigator tab.
   return showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) {

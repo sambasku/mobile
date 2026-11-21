@@ -53,7 +53,7 @@ class VoteDeckSwipeCardState extends State<VoteDeckSwipeCard> {
       // isi muat, selain itu lewati lewat tombol.
       allowNestedVerticalScroll: false,
       fallbackHeight: 240,
-      hintId: 'vote-deck',
+      hintId: null, // tidak auto-play nudge (meresahkan)
       positiveLabel: l10n.voteDeckAgree,
       negativeLabel: l10n.voteDeckDisagree,
       skipLabel: l10n.voteDeckSkip,

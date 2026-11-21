@@ -3,6 +3,7 @@ import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -41,8 +42,16 @@ class _WordOfDayBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
-    final sense = item.firstSense;
+    final translation = item.firstTranslation;
+    final definition = item.firstDefinition;
     final dateLabel = formatDateYmd(item.date);
+    final textShadow = [
+      Shadow(
+        color: Colors.black.withValues(alpha: 0.45),
+        blurRadius: 4,
+        offset: const Offset(0, 1),
+      ),
+    ];
 
     // Scrim lebih pekat di dark mode (kontras teks + ketenangan malam).
     final scrimAlpha = Theme.of(context).brightness == Brightness.dark
@@ -59,7 +68,7 @@ class _WordOfDayBody extends ConsumerWidget {
       child: Material(
         color: Colors.transparent,
         clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         child: Stack(
           fit: StackFit.passthrough,
           children: [
@@ -119,10 +128,12 @@ class _WordOfDayBody extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(
+                      // Padding kanan: sisakan ruang label versi (pojok kanan bawah).
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
+                        padding: const EdgeInsets.fromLTRB(10, 6, 96, 6),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Row(
                               children: [
@@ -143,86 +154,47 @@ class _WordOfDayBody extends ConsumerWidget {
                                 const Gap(8),
                                 Expanded(
                                   child: Text(
-                                    AppLocalizations.of(context).dictWordOfDay,
-                                    style: theme.typography.body.xs.copyWith(
+                                    item.word.lemma,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.typography.body.md.copyWith(
                                       fontWeight: FontWeight.w700,
+                                      height: 1.15,
                                       color: Colors.white,
-                                      shadows: [
-                                        Shadow(
-                                          color: Colors.black.withValues(
-                                            alpha: 0.4,
-                                          ),
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 1),
-                                        ),
-                                      ],
+                                      shadows: textShadow,
                                     ),
                                   ),
                                 ),
-                                if (dateLabel.isNotEmpty)
-                                  DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.35,
-                                      ),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 6,
-                                        vertical: 2,
-                                      ),
-                                      child: Text(
-                                        dateLabel,
-                                        style: theme.typography.body.xs
-                                            .copyWith(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.9,
-                                              ),
-                                            ),
-                                      ),
-                                    ),
-                                  ),
                               ],
                             ),
-                            const Gap(4),
-                            Text(
-                              item.word.lemma,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.typography.body.lg.copyWith(
-                                fontWeight: FontWeight.w700,
-                                height: 1.15,
-                                color: Colors.white,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.black.withValues(alpha: 0.5),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 1),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (sense.isNotEmpty) ...[
+                            if (translation.isNotEmpty) ...[
                               const Gap(2),
                               Text(
-                                sense,
+                                translation,
                                 maxLines: 1,
+                                softWrap: false,
                                 overflow: TextOverflow.ellipsis,
-                                style: theme.typography.body.sm.copyWith(
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                  shadows: [
-                                    Shadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.4,
-                                      ),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 1),
-                                    ),
-                                  ],
+                                style: theme.typography.body.xs2.copyWith(
+                                  height: 1.2,
+                                  color: Colors.white.withValues(alpha: 0.92),
+                                  shadows: textShadow,
                                 ),
                               ),
                             ],
+                            const Gap(1),
+                            Text(
+                              definition.isNotEmpty ? definition : '-',
+                              maxLines: 1,
+                              softWrap: false,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.typography.body.xs3.copyWith(
+                                height: 1.2,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.white.withValues(alpha: 0.85),
+                                shadows: textShadow,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -231,6 +203,35 @@ class _WordOfDayBody extends ConsumerWidget {
                 ),
               ),
             ),
+            // Tanggal - mentok pojok kanan atas + chip latar gelap.
+            if (dateLabel.isNotEmpty)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: IgnorePointer(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.55),
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(4),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 2, 8, 5),
+                      child: Text(
+                        dateLabel,
+                        softWrap: false,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          height: 1.1,
+                          color: Colors.white.withValues(alpha: 0.95),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             // Versi app - pojok kanan bawah kartu (tidak menelan tap).
             const Positioned(
               right: 8,
@@ -263,7 +264,7 @@ class _WotdVersionLabelState extends State<_WotdVersionLabel> {
         if (!snapshot.hasData) return const SizedBox.shrink();
         final version = snapshot.data!.version;
         return Text(
-          AppLocalizations.of(context).aboutVersion(version),
+          'v$version',
           style: TextStyle(
             fontSize: 9,
             height: 1,
@@ -310,7 +311,7 @@ class _WordOfDaySkeleton extends StatelessWidget {
             color: Colors.transparent,
             clipBehavior: Clip.antiAlias,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Stack(
               fit: StackFit.passthrough,
@@ -354,12 +355,12 @@ class _WordOfDaySkeleton extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(AppLocalizations.of(context).dictWordOfDay),
-                        Gap(4),
                         Text(
                           AppLocalizations.of(context).dictSkeletonLemmaShort,
                         ),
                         Gap(2),
+                        Text(AppLocalizations.of(context).dictSkeletonGloss),
+                        Gap(1),
                         Text(AppLocalizations.of(context).dictSkeletonGloss),
                       ],
                     ),

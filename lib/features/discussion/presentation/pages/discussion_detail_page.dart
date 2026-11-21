@@ -9,6 +9,11 @@ import '../../../../core/models/external_link.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
+import 'package:dio/dio.dart';
+
+import '../../../../shared/stickers/sticker_providers.dart';
+import '../../../../shared/stickers/sticker_sheet.dart';
+import '../../../../shared/stickers/sticker_view.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/utils/thread_reply_draft.dart';
@@ -16,6 +21,11 @@ import '../../../../shared/widgets/thread_edit_sheets.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../data/discussion_providers.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../jinye/domain/jinye_models.dart';
+import '../../../jinye/presentation/widgets/jinye_lemma_body.dart';
+import '../../../jinye/presentation/widgets/jinye_link_lemma_sheet.dart';
+import '../../../jinye/presentation/widgets/jinye_word_meaning_sheet.dart';
+import '../../../jinye/presentation/widgets/jinye_word_picker_sheet.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../domain/discussion_models.dart';
@@ -43,6 +53,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
   final _composerFocus = FocusNode();
   ThreadReplyDraft? _replyDraft;
   String? _replyChipHandle;
+  String? _stagingStickerId;
 
   @override
   void initState() {
@@ -211,17 +222,109 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
     );
   }
 
+  void _clearStagingSticker() {
+    setState(() => _stagingStickerId = null);
+  }
+
+  Future<void> _pickReplySticker() async {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    final stickerId = await showCatalogStickerSheet(context);
+    if (!mounted || stickerId == null) return;
+    setState(() => _stagingStickerId = stickerId);
+  }
+
+  Widget? _buildStickerPreview(BuildContext context) {
+    final stickerId = _stagingStickerId;
+    if (stickerId == null) return null;
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final sticker =
+        ref.watch(stickerLookupProvider(stickerId)).asData?.value;
+    return Row(
+      children: [
+        StickerIdView(
+          stickerId: stickerId,
+          sticker: sticker,
+          size: 56,
+        ),
+        const Gap(8),
+        Expanded(
+          child: Text(
+            l10n.commentAddSticker,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+        ),
+        FButton.icon(
+          variant: FButtonVariant.ghost,
+          onPress: _clearStagingSticker,
+          child: Icon(
+            FLucideIcons.x,
+            size: 16,
+            color: theme.colors.destructive,
+            semanticLabel: l10n.commentRemoveSticker,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget? _replyMedia(DiscussionReply reply) {
+    if (!reply.isPublished) return null;
+    final parts = <Widget>[];
+    if (reply.hasAudio) {
+      parts.add(
+        DiscussionReplyAudioPlayer(
+          url: reply.audioUrl!,
+          durationMs: reply.audioDurationMs,
+        ),
+      );
+    }
+    if (reply.hasSticker) {
+      final sticker = ref
+          .watch(stickerLookupProvider(reply.stickerId!))
+          .asData
+          ?.value;
+      parts.add(
+        Align(
+          alignment: Alignment.centerLeft,
+          child: StickerIdView(
+            stickerId: reply.stickerId!,
+            sticker: sticker,
+            size: 96,
+          ),
+        ),
+      );
+    }
+    if (parts.isEmpty) return null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < parts.length; i++) ...[
+          if (i > 0) const Gap(6),
+          parts[i],
+        ],
+      ],
+    );
+  }
+
   Future<void> _sendReply() async {
     if (!_isAuth()) {
       _promptLogin();
       return;
     }
+    final stickerId = _stagingStickerId;
     final failure = await ref
         .read(discussionDetailProvider(widget.id).notifier)
-        .createReply(_replyCtrl.text);
+        .createReply(_replyCtrl.text, stickerId: stickerId);
     if (!mounted) return;
     if (failure == null) {
       _replyCtrl.clear();
+      _clearStagingSticker();
       _dismissReply(clearComposerPrefix: false);
       showFToast(
         context: context,
@@ -242,6 +345,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
       _promptLogin();
       return;
     }
+    _clearStagingSticker();
     final caption = _replyCtrl.text.trim();
     await showRecordDiscussionReplySheet(
       context,
@@ -476,6 +580,233 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
     );
   }
 
+
+  Widget? _lemmaBodyWidget({
+    required TextStyle bodyStyle,
+    required String? rawBody,
+    required List<DiscussionLemmaLink> links,
+    required bool enableTap,
+    required bool isOwner,
+    required bool isVerifier,
+    required bool isAuth,
+    required String? replyId,
+  }) {
+    final body = rawBody ?? '';
+    if (body.trim().isEmpty) return null;
+    final jinyeLinks = links.map(_asJinyeLemmaLink).toList();
+    return JinyeLemmaBody(
+      body: body,
+      links: jinyeLinks,
+      style: bodyStyle,
+      onLinkLongPress: (link) => _showLemmaLinkActions(
+        link: link,
+        sourceBody: body,
+        isAuth: isAuth,
+        isOwner: isOwner,
+        isVerifier: isVerifier,
+      ),
+      onWordTap: enableTap
+          ? (span, link) => _showWordMeaning(
+                span: span,
+                link: link,
+                isAuth: isAuth,
+                replyId: replyId,
+              )
+          : null,
+    );
+  }
+
+  Future<void> _showWordMeaning({
+    required JinyeSpanSelection span,
+    required JinyeLemmaLink? link,
+    required bool isAuth,
+    required String? replyId,
+  }) async {
+    final discussionId = widget.id;
+    final result = await showJinyeWordMeaningSheet(
+      context,
+      jinyeId: discussionId,
+      span: span,
+      link: link,
+      isAuth: isAuth,
+      onLinked: () => ref.invalidate(discussionDetailProvider(discussionId)),
+      onCreateLink: ({
+        required int start,
+        required int end,
+        required String wordId,
+      }) {
+        return ref.read(discussionRepositoryProvider).createLemmaLink(
+              discussionId: discussionId,
+              start: start,
+              end: end,
+              wordId: wordId,
+              replyId: replyId,
+            );
+      },
+    );
+    if (!mounted || result == null) return;
+    if (result == 'login') {
+      context.push('/login');
+      return;
+    }
+    const contributePrefix = 'contribute:';
+    if (result.startsWith(contributePrefix)) {
+      final lemma = Uri.decodeComponent(
+        result.substring(contributePrefix.length),
+      );
+      context.push(
+        '/contribute?lemma=${Uri.encodeQueryComponent(lemma)}',
+      );
+      return;
+    }
+    context.push('/words/$result');
+  }
+
+  Future<void> _showLemmaLinkActions({
+    required JinyeLemmaLink link,
+    required String sourceBody,
+    required bool isAuth,
+    required bool isOwner,
+    required bool isVerifier,
+  }) async {
+    final l10n = AppLocalizations.of(context);
+    final discussionId = widget.id;
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      builder: (_) => Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FTileGroup(
+              children: [
+                FTile(
+                  title: Text(l10n.jinyeLemmaOpenWord),
+                  onPress: () => Navigator.pop(context, 'open'),
+                ),
+                if (isAuth && !link.isPendingCorrection)
+                  FTile(
+                    title: Text(l10n.jinyeLemmaProposeCorrection),
+                    onPress: () => Navigator.pop(context, 'correct'),
+                  ),
+                if (link.isPendingCorrection && isVerifier) ...[
+                  FTile(
+                    title: Text(l10n.jinyeLemmaApproveCorrection),
+                    onPress: () => Navigator.pop(context, 'approve'),
+                  ),
+                  FTile(
+                    title: Text(l10n.jinyeLemmaRejectCorrection),
+                    onPress: () => Navigator.pop(context, 'reject'),
+                  ),
+                ],
+                if (isOwner || isVerifier)
+                  FTile(
+                    title: Text(l10n.jinyeLemmaDeleteLink),
+                    onPress: () => Navigator.pop(context, 'delete'),
+                  ),
+                FTile(
+                  title: Text(l10n.commonCancel),
+                  onPress: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    if (action == null || !mounted) return;
+
+    final repo = ref.read(discussionRepositoryProvider);
+    try {
+      switch (action) {
+        case 'open':
+          context.push('/words/${link.wordId}');
+          return;
+        case 'correct':
+          if (!isAuth) {
+            showFToast(context: context, title: Text(l10n.jinyeLoginFirst));
+            context.push('/login');
+            return;
+          }
+          final word = await showJinyeWordPickerSheet(
+            context,
+            initialQuery: link.lemma ??
+                (link.start < sourceBody.length &&
+                        link.end <= sourceBody.length
+                    ? sourceBody.substring(link.start, link.end)
+                    : ''),
+          );
+          if (word == null || !mounted) return;
+          await repo.proposeLemmaCorrection(
+            discussionId: discussionId,
+            linkId: link.id,
+            wordId: word.id,
+          );
+          if (mounted) {
+            showFToast(
+              context: context,
+              title: Text(l10n.jinyeLemmaCorrectionSuccess),
+            );
+          }
+        case 'approve':
+        case 'reject':
+          await repo.resolveLemmaCorrection(
+            discussionId: discussionId,
+            linkId: link.id,
+            action: action,
+          );
+          if (mounted) {
+            showFToast(
+              context: context,
+              title: Text(l10n.jinyeLemmaResolveSuccess),
+            );
+          }
+        case 'delete':
+          await repo.deleteLemmaLink(
+            discussionId: discussionId,
+            linkId: link.id,
+          );
+          if (mounted) {
+            showFToast(
+              context: context,
+              title: Text(l10n.jinyeLemmaDeleteSuccess),
+            );
+          }
+        default:
+          return;
+      }
+      ref.invalidate(discussionDetailProvider(discussionId));
+    } on DioException catch (e) {
+      if (!mounted) return;
+      final msg = e.response?.data is Map
+          ? (e.response!.data as Map)['message']
+          : null;
+      final fallback = switch (action) {
+        'correct' => l10n.jinyeLemmaCorrectionFailed,
+        'approve' || 'reject' => l10n.jinyeLemmaResolveFailed,
+        'delete' => l10n.jinyeLemmaDeleteFailed,
+        _ => l10n.jinyeOwnerActionFailed,
+      };
+      await showAppErrorSheet(
+        context,
+        message: msg is String && msg.isNotEmpty ? msg : fallback,
+      );
+    } catch (_) {
+      if (!mounted) return;
+      await showAppErrorSheet(
+        context,
+        message: switch (action) {
+          'correct' => l10n.jinyeLemmaCorrectionFailed,
+          'approve' || 'reject' => l10n.jinyeLemmaResolveFailed,
+          'delete' => l10n.jinyeLemmaDeleteFailed,
+          _ => l10n.jinyeOwnerActionFailed,
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -554,6 +885,19 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                         avatarUrl: item.avatarUrl,
                         isVerifier: item.isVerifier,
                         body: item.body?.trim() ?? '',
+                        bodyWidget: _lemmaBodyWidget(
+                          bodyStyle: theme.typography.body.sm
+                              .copyWith(height: 1.35),
+                          rawBody: item.body,
+                          links: item.lemmaLinks
+                              .where((l) => l.replyId == null)
+                              .toList(),
+                          enableTap: item.isPublished,
+                          isOwner: item.isOwner(auth?.userId),
+                          isVerifier: _isVerifierRole(auth?.role),
+                          isAuth: isAuth,
+                          replyId: null,
+                        ),
                         dateLabel: formatRelativeCompact(
                           DateTime.tryParse(item.createdAt),
                         ),
@@ -663,6 +1007,21 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                                       ? l10n.discussionRepliesRemovedModerator
                                       : l10n.discussionRepliesRemovedAuthor)
                                 : (reply.body?.trim() ?? ''),
+                            bodyWidget: reply.isPublished
+                                ? _lemmaBodyWidget(
+                                    bodyStyle: theme.typography.body.sm
+                                        .copyWith(height: 1.35),
+                                    rawBody: reply.body,
+                                    links: item.lemmaLinks
+                                        .where((l) => l.replyId == reply.id)
+                                        .toList(),
+                                    enableTap: true,
+                                    isOwner: reply.isOwner(auth?.userId),
+                                    isVerifier: _isVerifierRole(auth?.role),
+                                    isAuth: isAuth,
+                                    replyId: reply.id,
+                                  )
+                                : null,
                             dateLabel: formatRelativeAgo(
                               DateTime.tryParse(reply.createdAt),
                             ),
@@ -672,12 +1031,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                           ],
                             isRedacted: !reply.isPublished,
                             highlighted: reply.isPinned && reply.isPublished,
-                            media: reply.isPublished && reply.hasAudio
-                                ? DiscussionReplyAudioPlayer(
-                                    url: reply.audioUrl!,
-                                    durationMs: reply.audioDurationMs,
-                                  )
-                                : null,
+                            media: _replyMedia(reply),
                             isEdited: reply.isEdited,
                             editedLabel: l10n.commentEdited,
                             onShowEditHistory: reply.isEdited
@@ -757,6 +1111,8 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                             isSubmitting: state.isSubmittingReply,
                             onSubmit: _sendReply,
                             onRecordAudio: _recordAudioReply,
+                            onPickSticker: _pickReplySticker,
+                            attachmentPreview: _buildStickerPreview(context),
                             hint: l10n.discussionReplyHint,
                             replyBanner: _replyDraft == null
                                 ? null
@@ -938,4 +1294,24 @@ class _DetailSkeleton extends StatelessWidget {
       ),
     );
   }
+}
+
+bool _isVerifierRole(String? role) =>
+    role == 'admin' || role == 'root' || role == 'reviewer';
+
+JinyeLemmaLink _asJinyeLemmaLink(DiscussionLemmaLink link) {
+  return JinyeLemmaLink(
+    id: link.id,
+    jinyeId: link.discussionId,
+    commentId: link.replyId,
+    start: link.start,
+    end: link.end,
+    wordId: link.wordId,
+    lemma: link.lemma,
+    status: link.status,
+    source: link.source,
+    proposedWordId: link.proposedWordId,
+    proposedLemma: link.proposedLemma,
+    proposedBy: link.proposedBy,
+  );
 }

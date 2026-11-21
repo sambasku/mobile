@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
+
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -6,12 +8,22 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/stickers/sticker_providers.dart';
+import '../../../../shared/stickers/sticker_sheet.dart';
+import '../../../../shared/stickers/sticker_view.dart';
+import '../../../../shared/utils/image_sheet_drawer.dart';
+import '../../../../shared/utils/photo_pick_constants.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/utils/thread_reply_draft.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/image_crop_page.dart';
+import '../../../../shared/widgets/record_thread_audio_sheet.dart';
+import '../../../../shared/widgets/thread_audio_player.dart';
 import '../../../../shared/widgets/thread_edit_sheets.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../comment/data/providers/comment_data_providers.dart';
+import '../../../comment/domain/entities/comment_image.dart';
 import '../../../comment/presentation/providers/mention_suggest_providers.dart';
 import '../../../comment/presentation/widgets/mention_suggest_overlay.dart';
 import '../../../user_profile/user_profile_router.dart';
@@ -23,10 +35,13 @@ Future<void> showEncyclopediaCommentsSheet(
   BuildContext context,
   String articleId,
 ) {
+  final bg = context.theme.colors.background;
   return showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
+    backgroundColor: bg,
     builder: (sheetContext) {
       final media = MediaQuery.of(sheetContext);
       final height = (media.size.height - media.viewInsets.bottom) * 0.88;
@@ -111,6 +126,10 @@ class _EncyclopediaCommentsSectionState
   final _composerFocus = FocusNode();
   ThreadReplyDraft? _replyDraft;
   String? _replyChipHandle;
+  String? _stagingStickerId;
+  CommentImageStaging? _stagingImage;
+  String? _localPreviewPath;
+  bool _uploadingImage = false;
 
   @override
   void initState() {
@@ -192,15 +211,231 @@ class _EncyclopediaCommentsSectionState
     }
   }
 
+  void _clearStagingSticker() {
+    setState(() => _stagingStickerId = null);
+  }
+
+  void _clearStagingPhoto() {
+    setState(() {
+      _stagingImage = null;
+      _localPreviewPath = null;
+    });
+  }
+
+  Future<void> _pickCommentSticker() async {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    if (_uploadingImage) return;
+    final stickerId = await showCatalogStickerSheet(context);
+    if (!mounted || stickerId == null) return;
+    setState(() {
+      _stagingStickerId = stickerId;
+      _stagingImage = null;
+      _localPreviewPath = null;
+    });
+  }
+
+  Future<void> _pickCommentPhoto() async {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    if (_uploadingImage) return;
+    _clearStagingSticker();
+    final l10n = AppLocalizations.of(context);
+    showImageSheetDrawer(
+      context,
+      filePicker: false,
+      mediaExplorerPicker: false,
+      cropEnabled: false,
+      maxWidth: kPhotoPickMaxWidth,
+      maxHeight: kPhotoPickMaxHeight,
+      imageQuality: kPhotoPickQuality,
+      onRemoved: _clearStagingPhoto,
+      onPicked: (file) async {
+        await Future<void>.delayed(Duration.zero);
+        if (!mounted) return;
+        final File? cropped;
+        try {
+          cropped = await cropImage(context, file.path);
+        } catch (_) {
+          if (!mounted) return;
+          showFToast(
+            context: context,
+            title: Text(l10n.commentPhotoUploadFailed),
+            variant: FToastVariant.destructive,
+          );
+          return;
+        }
+        if (cropped == null || !mounted) return;
+        final croppedFile = cropped;
+        setState(() {
+          _uploadingImage = true;
+          _localPreviewPath = croppedFile.path;
+          _stagingImage = null;
+        });
+        try {
+          final staging = await ref
+              .read(commentImageUploadServiceProvider)
+              .upload(croppedFile);
+          if (!mounted) return;
+          setState(() {
+            _stagingImage = staging;
+            _uploadingImage = false;
+          });
+        } on CommentImageUploadUnavailable {
+          if (!mounted) return;
+          setState(() {
+            _uploadingImage = false;
+            _localPreviewPath = null;
+          });
+          showFToast(
+            context: context,
+            title: Text(l10n.commentPhotoUploadFailed),
+            variant: FToastVariant.destructive,
+          );
+        } catch (_) {
+          if (!mounted) return;
+          setState(() {
+            _uploadingImage = false;
+            _localPreviewPath = null;
+          });
+          showFToast(
+            context: context,
+            title: Text(l10n.commentPhotoUploadFailed),
+            variant: FToastVariant.destructive,
+          );
+        }
+      },
+    );
+  }
+
+  Widget? _buildAttachmentPreview(BuildContext context) {
+    final stickerId = _stagingStickerId;
+    if (stickerId != null) {
+      final l10n = AppLocalizations.of(context);
+      final theme = context.theme;
+      final sticker =
+          ref.watch(stickerLookupProvider(stickerId)).asData?.value;
+      return Row(
+        children: [
+          StickerIdView(
+            stickerId: stickerId,
+            sticker: sticker,
+            size: 56,
+          ),
+          const Gap(8),
+          Expanded(
+            child: Text(
+              l10n.commentAddSticker,
+              style: theme.typography.body.sm.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          ),
+          FButton.icon(
+            variant: FButtonVariant.ghost,
+            onPress: _clearStagingSticker,
+            child: Icon(
+              FLucideIcons.x,
+              size: 16,
+              color: theme.colors.destructive,
+              semanticLabel: l10n.commentRemoveSticker,
+            ),
+          ),
+        ],
+      );
+    }
+    if (_localPreviewPath == null && _stagingImage == null) return null;
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final path = _localPreviewPath;
+    return Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: SizedBox(
+            width: 56,
+            height: 56,
+            child: path != null
+                ? Image.file(File(path), fit: BoxFit.cover)
+                : ColoredBox(color: theme.colors.secondary),
+          ),
+        ),
+        const Gap(8),
+        Expanded(
+          child: Text(
+            _uploadingImage ? l10n.commentPhotoUploading : l10n.commentAddPhoto,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+        ),
+        if (_uploadingImage)
+          const FCircularProgress(size: .sm)
+        else
+          FButton(
+            variant: FButtonVariant.ghost,
+            onPress: _clearStagingPhoto,
+            child: Text(l10n.commentRemovePhoto),
+          ),
+      ],
+    );
+  }
+
   Widget? _commentMedia(ArticleComment comment) {
+    if (!comment.isPublished) return null;
+    final parts = <Widget>[];
+    if (comment.hasAudio) {
+      parts.add(
+        ThreadAudioPlayer(
+          url: comment.audioUrl!,
+          durationMs: comment.audioDurationMs,
+        ),
+      );
+    }
+    if (comment.hasSticker) {
+      final sticker = ref
+          .watch(stickerLookupProvider(comment.stickerId!))
+          .asData
+          ?.value;
+      parts.add(
+        Align(
+          alignment: Alignment.centerLeft,
+          child: StickerIdView(
+            stickerId: comment.stickerId!,
+            sticker: sticker,
+            size: 96,
+          ),
+        ),
+      );
+    }
     final url = comment.imageUrl?.trim();
-    if (url == null || url.isEmpty || !comment.isPublished) return null;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: CachedNetworkImageWithFallback(imageUrl: url, fit: BoxFit.cover),
-      ),
+    if (url != null && url.isNotEmpty) {
+      parts.add(
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child: CachedNetworkImageWithFallback(
+              imageUrl: url,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
+    }
+    if (parts.isEmpty) return null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < parts.length; i++) ...[
+          if (i > 0) const Gap(6),
+          parts[i],
+        ],
+      ],
     );
   }
 
@@ -209,13 +444,22 @@ class _EncyclopediaCommentsSectionState
       _promptLogin();
       return;
     }
+    if (_uploadingImage) return;
     final l10n = AppLocalizations.of(context);
+    final stickerId = _stagingStickerId;
+    final imageUrl = _stagingImage?.url;
     final code = await ref
         .read(articleCommentListControllerProvider(widget.articleId).notifier)
-        .create(_bodyCtrl.text);
+        .create(
+          _bodyCtrl.text,
+          stickerId: stickerId,
+          imageUrl: imageUrl,
+        );
     if (!mounted) return;
     if (code == null) {
       _bodyCtrl.clear();
+      _clearStagingSticker();
+      _clearStagingPhoto();
       _dismissReply(clearComposerPrefix: false);
       showFToast(
         context: context,
@@ -235,6 +479,38 @@ class _EncyclopediaCommentsSectionState
         variant: FToastVariant.destructive,
       );
     }
+  }
+
+  Future<void> _recordAudioComment() async {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    final caption = _bodyCtrl.text.trim();
+    final l10n = AppLocalizations.of(context);
+    await showRecordThreadAudioSheet(
+      context,
+      title: l10n.commentRecordTitle,
+      subtitle: l10n.commentRecordBody,
+      submitLabel: l10n.commentRecordSubmit,
+      onSubmit: ({required audioFile, required durationMs}) async {
+        final code = await ref
+            .read(
+              articleCommentListControllerProvider(widget.articleId).notifier,
+            )
+            .createAudio(
+              audioFile: audioFile,
+              durationMs: durationMs,
+              body: caption.isEmpty ? null : caption,
+            );
+        if (code == null) {
+          if (mounted) _bodyCtrl.clear();
+          return null;
+        }
+        if (code == 'empty') return l10n.commentEditEmpty;
+        return l10n.encyclopediaCommentFailed;
+      },
+    );
   }
 
   Future<void> _editComment(ArticleComment comment) async {
@@ -329,7 +605,11 @@ class _EncyclopediaCommentsSectionState
     final listState = async.value;
     final count = listState?.items.length ?? 0;
 
-    return Column(
+    // Material + background Forui: sheet tidak putih di dark mode (dulu
+    // import flutter/material → ThemeData SDK terang).
+    return Material(
+      color: theme.colors.background,
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Center(
@@ -357,7 +637,7 @@ class _EncyclopediaCommentsSectionState
               ),
               IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.close),
+                icon: Icon(Icons.close, color: theme.colors.foreground),
               ),
             ],
           ),
@@ -459,8 +739,13 @@ class _EncyclopediaCommentsSectionState
               : ThreadComposer(
                   controller: _bodyCtrl,
                   focusNode: _composerFocus,
-                  isSubmitting: listState?.isSubmitting ?? false,
+                  isSubmitting:
+                      (listState?.isSubmitting ?? false) || _uploadingImage,
                   onSubmit: _submitText,
+                  onRecordAudio: _recordAudioComment,
+                  onPickImage: _pickCommentPhoto,
+                  onPickSticker: _pickCommentSticker,
+                  attachmentPreview: _buildAttachmentPreview(context),
                   hint: l10n.encyclopediaCommentPlaceholder,
                   replyBanner: _replyDraft == null
                       ? null
@@ -475,6 +760,7 @@ class _EncyclopediaCommentsSectionState
                 ),
         ),
       ],
+      ),
     );
   }
 }

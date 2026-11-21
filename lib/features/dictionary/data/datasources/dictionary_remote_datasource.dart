@@ -19,16 +19,18 @@ abstract interface class DictionaryRemoteDatasource {
   /// Endpoint publik tanpa auth.
   @GET('/api/v1/words/search')
   Future<ApiResponse<List<WordSummaryDto>>> searchWords(
-    @Queries() Map<String, dynamic> query,
-  );
+    @Queries() Map<String, dynamic> query, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
 
   /// Daftar semua kata A-Z (GET /api/v1/words, 18-api-list-words.md) -
   /// browsing, BUKAN pencarian. Cursor komposit opaque; q = filter
   /// server-side. Publik tanpa auth.
   @GET('/api/v1/words')
   Future<ApiResponse<List<WordSummaryDto>>> listWords(
-    @Queries() Map<String, dynamic> query,
-  );
+    @Queries() Map<String, dynamic> query, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
 
   /// Feed beranda (GET /api/v1/words/latest) - published, urut
   /// waktu persetujuan. Publik tanpa auth.

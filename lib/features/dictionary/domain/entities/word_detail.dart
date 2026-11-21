@@ -1,4 +1,5 @@
 import '../../../../core/models/image_attribution.dart';
+import '../../../../shared/models/content_related_link.dart';
 
 /// Closed enum `usage_labels` (sinkron API / console).
 const kUsageLabels = <String>[
@@ -71,8 +72,10 @@ class WordDetail {
     this.images = const [],
     this.relatedWords = const [],
     this.appearsIn = const [],
+    this.appearsInKarya = const [],
     this.meaningGroups = const [],
     this.variants = const [],
+    this.related = const [],
   });
 
   final String id;
@@ -97,11 +100,15 @@ class WordDetail {
   final List<WordImage> images;
   final List<RelatedWord> relatedWords;
   final List<RelatedWord> appearsIn;
+  final List<WordAppearsInKarya> appearsInKarya;
 
   /// PRD relasi-lemma: kelompok makna published yang memuat kata ini.
   /// Kosong = kata tidak punya kelompok (bagian UI tidak dirender).
   final List<MeaningGroup> meaningGroups;
   final List<WordVariant> variants;
+
+  /// Kartu lintas fitur dari `content_links` (artikel, eksplorasi, dll.).
+  final List<ContentRelatedLink> related;
 
   /// Satu kalimat kalau orangnya sama, supaya nama tidak tertulis dua kali.
   bool get authoredAndVerifiedBySamePerson {
@@ -122,6 +129,38 @@ class WordDetail {
         role == 'root' ||
         role == 'reviewer';
   }
+
+  /// Salin detail dengan daftar makna berbeda (filter publik verified-only).
+  WordDetail withMeanings(List<WordMeaning> nextMeanings) {
+    if (identical(nextMeanings, meanings)) return this;
+    return WordDetail(
+      id: id,
+      lemma: lemma,
+      languageId: languageId,
+      wordType: wordType,
+      status: status,
+      isVerified: isVerified,
+      isCorrected: isCorrected,
+      selfVerified: selfVerified,
+      notes: notes,
+      verifiedAt: verifiedAt,
+      verifiedBy: verifiedBy,
+      createdBy: createdBy,
+      meanings: nextMeanings,
+      categories: categories,
+      usageLabels: usageLabels,
+      pronunciations: pronunciations,
+      audios: audios,
+      images: images,
+      relatedWords: relatedWords,
+      appearsIn: appearsIn,
+      appearsInKarya: appearsInKarya,
+      meaningGroups: meaningGroups,
+      variants: variants,
+      related: related,
+    );
+  }
+
 }
 
 class WordVerifier {
@@ -148,6 +187,10 @@ class WordMeaning {
     this.wordClassName,
     this.definition,
     required this.orderIndex,
+    this.isVerified = true,
+    this.needsReview = false,
+    this.verifiedAt,
+    this.verifiedBy,
     // WIP review-flow: kontributor per makna (belum di-commit).
     this.createdBy,
     this.translations = const [],
@@ -163,6 +206,12 @@ class WordMeaning {
   final String? definition;
   final int orderIndex;
 
+  /// Trust per makna (G1). Default true untuk data lokal / payload lama.
+  final bool isVerified;
+  final bool needsReview;
+  final String? verifiedAt;
+  final WordVerifier? verifiedBy;
+
   /// Kontributor makna ini (WIP review-flow, belum di-commit).
   final WordVerifier? createdBy;
   final List<WordTranslation> translations;
@@ -174,6 +223,17 @@ class WordMeaning {
     if (code == null || code.isEmpty) return null;
     return '[${code.toLowerCase()}]';
   }
+}
+
+/// Ringkasan trust di tingkat lemma dari daftar makna published.
+enum LemmaTrustSummary { allVerified, partial, pending }
+
+LemmaTrustSummary lemmaTrustSummary(List<WordMeaning> meanings) {
+  if (meanings.isEmpty) return LemmaTrustSummary.pending;
+  final verified = meanings.where((m) => m.isVerified).length;
+  if (verified == meanings.length) return LemmaTrustSummary.allVerified;
+  if (verified > 0) return LemmaTrustSummary.partial;
+  return LemmaTrustSummary.pending;
 }
 
 class WordTranslation {
@@ -319,6 +379,27 @@ class RelatedWord {
   final String lemma;
   final String relationType;
 
+}
+
+/// Cuplikan karya yang menaut lemma ini (wire `appears_in_karya`).
+class WordAppearsInKarya {
+  const WordAppearsInKarya({
+    required this.karyaSlug,
+    required this.karyaTitle,
+    required this.excerptId,
+    required this.excerptKind,
+    required this.start,
+    required this.end,
+    required this.snippet,
+  });
+
+  final String karyaSlug;
+  final String karyaTitle;
+  final String excerptId;
+  final String excerptKind;
+  final int start;
+  final int end;
+  final String snippet;
 }
 
 /// PRD relasi-lemma: kelompok lema bermakna sama/berdekatan.

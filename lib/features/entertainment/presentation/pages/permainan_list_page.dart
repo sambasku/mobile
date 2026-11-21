@@ -25,12 +25,14 @@ class _Permainan {
   final String? coverAsset;
 }
 
+/// Pantun sudah pindah ke kategori Eksplorasi sendiri.
+/// Game harian (Petakate) menyusul - tampil sebagai segera.
 const _items = <_Permainan>[
   _Permainan(
-    id: 'pantun',
-    icon: FLucideIcons.feather,
-    path: '/entertainment/pantun',
-    coverAsset: 'assets/images/explore_covers/pantun.webp',
+    id: 'petakate',
+    icon: FLucideIcons.grid2x2,
+    path: null,
+    coverAsset: 'assets/images/explore_covers/permainan.webp',
   ),
 ];
 
@@ -41,7 +43,10 @@ const _kCoverSize = 64.0;
   AppLocalizations l10n,
   String id,
 ) => switch (id) {
-  'pantun' => (title: l10n.pantunTitle, subtitle: l10n.pantunListSubtitle),
+  'petakate' => (
+    title: l10n.petakateTitle,
+    subtitle: l10n.petakateListSubtitle,
+  ),
   _ => (title: id, subtitle: ''),
 };
 
@@ -64,19 +69,65 @@ class PermainanListPage extends StatelessWidget {
           ),
         ],
       ),
-      child: ListView.builder(
-        // Tanpa top: FHeader sudah SafeArea (sama ensiklopedia).
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.paddingOf(context).bottom,
+      child: _items.isEmpty
+          ? _PermainanEmpty(l10n: l10n)
+          : ListView.builder(
+              // Tanpa top: FHeader sudah SafeArea (sama ensiklopedia).
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.paddingOf(context).bottom,
+              ),
+              itemCount: _items.length,
+              itemBuilder: (context, i) {
+                final item = _items[i];
+                return _PermainanListTile(
+                  item: item,
+                  onTap: item.path == null
+                      ? null
+                      : () => context.push(item.path!),
+                );
+              },
+            ),
+    );
+  }
+}
+
+class _PermainanEmpty extends StatelessWidget {
+  const _PermainanEmpty({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              FLucideIcons.gamepad2,
+              size: 40,
+              color: theme.colors.mutedForeground,
+            ),
+            const Gap(12),
+            Text(
+              l10n.permainanEmptyTitle,
+              textAlign: TextAlign.center,
+              style: theme.typography.body.lg.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Gap(8),
+            Text(
+              l10n.permainanEmptySubtitle,
+              textAlign: TextAlign.center,
+              style: theme.typography.body.sm.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          ],
         ),
-        itemCount: _items.length,
-        itemBuilder: (context, i) {
-          final item = _items[i];
-          return _PermainanListTile(
-            item: item,
-            onTap: item.path == null ? null : () => context.push(item.path!),
-          );
-        },
       ),
     );
   }

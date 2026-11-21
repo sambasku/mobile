@@ -11,6 +11,7 @@ Future<String?> showWordTypePickerSheet(
 }) {
   return showModalBottomSheet<String>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) {

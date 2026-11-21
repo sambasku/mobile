@@ -77,6 +77,18 @@ class _FakeDeckRepo implements VoteRepository {
   }
 
   @override
+  Future<Either<VoteFailure, VoteDeckPage>> getCheckDeck({
+    int limit = 20,
+    String? cursor,
+    String? q,
+    bool randomize = false,
+  }) async {
+    return Either.right(
+      VoteDeckPage(items: List.of(deckItems), hasMore: false),
+    );
+  }
+
+  @override
   Future<Either<VoteFailure, Unit>> skipMeaning(String meaningId) async {
     skipped.add(meaningId);
     return Either.right(unit);
@@ -278,5 +290,28 @@ void main() {
 
     final state = container.read(voteDeckControllerProvider).value!;
     expect(state.items.map((i) => i.id), ['b', 'c', 'a']);
+  });
+
+  test('patchPronunciation isi semua kartu lemma yang sama (#274)', () async {
+    // Dua makna satu kata + satu lemma lain.
+    final m1 = _item('m1').copyWith(wordId: 'word-same', lemma: 'sama');
+    final m2 = _item('m2').copyWith(wordId: 'word-same', lemma: 'sama');
+    final other = _item('other');
+    repo.deckItems = [m1, m2, other];
+
+    await ready();
+    container.read(voteDeckControllerProvider.notifier).patchPronunciation(
+          'word-same',
+          pronunciationValue: '/sa.ma/',
+          hasAudio: true,
+        );
+
+    final state = container.read(voteDeckControllerProvider).value!;
+    expect(state.items[0].pronunciationValue, '/sa.ma/');
+    expect(state.items[0].hasAudio, isTrue);
+    expect(state.items[1].pronunciationValue, '/sa.ma/');
+    expect(state.items[1].hasAudio, isTrue);
+    expect(state.items[2].pronunciationValue, isNull);
+    expect(state.items[2].hasAudio, isFalse);
   });
 }

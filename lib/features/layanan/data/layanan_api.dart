@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import '../../../core/i18n/l10n.dart';
+import '../../../core/models/public_author_ref.dart';
 import '../domain/layanan.dart';
 
 class LayananException implements Exception {
@@ -20,14 +21,21 @@ class LayananApi {
 
   final Dio _dio;
 
-  Future<List<LayananEntry>> list({String? regionId, String? category}) async {
-    final params = <String, dynamic>{};
-    if (regionId != null && regionId.isNotEmpty) {
-      params['region_id'] = regionId;
-    }
-    if (category != null && category.isNotEmpty) {
-      params['category'] = category;
-    }
+Future<List<LayananEntry>> list({
+  String? regionId,
+  String? category,
+  String? q,
+}) async {
+  final params = <String, dynamic>{};
+  if (regionId != null && regionId.isNotEmpty) {
+    params['region_id'] = regionId;
+  }
+  if (category != null && category.isNotEmpty) {
+    params['category'] = category;
+  }
+  if (q != null && q.trim().isNotEmpty) {
+    params['q'] = q.trim();
+  }
     final res = await _dio.get<dynamic>(
       '/api/v1/layanan',
       queryParameters: params.isEmpty ? null : params,
@@ -134,10 +142,11 @@ class LayananApi {
       regionId: '${raw['region_id']}',
       regionName: raw['region_name'] as String?,
       regionSlug: raw['region_slug'] as String?,
-      villageName: raw['village_name'] as String?,
-      note: raw['note'] as String?,
-      updatedAt: updated.toLocal(),
-    );
+villageName: raw['village_name'] as String?,
+note: raw['note'] as String?,
+author: PublicAuthorRef.fromJson(raw['author']),
+updatedAt: updated.toLocal(),
+);
   }
 
   List<LayananPhone> _phones(Object? raw) {

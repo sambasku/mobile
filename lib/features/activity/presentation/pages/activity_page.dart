@@ -5,21 +5,18 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/router/app_router.dart';
-import '../../../../core/services/analytics_service.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
-import '../../../../core/utils/tabfreeze_log.dart';
 import '../../../search_miss/search_miss_router.dart';
-import '../../../discussion/discussion_router.dart';
+import '../../../vote/periksa_kata_router.dart';
 import '../../../vote/presentation/providers/vote_deck_providers.dart';
-import '../../../vote/presentation/widgets/vote_deck_pronunciation.dart';
 import '../../../vote/presentation/widgets/vote_deck_section.dart';
 import '../providers/contribution_guide_providers.dart';
 import '../widgets/contribution_guide_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Tab KONTRIBUSI: menu usul + deck nilai kata.
+/// Tab KONTRIBUSI: baris aksi pola Home (`_HomeActionChips`) + deck nilai kata.
 ///
 /// Deck sengaja **di luar** scroll view supaya swipe-atas (lewati) tidak
 /// bentrok dengan `CustomScrollView` / pull-to-refresh.
@@ -33,6 +30,9 @@ class ActivityPage extends ConsumerStatefulWidget {
 class _ActivityPageState extends ConsumerState<ActivityPage> {
   bool _guideChecked = false;
 
+  /// Sama Home: kotak 48 1:1 + gap 6 + slot label 28.
+  static const _hubBlock = 8 + _ContributeHubChips.height + 8;
+
   Future<void> _refresh() async {
     await Future.wait([
       ref.read(voteDeckControllerProvider.notifier).refresh(),
@@ -42,8 +42,6 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
-
     // Guide sekali di kunjungan pertama: cek unread pasca frame pertama.
     if (!_guideChecked) {
       _guideChecked = true;
@@ -79,15 +77,16 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const Gap(8),
-                      // Deck mengisi sisa viewport minus menu kontribusi
-                      // (perilaku lama Expanded), bukan tinggi hardcoded.
+                      const _ContributeHubChips(),
+                      const Gap(8),
+                      // Deck mengisi sisa viewport minus baris aksi hub.
                       SizedBox(
-                        height: constraints.maxHeight - 64,
+                        height: (constraints.maxHeight - _hubBlock).clamp(
+                          200.0,
+                          double.infinity,
+                        ),
                         child: _VoteDeckHost(),
                       ),
-                      // Di bawah action bar deck: dekat jempol.
-                      const Gap(8),
-                      _ContributeMenu(theme: theme),
                       const Gap(8),
                     ],
                   ),
@@ -120,7 +119,119 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
   }
 }
 
-/// Saat overlay root (search-miss / ruang diskusi / …) menutupi shell,
+/// Satu baris tile aksi Kontribusi - styling identik Home (`_HomeActionChips`):
+/// kotak 1:1 48px, border, ikon 18, label 10px, scroll horizontal Gap(8).
+/// Tambah item di list di bawah; baris otomatis scroll bila menu banyak.
+class _ContributeHubChips extends StatelessWidget {
+  const _ContributeHubChips();
+
+  static const double _tileSize = 48;
+  static const double _labelSlot = 28;
+  static const double height = _tileSize + 6 + _labelSlot;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final items = <_ContributeHubChip>[
+      _ContributeHubChip(
+        icon: FLucideIcons.searchX,
+        label: l10n.feedContributeSearchMiss,
+        onPress: () => context.push(SearchMissRouter.list.path),
+      ),
+      _ContributeHubChip(
+        icon: FLucideIcons.clipboardCheck,
+        label: l10n.feedContributePeriksaKata,
+        onPress: () => context.push(PeriksaKataRouter.check.path),
+      ),
+    ];
+
+    // Shell tab sudah Padding horizontal 12 - jangan dobel (Home pad di dalam
+    // ListView karena carousel full-bleed).
+    return SizedBox(
+      height: height,
+      child: ListView.separated(
+        key: const ValueKey('contribute_hub_chips'),
+        scrollDirection: Axis.horizontal,
+        itemCount: items.length,
+        separatorBuilder: (_, _) => const Gap(8),
+        itemBuilder: (context, i) => _ContributeHubTile(item: items[i]),
+      ),
+    );
+  }
+}
+
+class _ContributeHubChip {
+  const _ContributeHubChip({
+    required this.icon,
+    required this.label,
+    required this.onPress,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onPress;
+}
+
+class _ContributeHubTile extends StatelessWidget {
+  const _ContributeHubTile({required this.item});
+
+  final _ContributeHubChip item;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    const size = _ContributeHubChips._tileSize;
+    return Semantics(
+      button: true,
+      label: item.label,
+      child: FTappable(
+        onPress: item.onPress,
+        // Lebar = ukuran kotak: jarak antar kotak = separator saja (8px).
+        child: SizedBox(
+          width: size,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: size,
+                height: size,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: theme.colors.secondary,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: theme.colors.border),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      item.icon,
+                      size: 18,
+                      color: theme.colors.foreground,
+                    ),
+                  ),
+                ),
+              ),
+              const Gap(6),
+              Text(
+                item.label,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.typography.body.xs.copyWith(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  height: 1.1,
+                  color: theme.colors.foreground,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Saat overlay root (search-miss / periksa-kata / …) menutupi shell,
 /// jangan paint `VoteDeckSection` (swipe + gesture). Stub murah dipakai
 /// selama transisi pop; state deck tetap di `voteDeckControllerProvider`
 /// (keepAlive).
@@ -171,135 +282,6 @@ class _VoteDeckStub extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-/// Satu tombol setinggi pill; isi menu (label lengkap) ada di bottom sheet
-/// supaya tinggi deck tidak berkurang.
-class _ContributeMenu extends ConsumerWidget {
-  const _ContributeMenu({required this.theme});
-
-  final FThemeData theme;
-
-  /// Result khusus #260: bukan path route - buka sheet pelafalan setelah menu tutup.
-  static const _pronWrite = 'pron:write';
-  static const _pronRecord = 'pron:record';
-
-  Future<void> _open(BuildContext context, WidgetRef ref) {
-    tfLog('sheet open');
-    // Single-flight: tile masih bisa di-tap saat animasi pop (~250ms);
-    // tanpa ini tap kedua mempop route yang baru saja di-push.
-    var handled = false;
-    return showModalBottomSheet<String>(
-      context: context,
-      useSafeArea: true,
-      // Navigator tab ada di dalam padding shell (childPad): tanpa root,
-      // barrier + sheet terpotong dan sisi kiri/kanan tidak tertutup.
-      useRootNavigator: true,
-      backgroundColor: theme.colors.background,
-      clipBehavior: Clip.antiAlias,
-      builder: (sheetContext) {
-        // Jangan push dari dalam sheet: pop + push di navigator root yang
-        // sama saling balapan (route baru bisa terpop / barrier desync =
-        // semua tap tertelan). Path jadi pop result; push jalan setelah
-        // sheet benar-benar tertutup.
-        void go(String path) {
-          if (handled) return;
-          handled = true;
-          tfLog('sheet pick $path');
-          Navigator.of(sheetContext).pop(path);
-        }
-
-        final l10n = AppLocalizations.of(sheetContext);
-        FTile tile(
-          IconData icon,
-          String title,
-          String subtitle,
-          VoidCallback onPress,
-        ) => FTile(
-          prefix: Icon(icon, color: theme.colors.primary),
-          title: Text(title),
-          subtitle: Text(subtitle),
-          suffix: const Icon(FLucideIcons.chevronRight),
-          onPress: onPress,
-        );
-
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-            // 5 tile + label bisa overflow tinggi sheet di layar pendek /
-            // test viewport - scroll agar tidak RenderFlex overflow.
-            child: SingleChildScrollView(
-              child: FTileGroup(
-                label: Text(l10n.feedContributeMenu),
-                children: [
-                  tile(
-                    FLucideIcons.plusCircle,
-                    l10n.feedContributeNewWord,
-                    l10n.feedContributeNewWordSubtitle,
-                    () {
-                      AnalyticsService.instance.log(
-                        AnalyticsEvents.contributeStart,
-                        params: {'from': 'blank'},
-                      );
-                      go('/contribute');
-                    },
-                  ),
-                  tile(
-                    FLucideIcons.type,
-                    l10n.feedContributeWritePronunciation,
-                    l10n.feedContributeWritePronunciationSubtitle,
-                    () => go(_pronWrite),
-                  ),
-                  tile(
-                    FLucideIcons.mic,
-                    l10n.feedContributeRecordPronunciation,
-                    l10n.feedContributeRecordPronunciationSubtitle,
-                    () => go(_pronRecord),
-                  ),
-                  tile(
-                    FLucideIcons.search,
-                    l10n.feedContributeSearchMiss,
-                    l10n.feedContributeSearchMissSubtitle,
-                    () => go(SearchMissRouter.list.path),
-                  ),
-                  tile(
-                    FLucideIcons.messagesSquare,
-                    l10n.feedContributeDiscussion,
-                    l10n.feedContributeDiscussionSubtitle,
-                    () => go(DiscussionRouter.feed.path),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    ).then((path) async {
-      tfLog('sheet dismissed path=$path');
-      if (path == null || !context.mounted) return;
-      if (path == _pronWrite || path == _pronRecord) {
-        await openVoteDeckPronunciationOrComplete(
-          context: context,
-          ref: ref,
-          record: path == _pronRecord,
-        );
-        return;
-      }
-      if (context.mounted) context.push(path);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return FButton(
-      variant: FButtonVariant.outline,
-      size: FButtonSizeVariant.sm,
-      onPress: () => _open(context, ref),
-      prefix: Icon(FLucideIcons.layoutGrid, color: theme.colors.primary),
-      suffix: const Icon(FLucideIcons.chevronUp),
-      child: Text(AppLocalizations.of(context).feedContributeMenu),
     );
   }
 }

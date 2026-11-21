@@ -64,6 +64,15 @@ class _SlowRepo implements VoteRepository {
       Either.right(const VoteDeckPage(items: [], hasMore: false));
 
   @override
+  Future<Either<VoteFailure, VoteDeckPage>> getCheckDeck({
+    int limit = 20,
+    String? cursor,
+    String? q,
+    bool randomize = false,
+  }) async =>
+      Either.right(const VoteDeckPage(items: [], hasMore: false));
+
+  @override
   Future<Either<VoteFailure, Unit>> skipMeaning(String meaningId) async =>
       Either.right(unit);
 

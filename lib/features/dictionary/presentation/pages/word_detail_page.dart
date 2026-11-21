@@ -23,6 +23,7 @@ import '../../../bookmark/presentation/widgets/bookmark_button.dart';
 import '../../../comment/presentation/widgets/word_comments_section.dart';
 import '../../../comment/presentation/providers/comment_providers.dart';
 import '../../../jinye/presentation/widgets/jinye_used_in_word_section.dart';
+import '../../../karya/presentation/widgets/karya_used_in_word_section.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/in_app_review_service.dart';
 import '../../../../core/utils/format_datetime.dart';
@@ -30,12 +31,15 @@ import '../../../../core/widgets/image_preview.dart';
 import '../../../../core/widgets/pending_review_badge_icon.dart';
 import '../../../../core/widgets/verified_badge_icon.dart';
 import '../../../../core/widgets/word_approved_badge_icon.dart';
+import '../../../../shared/widgets/content_related_section.dart';
 import '../../../../shared/widgets/image_credit.dart';
 import '../../../../shared/widgets/word_image_view.dart';
 import '../../../vote/presentation/providers/meaning_vote_providers.dart';
 import '../../../vote/presentation/widgets/meaning_vote_row.dart';
 import '../../domain/entities/word_detail.dart';
+import '../../domain/entities/meaning_visibility.dart';
 import '../../domain/failures/dictionary_failure.dart';
+import '../../data/providers/dictionary_data_providers.dart';
 import '../../domain/providers/dictionary_domain_providers.dart';
 import '../providers/word_detail_providers.dart';
 import '../../../../shared/utils/public_account_name.dart';
@@ -43,8 +47,11 @@ import '../../../user_profile/user_profile_router.dart';
 import '../../../share/data/share_background_repository.dart';
 import '../../../share/domain/word_public_url.dart';
 import '../../../share/presentation/share_sheet.dart';
+import '../../../../core/network/connectivity_provider.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../application/word_clipboard.dart';
+import '../../data/dataset/lemma_data_source_kind.dart';
+import '../../data/dataset/lemma_dataset_providers.dart';
 import '../widgets/audio_player_tile.dart';
 import '../widgets/pronunciation_section.dart';
 import '../widgets/written_pronunciation_line.dart';
@@ -52,14 +59,40 @@ import '../../../word_report/data/word_report_providers.dart';
 import '../../../word_report/presentation/report_word_sheet.dart';
 import '../../data/meaning_moderation_repository.dart';
 import '../../../contribution/presentation/utils/invalidate_word_detail.dart';
+import '../../../suggest_edit/domain/suggest_category.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 
+bool _lemmaUsesLocalCorpus(WidgetRef ref) {
+  final offline = ref.watch(isOfflineProvider);
+  final source = ref.watch(lemmaDataSourceKindControllerProvider);
+  return offline || source == LemmaDataSourceKind.local;
+}
+
+Future<void> _recordWordView(WidgetRef ref, String wordId) async {
+  try {
+    await ref.read(dictionaryRepositoryProvider).recordView(wordId);
+  } catch (_) {
+    // best-effort
+  }
+}
+
 /// Halaman detail kata publik - GET /api/v1/words/:id.
 class WordDetailPage extends HookConsumerWidget {
-  const WordDetailPage({super.key, required this.wordId});
+  const WordDetailPage({
+    super.key,
+    required this.wordId,
+    this.initialMeaningId,
+    this.includeUnverified = false,
+  });
 
   final String wordId;
+
+  /// Dari Periksa Kata (`?meaning=`): makna fokus boleh menunggu pengecekan.
+  final String? initialMeaningId;
+
+  /// Dari feed usulan / lemma-makna baru (`?include_unverified=1`).
+  final bool includeUnverified;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,8 +101,32 @@ class WordDetailPage extends HookConsumerWidget {
       return null;
     }, [wordId]);
 
-    final async = ref.watch(wordDetailProvider(wordId));
+    final focusMeaningId = initialMeaningId?.trim();
+    final hasFocus =
+        focusMeaningId != null && focusMeaningId.isNotEmpty;
+    final needsCommunity = hasFocus || includeUnverified;
+    final async = needsCommunity
+        ? ref.watch(
+            wordDetailCommunityProvider((
+              id: wordId,
+              meaningId: hasFocus ? focusMeaningId : null,
+              includeUnverified: includeUnverified,
+            )),
+          )
+        : ref.watch(wordDetailProvider(wordId));
     final theme = context.theme;
+    final recordedView = useRef<String?>(null);
+
+    // Metrik popularitas (docs/api/59-api-word-views.md) - sekali saat
+    // detail siap; best-effort, gagal jaringan tidak boleh ganggu tampilan.
+    useEffect(() {
+      final detail = async.asData?.value;
+      if (detail == null) return null;
+      if (recordedView.value == detail.id) return null;
+      recordedView.value = detail.id;
+      unawaited(_recordWordView(ref, detail.id));
+      return null;
+    }, [async.asData?.value.id]);
 
     // Deep link lemma → ganti URL ke ULID kanonis supaya history/bookmark
     // dan navigasi internal selalu pakai id.
@@ -80,7 +137,15 @@ class WordDetailPage extends HookConsumerWidget {
       if (detail.id == wordId) return null;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted) return;
-        context.replace('/words/${detail.id}');
+        final params = <String, String>{
+          if (focusMeaningId != null && focusMeaningId.isNotEmpty)
+            'meaning': focusMeaningId,
+          if (includeUnverified) 'include_unverified': '1',
+        };
+        final q = params.isEmpty
+            ? ''
+            : '?${Uri(queryParameters: params).query}';
+        context.replace('/words/${detail.id}$q');
       });
       return null;
     }, [async, wordId]);
@@ -108,7 +173,8 @@ class WordDetailPage extends HookConsumerWidget {
               semanticsLabel: AppLocalizations.of(context).dictChangeHistory,
               onPress: () => context.push('/words/$resolvedId/history'),
             ),
-            _WordBookmarkHeaderAction(wordId: resolvedId),
+            if (!_lemmaUsesLocalCorpus(ref))
+              _WordBookmarkHeaderAction(wordId: resolvedId),
             if (async.asData?.value case final detail?)
               FHeaderAction(
                 icon: const Icon(FLucideIcons.ellipsis),
@@ -171,7 +237,23 @@ class WordDetailPage extends HookConsumerWidget {
               ),
             );
           },
-          data: (detail) => _DetailBody(detail: detail, wordId: detail.id),
+          data: (detail) {
+            final role = ref.watch(authStatusProvider).value?.role;
+            final visible = visibleMeaningsForPublicDetail(
+              detail.meanings,
+              viewerIsVerifier: isVerifierRole(role),
+              focusMeaningId: focusMeaningId,
+              includeUnverified: includeUnverified,
+            );
+            final shown = detail.meanings.length == visible.length
+                ? detail
+                : detail.withMeanings(visible);
+            return _DetailBody(
+              detail: shown,
+              wordId: detail.id,
+              focusMeaningId: focusMeaningId,
+            );
+          },
         ),
       ),
     );
@@ -326,32 +408,43 @@ Future<void> _refreshDetailAfterDecision(WidgetRef ref, String wordId) async {
   await ref.read(wordDetailProvider(wordId).future);
 }
 
-/// Ikon menunggu pengecekan. Untuk verifikator, aksi Tinjau ada di bottom
-/// sheet yang sama polanya dengan [showVerifierAttributionSheet].
-class _PendingStatusBadge extends StatelessWidget {
-  const _PendingStatusBadge({
-    required this.offerReview,
-    required this.onReview,
-    required this.onApprove,
-    required this.onReject,
+/// Centang / menunggu di tiap baris makna (tanpa label teks di header lemma).
+class _MeaningTrustBadge extends StatelessWidget {
+  const _MeaningTrustBadge({
+    required this.meaning,
+    this.offerReview = false,
+    this.onReview,
+    this.onApprove,
+    this.onReject,
   });
 
+  final WordMeaning meaning;
   final bool offerReview;
-  final VoidCallback onReview;
-  final VoidCallback onApprove;
-  final VoidCallback onReject;
+  final VoidCallback? onReview;
+  final VoidCallback? onApprove;
+  final VoidCallback? onReject;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    if (meaning.isVerified) {
+      return Semantics(
+        label: l10n.dictMeaningVerified,
+        child: const WordApprovedBadgeIcon(size: 16),
+      );
+    }
     return Semantics(
       button: true,
-      label: AppLocalizations.of(context).dictPendingCheck,
+      label: l10n.dictMeaningPendingCheck,
       child: GestureDetector(
         onTap: () {
-          if (offerReview) {
+          if (offerReview &&
+              onReview != null &&
+              onApprove != null &&
+              onReject != null) {
             showPendingReviewSheet(
               context,
-              onReview: onReview,
+              onReview: onReview!,
               onApprove: onApprove,
               onReject: onReject,
             );
@@ -359,7 +452,7 @@ class _PendingStatusBadge extends StatelessWidget {
           }
           showPendingReviewInfo(context);
         },
-        child: const PendingReviewBadgeIcon(),
+        child: const PendingReviewBadgeIcon(size: 16),
       ),
     );
   }
@@ -373,6 +466,7 @@ void showPendingReviewSheet(
 }) {
   showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     builder: (sheetContext) {
       final theme = sheetContext.theme;
@@ -455,10 +549,15 @@ void showPendingReviewSheet(
 }
 
 class _DetailBody extends HookConsumerWidget {
-  const _DetailBody({required this.detail, required this.wordId});
+  const _DetailBody({
+    required this.detail,
+    required this.wordId,
+    this.focusMeaningId,
+  });
 
   final WordDetail detail;
   final String wordId;
+  final String? focusMeaningId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -582,6 +681,16 @@ class _DetailBody extends HookConsumerWidget {
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
               children: [
+                if (_lemmaUsesLocalCorpus(ref))
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                    child: FBadge(
+                      variant: FBadgeVariant.destructive,
+                      child: Text(
+                        AppLocalizations.of(context).lemmaLocalModeChip,
+                      ),
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                   child: Column(
@@ -594,60 +703,12 @@ class _DetailBody extends HookConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        detail.lemma,
-                                        style: theme.typography.body.xl
-                                            .copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              height: 1.15,
-                                            ),
-                                      ),
-                                    ),
-                                    if (detail.isVerified)
-                                      Semantics(
-                                        button: true,
-                                        label: AppLocalizations.of(
-                                          context,
-                                        ).dictSeeVerifiers,
-                                        child: GestureDetector(
-                                          onTap: () =>
-                                              showVerifierAttributionSheet(
-                                                context,
-                                                detail,
-                                              ),
-                                          child: const WordApprovedBadgeIcon(),
-                                        ),
-                                      )
-                                    else
-                                      _PendingStatusBadge(
-                                        offerReview:
-                                            detail.status == 'published' &&
-                                            canReviewQueue(
-                                              ref
-                                                  .watch(authStatusProvider)
-                                                  .value
-                                                  ?.role,
-                                            ),
-                                        onReview: () => _openWordReview(
-                                          context,
-                                          ref,
-                                          wordId,
-                                        ),
-                                        onApprove: () => _approveInPlace(
-                                          context,
-                                          ref,
-                                          wordId,
-                                        ),
-                                        onReject: () => _rejectInPlace(
-                                          context,
-                                          ref,
-                                          wordId,
-                                        ),
-                                      ),
-                                  ],
+                                Text(
+                                  detail.lemma,
+                                  style: theme.typography.body.xl.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.15,
+                                  ),
                                 ),
                                 const Gap(4),
                                 WrittenPronunciationLine(
@@ -864,7 +925,25 @@ class _DetailBody extends HookConsumerWidget {
                         AppLocalizations.of(context),
                       ),
 
-                      JinyeUsedInWordSection(wordId: wordId),
+                      ContentRelatedSection(
+                        items: detail.related,
+                        title: AppLocalizations.of(
+                          context,
+                        ).contentRelatedArticlesSection,
+                        filterKinds: const {'article'},
+                      ),
+                      ContentRelatedSection(
+                        items: detail.related
+                            .where((e) => e.kind != 'article')
+                            .toList(),
+                      ),
+
+                      KaryaUsedInWordSection(
+                        appearances: detail.appearsInKarya,
+                      ),
+
+                      if (!_lemmaUsesLocalCorpus(ref))
+                        JinyeUsedInWordSection(wordId: wordId),
                     ],
                   ),
                 ),
@@ -872,7 +951,18 @@ class _DetailBody extends HookConsumerWidget {
             ),
           ),
         ),
-        WordCommentEntryBar(wordId: wordId),
+        if (!_lemmaUsesLocalCorpus(ref))
+          WordCommentEntryBar(wordId: wordId)
+        else
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: Text(
+              AppLocalizations.of(context).lemmaSocialNeedsInternet,
+              style: theme.typography.body.sm.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -1089,8 +1179,10 @@ class _WordBookmarkHeaderAction extends ConsumerWidget {
 Future<void> _openSuggestEdit(
   BuildContext context,
   WidgetRef ref,
-  String wordId,
-) async {
+  String wordId, {
+  String? meaningId,
+  String? category,
+}) async {
   final auth = await ref.read(authStatusProvider.future);
   if (!context.mounted) return;
   if (!auth.isAuth) {
@@ -1101,7 +1193,14 @@ Future<void> _openSuggestEdit(
     context.push('/login');
     return;
   }
-  await context.push('/suggest-edit/$wordId');
+  final q = <String>[
+    if (category != null && category.isNotEmpty) 'category=$category',
+    if (meaningId != null && meaningId.isNotEmpty) 'meaning=$meaningId',
+  ];
+  final path = q.isEmpty
+      ? '/suggest-edit/$wordId'
+      : '/suggest-edit/$wordId?${q.join('&')}';
+  await context.push(path);
   if (context.mounted) {
     ref.invalidate(wordDetailProvider(wordId));
   }
@@ -1230,10 +1329,12 @@ Future<void> _showMeaningActionsSheet(
   required String lemma,
   required WordMeaning meaning,
   required int meaningCount,
+  required bool allowSuggest,
 }) async {
   final l10n = AppLocalizations.of(context);
   final role = ref.read(authStatusProvider).value?.role;
   final canDelete = canReviewQueue(role);
+  final muted = context.theme.colors.mutedForeground;
   final action = await showModalBottomSheet<String>(
     context: context,
     useRootNavigator: true,
@@ -1255,6 +1356,18 @@ Future<void> _showMeaningActionsSheet(
               FTileGroup(
                 label: Text(l10n.dictMeaningActionsTitle),
                 children: [
+                  if (allowSuggest)
+                    FTile(
+                      prefix: const Icon(FLucideIcons.penLine),
+                      title: Text(l10n.dictSuggestMeaning),
+                      subtitle: Text(l10n.dictSuggestMeaningSubtitle),
+                      suffix: Icon(
+                        FLucideIcons.chevronRight,
+                        size: 16,
+                        color: muted,
+                      ),
+                      onPress: () => go('suggest'),
+                    ),
                   FTile(
                     prefix: const Icon(FLucideIcons.copy),
                     title: Text(l10n.dictCopyMeaning),
@@ -1287,6 +1400,14 @@ Future<void> _showMeaningActionsSheet(
   );
   if (!context.mounted || action == null) return;
   switch (action) {
+    case 'suggest':
+      await _openSuggestEdit(
+        context,
+        ref,
+        wordId,
+        meaningId: meaning.id,
+        category: SuggestCategory.changeMeaning.code,
+      );
     case 'copy':
       await copyWordMeaningToClipboard(
         context,
@@ -1344,6 +1465,7 @@ Future<void> _showWordActionsSheet(
 }) {
   final l10n = AppLocalizations.of(context);
   final muted = context.theme.colors.mutedForeground;
+  final localCorpus = _lemmaUsesLocalCorpus(ref);
   return showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
@@ -1399,20 +1521,21 @@ Future<void> _showWordActionsSheet(
                       openWordShareSheet(context, ref, detail);
                     },
                   ),
-                  FTile(
-                    prefix: const Icon(FLucideIcons.penLine),
-                    title: Text(l10n.dictActionSuggest),
-                    subtitle: Text(l10n.dictSuggestEditSubtitle),
-                    suffix: Icon(
-                      FLucideIcons.chevronRight,
-                      size: 16,
-                      color: muted,
+                  if (!localCorpus)
+                    FTile(
+                      prefix: const Icon(FLucideIcons.penLine),
+                      title: Text(l10n.dictActionSuggest),
+                      subtitle: Text(l10n.dictSuggestEditSubtitle),
+                      suffix: Icon(
+                        FLucideIcons.chevronRight,
+                        size: 16,
+                        color: muted,
+                      ),
+                      onPress: () {
+                        Navigator.pop(sheetContext);
+                        _openSuggestEdit(context, ref, wordId);
+                      },
                     ),
-                    onPress: () {
-                      Navigator.pop(sheetContext);
-                      _openSuggestEdit(context, ref, wordId);
-                    },
-                  ),
                   FTile(
                     prefix: const Icon(FLucideIcons.flag),
                     title: Text(l10n.dictReportEntry),
@@ -1519,135 +1642,155 @@ class _MeaningBlock extends ConsumerWidget {
             ),
           )
         : null;
+    // Vote + progress di luar Row (bukan di Expanded sebelah ⋯) supaya
+    // track progress full width kartu makna.
+    // Trust badge + ⋯ sejajar baris label kelas kata (bukan di atas blok
+    // definisi yang membuat ikon terasa melayang).
+    final allowSuggest = !_lemmaUsesLocalCorpus(ref);
+    final labelStyle = theme.typography.body.sm.copyWith(
+      color: theme.colors.mutedForeground,
+      fontWeight: FontWeight.w500,
+    );
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (showIndex)
-            SizedBox(
-              width: 22,
-              child: Text(
-                '$index.',
-                style: theme.typography.body.sm.copyWith(
-                  fontWeight: FontWeight.w700,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (showIndex)
+                SizedBox(
+                  width: 22,
+                  child: Text(
+                    '$index.',
+                    style: theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                ),
+              Expanded(
+                child: classLabel != null
+                    ? Text(classLabel, style: labelStyle)
+                    : const SizedBox.shrink(),
+              ),
+              const Gap(8),
+              _MeaningTrustBadge(
+                meaning: meaning,
+                offerReview: !meaning.isVerified &&
+                    canReviewQueue(
+                      ref.watch(authStatusProvider).value?.role,
+                    ),
+                onReview: () => _openWordReview(context, ref, wordId),
+                onApprove: () => _approveInPlace(context, ref, wordId),
+                onReject: () => _rejectInPlace(context, ref, wordId),
+              ),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                tooltip: l10n.dictMeaningActionsTitle,
+                onPressed: () => _showMeaningActionsSheet(
+                  context,
+                  ref,
+                  wordId: wordId,
+                  lemma: lemma,
+                  meaning: meaning,
+                  meaningCount: meaningCount,
+                  allowSuggest: allowSuggest,
+                ),
+                icon: Icon(
+                  FLucideIcons.ellipsisVertical,
+                  size: 16,
                   color: theme.colors.mutedForeground,
                 ),
               ),
+            ],
+          ),
+          if (definition != null && definition.isNotEmpty) ...[
+            const Gap(4),
+            Text(
+              definition,
+              style: theme.typography.body.md.copyWith(height: 1.5),
             ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (classLabel != null) ...[
-                  Text(
-                    classLabel,
-                    style: theme.typography.body.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                      fontWeight: FontWeight.w500,
-                    ),
+          ],
+          if (meaning.translations.isNotEmpty) ...[
+            const Gap(6),
+            ...meaning.translations.map(
+              (t) => Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: Text(
+                  '→ ${t.text}',
+                  style: theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
-                  const Gap(4),
-                ],
-                if (definition != null && definition.isNotEmpty)
-                  Text(
-                    definition,
-                    style: theme.typography.body.md.copyWith(height: 1.5),
-                  ),
-                if (meaning.translations.isNotEmpty) ...[
-                  const Gap(6),
-                  ...meaning.translations.map(
-                    (t) => Padding(
-                      padding: const EdgeInsets.only(bottom: 2),
-                      child: Text(
-                        '→ ${t.text}',
-                        style: theme.typography.body.sm.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                ),
+              ),
+            ),
+          ],
+          if (meaning.examples.isNotEmpty) ...[
+            const Gap(8),
+            ...meaning.examples.map((e) {
+              final translation = e.targetSentence?.trim();
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      e.sourceSentence,
+                      style: theme.typography.body.sm.copyWith(
+                        fontStyle: FontStyle.italic,
+                        height: 1.35,
                       ),
                     ),
-                  ),
-                ],
-                if (meaning.examples.isNotEmpty) ...[
-                  const Gap(8),
-                  ...meaning.examples.map((e) {
-                    final translation = e.targetSentence?.trim();
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            e.sourceSentence,
-                            style: theme.typography.body.sm.copyWith(
-                              fontStyle: FontStyle.italic,
-                              height: 1.35,
-                            ),
-                          ),
-                          if (translation != null && translation.isNotEmpty)
-                            Text(
-                              translation,
-                              style: theme.typography.body.sm.copyWith(
-                                color: theme.colors.mutedForeground,
-                                height: 1.35,
-                              ),
-                            ),
-                          const Gap(6),
-                          PronunciationSection(
-                            wordId: wordId,
-                            languageId: languageId,
-                            audios: e.audios,
-                            exampleId: e.id,
-                            compact: true,
-                            sectionLabel: l10n.dictExampleAudio,
-                            spokenText: e.sourceSentence,
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                ],
-                if (byLabel != null) ...[
-                  const Gap(8),
-                  Semantics(
-                    button: true,
-                    label: byLabel,
-                    child: FTappable(
-                      onPress: () =>
-                          UserProfileRouter.open(context, username!),
-                      child: Text(
-                        byLabel,
+                    if (translation != null && translation.isNotEmpty)
+                      Text(
+                        translation,
                         style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
+                          height: 1.35,
                         ),
                       ),
+                    const Gap(6),
+                    PronunciationSection(
+                      wordId: wordId,
+                      languageId: languageId,
+                      audios: e.audios,
+                      exampleId: e.id,
+                      compact: true,
+                      sectionLabel: l10n.dictExampleAudio,
+                      spokenText: e.sourceSentence,
                     ),
+                  ],
+                ),
+              );
+            }),
+          ],
+          if (byLabel != null) ...[
+            const Gap(8),
+            Semantics(
+              button: true,
+              label: byLabel,
+              child: FTappable(
+                onPress: () => UserProfileRouter.open(context, username!),
+                child: Text(
+                  byLabel,
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.mutedForeground,
                   ),
-                ],
-                const Gap(8),
-                MeaningVoteRow(meaningId: meaning.id),
-              ],
+                ),
+              ),
             ),
-          ),
-          IconButton(
-            visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            tooltip: l10n.dictMeaningActionsTitle,
-            onPressed: () => _showMeaningActionsSheet(
-              context,
-              ref,
-              wordId: wordId,
-              lemma: lemma,
-              meaning: meaning,
-              meaningCount: meaningCount,
+          ],
+          if (allowSuggest) ...[
+            const Gap(8),
+            MeaningVoteRow(
+              meaningId: meaning.id,
+              isVerified: meaning.isVerified,
             ),
-            icon: Icon(
-              FLucideIcons.ellipsisVertical,
-              size: 16,
-              color: theme.colors.mutedForeground,
-            ),
-          ),
+          ],
         ],
       ),
     );
@@ -1996,7 +2139,11 @@ class _AttributionLine extends StatelessWidget {
         child: Text.rich(
           TextSpan(
             style: textStyle,
-            children: _attributionSpans(label, showCheck: showCheck),
+            children: _attributionSpans(
+              label,
+              showCheck: showCheck,
+              style: textStyle,
+            ),
           ),
         ),
       ),
@@ -2005,17 +2152,35 @@ class _AttributionLine extends StatelessWidget {
 }
 
 /// Kalimat atribusi + centang. Menggantikan chip teks "Verifikator".
-List<InlineSpan> _attributionSpans(String label, {required bool showCheck}) {
+///
+/// Kata terakhir digabung dengan lencana dalam satu [WidgetSpan] supaya
+/// icon tidak orphan di baris sendiri saat teks wrap.
+List<InlineSpan> _attributionSpans(
+  String label, {
+  required bool showCheck,
+  TextStyle? style,
+}) {
+  if (!showCheck) return [TextSpan(text: label)];
+
+  final space = label.lastIndexOf(' ');
+  final prefix = space < 0 ? '' : label.substring(0, space + 1);
+  final tail = space < 0 ? label : label.substring(space + 1);
+
   return [
-    TextSpan(text: label),
-    if (showCheck)
-      const WidgetSpan(
-        alignment: PlaceholderAlignment.middle,
-        child: Padding(
-          padding: EdgeInsets.only(left: 4),
-          child: VerifiedBadgeIcon(size: 14),
-        ),
+    if (prefix.isNotEmpty) TextSpan(text: prefix),
+    WidgetSpan(
+      alignment: PlaceholderAlignment.middle,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(tail, style: style),
+          const Padding(
+            padding: EdgeInsets.only(left: 4),
+            child: VerifiedBadgeIcon(size: 14),
+          ),
+        ],
       ),
+    ),
   ];
 }
 
@@ -2030,6 +2195,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
 
   showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     builder: (sheetContext) {
       final theme = sheetContext.theme;
@@ -2072,6 +2238,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                           AppLocalizations.of(context),
                         )!,
                         showCheck: detail.combinedByVerifier,
+                        style: theme.typography.body.sm,
                       ),
                     ),
                   )
@@ -2090,6 +2257,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                             AppLocalizations.of(context),
                           )!,
                           showCheck: isVerifierRole(detail.createdBy!.role),
+                          style: theme.typography.body.sm,
                         ),
                       ),
                     ),
@@ -2108,6 +2276,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                             AppLocalizations.of(context),
                           )!,
                           showCheck: isVerifierRole(detail.verifiedBy!.role),
+                          style: theme.typography.body.sm,
                         ),
                       ),
                     ),

@@ -8,6 +8,7 @@ import '../../domain/entities/username_availability.dart';
 import '../../domain/providers/edit_profile_domain_providers.dart';
 import '../models/edit_profile_state.dart';
 import '../../../../core/i18n/l10n.dart';
+import '../../../onboarding/data/speaker_status_prefs.dart';
 
 part 'edit_profile_providers.g.dart';
 
@@ -29,6 +30,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
         String username,
         String displayName,
         String bio,
+        String? speakerStatus,
         String? regionId,
         String? villageId,
       })?> load() async {
@@ -52,6 +54,8 @@ class EditProfileNotifier extends _$EditProfileNotifier {
           isLoading: false,
           username: profile.username,
           usernameStatus: UsernameAvailabilityStatus.current,
+          usernameChangeAllowedAt: profile.usernameChangeAllowedAt,
+          clearUsernameChangeAllowedAt: profile.usernameChangeAllowedAt == null,
           clearErrorMessage: true,
         );
         // Sync handle ke sesi lokal (bisa stale setelah migrate slug).
@@ -62,10 +66,12 @@ class EditProfileNotifier extends _$EditProfileNotifier {
                 avatarUrl: profile.avatarUrl,
               ),
         );
+        unawaited(loadUsernameHistory());
         return (
           username: profile.username,
           displayName: profile.displayName,
           bio: profile.bio ?? '',
+          speakerStatus: profile.speakerStatus?.wire,
           regionId: profile.regionId,
           villageId: profile.villageId,
         );
@@ -73,8 +79,35 @@ class EditProfileNotifier extends _$EditProfileNotifier {
     );
   }
 
+  Future<void> loadUsernameHistory() async {
+    state = state.copyWith(isHistoryLoading: true);
+    final result = await ref.read(getUsernameHistoryUseCaseProvider).call();
+    if (!ref.mounted) return;
+    result.match(
+      (_) {
+        state = state.copyWith(
+          isHistoryLoading: false,
+          usernameHistory: const [],
+        );
+      },
+      (items) {
+        state = state.copyWith(
+          isHistoryLoading: false,
+          usernameHistory: items,
+        );
+      },
+    );
+  }
+
   /// Debounce cek format lokal + availability server.
   void onUsernameChanged(String raw) {
+    if (state.isUsernameLocked) {
+      state = state.copyWith(
+        usernameStatus: UsernameAvailabilityStatus.current,
+      );
+      return;
+    }
+
     final trimmed = raw.trim();
     final initial = state.username?.trim() ?? '';
 
@@ -120,7 +153,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
       (_) {
         // Jaringan gagal: jangan kunci submit selamanya; biarkan PATCH
         // yang jadi sumber kebenaran, tapi status tetap invalid supaya
-        // user sadar cek belum selesai bersih. Ponytail: treat as invalid.
+        // user sadar cek belum selesai bersih.
         state = state.copyWith(
           usernameStatus: UsernameAvailabilityStatus.invalid,
         );
@@ -135,6 +168,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
     required String username,
     required String displayName,
     required String bio,
+    String? speakerStatus,
     String? regionId,
     String? villageId,
   }) async {
@@ -151,6 +185,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
           username: username.trim(),
           displayName: displayName.trim(),
           bio: bio.trim().isEmpty ? null : bio.trim(),
+          speakerStatus: speakerStatus,
           regionId: regionId,
           villageId: villageId,
         );
@@ -169,6 +204,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
     }
 
     final profile = outcome.profile!;
+    await SpeakerStatusPrefs.mirrorFromServer(profile.speakerStatus);
     await ref.read(authStatusProvider.notifier).applySessionIdentity(
           username: profile.username,
           displayName: profile.displayName,
@@ -190,9 +226,12 @@ class EditProfileNotifier extends _$EditProfileNotifier {
       isSubmitting: false,
       username: profile.username,
       usernameStatus: UsernameAvailabilityStatus.current,
+      usernameChangeAllowedAt: profile.usernameChangeAllowedAt,
+      clearUsernameChangeAllowedAt: profile.usernameChangeAllowedAt == null,
       successMessage: l10n.editProfileSaveSuccess,
       clearErrorMessage: true,
     );
+    unawaited(loadUsernameHistory());
   }
 
   void clearError() {
@@ -201,5 +240,9 @@ class EditProfileNotifier extends _$EditProfileNotifier {
 }
 
 bool _isValidUsernameFormat(String value) {
-  return RegExp(r'^[a-z0-9._]{6,30}$').hasMatch(value);
+  // Selaras USERNAME_HANDLE_REGEX API: 6-30, mulai/akhir alfanumerik,
+  // tanpa separator beruntun (`..` `__` `._` `_.`). Angka saja boleh.
+  return RegExp(
+    r'^(?=.{6,30}$)(?!.*[._]{2})[a-z0-9][a-z0-9._]*[a-z0-9]$',
+  ).hasMatch(value);
 }

@@ -161,6 +161,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
     final k = _violenceByIndex.where((e) => e).length;
     final confirmed = await showModalBottomSheet<bool>(
       context: context,
+      useRootNavigator: true,
       showDragHandle: true,
       builder: (sheetContext) {
         return SafeArea(

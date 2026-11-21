@@ -14,7 +14,7 @@ class OfflineBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final offline = ref.watch(isOfflineProvider).value ?? false;
+    final offline = ref.watch(isOfflineProvider);
     final theme = context.theme;
 
     return AnimatedSize(

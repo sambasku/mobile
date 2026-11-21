@@ -12,9 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
-/// Menu kontribusi (bottom sheet di navigator root) tidak boleh balapan
-/// pop+push: tepat satu push per pilihan, tap kedua saat animasi pop
-/// diabaikan, dismiss barrier tidak mendorong apa pun.
+/// Hub Kontribusi: chip baris Home-style (Dicari warga, Periksa kata) push route.
 void main() {
   Future<List<String>> pump(WidgetTester tester) async {
     SharedPreferences.setMockInitialValues({});
@@ -42,17 +40,16 @@ void main() {
       ProviderScope(
         overrides: [
           authTokenStorageProvider.overrideWithValue(AuthTokenStorage()),
-          // Guide sudah dibaca -> sheet tidak muncul
           contributionGuideUnreadProvider.overrideWith((ref) async => false),
         ],
         child: MaterialApp.router(
           theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
           localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
           supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+          locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) =>
               FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
@@ -64,52 +61,33 @@ void main() {
     return pushed;
   }
 
-  Future<void> openSheet(WidgetTester tester) async {
-    await tester.tap(find.text('Menu kontribusi'), warnIfMissed: false);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-    expect(find.text('Usul kata baru'), findsOneWidget);
-  }
+  testWidgets('grid menampilkan Dicari warga dan Periksa kata', (tester) async {
+    await pump(tester);
 
-  testWidgets('pilih tile mendorong tepat satu route', (tester) async {
+    expect(find.text('Menu kontribusi'), findsNothing);
+    expect(find.text('Dicari warga'), findsOneWidget);
+    expect(find.text('Periksa kata'), findsOneWidget);
+  });
+
+  testWidgets('tap Dicari warga mendorong /search-misses', (tester) async {
     final pushed = await pump(tester);
-    await openSheet(tester);
 
-    await tester.tap(find.text('Usul kata baru'));
+    await tester.tap(find.text('Dicari warga'));
     await tester.pump();
     await tester.pumpAndSettle();
 
-    expect(pushed, ['/contribute']);
-    expect(find.text('target /contribute'), findsOneWidget);
+    expect(pushed, ['/search-misses']);
+    expect(find.text('target /search-misses'), findsOneWidget);
   });
 
-  testWidgets('double-tap tile saat animasi pop tetap satu push', (
-    tester,
-  ) async {
+  testWidgets('tap Periksa kata mendorong /periksa-kata', (tester) async {
     final pushed = await pump(tester);
-    await openSheet(tester);
 
-    await tester.tap(find.text('Usul kata baru'));
-    // Tile masih hidup sesaat selama animasi exit sheet.
-    await tester.pump(const Duration(milliseconds: 50));
-    await tester.tap(find.text('Usul kata baru'), warnIfMissed: false);
+    await tester.tap(find.text('Periksa kata'));
+    await tester.pump();
     await tester.pumpAndSettle();
 
-    expect(pushed, ['/contribute']);
-    expect(find.text('target /contribute'), findsOneWidget);
-  });
-
-  testWidgets('dismiss barrier tidak mendorong route', (tester) async {
-    final pushed = await pump(tester);
-    await openSheet(tester);
-
-    await tester.tapAt(const Offset(10, 10));
-    await tester.pump();
-    // Jangan pumpAndSettle: skeleton guest deck berdenyut terus saat
-    // ActivityPage kembali jadi halaman current.
-    await tester.pump(const Duration(milliseconds: 300));
-
-    expect(pushed, isEmpty);
-    expect(find.text('Menu kontribusi'), findsOneWidget);
+    expect(pushed, ['/periksa-kata']);
+    expect(find.text('target /periksa-kata'), findsOneWidget);
   });
 }

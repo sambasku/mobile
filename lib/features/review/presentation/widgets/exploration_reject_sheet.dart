@@ -22,6 +22,7 @@ Future<ExplorationRejectResult?> showExplorationRejectSheet(
 }) {
   return showModalBottomSheet<ExplorationRejectResult>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     builder: (sheetContext) => _ExplorationRejectSheet(domain: domain),

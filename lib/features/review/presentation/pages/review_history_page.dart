@@ -178,7 +178,7 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
     };
 
     return FTile(
-      title: Text(item.title),
+      title: Text(reviewTitle(item, AppLocalizations.of(context))),
       subtitle: Text.rich(
         TextSpan(
           children: [

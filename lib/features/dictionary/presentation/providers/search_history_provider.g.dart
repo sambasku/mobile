@@ -8,24 +8,30 @@ part of 'search_history_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Riwayat pencarian kata: maksimal 10 query terakhir, tersimpan lokal di
-/// SharedPreferences (tidak dikirim ke server). Dedup case-insensitive,
-/// query sama digeser ke atas. [preload] wajib dipanggil di main sebelum
-/// runApp supaya frame pertama sudah membawa riwayat tersimpan.
+/// Riwayat pencarian kata: maksimal 10 query terakhir, **hanya di memori
+/// sesi** (issue mobile#296 - jangan simpan SharedPreferences / cache
+/// disk). Dedup case-insensitive; query sama digeser ke atas.
+///
+/// [preload] membersihkan sisa key lama dari versi sebelumnya supaya
+/// field/riwayat tidak "nyangkut" setelah update.
 
 @ProviderFor(SearchHistoryController)
 final searchHistoryControllerProvider = SearchHistoryControllerProvider._();
 
-/// Riwayat pencarian kata: maksimal 10 query terakhir, tersimpan lokal di
-/// SharedPreferences (tidak dikirim ke server). Dedup case-insensitive,
-/// query sama digeser ke atas. [preload] wajib dipanggil di main sebelum
-/// runApp supaya frame pertama sudah membawa riwayat tersimpan.
+/// Riwayat pencarian kata: maksimal 10 query terakhir, **hanya di memori
+/// sesi** (issue mobile#296 - jangan simpan SharedPreferences / cache
+/// disk). Dedup case-insensitive; query sama digeser ke atas.
+///
+/// [preload] membersihkan sisa key lama dari versi sebelumnya supaya
+/// field/riwayat tidak "nyangkut" setelah update.
 final class SearchHistoryControllerProvider
     extends $NotifierProvider<SearchHistoryController, List<String>> {
-  /// Riwayat pencarian kata: maksimal 10 query terakhir, tersimpan lokal di
-  /// SharedPreferences (tidak dikirim ke server). Dedup case-insensitive,
-  /// query sama digeser ke atas. [preload] wajib dipanggil di main sebelum
-  /// runApp supaya frame pertama sudah membawa riwayat tersimpan.
+  /// Riwayat pencarian kata: maksimal 10 query terakhir, **hanya di memori
+  /// sesi** (issue mobile#296 - jangan simpan SharedPreferences / cache
+  /// disk). Dedup case-insensitive; query sama digeser ke atas.
+  ///
+  /// [preload] membersihkan sisa key lama dari versi sebelumnya supaya
+  /// field/riwayat tidak "nyangkut" setelah update.
   SearchHistoryControllerProvider._()
     : super(
         from: null,
@@ -54,12 +60,14 @@ final class SearchHistoryControllerProvider
 }
 
 String _$searchHistoryControllerHash() =>
-    r'8b90eb734e39426d20f997a3c463dd3f8ff72771';
+    r'a6fd99a67f5922bf31898e6c73c1e14d8afcd464';
 
-/// Riwayat pencarian kata: maksimal 10 query terakhir, tersimpan lokal di
-/// SharedPreferences (tidak dikirim ke server). Dedup case-insensitive,
-/// query sama digeser ke atas. [preload] wajib dipanggil di main sebelum
-/// runApp supaya frame pertama sudah membawa riwayat tersimpan.
+/// Riwayat pencarian kata: maksimal 10 query terakhir, **hanya di memori
+/// sesi** (issue mobile#296 - jangan simpan SharedPreferences / cache
+/// disk). Dedup case-insensitive; query sama digeser ke atas.
+///
+/// [preload] membersihkan sisa key lama dari versi sebelumnya supaya
+/// field/riwayat tidak "nyangkut" setelah update.
 
 abstract class _$SearchHistoryController extends $Notifier<List<String>> {
   List<String> build();

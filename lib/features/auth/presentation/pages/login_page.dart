@@ -134,49 +134,44 @@ class LoginPage extends HookConsumerWidget {
 
     final canSubmit =
         identifier.text.trim().isNotEmpty && password.text.length >= 8 && !busy;
-    // Layar pendek: logo lebih kecil supaya form + sosial muat tanpa scroll panjang.
-    final logoSize = MediaQuery.sizeOf(context).height < 700 ? 96.0 : 112.0;
 
     void submit() => ref
         .read(authLoginProvider.notifier)
         .submit(email: identifier.text.trim(), password: password.text);
 
+    final topInset = MediaQuery.paddingOf(context).top;
+
     return FScaffold(
       childPad: true,
-      header: FHeader(
-        title: const SizedBox.shrink(),
-        suffixes: [
-          FHeaderAction(
-            icon: const Icon(FLucideIcons.info),
-            onPress: busy ? null : () => context.push(AboutRouter.about.path),
-          ),
-        ],
-      ),
-      child: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: .center,
-            crossAxisAlignment: .stretch,
-            children: [
-              Skeletonizer(
-                enabled: !logoLoaded.value,
-                child: Center(
-                  child: BrandMark(
-                    size: logoSize,
-                    frameBuilder:
-                        (context, child, frame, wasSynchronouslyLoaded) {
-                          if ((wasSynchronouslyLoaded || frame != null) &&
-                              !logoLoaded.value) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              if (context.mounted) logoLoaded.value = true;
-                            });
-                          }
-                          return child;
-                        },
+      // Tanpa FHeader kosong: hemat tinggi toolbar; info di pojok kanan.
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: .start,
+              crossAxisAlignment: .stretch,
+              children: [
+                // Status bar saja (bukan tinggi FHeader penuh).
+                SizedBox(height: topInset),
+                Skeletonizer(
+                  enabled: !logoLoaded.value,
+                  child: Center(
+                    child: BrandMark(
+                      size: kBrandMarkHeroSize,
+                      frameBuilder:
+                          (context, child, frame, wasSynchronouslyLoaded) {
+                        if ((wasSynchronouslyLoaded || frame != null) &&
+                            !logoLoaded.value) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (context.mounted) logoLoaded.value = true;
+                          });
+                        }
+                        return child;
+                      },
+                    ),
                   ),
                 ),
-              ),
-              const Gap(16),
+                const Gap(4),
               if (fromVerifierRelogin) ...[
                 FAlert(
                   title: Text(AppLocalizations.of(context).authReloginTitle),
@@ -205,17 +200,23 @@ class LoginPage extends HookConsumerWidget {
               const Gap(4),
               Align(
                 alignment: Alignment.centerRight,
-                child: FButton(
-                  variant: .ghost,
-                  onPress: busy
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: busy
                       ? null
                       : () => context.push(AuthRouter.forgotPassword.path),
-                  child: Text(
-                    AppLocalizations.of(context).authForgotPasswordQuestion,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Text(
+                      AppLocalizations.of(context).authForgotPasswordQuestion,
+                      style: context.theme.typography.body.xs.copyWith(
+                        color: context.theme.colors.mutedForeground,
+                      ),
+                    ),
                   ),
                 ),
               ),
-              const Gap(12),
+              const Gap(8),
               FButton(
                 onPress: canSubmit ? submit : null,
                 prefix: emailLoading ? const FCircularProgress() : null,
@@ -348,7 +349,24 @@ class LoginPage extends HookConsumerWidget {
               AppVersionLabel(future: versionFuture),
             ],
           ),
-        ),
+          ),
+          Positioned(
+            top: topInset,
+            right: 0,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: busy ? null : () => context.push(AboutRouter.about.path),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Icon(
+                  FLucideIcons.info,
+                  size: 20,
+                  color: context.theme.colors.mutedForeground,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -357,6 +375,7 @@ class LoginPage extends HookConsumerWidget {
 void _showEmailNotVerifiedSheet(BuildContext context, String email) {
   showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     builder: (sheetContext) {
       final theme = sheetContext.theme;

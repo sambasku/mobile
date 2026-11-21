@@ -9,25 +9,11 @@ part of 'word_detail_providers.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 /// Load detail kata; [wordIdOrLemma] boleh ULID atau lemma (deep link web).
-/// Error object = [DictionaryFailure] (termasuk 404).
-///
-/// keepAlive: family per kunci tetap di cache saat pop detail → buka
-/// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch
-/// Riverpod. Repository juga menulis L1 (`CacheClass.dictionaryDetail`)
-/// supaya cold start / kill process masih bisa HIT dalam TTL.
-/// Pull-to-refresh: hard miss L1 (`forceRefresh: true`) lalu invalidate.
 
 @ProviderFor(wordDetail)
 final wordDetailProvider = WordDetailFamily._();
 
 /// Load detail kata; [wordIdOrLemma] boleh ULID atau lemma (deep link web).
-/// Error object = [DictionaryFailure] (termasuk 404).
-///
-/// keepAlive: family per kunci tetap di cache saat pop detail → buka
-/// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch
-/// Riverpod. Repository juga menulis L1 (`CacheClass.dictionaryDetail`)
-/// supaya cold start / kill process masih bisa HIT dalam TTL.
-/// Pull-to-refresh: hard miss L1 (`forceRefresh: true`) lalu invalidate.
 
 final class WordDetailProvider
     extends
@@ -38,13 +24,6 @@ final class WordDetailProvider
         >
     with $FutureModifier<WordDetail>, $FutureProvider<WordDetail> {
   /// Load detail kata; [wordIdOrLemma] boleh ULID atau lemma (deep link web).
-  /// Error object = [DictionaryFailure] (termasuk 404).
-  ///
-  /// keepAlive: family per kunci tetap di cache saat pop detail → buka
-  /// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch
-  /// Riverpod. Repository juga menulis L1 (`CacheClass.dictionaryDetail`)
-  /// supaya cold start / kill process masih bisa HIT dalam TTL.
-  /// Pull-to-refresh: hard miss L1 (`forceRefresh: true`) lalu invalidate.
   WordDetailProvider._({
     required WordDetailFamily super.from,
     required String super.argument,
@@ -91,13 +70,6 @@ final class WordDetailProvider
 String _$wordDetailHash() => r'42dcb13eb996b23cd2e75a0a23467a76b99cd39f';
 
 /// Load detail kata; [wordIdOrLemma] boleh ULID atau lemma (deep link web).
-/// Error object = [DictionaryFailure] (termasuk 404).
-///
-/// keepAlive: family per kunci tetap di cache saat pop detail → buka
-/// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch
-/// Riverpod. Repository juga menulis L1 (`CacheClass.dictionaryDetail`)
-/// supaya cold start / kill process masih bisa HIT dalam TTL.
-/// Pull-to-refresh: hard miss L1 (`forceRefresh: true`) lalu invalidate.
 
 final class WordDetailFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<WordDetail>, String> {
@@ -111,13 +83,6 @@ final class WordDetailFamily extends $Family
       );
 
   /// Load detail kata; [wordIdOrLemma] boleh ULID atau lemma (deep link web).
-  /// Error object = [DictionaryFailure] (termasuk 404).
-  ///
-  /// keepAlive: family per kunci tetap di cache saat pop detail → buka
-  /// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch
-  /// Riverpod. Repository juga menulis L1 (`CacheClass.dictionaryDetail`)
-  /// supaya cold start / kill process masih bisa HIT dalam TTL.
-  /// Pull-to-refresh: hard miss L1 (`forceRefresh: true`) lalu invalidate.
 
   WordDetailProvider call(String wordIdOrLemma) =>
       WordDetailProvider._(argument: wordIdOrLemma, from: this);

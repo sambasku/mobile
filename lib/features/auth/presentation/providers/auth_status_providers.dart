@@ -1,9 +1,11 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/models/speaker_status.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/device_registration_holder.dart';
 import '../../../edit_profile/domain/providers/edit_profile_domain_providers.dart';
+import '../../../onboarding/data/speaker_status_prefs.dart';
 import '../../domain/entities/auth_session.dart';
 import '../../domain/providers/auth_domain_providers.dart';
 import '../models/auth_status_state.dart';
@@ -168,6 +170,8 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
     try {
       final result = await ref.read(getMyProfileUseCaseProvider).call();
       return await result.match((_) async => null, (profile) async {
+        // #258: sync speaker_status lokal ↔ server (server menang bila set).
+        await _syncSpeakerStatus(profile.speakerStatus);
         final storage = ref.read(authTokenStorageProvider);
         final user = await storage.getSessionUser();
         final nextAvatar = profile.avatarUrl ?? user.avatarUrl;
@@ -200,6 +204,25 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
       });
     } catch (_) {
       return null;
+    }
+  }
+
+  /// Lokal → server hanya jika server masih null; server set → mirror lokal.
+  Future<void> _syncSpeakerStatus(SpeakerStatus? serverStatus) async {
+    try {
+      if (serverStatus != null) {
+        await SpeakerStatusPrefs.mirrorFromServer(serverStatus);
+        return;
+      }
+      final local =
+          SpeakerStatusPrefs.value ?? await SpeakerStatusPrefs.read();
+      if (local == null) return;
+      if (!ref.mounted) return;
+      await ref.read(updateMyProfileUseCaseProvider).call(
+            speakerStatus: local.wire,
+          );
+    } catch (_) {
+      // Jangan gagalkan login/sync identitas karena speaker status.
     }
   }
 

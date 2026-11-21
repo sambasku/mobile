@@ -3,10 +3,12 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../core/models/speaker_status.dart';
 import '../../core/utils/display_image_url.dart';
 import 'avatar_border_overlay.dart';
 import 'profile_stat_inline.dart';
 import 'public_account_name.dart';
+import 'speaker_status_chip.dart';
 import 'user_avatar.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -34,6 +36,7 @@ class ProfileIdentityHeader extends StatelessWidget {
     this.avatarUrl,
     this.borderUrl,
     this.bio,
+    this.speakerStatus,
     this.isVerifier = false,
     this.leveling,
     this.stats,
@@ -56,6 +59,9 @@ class ProfileIdentityHeader extends StatelessWidget {
   /// URL aset bingkai profil aktif (achievement `profile_border`).
   final String? borderUrl;
   final String? bio;
+
+  /// Chip penutur/pembelajar (#258). Null = disembunyikan.
+  final SpeakerStatus? speakerStatus;
   final bool isVerifier;
 
   /// Chip level + progress (+ streak di baris chip). Opsional.
@@ -279,6 +285,10 @@ class ProfileIdentityHeader extends StatelessWidget {
                     style: theme.typography.body.sm,
                   ),
                 ),
+              ],
+              if (speakerStatus != null) ...[
+                const Gap(8),
+                SpeakerStatusChip(status: speakerStatus!),
               ],
               if (leveling != null) ...[const Gap(10), leveling!],
               if (stats != null) ...[const Gap(10), stats!],

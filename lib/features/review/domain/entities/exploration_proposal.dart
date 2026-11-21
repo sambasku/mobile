@@ -19,11 +19,15 @@ extension ExplorationReviewDomainX on ExplorationReviewDomain {
   /// Place tidak punya endpoint request-revision.
   bool get supportsRevision => this != ExplorationReviewDomain.place;
 
-  /// Usaha, kuliner, layanan list pakai `?status=pending`; place/event hanya pending.
+  /// Usaha/kuliner/layanan/acara list pakai query status (atau decided/q untuk acara).
   bool get listUsesStatusQuery =>
       this == ExplorationReviewDomain.usaha ||
       this == ExplorationReviewDomain.culinary ||
-      this == ExplorationReviewDomain.layanan;
+      this == ExplorationReviewDomain.layanan ||
+      this == ExplorationReviewDomain.event;
+
+  /// Hanya acara: API dukung `decided` + `q` untuk periksa/riwayat.
+  bool get supportsListSearch => this == ExplorationReviewDomain.event;
 }
 
 /// Satu baris usulan eksplorasi dari list admin (payload embedded, tanpa GET-by-id).

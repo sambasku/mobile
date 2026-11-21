@@ -302,7 +302,7 @@ class _EncyclopediaRemoteDatasource implements EncyclopediaRemoteDatasource {
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late ApiResponse<void> _value;
     try {
-      _value = ApiResponse<void>.fromJson(_result.data!, (json) => null);
+      _value = ApiResponse<void>.fromJson(_result.data!, (json) => () {}());
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -377,7 +377,7 @@ class _EncyclopediaRemoteDatasource implements EncyclopediaRemoteDatasource {
   }
 
   @override
-  Future<ApiResponse<MyContributionItem>> resubmitContribution(
+  Future<ApiResponse<MyContributionItem>> updateContribution(
     String id,
     Map<String, dynamic> body,
   ) async {

@@ -24,6 +24,7 @@ Future<UsahaFilterSelection?> showUsahaFilterSheet(
 }) {
   return showFSheet<UsahaFilterSelection>(
     context: context,
+    useRootNavigator: true,
     side: FLayout.rtl,
     mainAxisMaxRatio: 0.86,
     useSafeArea: true,

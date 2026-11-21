@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../entities/word_detail.dart';
@@ -13,6 +14,9 @@ abstract interface class DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
+    /// false = ketikan/explore (jangan rekam miss). true = commit.
+    bool recordMiss = true,
+    CancelToken? cancelToken,
   });
 
   /// Detail kata by id. 404 WORD_NOT_FOUND → Failure.
@@ -20,6 +24,10 @@ abstract interface class DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+    /// Fokus makna dari Periksa Kata - API ikutkan meski belum verified.
+    String? focusMeaningId,
+    /// Feed usulan / lemma baru - tampilkan semua makna published.
+    bool includeUnverified = false,
   });
 
   /// Detail kata published by lemma (URL publik web / deep link).
@@ -27,6 +35,8 @@ abstract interface class DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
+    String? focusMeaningId,
+    bool includeUnverified = false,
   });
 
   /// Kata hari ini. Right(null) = korpus published kosong (bukan error).
@@ -45,6 +55,7 @@ abstract interface class DictionaryRepository {
     String? letter,
     bool? isVerified,
     String? category,
+    CancelToken? cancelToken,
   });
 
   /// Feed beranda: kata published urut waktu persetujuan.
@@ -58,4 +69,7 @@ abstract interface class DictionaryRepository {
   /// Daftar kategori/glosarium (GET /api/v1/categories) untuk filter
   /// browse A-Z (#50).
   Future<Either<DictionaryFailure, List<WordCategory>>> listCategories();
+
+  /// Catat 1 view detail kata (docs/api/59-api-word-views.md). Best-effort.
+  Future<void> recordView(String wordId);
 }

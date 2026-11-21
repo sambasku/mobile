@@ -43,6 +43,7 @@ class ThreadMessageRow extends StatelessWidget {
     this.editedLabel,
     this.onShowEditHistory,
     this.media,
+    this.bodyWidget,
     this.footer,
     this.highlighted = false,
   });
@@ -86,6 +87,9 @@ class ThreadMessageRow extends StatelessWidget {
 
   /// Konten di bawah body (mis. player audio balasan).
   final Widget? media;
+
+  /// Ganti [MentionBodyText] bila body non-empty (mis. [JinyeLemmaBody]).
+  final Widget? bodyWidget;
 
   /// Konten di bawah body (mis. [VoteButtons]).
   final Widget? footer;
@@ -176,18 +180,20 @@ class ThreadMessageRow extends StatelessWidget {
               ],
               const Gap(3),
               if (body.trim().isNotEmpty)
-                MentionBodyText(
-                  body: body,
-                  isRedacted: isRedacted,
-                  onMentionTap: onMentionTap,
-                  style: theme.typography.body.sm.copyWith(
-                    height: 1.35,
-                    fontStyle: isRedacted ? FontStyle.italic : FontStyle.normal,
-                    color: isRedacted
-                        ? theme.colors.mutedForeground
-                        : theme.colors.foreground,
-                  ),
-                ),
+                bodyWidget ??
+                    MentionBodyText(
+                      body: body,
+                      isRedacted: isRedacted,
+                      onMentionTap: onMentionTap,
+                      style: theme.typography.body.sm.copyWith(
+                        height: 1.35,
+                        fontStyle:
+                            isRedacted ? FontStyle.italic : FontStyle.normal,
+                        color: isRedacted
+                            ? theme.colors.mutedForeground
+                            : theme.colors.foreground,
+                      ),
+                    ),
               if (media != null) ...[
                 if (body.trim().isNotEmpty) const Gap(6),
                 media!,
@@ -407,7 +413,7 @@ class _ThreadIconButton extends StatelessWidget {
 }
 
 /// Composer thread kanonik: field multi-baris + kirim.
-/// Opsional [onRecordAudio] / [onPickImage] menampilkan chip aksi di atas field.
+/// Opsional [onRecordAudio] / [onPickImage] / [onPickSticker] menampilkan chip aksi.
 /// [suggestBuilder] dipasang di atas field (mis. autocomplete mention).
 class ThreadComposer extends StatelessWidget {
   const ThreadComposer({
@@ -417,6 +423,7 @@ class ThreadComposer extends StatelessWidget {
     required this.onSubmit,
     this.onRecordAudio,
     this.onPickImage,
+    this.onPickSticker,
     this.attachmentPreview,
     this.replyBanner,
     this.suggestBuilder,
@@ -433,6 +440,9 @@ class ThreadComposer extends StatelessWidget {
 
   /// Jika diisi, tampilkan chip lampirkan foto di atas field.
   final VoidCallback? onPickImage;
+
+  /// Jika diisi, tampilkan chip pilih stiker di atas field.
+  final VoidCallback? onPickSticker;
 
   /// Pratinjau lampiran (mis. thumbnail foto staging) di atas field.
   final Widget? attachmentPreview;
@@ -463,30 +473,37 @@ class ThreadComposer extends StatelessWidget {
           attachmentPreview!,
           const Gap(8),
         ],
-        if (onRecordAudio != null || onPickImage != null) ...[
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
+        if (onRecordAudio != null ||
+            onPickImage != null ||
+            onPickSticker != null) ...[
+          Row(
             children: [
               if (onPickImage != null)
-                _ThreadComposerChip(
+                _ThreadComposerIconButton(
                   icon: FLucideIcons.image,
-                  label: AppLocalizations.of(context).commentAddPhoto,
                   semanticsLabel: AppLocalizations.of(context).threadAddPhoto,
                   enabled: !isSubmitting,
                   onTap: onPickImage!,
                 ),
+              if (onPickSticker != null)
+                _ThreadComposerIconButton(
+                  icon: FLucideIcons.smile,
+                  semanticsLabel:
+                      AppLocalizations.of(context).chatStickerSemantics,
+                  enabled: !isSubmitting,
+                  onTap: onPickSticker!,
+                ),
               if (onRecordAudio != null)
-                _ThreadComposerChip(
+                _ThreadComposerIconButton(
                   icon: FLucideIcons.mic,
-                  label: AppLocalizations.of(context).threadRecordVoice,
-                  semanticsLabel: AppLocalizations.of(context).threadRecordVoice,
+                  semanticsLabel:
+                      AppLocalizations.of(context).threadRecordVoice,
                   enabled: !isSubmitting,
                   onTap: onRecordAudio!,
                 ),
             ],
           ),
-          const Gap(8),
+          const Gap(4),
         ],
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -545,17 +562,15 @@ class ThreadComposer extends StatelessWidget {
   }
 }
 
-class _ThreadComposerChip extends StatelessWidget {
-  const _ThreadComposerChip({
+class _ThreadComposerIconButton extends StatelessWidget {
+  const _ThreadComposerIconButton({
     required this.icon,
-    required this.label,
     required this.semanticsLabel,
     required this.enabled,
     required this.onTap,
   });
 
   final IconData icon;
-  final String label;
   final String semanticsLabel;
   final bool enabled;
   final VoidCallback onTap;
@@ -569,31 +584,16 @@ class _ThreadComposerChip extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(8),
           onTap: enabled ? onTap : null,
-          child: Ink(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: theme.colors.border),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Icon(
+              icon,
+              size: 18,
               color: enabled
-                  ? theme.colors.secondary.withValues(alpha: 0.35)
-                  : theme.colors.secondary.withValues(alpha: 0.5),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, size: 14, color: theme.colors.foreground),
-                  const Gap(6),
-                  Text(
-                    label,
-                    style: theme.typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
+                  ? theme.colors.mutedForeground
+                  : theme.colors.mutedForeground.withValues(alpha: 0.45),
             ),
           ),
         ),
