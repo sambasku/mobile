@@ -795,9 +795,13 @@
   "@balehoHistoryRebookHint": {
     "description": "Hint singkat CTA pesan lagi di riwayat"
   },
-  "balehoHistoryStatsTitle": "Performa",
+  "balehoHistoryStatsTitle": "Biaya",
   "@balehoHistoryStatsTitle": {
-    "description": "Judul blok metrik performa di riwayat Baleho"
+    "description": "Judul ringkasan biaya di detail pesanan Baleho"
+  },
+  "balehoHistoryCostEmpty": "Belum ada ringkasan biaya untuk pesanan ini.",
+  "@balehoHistoryCostEmpty": {
+    "description": "Placeholder bila quoted/CPC belum tersedia di detail Baleho"
   },
   "balehoHistoryStatImpressions": "Tayang",
   "@balehoHistoryStatImpressions": {
@@ -10042,7 +10046,7 @@
       }
     }
   },
-  "dictCommunityVoteFooterTitle": "Bantu periksa makna menunggu",
+  "dictCommunityVoteFooterTitle": "Bantu periksa makna kata ini",
   "@dictCommunityVoteFooterTitle": {
     "description": "Judul panel vote bawah di detail kata dari feed usulan / Periksa Kata"
   },

@@ -766,7 +766,11 @@ class AppLocalizationsId extends AppLocalizations {
       'Pilih area kosong di papan, lalu aktifkan ulang creative lama.';
 
   @override
-  String get balehoHistoryStatsTitle => 'Performa';
+  String get balehoHistoryStatsTitle => 'Biaya';
+
+  @override
+  String get balehoHistoryCostEmpty =>
+      'Belum ada ringkasan biaya untuk pesanan ini.';
 
   @override
   String get balehoHistoryStatImpressions => 'Tayang';
@@ -13175,7 +13179,7 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get dictCommunityVoteFooterTitle => 'Bantu periksa makna menunggu';
+  String get dictCommunityVoteFooterTitle => 'Bantu periksa makna kata ini';
 
   @override
   String get periksaKataUnvoteTitle => 'Batalkan vote?';
@@ -13974,7 +13978,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Pilih area kosong di papan, lalu aktifkan ulang creative lama.';
 
   @override
-  String get balehoHistoryStatsTitle => 'Performa';
+  String get balehoHistoryStatsTitle => 'Biaya';
+
+  @override
+  String get balehoHistoryCostEmpty =>
+      'Belum ada ringkasan biaya untuk pesanan ini.';
 
   @override
   String get balehoHistoryStatImpressions => 'Tayang';
@@ -26299,7 +26307,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
-  String get dictCommunityVoteFooterTitle => 'Bantu periksa makna menunggu';
+  String get dictCommunityVoteFooterTitle => 'Bantu periksa makna kata ini';
 
   @override
   String get periksaKataUnvoteTitle => 'Batalkan vote?';

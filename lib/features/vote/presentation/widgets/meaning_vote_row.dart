@@ -90,10 +90,12 @@ class VoteTrustProgress extends StatelessWidget {
     super.key,
     required this.upvotes,
     required this.downvotes,
+    this.barHeight = 6,
   });
 
   final int upvotes;
   final int downvotes;
+  final double barHeight;
 
   // Tipis / pudar - cukup terbaca, tidak mencolok.
   static const Color _upFill = Color(0x6686EFAC); // green-300 ~40%
@@ -120,7 +122,7 @@ class VoteTrustProgress extends StatelessWidget {
         curve: Curves.easeOutCubic,
         builder: (context, animatedRatio, _) {
           return SizedBox(
-            height: 6,
+            height: barHeight,
             width: double.infinity,
             child: CustomPaint(
               painter: _VoteFightBarPainter(

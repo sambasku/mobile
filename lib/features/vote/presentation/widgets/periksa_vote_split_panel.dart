@@ -8,8 +8,11 @@ import 'package:gap/gap.dart';
 import '../../../../core/theme/f_colors_x.dart';
 
 /// Latar idle / aktif setengah kolom vote (tanpa border tengah).
+/// Sudut setengah vote: rail kartu (kanan), footer detail (kiri+kanan bawah), atau flat.
+enum PeriksaVoteSplitCornerMode { rail, footer, embedded }
+
 abstract final class PeriksaVoteHalfColors {
-  static const idleFillAlpha = 0.07;
+  static const idleFillAlpha = 0.05;
   static const activeFillAlpha = 0.26;
 
   static Color fill(Color accent, {required bool active}) =>
@@ -30,6 +33,8 @@ class PeriksaVoteSplitPanel extends StatefulWidget {
     required this.agreeSemantics,
     required this.onVote,
     this.cornerRadius = 10,
+    this.cornerMode = PeriksaVoteSplitCornerMode.rail,
+    this.dense = false,
   });
 
   final int upvotes;
@@ -39,6 +44,11 @@ class PeriksaVoteSplitPanel extends StatefulWidget {
   final String agreeSemantics;
   final Future<void> Function(int value) onVote;
   final double cornerRadius;
+  final PeriksaVoteSplitCornerMode cornerMode;
+
+  /// Padat (footer detail): ikon lebih kecil; pakai [SizedBox] dengan tinggi
+  /// tetap di parent supaya [CrossAxisAlignment.stretch] aman.
+  final bool dense;
 
   @override
   State<PeriksaVoteSplitPanel> createState() => _PeriksaVoteSplitPanelState();
@@ -63,35 +73,54 @@ class _PeriksaVoteSplitPanelState extends State<PeriksaVoteSplitPanel> {
     final theme = context.theme;
     final enabled = !_inFlight;
     final r = Radius.circular(widget.cornerRadius);
+    final downRadius = switch (widget.cornerMode) {
+      PeriksaVoteSplitCornerMode.rail => BorderRadius.zero,
+      PeriksaVoteSplitCornerMode.footer =>
+        BorderRadius.only(bottomLeft: r),
+      PeriksaVoteSplitCornerMode.embedded => BorderRadius.zero,
+    };
+    final upRadius = switch (widget.cornerMode) {
+      PeriksaVoteSplitCornerMode.rail =>
+        BorderRadius.only(topRight: r, bottomRight: r),
+      PeriksaVoteSplitCornerMode.footer =>
+        BorderRadius.only(bottomRight: r),
+      PeriksaVoteSplitCornerMode.embedded => BorderRadius.zero,
+    };
+  // stretch di rail (IntrinsicHeight) atau dense + tinggi terikat di parent.
+  final stretch =
+      widget.cornerMode == PeriksaVoteSplitCornerMode.rail || widget.dense;
   return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          child: _PeriksaGhostVoteHalf(
-            icon: FLucideIcons.arrowBigDown,
-            count: widget.downvotes,
-            active: widget.myVote == -1,
-            accent: theme.colors.destructive,
-            enabled: enabled,
-            semanticsLabel: widget.disagreeSemantics,
-            backgroundRadius: BorderRadius.zero,
-            onPress: () => _tap(-1),
-          ),
+    crossAxisAlignment:
+        stretch ? CrossAxisAlignment.stretch : CrossAxisAlignment.center,
+    children: [
+      Expanded(
+        child: _PeriksaGhostVoteHalf(
+          icon: FLucideIcons.arrowBigDown,
+          count: widget.downvotes,
+          active: widget.myVote == -1,
+          accent: theme.colors.destructive,
+          enabled: enabled,
+          semanticsLabel: widget.disagreeSemantics,
+          backgroundRadius: downRadius,
+          dense: widget.dense,
+          onPress: () => _tap(-1),
         ),
-        Expanded(
-          child: _PeriksaGhostVoteHalf(
-            icon: FLucideIcons.arrowBigUp,
-            count: widget.upvotes,
-            active: widget.myVote == 1,
-            accent: theme.colors.success,
-            enabled: enabled,
-            semanticsLabel: widget.agreeSemantics,
-            backgroundRadius: BorderRadius.only(topRight: r, bottomRight: r),
-            onPress: () => _tap(1),
-          ),
+      ),
+      Expanded(
+        child: _PeriksaGhostVoteHalf(
+          icon: FLucideIcons.arrowBigUp,
+          count: widget.upvotes,
+          active: widget.myVote == 1,
+          accent: theme.colors.success,
+          enabled: enabled,
+          semanticsLabel: widget.agreeSemantics,
+          backgroundRadius: upRadius,
+          dense: widget.dense,
+          onPress: () => _tap(1),
         ),
-      ],
-    );
+      ),
+    ],
+  );
   }
 }
 
@@ -105,6 +134,7 @@ class _PeriksaGhostVoteHalf extends StatelessWidget {
     required this.semanticsLabel,
     required this.backgroundRadius,
     required this.onPress,
+    this.dense = false,
   });
 
   final IconData icon;
@@ -115,22 +145,27 @@ class _PeriksaGhostVoteHalf extends StatelessWidget {
   final String semanticsLabel;
   final BorderRadius backgroundRadius;
   final VoidCallback onPress;
+  final bool dense;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     final fg = PeriksaVoteHalfColors.foreground(accent, active: active);
     final bg = PeriksaVoteHalfColors.fill(accent, active: active);
+    final iconSize = dense ? 18.0 : 22.0;
+    final countBase = theme.typography.body.xs;
+    final countStyle =
+        dense ? countBase.copyWith(fontSize: 11) : countBase;
 
     final label = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 18, color: fg),
-        const Gap(2),
+        Icon(icon, size: iconSize, color: fg),
+        Gap(dense ? 0 : 2),
         Text(
           '$count',
-          style: theme.typography.body.sm.copyWith(
+          style: countStyle.copyWith(
             color: fg,
             fontWeight: FontWeight.w700,
           ),
@@ -151,7 +186,10 @@ class _PeriksaGhostVoteHalf extends StatelessWidget {
             child: FTappable(
               onPress: enabled ? onPress : null,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+                padding: EdgeInsets.symmetric(
+                  vertical: dense ? 4 : 14,
+                  horizontal: 4,
+                ),
                 child: Center(child: label),
               ),
             ),

@@ -7,6 +7,7 @@ import '../../domain/entities/vote_target.dart';
 import '../../domain/entities/vote_view.dart';
 import '../../domain/failures/vote_failure.dart';
 import '../../domain/providers/vote_domain_providers.dart';
+import 'periksa_kata_providers.dart';
 
 part 'meaning_vote_providers.g.dart';
 
@@ -138,6 +139,13 @@ class MeaningVotesController extends _$MeaningVotesController {
           myVotes: nextMyVotes,
         );
         ref.invalidate(myVotesListControllerProvider);
+        // Vote dari detail kata harus memantul ke kartu Periksa Kata (sessionVotes).
+        ref.read(periksaKataFeedControllerProvider.notifier).syncExternalVote(
+              meaningId: meaningId,
+              myVote: view.myVote,
+              upvotes: view.upvotes,
+              downvotes: view.downvotes,
+            );
         AnalyticsService.instance.logVoteCast(
           targetType: 'meaning',
           direction: value,

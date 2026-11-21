@@ -36,7 +36,6 @@ import '../../../../shared/widgets/image_credit.dart';
 import '../../../../shared/widgets/word_image_view.dart';
 import '../../../vote/presentation/providers/meaning_vote_providers.dart';
 import '../../../vote/presentation/widgets/meaning_vote_row.dart';
-import '../../../../core/theme/f_colors_x.dart';
 import '../../domain/entities/word_detail.dart';
 import '../../domain/entities/meaning_visibility.dart';
 import '../../domain/failures/dictionary_failure.dart';
@@ -253,8 +252,6 @@ class WordDetailPage extends HookConsumerWidget {
               detail: shown,
               wordId: detail.id,
               focusMeaningId: focusMeaningId,
-              // Hanya dari usulan/hot/feed (include_unverified) atau Periksa (?meaning=).
-              showCommunityVoteFooter: includeUnverified || hasFocus,
             );
           },
         ),
@@ -556,14 +553,11 @@ class _DetailBody extends HookConsumerWidget {
     required this.detail,
     required this.wordId,
     this.focusMeaningId,
-    this.showCommunityVoteFooter = false,
   });
 
   final WordDetail detail;
   final String wordId;
   final String? focusMeaningId;
-  /// Dari feed usulan / hot / Periksa Kata saja - jangan tampil di detail kamus biasa.
-  final bool showCommunityVoteFooter;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -677,24 +671,6 @@ class _DetailBody extends HookConsumerWidget {
         detail.meanings.length > 1 && meaningContributorKeys.length > 1;
 
     final primaryImage = orderedImages.isEmpty ? null : orderedImages.first;
-
-    WordMeaning? communityVoteMeaning;
-    if (showCommunityVoteFooter && !_lemmaUsesLocalCorpus(ref)) {
-      final pending = [
-        for (final m in detail.meanings)
-          if (!m.isVerified) m,
-      ];
-      final focus = focusMeaningId?.trim();
-      if (focus != null && focus.isNotEmpty) {
-        for (final m in pending) {
-          if (m.id == focus) {
-            communityVoteMeaning = m;
-            break;
-          }
-        }
-      }
-      communityVoteMeaning ??= pending.isEmpty ? null : pending.first;
-    }
 
     return Column(
       children: [
@@ -987,11 +963,6 @@ class _DetailBody extends HookConsumerWidget {
               ),
             ),
           ),
-        // CTA vote hanya jika entry review + ada makna menunggu di payload.
-        if (showCommunityVoteFooter &&
-            !_lemmaUsesLocalCorpus(ref) &&
-            communityVoteMeaning != null)
-          _CommunityVoteFooter(meaning: communityVoteMeaning),
       ],
     );
   }
@@ -1064,184 +1035,6 @@ class _DetailBody extends HookConsumerWidget {
         _RelatedChipWrap(items: grouped[key]!),
       ],
     ];
-  }
-}
-
-/// Panel vote gaya Periksa Kata di bawah detail (CTA dari Trending/feed).
-class _CommunityVoteFooter extends ConsumerWidget {
-  const _CommunityVoteFooter({required this.meaning});
-
-  final WordMeaning meaning;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.theme;
-    final l10n = AppLocalizations.of(context);
-    final state = ref.watch(meaningVotesControllerProvider);
-    final upvotes = state.upvotesOf(meaning.id);
-    final downvotes = state.downvotesOf(meaning.id);
-    final myVote = state.myVoteOf(meaning.id);
-
-    return Material(
-      type: MaterialType.transparency,
-      child: SafeArea(
-        top: false,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: theme.colors.background,
-            border: Border(top: BorderSide(color: theme.colors.border)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  l10n.dictCommunityVoteFooterTitle,
-                  style: theme.typography.body.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const Gap(8),
-                VoteTrustProgress(upvotes: upvotes, downvotes: downvotes),
-                const Gap(10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _DetailCommunityVoteButton(
-                        icon: FLucideIcons.arrowBigDown,
-                        count: downvotes,
-                        active: myVote == -1,
-                        idleBg: theme.colors.destructive.withValues(alpha: 0.12),
-                        idleFg: theme.colors.destructive,
-                        idleBorder:
-                            theme.colors.destructive.withValues(alpha: 0.45),
-                        activeBg: theme.colors.destructive,
-                        activeFg: theme.colors.destructiveForeground,
-                        semanticsLabel: l10n.periksaKataDisagree,
-                        onPress: () => _vote(context, ref, -1),
-                      ),
-                    ),
-                    const Gap(10),
-                    Expanded(
-                      child: _DetailCommunityVoteButton(
-                        icon: FLucideIcons.arrowBigUp,
-                        count: upvotes,
-                        active: myVote == 1,
-                        idleBg: theme.colors.success.withValues(alpha: 0.12),
-                        idleFg: theme.colors.success,
-                        idleBorder:
-                            theme.colors.success.withValues(alpha: 0.45),
-                        activeBg: theme.colors.success,
-                        activeFg: theme.colors.background,
-                        semanticsLabel: l10n.periksaKataAgree,
-                        onPress: () => _vote(context, ref, 1),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _vote(BuildContext context, WidgetRef ref, int value) async {
-    final auth = ref.read(authStatusProvider).value;
-    if (!(auth?.isAuth ?? false)) {
-      showFToast(
-        context: context,
-        title: Text(AppLocalizations.of(context).voteLoginPrompt),
-      );
-      context.push('/login');
-      return;
-    }
-    final failure = await ref
-        .read(meaningVotesControllerProvider.notifier)
-        .toggle(meaning.id, value);
-    if (failure != null && context.mounted) {
-      showFToast(
-        context: context,
-        title: Text(failure.message),
-        variant: FToastVariant.destructive,
-      );
-    }
-  }
-}
-
-class _DetailCommunityVoteButton extends StatelessWidget {
-  const _DetailCommunityVoteButton({
-    required this.icon,
-    required this.count,
-    required this.active,
-    required this.idleBg,
-    required this.idleFg,
-    required this.idleBorder,
-    required this.activeBg,
-    required this.activeFg,
-    required this.semanticsLabel,
-    required this.onPress,
-  });
-
-  final IconData icon;
-  final int count;
-  final bool active;
-  final Color idleBg;
-  final Color idleFg;
-  final Color idleBorder;
-  final Color activeBg;
-  final Color activeFg;
-  final String semanticsLabel;
-  final VoidCallback onPress;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final bg = active ? activeBg : idleBg;
-    final fg = active ? activeFg : idleFg;
-    final border = active ? activeBg : idleBorder;
-    return Semantics(
-      button: true,
-      label: semanticsLabel,
-      value: '$count',
-      child: FTappable(
-        onPress: onPress,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: border, width: 1.25),
-          ),
-          child: SizedBox(
-            // Ikon + angka saja - tinggi tetap nyaman untuk tap.
-            height: 48,
-            width: double.infinity,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, size: 22, color: fg),
-                  const Gap(8),
-                  Text(
-                    '$count',
-                    style: theme.typography.body.md.copyWith(
-                      color: fg,
-                      fontWeight: FontWeight.w700,
-                      height: 1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
 

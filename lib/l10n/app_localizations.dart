@@ -1409,11 +1409,17 @@ abstract class AppLocalizations {
   /// **'Pilih area kosong di papan, lalu aktifkan ulang creative lama.'**
   String get balehoHistoryRebookHint;
 
-  /// Judul blok metrik performa di riwayat Baleho
+  /// Judul ringkasan biaya di detail pesanan Baleho
   ///
   /// In id, this message translates to:
-  /// **'Performa'**
+  /// **'Biaya'**
   String get balehoHistoryStatsTitle;
+
+  /// Placeholder bila quoted/CPC belum tersedia di detail Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada ringkasan biaya untuk pesanan ini.'**
+  String get balehoHistoryCostEmpty;
 
   /// Label hitungan impression Baleho
   ///
@@ -23198,7 +23204,7 @@ abstract class AppLocalizations {
   /// Judul panel vote bawah di detail kata dari feed usulan / Periksa Kata
   ///
   /// In id, this message translates to:
-  /// **'Bantu periksa makna menunggu'**
+  /// **'Bantu periksa makna kata ini'**
   String get dictCommunityVoteFooterTitle;
 
   /// Judul konfirmasi batal vote di riwayat Periksa Kata

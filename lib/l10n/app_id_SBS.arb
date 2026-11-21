@@ -713,9 +713,13 @@
   "balehoHistoryEndingSoonHint": "Berakhir dalam 24 jam. Setelah selesai, pesan lagi dari sini ya.",
   "balehoHistoryRebookCta": "Pesan lagi",
   "balehoHistoryRebookHint": "Pilih area kosong di papan, lalu aktifkan ulang creative lama.",
-  "balehoHistoryStatsTitle": "Performa",
+  "balehoHistoryStatsTitle": "Biaya",
   "@balehoHistoryStatsTitle": {
-    "description": "Judul blok metrik performa di riwayat Baleho"
+    "description": "Judul ringkasan biaya di detail pesanan Baleho"
+  },
+  "balehoHistoryCostEmpty": "Belum ada ringkasan biaya untuk pesanan ini.",
+  "@balehoHistoryCostEmpty": {
+    "description": "Placeholder bila quoted/CPC belum tersedia di detail Baleho"
   },
   "balehoHistoryStatImpressions": "Tayang",
   "@balehoHistoryStatImpressions": {
@@ -6431,7 +6435,7 @@
   "voteTrustProgressDetailNeedUp": "Butuh +{need} poin lagi · net {netLabel} · {unique}/{threshold} pemilih",
   "voteTrustProgressDetailNeedDown": "Butuh -{need} poin lagi ke penolakan · net {netLabel} · {unique}/{threshold} pemilih",
   "voteTrustProgressDetailNeedVoters": "Net sudah cukup · butuh {need} pemilih lagi ({unique}/{threshold})",
-  "dictCommunityVoteFooterTitle": "Bantu periksa makna menunggu",
+  "dictCommunityVoteFooterTitle": "Bantu periksa makna kata ini",
   "periksaKataUnvoteTitle": "Batalkan vote?",
   "periksaKataUnvoteBody": "Vote kamu akan dihapus dari riwayat pemeriksaan untuk kata ini.",
   "periksaKataUnvoteConfirm": "Batalkan vote",
