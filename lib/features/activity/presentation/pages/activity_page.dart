@@ -5,12 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/router/app_router.dart';
-import '../../../../core/services/analytics_service.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
-import '../../../contribution/contribution_router.dart';
+import '../../../contribution/presentation/utils/open_verifier_contribute.dart';
 import '../../../search_miss/search_miss_router.dart';
 import '../../../vote/periksa_kata_router.dart';
 import '../../../vote/presentation/providers/vote_deck_providers.dart';
@@ -44,15 +43,10 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
   }
 
   void _openSuggestWordFromDeck() {
-    AnalyticsService.instance.log(
-      AnalyticsEvents.contributeStart,
-      params: {'from': 'kontribusi_vote_deck'},
-    );
-    context.push(
-      Uri(
-        path: ContributionRouter.contribute.path,
-        queryParameters: const {'from': 'kontribusi'},
-      ).toString(),
+    pushVerifierContribute(
+      context,
+      analyticsFrom: 'kontribusi_vote_deck',
+      contributeFrom: 'kontribusi',
     );
   }
 

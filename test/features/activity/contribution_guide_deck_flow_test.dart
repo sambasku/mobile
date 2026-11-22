@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'dart:ui' show Size;
 
-import 'package:material_ui/material_ui.dart' show debugDumpApp;
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -154,6 +154,25 @@ Future<void> settle(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 120));
 }
 
+Future<void> openKontribusiTab(WidgetTester tester) async {
+  await tester.pumpAndSettle();
+  final tab = tabItem('Kontribusi');
+  await tester.ensureVisible(tab);
+  await tester.tap(tab, warnIfMissed: false);
+  await settle(tester);
+  // Guide async (unread check + dialog).
+  await tester.pump(const Duration(milliseconds: 400));
+  await settle(tester);
+}
+
+void expectGuideOpen(WidgetTester tester) {
+  expect(find.text('Kartu bisa digeser untuk menilai'), findsOneWidget);
+}
+
+void expectGuestLoginGate(WidgetTester tester) {
+  expect(find.text('Masuk dulu untuk menilai kata'), findsOneWidget);
+}
+
 void main() {
   setUpAll(() {
     F.appFlavor = Flavor.staging;
@@ -172,30 +191,25 @@ void main() {
     tester,
   ) async {
     await pumpApp(tester);
-
-    await tester.tap(tabItem('Kontribusi'));
-    await settle(tester);
-
-    expect(find.text('Kartu bisa digeser untuk menilai'), findsOneWidget);
-    expect(find.text('Masuk dulu untuk menilai kata'), findsOneWidget);
+    await openKontribusiTab(tester);
+    expectGuideOpen(tester);
+    expectGuestLoginGate(tester);
 
     await tester.tap(find.text('Mengerti'), warnIfMissed: false);
     await settle(tester);
     await settle(tester);
+    await tester.pump(const Duration(milliseconds: 350));
 
     expect(find.text('Kartu bisa digeser untuk menilai'), findsNothing);
-    expect(find.text('Masuk dulu untuk menilai kata'), findsOneWidget);
+    expectGuestLoginGate(tester);
   });
 
   testWidgets(
     'notifikasi router nyasar saat guide terbuka tidak membiarkan deck macet stub',
     (tester) async {
       await pumpApp(tester);
-
-      await tester.tap(tabItem('Kontribusi'));
-      await settle(tester);
-      expect(find.text('Kartu bisa digeser untuk menilai'), findsOneWidget);
-      expect(find.text('Masuk dulu untuk menilai kata'), findsOneWidget);
+      await openKontribusiTab(tester);
+      expectGuideOpen(tester);
 
       // Simulasi notifikasi routerDelegate apa pun saat dialog pageless
       // terbuka (goBranch, deep link, dsb): canPop terbaca true.
@@ -214,9 +228,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 350));
 
       expect(find.text('Kartu bisa digeser untuk menilai'), findsNothing);
-      // Regresi inti: konten deck harus kembali, bukan stub kosong selamanya.
-      debugDumpApp();
-      expect(find.text('Masuk dulu untuk menilai kata'), findsOneWidget);
+      expectGuestLoginGate(tester);
     },
   );
 }

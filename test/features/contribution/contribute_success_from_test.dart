@@ -11,6 +11,10 @@ void main() {
       expect(contributeSuccessFromBeranda('kontribusi'), isFalse);
     });
 
+    test('review session deck', () {
+      expect(contributeSuccessFromBeranda('review_session'), isFalse);
+    });
+
     test('null or unknown', () {
       expect(contributeSuccessFromBeranda(null), isFalse);
       expect(contributeSuccessFromBeranda('search_miss'), isFalse);

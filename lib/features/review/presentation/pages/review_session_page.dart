@@ -10,6 +10,8 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/gestures/swipe_exempt.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/widgets/header_action_icon.dart';
+import '../../../contribution/presentation/utils/open_verifier_contribute.dart';
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/reference/reference_data.dart';
@@ -152,6 +154,32 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
       return;
     }
     _exitToQueue(refresh: false);
+  }
+
+  void _openSuggestWord({String? lemma}) {
+    pushVerifierContribute(
+      context,
+      analyticsFrom: 'review_session_deck',
+      contributeFrom: 'review_session',
+      initialLemma: lemma,
+    );
+  }
+
+  List<Widget> _suggestWordHeaderSuffixes(
+    BuildContext context, {
+    String? lemma,
+  }) {
+    final l10n = AppLocalizations.of(context);
+    return [
+      FHeaderAction(
+        icon: const Icon(
+          FLucideIcons.bookPlus,
+          size: kHeaderActionIconSize,
+        ),
+        semanticsLabel: l10n.activityVoteDeckSuggestWord,
+        onPress: () => _openSuggestWord(lemma: lemma),
+      ),
+    ];
   }
 
   /// System back = logika app bar yang sama; cegah Activity finish.
@@ -436,6 +464,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
           header: FHeader.nested(
             title: Text(AppLocalizations.of(context).commonVerifierArea),
             prefixes: [FHeaderAction.back(onPress: _onBack)],
+            suffixes: _suggestWordHeaderSuffixes(context),
           ),
           child: const Center(child: FCircularProgress()),
         ),
@@ -490,6 +519,10 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
         header: FHeader.nested(
           title: Text(title),
           prefixes: [FHeaderAction.back(onPress: _onBack)],
+          suffixes: _suggestWordHeaderSuffixes(
+            context,
+            lemma: detailAsync.asData?.value.contribution.wordLemma,
+          ),
         ),
         footer: pending && !_correctMode
             ? detailAsync.maybeWhen(
