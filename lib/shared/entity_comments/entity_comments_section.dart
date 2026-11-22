@@ -26,6 +26,8 @@ import '../widgets/thread_audio_player.dart';
 import '../widgets/thread_comment_image.dart';
 import '../widgets/thread_edit_sheets.dart';
 import '../widgets/thread_message.dart';
+import '../span_lemma/span_lemma_exports.dart';
+import '../ugc_comment_lemma/ugc_comment_lemma_interaction.dart';
 import 'entity_comment.dart';
 import 'entity_comment_providers.dart';
 
@@ -612,11 +614,41 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
                           : comment.isDeletedByAuthor
                           ? l10n.commentDeletedByAuthor
                           : comment.body;
+                      final auth = ref.watch(authStatusProvider).value;
+                      final isAuth = auth?.isAuth ?? false;
                       return ThreadMessageRow(
                         username: comment.username,
                         displayName: comment.displayName,
                         avatarUrl: comment.avatarUrl,
                         body: bodyText,
+                        bodyWidget: bodyText.trim().isEmpty
+                            ? null
+                            : ThreadLemmaBody(
+                                body: comment.body,
+                                links: comment.lemmaLinks,
+                                onMentionTap: (mentionedUsername) =>
+                                    UserProfileRouter.open(
+                                      context,
+                                      mentionedUsername,
+                                    ),
+                                onWordTap: (span, link) =>
+                                    handleUgcCommentLemmaWordTap(
+                                  context,
+                                  ref,
+                                  sheetContextId: widget.entityId,
+                                  anchor: anchorForEntityCommentTarget(
+                                    widget.target,
+                                  ),
+                                  hostId: widget.entityId,
+                                  commentId: comment.id,
+                                  span: span,
+                                  link: link,
+                                  isAuth: isAuth,
+                                  onLinked: () => ref.invalidate(
+                                    entityCommentListControllerProvider(_key),
+                                  ),
+                                ),
+                              ),
                         dateLabel: formatRelativeCompact(comment.createdAt),
                         metaParts: [
                           if (comment.isTakenDown)

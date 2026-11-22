@@ -11,6 +11,7 @@ import '../../domain/failures/comment_failure.dart';
 import '../../domain/repositories/comment_repository.dart';
 import '../datasources/comment_remote_datasource.dart';
 import '../models/comment_dto.dart';
+import '../../../../shared/span_lemma/lemma_links_parse.dart';
 import '../models/comment_image_dto.dart';
 import '../models/create_comment_request_dto.dart';
 import '../models/update_comment_request_dto.dart';
@@ -334,6 +335,7 @@ class CommentRepositoryImpl implements CommentRepository {
         downvotes: dto.downvotes,
         isEdited: dto.isEdited,
         updatedAt: dto.updatedAt,
+        lemmaLinks: parseLemmaLinksWire(dto.lemmaLinks),
       );
 
   CommentFailure _mapDio(DioException error, {required String fallback}) {

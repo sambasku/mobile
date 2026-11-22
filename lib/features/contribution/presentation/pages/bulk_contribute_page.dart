@@ -30,12 +30,16 @@ class BulkContributePage extends ConsumerStatefulWidget {
     this.initialSearchIn,
     this.initialSearchMissId,
     this.spellCorrection = false,
+    this.contributeFrom,
   });
 
   final String? initialLemma;
   final String? initialSearchIn;
   final String? initialSearchMissId;
   final bool spellCorrection;
+
+  /// Query `from` pada `/contribute/bulk` (disimpan untuk navigasi balik konsisten).
+  final String? contributeFrom;
 
   @override
   ConsumerState<BulkContributePage> createState() => _BulkContributePageState();

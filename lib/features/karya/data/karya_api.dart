@@ -55,6 +55,13 @@ class KaryaApi {
     }
   }
 
+  Future<void> recordView(String slug) async {
+    await _dio.post<dynamic>(
+      '/api/v1/karya/${Uri.encodeComponent(slug)}/view',
+      options: Options(sendTimeout: const Duration(seconds: 5)),
+    );
+  }
+
   Future<void> submit(Map<String, dynamic> body) async {
     await _dio.post<dynamic>('/api/v1/karya-contributions', data: body);
   }

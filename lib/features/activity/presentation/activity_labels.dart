@@ -5,7 +5,6 @@ import '../data/activity_feed_repository.dart';
 String feedCategoryLabel(AppLocalizations l10n, FeedCategory category) =>
     switch (category) {
       FeedCategory.all => l10n.feedCategoryAll,
-      FeedCategory.searchMiss => l10n.feedCategorySearchMiss,
       FeedCategory.correction => l10n.feedCategoryCorrection,
       FeedCategory.explore => l10n.feedCategoryExplore,
       FeedCategory.jinye => l10n.feedCategoryJinye,

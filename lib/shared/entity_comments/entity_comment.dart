@@ -1,4 +1,6 @@
 import '../../features/comment/domain/entities/comment_image.dart';
+import '../../features/jinye/domain/jinye_models.dart';
+import '../span_lemma/lemma_links_parse.dart';
 
 /// Target komentar (wisata / usaha / kuliner / acara).
 enum EntityCommentTarget { place, usaha, cuisine, event }
@@ -22,6 +24,7 @@ class EntityComment {
     this.audioMimeType,
     this.audioDurationMs,
     this.image,
+    this.lemmaLinks = const [],
   });
 
   final String id;
@@ -40,6 +43,7 @@ class EntityComment {
   final String? audioMimeType;
   final int? audioDurationMs;
   final CommentImage? image;
+  final List<JinyeLemmaLink> lemmaLinks;
 
   bool get isTakenDown => status == 'taken_down';
   bool get isDeletedByAuthor => status == 'deleted_by_author';
@@ -100,6 +104,7 @@ class EntityComment {
       audioMimeType: json['audio_mime_type'] as String?,
       audioDurationMs: json['audio_duration_ms'] as int?,
       image: image,
+      lemmaLinks: parseLemmaLinksWire(json['lemma_links']),
     );
   }
 }

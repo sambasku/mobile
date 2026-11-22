@@ -30,6 +30,7 @@ class ContributionRouter {
           initialSearchIn: q['search_in'],
           initialSearchMissId: q['miss_id'] ?? q['search_miss_id'],
           spellCorrection: correction,
+          contributeFrom: q['from'],
         );
       },
     ),
@@ -47,6 +48,7 @@ class ContributionRouter {
           initialSearchIn: searchIn,
           initialSearchMissId: missId,
           spellCorrection: correction,
+          contributeFrom: q['from'],
         );
       },
     ),

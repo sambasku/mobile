@@ -6,7 +6,9 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/public_account_name.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -53,9 +55,14 @@ class ActivityFeedTile extends ConsumerWidget {
     final dateLabel = formatRelativeCompact(DateTime.tryParse(item.createdAt));
     final kindLabel = _friendlyKindLabel(item.kind, l10n);
     final subtitle = item.subtitle?.trim();
+    final previewUrl = item.previewImageUrl?.trim();
+    final hasPreview = previewUrl != null && previewUrl.isNotEmpty;
+    const thumbSize = 72.0;
     final contextMeta = [
       ?kindLabel,
       if (subtitle != null && subtitle.isNotEmpty) subtitle,
+      if (hasPreview && (item.previewImageCount ?? 0) > 1)
+        l10n.discussionFeedPhotos(item.previewImageCount!),
     ].join(' · ');
 
     /// #166 / #179: usulan kata baru pending. Verifikator buka sesi
@@ -217,6 +224,21 @@ class ActivityFeedTile extends ConsumerWidget {
             ],
           ),
         ),
+        if (hasPreview) ...[
+          const Gap(12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: SizedBox(
+              width: thumbSize,
+              height: thumbSize,
+              child: CachedNetworkImageWithFallback(
+                imageUrl: displayImageUrl(previewUrl) ?? previewUrl,
+                fit: BoxFit.cover,
+                expand: false,
+              ),
+            ),
+          ),
+        ],
       ],
     );
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -73,6 +75,23 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
   String? _linkingExcerptId;
 
   KaryaEntry get item => widget.item;
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.microtask(() {
+      if (!mounted) return;
+      unawaited(_recordView());
+    });
+  }
+
+  Future<void> _recordView() async {
+    try {
+      await ref.read(karyaApiProvider).recordView(widget.slug);
+    } catch (_) {
+      // best-effort
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

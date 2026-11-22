@@ -5,9 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/router/app_router.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../contribution/contribution_router.dart';
 import '../../../search_miss/search_miss_router.dart';
 import '../../../vote/periksa_kata_router.dart';
 import '../../../vote/presentation/providers/vote_deck_providers.dart';
@@ -40,6 +43,19 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
     ]);
   }
 
+  void _openSuggestWordFromDeck() {
+    AnalyticsService.instance.log(
+      AnalyticsEvents.contributeStart,
+      params: {'from': 'kontribusi_vote_deck'},
+    );
+    context.push(
+      Uri(
+        path: ContributionRouter.contribute.path,
+        queryParameters: const {'from': 'kontribusi'},
+      ).toString(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Guide sekali di kunjungan pertama: cek unread pasca frame pertama.
@@ -48,11 +64,25 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowGuide());
     }
 
+    final l10n = AppLocalizations.of(context);
+    final role = ref.watch(authStatusProvider).value?.role;
+    final isVerifier =
+        role == 'admin' || role == 'root' || role == 'reviewer';
+
     return Column(
       children: [
         FHeader(
           title: const BrandWordmark(),
           suffixes: [
+            if (isVerifier)
+              FHeaderAction(
+                icon: const Icon(
+                  FLucideIcons.bookPlus,
+                  size: kHeaderActionIconSize,
+                ),
+                semanticsLabel: l10n.activityVoteDeckSuggestWord,
+                onPress: _openSuggestWordFromDeck,
+              ),
             FHeaderAction(
               icon: const Icon(
                 FLucideIcons.refreshCw,

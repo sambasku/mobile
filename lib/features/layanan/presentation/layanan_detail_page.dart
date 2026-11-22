@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -59,13 +61,37 @@ class LayananDetailPage extends ConsumerWidget {
   }
 }
 
-class _LayananDetailBody extends ConsumerWidget {
+class _LayananDetailBody extends ConsumerStatefulWidget {
   const _LayananDetailBody({required this.item});
 
   final LayananEntry item;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_LayananDetailBody> createState() => _LayananDetailBodyState();
+}
+
+class _LayananDetailBodyState extends ConsumerState<_LayananDetailBody> {
+  LayananEntry get item => widget.item;
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.microtask(() {
+      if (!mounted) return;
+      unawaited(_recordView());
+    });
+  }
+
+  Future<void> _recordView() async {
+    try {
+      await ref.read(layananApiProvider).recordView(item.slug);
+    } catch (_) {
+      // best-effort
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final width = MediaQuery.sizeOf(context).width;

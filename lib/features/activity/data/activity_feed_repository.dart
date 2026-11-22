@@ -9,7 +9,6 @@ import 'map_feed_activity.dart';
 /// Kategori chips feed beranda (#193). Nilai = query `category` di API.
 enum FeedCategory {
   all('all'),
-  searchMiss('search_miss'),
   correction('correction'),
   explore('explore'),
   jinye('jinye'),

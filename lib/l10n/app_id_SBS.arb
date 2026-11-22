@@ -999,6 +999,7 @@
   },
   "notificationTypeMeaningAutoVerified": "Makna terverifikasi warga",
   "notificationTypeMeaningNeedsReview": "Makna perlu ditinjau",
+  "activityVoteDeckSuggestWord": "Usul kata baru",
   "voteDeckLoginPrompt": "Masuk dulu untuk menilai kata",
   "voteDeckLoginCta": "Masuk",
   "voteDeckHelper": "Bantu nilai agar arti kata lebih akurat",
@@ -4199,7 +4200,7 @@
   "@discussionHelpfulQuestion": {},
   "discussionReplyLoginCta": "Masuk untuk membalas",
   "@discussionReplyLoginCta": {},
-  "discussionReplyHint": "Tulis balasan…",
+  "discussionReplyHint": "Tulis balasan… Tap kata untuk taut lemma.",
   "@discussionReplyHint": {},
   "discussionPhotoTapHintMany": "Ketuk foto untuk melihat ukuran penuh · geser untuk foto lain",
   "@discussionPhotoTapHintMany": {},
@@ -5921,7 +5922,7 @@
   "jinyePhotosPendingReview": "Foto masih dicek sebelum tayang publik",
   "jinyeCommentsTitle": "Diskusi",
   "jinyeCommentsLoadFailed": "Gagal memuat balasan",
-  "jinyeCommentHint": "Tulis balasan…",
+  "jinyeCommentHint": "Tulis balasan… Tap kata setelah kirim untuk taut lemma.",
   "jinyeCommentSend": "Kirim",
   "jinyeCommentSending": "Mengirim…",
   "jinyeCommentSent": "Balasan terkirim",
@@ -6630,5 +6631,9 @@
   "@balehoDurationDaysCount": {
     "description": "Ringkasan durasi setelah pilih tanggal",
     "placeholders": {"days": {"type": "int"}}
-  }
+  },
+  "jinyeCommentLemmaHint": "Setelah kirim, tap kata di komentar untuk tautkan ke kamus.",
+  "@jinyeCommentLemmaHint": {"description": "Hint composer komen Jinye - lemma span"},
+  "discussionReplyLemmaHint": "Tap kata di balasan untuk tautkan ke kamus.",
+  "@discussionReplyLemmaHint": {"description": "Hint balasan diskusi - lemma span"}
 }

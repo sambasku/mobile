@@ -86,7 +86,16 @@ FeedActivityItem? mapFeedActivityItem(Map<String, dynamic> map) {
     subtitle: map['subtitle']?.toString(),
     target: target,
     announcement: announcement,
+    previewImageUrl: _nonEmptyUrl(map['preview_image_url']),
+    previewImageCount: _positiveInt(map['preview_image_count']),
   );
+}
+
+int? _positiveInt(Object? raw) {
+  if (raw == null) return null;
+  final n = raw is int ? raw : int.tryParse(raw.toString());
+  if (n == null || n < 2) return null;
+  return n;
 }
 
 List<FeedActivityItem> mapFeedActivityList(Object? data) {
