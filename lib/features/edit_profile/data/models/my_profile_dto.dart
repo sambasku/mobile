@@ -26,6 +26,7 @@ abstract class MyProfileDto with _$MyProfileDto {
     @JsonKey(name: 'username_change_cooldown_days')
     @Default(7)
     int usernameChangeCooldownDays,
+  String? phone,
   }) = _MyProfileDto;
 
   factory MyProfileDto.fromJson(Map<String, dynamic> json) =>

@@ -56,6 +56,16 @@ void main() {
       expect(coords?.lng, 109.3);
     });
 
+    test('lat negatif dari pin !3d (contoh Pendopo Gubernur Kaltbar)', () {
+      const url =
+          'https://www.google.com/maps/place/Pendopo+Gubernur/'
+          '@-0.0469556,109.3413212,17z/data=!3m1!4b1!4m6!3m5!1s0x2e1d59bb3c5706e5'
+          ':0xa3c9a1a1f313eec4!8m2!3d-0.0469556!4d109.3438961';
+      final coords = extractCoordsFromMapsUrl(url);
+      expect(coords?.lat, closeTo(-0.0469556, 0.000001));
+      expect(coords?.lng, closeTo(109.3438961, 0.000001));
+    });
+
     test('null untuk place-id-only (butuh Nominatim)', () {
       expect(
         extractCoordsFromMapsUrl(

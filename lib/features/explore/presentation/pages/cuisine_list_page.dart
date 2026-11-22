@@ -83,8 +83,8 @@ suffixes: [
         onPress: () => context.push(UsahaRouter.list.path),
       ),
       FHeaderAction(
-        icon: const Icon(FLucideIcons.history),
-        onPress: () => context.push(ExploreRouter.cuisineProposals.path),
+          icon: const Icon(FLucideIcons.clipboardList),
+          onPress: () => context.push(ExploreRouter.cuisineProposals.path),
       ),
       FHeaderAction(
         icon: const Icon(FLucideIcons.plus),

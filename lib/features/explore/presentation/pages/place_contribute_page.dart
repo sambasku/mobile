@@ -301,7 +301,10 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
         .push<PlacePinPick>(
           MaterialPageRoute(
             fullscreenDialog: true,
-            builder: (_) => PlacePinPickerPage(initial: _point),
+            builder: (_) => PlacePinPickerPage(
+              initial: _point,
+              requireSambasBounds: true,
+            ),
           ),
         );
     if (result == null || !mounted) return;

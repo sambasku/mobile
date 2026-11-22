@@ -107,7 +107,7 @@ class LeaderboardApi {
   }) async {
     try {
       final res = await _dio.get<dynamic>(
-        '/api/v1/leaderboard/users/\$username/points-history',
+        '/api/v1/leaderboard/users/$username/points-history',
         queryParameters: {'limit': limit},
         options: Options(receiveTimeout: const Duration(seconds: 12)),
       );

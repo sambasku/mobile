@@ -116,7 +116,7 @@ class _EncyclopediaArticleListPageState
           ],
           suffixes: [
             FHeaderAction(
-              icon: const Icon(FLucideIcons.history),
+              icon: const Icon(FLucideIcons.clipboardList),
               onPress: () async {
                 final ok = await ensureEncyclopediaAuth(
                   context,

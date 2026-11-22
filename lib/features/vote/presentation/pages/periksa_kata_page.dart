@@ -63,7 +63,8 @@ class _PeriksaKataPageState extends ConsumerState<PeriksaKataPage> {
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
         suffixes: [
           FHeaderAction(
-            icon: const Icon(FLucideIcons.history, size: kHeaderActionIconSize),
+            icon: const Icon(FLucideIcons.clipboardList,
+                size: kHeaderActionIconSize),
             onPress: () => context.push(PeriksaKataRouter.history.path),
           ),
         ],

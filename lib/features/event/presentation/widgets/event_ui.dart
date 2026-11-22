@@ -3,8 +3,8 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/utils/format_datetime.dart'; // formatDateTime + formatDateShort
 import '../../domain/entities/event.dart';
+import '../../domain/event_schedule_format.dart';
 import '../../event_router.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -34,56 +34,21 @@ FBadge eventOccurrenceBadge(
   return FBadge(variant: variant, child: Text(label));
 }
 
-/// Format jadwal acara: `17 Nov 2026 21:00 - 23:00`.
-///
-/// Tanggal sama = jam saja di bagian kedua.
-bool _isMidnightLocal(DateTime dt) {
-  final local = dt.toLocal();
-  return local.hour == 0 && local.minute == 0;
-}
-
-String _formatEventInstant(DateTime? dt) {
-  if (dt == null) return '';
-  if (_isMidnightLocal(dt)) return formatDateShort(dt);
-  return formatDateTime(dt);
-}
-
-String formatEventSchedule(Event event) {
-  final startAt = event.startsAt;
-  if (startAt == null) return '';
-  final start = _formatEventInstant(startAt);
-  final endAt = event.endsAt;
-  if (endAt == null) return start;
-  final end = _formatEventInstant(endAt);
-  if (end.isEmpty || end == start) return start;
-  final startLocal = startAt.toLocal();
-  final endLocal = endAt.toLocal();
-  final sameDay =
-      startLocal.day == endLocal.day &&
-      startLocal.month == endLocal.month &&
-      startLocal.year == endLocal.year;
-  if (sameDay && !_isMidnightLocal(endAt)) {
-    final timeOnly = end.split(' ').last;
-    return '$start - $timeOnly';
-  }
-  if (sameDay && _isMidnightLocal(endAt)) return start;
-  return '$start - $end';
-}
-
 /// Baris meta singkat: kategori, desa, jadwal.
-List<String> eventMetaLines(Event event) {
+List<String> eventMetaLines(AppLocalizations l10n, Event event) {
   final out = <String>[];
   final category = event.category?.name;
   if (category != null && category.isNotEmpty) out.add(category);
   final village = event.village?.name;
   if (village != null && village.isNotEmpty) out.add(village);
-  final schedule = formatEventSchedule(event);
+  final schedule = formatEventSchedule(l10n, event);
   if (schedule.isNotEmpty) out.add(schedule);
   return out;
 }
 
 /// Baris meta yang ditampilkan di tile daftar acara.
-String eventMetaLine(Event event) => eventMetaLines(event).join(' · ');
+String eventMetaLine(AppLocalizations l10n, Event event) =>
+    eventMetaLines(l10n, event).join(' · ');
 
 /// Section "Agenda terkait" - daftar mini acara untuk tempat wisata/desa.
 ///
@@ -123,7 +88,8 @@ class EventMiniTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final schedule = formatEventSchedule(event);
+    final l10n = AppLocalizations.of(context);
+    final schedule = formatEventSchedule(l10n, event);
     final place = event.locationText;
     return FTile(
       prefix: Icon(FLucideIcons.calendarDays, color: theme.colors.primary),
@@ -141,7 +107,7 @@ class EventMiniTile extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      suffix: eventOccurrenceBadge(AppLocalizations.of(context), event.effectiveOccurrenceStatus),
+      suffix: eventOccurrenceBadge(l10n, event.effectiveOccurrenceStatus),
       onPress: onTap ?? () => context.push(EventRouter.detailPath(event.slug)),
     );
   }

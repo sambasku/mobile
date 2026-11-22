@@ -259,6 +259,8 @@ class BalehoApi {
     String? entityType,
     String? entityId,
     int days = 30,
+    required String startsOn,
+    required String confirmationPhone,
   }) async {
     try {
       final res = await _dio.post<dynamic>(
@@ -270,6 +272,8 @@ class BalehoApi {
           'w': w,
           'h': h,
           'days': days,
+          'starts_on': startsOn,
+          'confirmation_phone': confirmationPhone,
           if (referralUsername != null && referralUsername.trim().isNotEmpty)
             'referral_username': referralUsername.trim(),
           if (creativeId != null && creativeId.isNotEmpty)

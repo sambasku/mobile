@@ -164,7 +164,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
           suffixes: _mode == PlacePageMode.wisata
               ? [
                   FHeaderAction(
-                    icon: const Icon(FLucideIcons.history),
+                    icon: const Icon(FLucideIcons.clipboardList),
                     onPress: () =>
                         context.push(ExploreRouter.placeProposals.path),
                   ),

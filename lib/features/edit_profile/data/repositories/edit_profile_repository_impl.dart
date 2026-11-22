@@ -152,6 +152,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
     usernameChangedAt: _parseIso(dto.usernameChangedAt),
     usernameChangeAllowedAt: _parseIso(dto.usernameChangeAllowedAt),
     usernameChangeCooldownDays: dto.usernameChangeCooldownDays,
+    phone: dto.phone,
   );
 
   DateTime? _parseIso(String? raw) {

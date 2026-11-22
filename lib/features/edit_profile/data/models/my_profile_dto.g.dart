@@ -24,6 +24,7 @@ _MyProfileDto _$MyProfileDtoFromJson(Map<String, dynamic> json) =>
       usernameChangeAllowedAt: json['username_change_allowed_at'] as String?,
       usernameChangeCooldownDays:
           (json['username_change_cooldown_days'] as num?)?.toInt() ?? 7,
+      phone: json['phone'] as String?,
     );
 
 Map<String, dynamic> _$MyProfileDtoToJson(_MyProfileDto instance) =>
@@ -42,6 +43,7 @@ Map<String, dynamic> _$MyProfileDtoToJson(_MyProfileDto instance) =>
       'username_changed_at': instance.usernameChangedAt,
       'username_change_allowed_at': instance.usernameChangeAllowedAt,
       'username_change_cooldown_days': instance.usernameChangeCooldownDays,
+      'phone': instance.phone,
     };
 
 _UpdateMyProfileRequestDto _$UpdateMyProfileRequestDtoFromJson(

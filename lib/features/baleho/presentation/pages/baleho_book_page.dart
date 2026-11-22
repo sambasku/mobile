@@ -9,7 +9,13 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/widgets/image_crop_page.dart';
+import '../../../../shared/utils/phone_country.dart';
+import '../../../../shared/utils/phone_country_picker_sheet.dart';
+import '../../../../shared/utils/phone_national_digits_formatter.dart';
+import '../../../../shared/widgets/calendar_date_picker_sheet.dart';
+import '../../../../shared/widgets/phone_country_flag.dart';
 import '../../../../shared/widgets/pasteable_url_field.dart';
+import '../../../edit_profile/domain/providers/edit_profile_domain_providers.dart';
 import '../../data/baleho_api.dart';
 import '../../domain/baleho_models.dart';
 import '../providers/baleho_board_provider.dart';
@@ -69,6 +75,19 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
   String? _reactivateLabel;
   var _reactivateFrameCount = 1;
   List<BalehoCreativeSummary>? _creatives;
+  late final TextEditingController _phone;
+  var _phoneCountry = kPhoneCountryId;
+  late DateTime _startDate;
+  late DateTime _endDate;
+  var _syncingDuration = false;
+
+  DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
+
+  String _dateLabel(DateTime? d) =>
+      d == null ? '' : DateFormat.yMMMMd('id').format(d);
+
+  String get _startsOnWire => DateFormat('yyyy-MM-dd').format(_startDate);
+
 
   @override
   void initState() {
@@ -78,11 +97,17 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
     );
     _daysCtrl = TextEditingController(text: '$_days');
     _daysCtrl.addListener(_syncDaysFromCtrl);
+    final today = _dateOnly(DateTime.now());
+    _startDate = today;
+    _endDate = today.add(Duration(days: _days - 1));
+    _phone = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _prefillPhone());
   }
 
   @override
   void dispose() {
     _daysCtrl.removeListener(_syncDaysFromCtrl);
+    _phone.dispose();
     _referral.dispose();
     _daysCtrl.dispose();
     _title.dispose();
@@ -110,6 +135,7 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
           selection: TextSelection.collapsed(offset: text.length),
         );
       }
+      _applyDaysToEndDate(next);
     });
   }
 
@@ -127,7 +153,85 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
     }
     final parsed = int.tryParse(digits);
     if (parsed == null) return;
-    setState(() => _days = parsed);
+    setState(() {
+      _days = parsed;
+      _applyDaysToEndDate(parsed);
+    });
+  }
+
+
+
+  Future<void> _prefillPhone() async {
+    final result = await ref.read(getMyProfileUseCaseProvider).call();
+    if (!mounted) return;
+    result.match((_) {}, (profile) {
+      final stored = profile.phone?.trim();
+      if (stored == null || stored.isEmpty) return;
+      final parsed = parseStoredPhone(stored);
+      setState(() {
+        _phoneCountry = parsed.country;
+        _phone.text = parsed.national;
+      });
+    });
+  }
+
+  void _syncDaysFromDates() {
+    if (_syncingDuration) return;
+    _syncingDuration = true;
+    final days = _endDate.difference(_startDate).inDays + 1;
+    final clamped = days.clamp(_kMinDays, _kMaxDays);
+    setState(() {
+      _days = clamped;
+      if (_daysCtrl.text != '$clamped') {
+        _daysCtrl.value = TextEditingValue(
+          text: '$clamped',
+          selection: TextSelection.collapsed(offset: '$clamped'.length),
+        );
+      }
+    });
+    _syncingDuration = false;
+  }
+
+  void _applyDaysToEndDate(int days) {
+    if (_syncingDuration) return;
+    _syncingDuration = true;
+    final clamped = days.clamp(_kMinDays, _kMaxDays);
+    final end = _startDate.add(Duration(days: clamped - 1));
+    setState(() => _endDate = _dateOnly(end));
+    _syncingDuration = false;
+  }
+
+  DateTime get _maxEndDate => _startDate.add(const Duration(days: _kMaxDays - 1));
+
+  void _clampEndAfterStartChange() {
+    if (_endDate.isBefore(_startDate)) {
+      _endDate = _startDate;
+    }
+    final maxEnd = _maxEndDate;
+    if (_endDate.isAfter(maxEnd)) {
+      _endDate = maxEnd;
+    }
+    _syncDaysFromDates();
+  }
+
+  bool _isValidBalehoPhone(String digits) {
+    return RegExp(r'^62\d{8,13}$').hasMatch(digits) ||
+        RegExp(r'^60\d{9,12}$').hasMatch(digits);
+  }
+
+  FTile _scheduleTile({
+    required String title,
+    required String? value,
+    required String placeholder,
+    required VoidCallback onPress,
+  }) {
+    return FTile(
+      prefix: const Icon(FLucideIcons.calendar, size: 18),
+      title: Text(title),
+      subtitle: Text(value != null && value.isNotEmpty ? value : placeholder),
+      suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+      onPress: onPress,
+    );
   }
 
   String _mapError(AppLocalizations l10n, BalehoApiException e) {
@@ -242,6 +346,13 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
   }
 
   String? _validate(AppLocalizations l10n) {
+    final intlPhone = toInternationalPhoneDigits(
+      _phoneCountry,
+      _phone.text.trim(),
+    );
+    if (intlPhone.isEmpty || !_isValidBalehoPhone(intlPhone)) {
+      return l10n.balehoValidationPhone;
+    }
     if (_days < _kMinDays || _days > _kMaxDays) {
       return l10n.balehoValidationDays;
     }
@@ -360,6 +471,11 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
             entityType: _entityType,
             entityId: _entityId,
             days: _days,
+            startsOn: _startsOnWire,
+            confirmationPhone: toInternationalPhoneDigits(
+              _phoneCountry,
+              _phone.text.trim(),
+            ),
           );
       if (!mounted) return;
       ref.invalidate(balehoBoardProvider(1));
@@ -442,6 +558,92 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
           const Gap(4),
           Text(
             l10n.balehoTosBody,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+          const Gap(12),
+          FTextField(
+            control: FTextFieldControl.managed(controller: _phone),
+            label: Text(l10n.balehoBookPhoneLabel),
+            hint: l10n.balehoBookPhoneHint,
+            keyboardType: TextInputType.phone,
+            enabled: !_busy,
+            inputFormatters: const [PhoneNationalDigitsFormatter()],
+            prefixBuilder: (context, style, variants) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _busy
+                  ? null
+                  : () async {
+                      final picked = await showPhoneCountryPickerSheet(
+                        context,
+                        selected: _phoneCountry,
+                      );
+                      if (picked == null || !mounted) return;
+                      setState(() => _phoneCountry = picked);
+                    },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 12, right: 4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    PhoneCountryFlag.fromCountry(_phoneCountry, size: 18),
+                    const Gap(6),
+                    Text(_phoneCountry.prefixLabel),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const Gap(12),
+          FTileGroup(
+            children: [
+              _scheduleTile(
+                title: l10n.balehoStartDateLabel,
+                value: _dateLabel(_startDate),
+                placeholder: l10n.eventPickDate,
+                onPress: _busy
+                    ? () {}
+                    : () async {
+                        final picked = await showCalendarDatePickerSheet(
+                          context,
+                          title: l10n.balehoStartDateLabel,
+                          initial: _startDate,
+                          minDate: _dateOnly(DateTime.now()),
+                        );
+                        if (picked == null || !mounted) return;
+                        setState(() {
+                          _startDate = _dateOnly(picked);
+                          _clampEndAfterStartChange();
+                        });
+                      },
+              ),
+              _scheduleTile(
+                title: l10n.balehoEndDateLabel,
+                value: _dateLabel(_endDate),
+                placeholder: l10n.eventPickDate,
+                onPress: _busy
+                    ? () {}
+                    : () async {
+                        final picked = await showCalendarDatePickerSheet(
+                          context,
+                          title: l10n.balehoEndDateLabel,
+                          initial: _endDate,
+                          minDate: _startDate,
+                          maxDate: _maxEndDate,
+                        );
+                        if (picked == null || !mounted) return;
+                        setState(() {
+                          _endDate = _dateOnly(picked);
+                          _syncDaysFromDates();
+                        });
+                      },
+              ),
+            ],
+          ),
+          const Gap(4),
+          Text(
+            l10n.balehoDurationDaysCount(_days < 1 ? 0 : _days),
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),

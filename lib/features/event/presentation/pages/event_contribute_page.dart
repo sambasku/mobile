@@ -21,6 +21,8 @@ import '../../../explore/presentation/pages/place_pin_picker_page.dart';
 import '../../../explore/presentation/widgets/sambas_map_view.dart';
 import '../../domain/entities/event.dart';
 import '../../domain/entities/event_contribution.dart';
+import '../../domain/event_contribute_schedule.dart';
+import '../../domain/event_schedule_format.dart';
 import '../providers/event_proposals_provider.dart';
 import '../providers/event_providers.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -147,14 +149,6 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
     _sourceUrl.dispose();
     _sourceAttribution.dispose();
     super.dispose();
-  }
-
-  /// Tanggal dari FDateField = UTC midnight; jam opsional → 00:00 lokal.
-  static DateTime? _combine(DateTime? date, FTime? time) {
-    if (date == null) return null;
-    final hour = time?.hour ?? 0;
-    final minute = time?.minute ?? 0;
-    return DateTime(date.year, date.month, date.day, hour, minute);
   }
 
   /// Tanggal dari kalender = UTC midnight. Formatnya pakai komponen tanggal
@@ -291,7 +285,10 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
         .push<PlacePinPick>(
           MaterialPageRoute(
             fullscreenDialog: true,
-            builder: (_) => PlacePinPickerPage(initial: _point),
+            builder: (_) => PlacePinPickerPage(
+              initial: _point,
+              requireSambasBounds: false,
+            ),
           ),
         );
     if (result == null || !mounted) return;
@@ -309,8 +306,8 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
 
   Future<void> _submit() async {
     // Tanggal mulai tanpa jam → 00:00. Selesai opsional (null bila tanpa tanggal).
-    final startsAt = _startDate == null ? null : _combine(_startDate, _startTime);
-    final endsAt = _endDate == null ? null : _combine(_endDate, _endTime);
+    final startsAt = _startDate == null ? null : combineEventDateTime(_startDate, _startTime);
+    final endsAt = _endDate == null ? null : combineEventDateTime(_endDate, _endTime);
     if (_name.text.trim().isEmpty) {
       _validationError(AppLocalizations.of(context).eventFormNameRequired);
       return;
@@ -323,7 +320,13 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
       _validationError(AppLocalizations.of(context).eventFormStartRequired);
       return;
     }
-    if (endsAt != null && endsAt.isBefore(startsAt)) {
+    if (eventScheduleOrderingInvalid(
+      startDate: _startDate!,
+      endDate: _endDate,
+      endTime: _endTime,
+      startsAt: startsAt,
+      endsAt: endsAt,
+    )) {
       _validationError(AppLocalizations.of(context).eventFormEndBeforeStart);
       return;
     }
@@ -554,7 +557,10 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
                 icon: FLucideIcons.clock,
                 title: AppLocalizations.of(context).eventFormEndTimeLabel,
                 value: _endTime?.toString(),
-                placeholder: AppLocalizations.of(context).eventPickTime,
+                placeholder: _endDate != null
+                    ? AppLocalizations.of(context)
+                        .eventFormEndTimePlaceholderThroughEndDate
+                    : AppLocalizations.of(context).eventPickTime,
                 onPress: () async {
                   final picked = await _pickTime(
                     context,
@@ -566,6 +572,28 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
                 },
               ),
             ],
+          ),
+          Builder(
+            builder: (context) {
+              final l10n = AppLocalizations.of(context);
+              final preview = formatEventContributeSchedulePreview(
+                l10n,
+                startDate: _startDate,
+                startTime: _startTime,
+                endDate: _endDate,
+                endTime: _endTime,
+              );
+              if (preview.isEmpty) return const SizedBox.shrink();
+              return Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  preview,
+                  style: theme.typography.body.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+              );
+            },
           ),
           const Gap(12),
           FTextField(

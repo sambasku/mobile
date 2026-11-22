@@ -7,7 +7,7 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/event.dart';
 import '../../event_router.dart';
-import 'event_ui.dart';
+import '../../domain/event_schedule_format.dart';
 
 /// Bottomsheet daftar acara di satu tanggal. Return path detail (pop-then-push).
 Future<void> showEventDaySheet(
@@ -77,7 +77,10 @@ Future<void> showEventDaySheet(
                         title: Text(event.name),
                         subtitle: Text(
                           [
-                            formatEventSchedule(event),
+                            formatEventSchedule(
+                              AppLocalizations.of(context),
+                              event,
+                            ),
                             if (event.locationText.isNotEmpty)
                               event.locationText,
                           ].where((s) => s.isNotEmpty).join(' · '),

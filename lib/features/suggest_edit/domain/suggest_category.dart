@@ -22,6 +22,8 @@ enum SuggestCategory {
   spellingVariant('spelling_variant'),
   /// Tag topik lemma (chip di atas detail) - N:M lewat word_categories.
   changeCategories('change_categories'),
+  /// Register & peringatan (kasar, seksual, dll.) - kolom `usage_labels`.
+  changeUsageLabels('change_usage_labels'),
   lemmaNotes('lemma_notes');
 
   const SuggestCategory(this.code);
@@ -275,6 +277,26 @@ Map<String, dynamic>? buildLemmaNotes({
 }
 
 /// Diff kategori topik lemma → `category_ids_to_add` / `category_ids_to_remove`.
+/// Diff label register/peringatan → `usage_labels_to_add` / `usage_labels_to_remove`.
+Map<String, dynamic>? buildChangeUsageLabels({
+  required Set<String> original,
+  required Set<String> selected,
+}) {
+  final toAdd = [
+    for (final code in selected)
+      if (!original.contains(code)) code,
+  ];
+  final toRemove = [
+    for (final code in original)
+      if (!selected.contains(code)) code,
+  ];
+  if (toAdd.isEmpty && toRemove.isEmpty) return null;
+  return {
+    if (toAdd.isNotEmpty) 'usage_labels_to_add': toAdd,
+    if (toRemove.isNotEmpty) 'usage_labels_to_remove': toRemove,
+  };
+}
+
 Map<String, dynamic>? buildChangeCategories({
   required Set<String> originalIds,
   required Set<String> selectedIds,

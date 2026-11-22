@@ -3858,7 +3858,7 @@ abstract class AppLocalizations {
   /// Kategori usulan: tag topik lemma (chip)
   ///
   /// In id, this message translates to:
-  /// **'Ubah kategori'**
+  /// **'Ubah kategori topik'**
   String get suggestCategoryChangeCategories;
 
   /// No description provided for @suggestCategoryChangeCategoriesDesc.
@@ -3866,6 +3866,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tambah atau lepas kategori topik di lemma ini'**
   String get suggestCategoryChangeCategoriesDesc;
+
+  /// Kategori usulan: ubah usage_labels pada kata existing
+  ///
+  /// In id, this message translates to:
+  /// **'Label register & peringatan'**
+  String get suggestCategoryChangeUsageLabels;
+
+  /// Subjudul tile usul perubahan untuk usage_labels
+  ///
+  /// In id, this message translates to:
+  /// **'Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.'**
+  String get suggestCategoryChangeUsageLabelsDesc;
+
+  /// Info di form usul perubahan untuk usage_labels
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih label yang sesuai. Kamu bisa menambah atau melepas penanda.'**
+  String get suggestUsageLabelsSectionInfo;
 
   /// No description provided for @suggestCategoryPickHint.
   ///
@@ -18487,6 +18505,24 @@ abstract class AppLocalizations {
   /// **'Jam selesai (opsional)'**
   String get eventFormEndTimeLabel;
 
+  /// Rentang jadwal acara tanpa jam pasti di salah satu ujung
+  ///
+  /// In id, this message translates to:
+  /// **'{start} - {end}'**
+  String eventScheduleRange(String start, String end);
+
+  /// Ringkasan jadwal di form usulan acara
+  ///
+  /// In id, this message translates to:
+  /// **'Pratinjau: {schedule}'**
+  String eventFormSchedulePreview(String schedule);
+
+  /// Placeholder jam selesai bila tanggal selesai sudah diisi
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional - sampai tanggal selesai'**
+  String get eventFormEndTimePlaceholderThroughEndDate;
+
   /// No description provided for @eventFormLocationLabel.
   ///
   /// In id, this message translates to:
@@ -23414,6 +23450,42 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat Riwayat EXP'**
   String get expHistoryViewAll;
+
+  /// Label kontak konfirmasi pesanan Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'No. HP / WhatsApp'**
+  String get balehoBookPhoneLabel;
+
+  /// Hint kontak Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Untuk konfirmasi pembayaran'**
+  String get balehoBookPhoneHint;
+
+  /// Validasi nomor Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Isi nomor HP/WA format internasional 62… atau 60…'**
+  String get balehoValidationPhone;
+
+  /// Tile jadwal mulai Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal mulai tayang'**
+  String get balehoStartDateLabel;
+
+  /// Tile jadwal berakhir Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal berakhir tayang'**
+  String get balehoEndDateLabel;
+
+  /// Ringkasan durasi setelah pilih tanggal
+  ///
+  /// In id, this message translates to:
+  /// **'Durasi: {days} hari'**
+  String balehoDurationDaysCount(int days);
 }
 
 class _AppLocalizationsDelegate

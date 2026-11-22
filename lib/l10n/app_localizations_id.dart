@@ -2120,11 +2120,22 @@ class AppLocalizationsId extends AppLocalizations {
       'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
 
   @override
-  String get suggestCategoryChangeCategories => 'Ubah kategori';
+  String get suggestCategoryChangeCategories => 'Ubah kategori topik';
 
   @override
   String get suggestCategoryChangeCategoriesDesc =>
       'Tambah atau lepas kategori topik di lemma ini';
+
+  @override
+  String get suggestCategoryChangeUsageLabels => 'Label register & peringatan';
+
+  @override
+  String get suggestCategoryChangeUsageLabelsDesc =>
+      'Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.';
+
+  @override
+  String get suggestUsageLabelsSectionInfo =>
+      'Pilih label yang sesuai. Kamu bisa menambah atau melepas penanda.';
 
   @override
   String get suggestCategoryPickHint => 'Pilih kategori topik';
@@ -10446,6 +10457,20 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventFormEndTimeLabel => 'Jam selesai (opsional)';
 
   @override
+  String eventScheduleRange(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String eventFormSchedulePreview(String schedule) {
+    return 'Pratinjau: $schedule';
+  }
+
+  @override
+  String get eventFormEndTimePlaceholderThroughEndDate =>
+      'Opsional - sampai tanggal selesai';
+
+  @override
   String get eventFormLocationLabel => 'Lokasi';
 
   @override
@@ -13315,6 +13340,27 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get expHistoryViewAll => 'Lihat Riwayat EXP';
+
+  @override
+  String get balehoBookPhoneLabel => 'No. HP / WhatsApp';
+
+  @override
+  String get balehoBookPhoneHint => 'Untuk konfirmasi pembayaran';
+
+  @override
+  String get balehoValidationPhone =>
+      'Isi nomor HP/WA format internasional 62… atau 60…';
+
+  @override
+  String get balehoStartDateLabel => 'Tanggal mulai tayang';
+
+  @override
+  String get balehoEndDateLabel => 'Tanggal berakhir tayang';
+
+  @override
+  String balehoDurationDaysCount(int days) {
+    return 'Durasi: $days hari';
+  }
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -15432,11 +15478,22 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
 
   @override
-  String get suggestCategoryChangeCategories => 'Ubah kategori';
+  String get suggestCategoryChangeCategories => 'Ubah kategori topik';
 
   @override
   String get suggestCategoryChangeCategoriesDesc =>
       'Tambah atau lepas kategori topik di lemma ini';
+
+  @override
+  String get suggestCategoryChangeUsageLabels => 'Label register & peringatan';
+
+  @override
+  String get suggestCategoryChangeUsageLabelsDesc =>
+      'Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.';
+
+  @override
+  String get suggestUsageLabelsSectionInfo =>
+      'Pilih label yang sesuai. Kamu bisa menambah atau melepas penanda.';
 
   @override
   String get suggestCategoryPickHint => 'Pilih kategori topik';
@@ -23674,6 +23731,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventFormEndTimeLabel => 'Jam selesai (opsional)';
 
   @override
+  String eventScheduleRange(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String eventFormSchedulePreview(String schedule) {
+    return 'Pratinjau: $schedule';
+  }
+
+  @override
+  String get eventFormEndTimePlaceholderThroughEndDate =>
+      'Opsional - sampai tanggal selesai';
+
+  @override
   String get eventFormLocationLabel => 'Lokasi';
 
   @override
@@ -26543,4 +26614,25 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get expHistoryViewAll => 'Lihat Riwayat EXP';
+
+  @override
+  String get balehoBookPhoneLabel => 'No. HP / WhatsApp';
+
+  @override
+  String get balehoBookPhoneHint => 'Untuk konfirmasi pembayaran';
+
+  @override
+  String get balehoValidationPhone =>
+      'Isi nomor HP/WA format internasional 62… atau 60…';
+
+  @override
+  String get balehoStartDateLabel => 'Tanggal mulai tayang';
+
+  @override
+  String get balehoEndDateLabel => 'Tanggal berakhir tayang';
+
+  @override
+  String balehoDurationDaysCount(int days) {
+    return 'Durasi: $days hari';
+  }
 }

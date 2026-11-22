@@ -22,8 +22,8 @@ const _hintTooShort = '\u0000hint:tooShort';
 const _hintSearching = '\u0000hint:searching';
 const _hintResolvingUrl = '\u0000hint:resolvingUrl';
 const _hintNotFound = '\u0000hint:notFound';
-const _hintOutOfBounds = '\u0000hint:outOfBounds';
 const _hintSearchFailed = '\u0000hint:searchFailed';
+const _hintOutOfBounds = '\u0000hint:outOfBounds';
 const _hintFromMaps = '\u0000hint:fromMaps';
 
 /// Hasil layar penuh. `point` null berarti titik dihapus.
@@ -36,9 +36,16 @@ class PlacePinPick {
 /// Peta layar penuh untuk menaruh titik, plus pencarian Nominatim
 /// dan paste tautan Google Maps (resolve di API).
 class PlacePinPickerPage extends ConsumerStatefulWidget {
-  const PlacePinPickerPage({super.key, this.initial});
+  const PlacePinPickerPage({
+    super.key,
+    this.initial,
+    this.requireSambasBounds = false,
+  });
 
   final LatLng? initial;
+
+  /// Wisata: tap/paste/initial harus dalam bbox Kab. Sambas.
+  final bool requireSambasBounds;
 
   @override
   ConsumerState<PlacePinPickerPage> createState() => _PlacePinPickerPageState();
@@ -64,7 +71,10 @@ class _PlacePinPickerPageState extends ConsumerState<PlacePinPickerPage> {
   );
 
   MapsUrlResolveApi get _resolveApi =>
-      _mapsApi ??= MapsUrlResolveApi(ref.read(dioProvider));
+      _mapsApi ??= MapsUrlResolveApi(
+        ref.read(dioProvider),
+        requireSambasBounds: widget.requireSambasBounds,
+      );
 
   @override
   void initState() {
@@ -75,7 +85,8 @@ class _PlacePinPickerPageState extends ConsumerState<PlacePinPickerPage> {
       _point = null;
       return;
     }
-    if (!inSambasBounds(initial.latitude, initial.longitude)) {
+    if (widget.requireSambasBounds &&
+        !inSambasBounds(initial.latitude, initial.longitude)) {
       _point = null;
       _hint = _hintOutOfBounds;
       return;
@@ -249,13 +260,6 @@ class _PlacePinPickerPageState extends ConsumerState<PlacePinPickerPage> {
   void _pickHit(NominatimHit hit) {
     _unfocus();
     final point = LatLng(hit.lat, hit.lng);
-    if (!inSambasBounds(point.latitude, point.longitude)) {
-      setState(() {
-        _results = const [];
-        _hint = _hintOutOfBounds;
-      });
-      return;
-    }
     setState(() {
       _point = point;
       _results = const [];
@@ -269,7 +273,8 @@ class _PlacePinPickerPageState extends ConsumerState<PlacePinPickerPage> {
 
   void _tap(LatLng point) {
     _unfocus();
-    if (!inSambasBounds(point.latitude, point.longitude)) {
+    if (widget.requireSambasBounds &&
+        !inSambasBounds(point.latitude, point.longitude)) {
       setState(() => _hint = _hintOutOfBounds);
       return;
     }

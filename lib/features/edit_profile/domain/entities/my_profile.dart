@@ -16,6 +16,7 @@ class MyProfile {
     this.usernameChangedAt,
     this.usernameChangeAllowedAt,
     this.usernameChangeCooldownDays = 7,
+    this.phone,
   });
 
   final String username;
@@ -46,6 +47,9 @@ class MyProfile {
   final DateTime? usernameChangeAllowedAt;
 
   final int usernameChangeCooldownDays;
+
+  /// Digit internasional tanpa + (62… / 60…).
+  final String? phone;
 
   bool get isUsernameLocked {
     final at = usernameChangeAllowedAt;

@@ -250,13 +250,18 @@ Future<String?> expandShortMapsUrl(
 
 /// Klien resolve: expand lokal → parse koordinat → Nominatim → API.
 class MapsUrlResolveApi {
-  MapsUrlResolveApi(this._dio, {SambasNominatim? nominatim})
-    : _nominatim = nominatim ?? SambasNominatim(),
-      _ownsNominatim = nominatim == null;
+  MapsUrlResolveApi(
+    this._dio, {
+    SambasNominatim? nominatim,
+    this.requireSambasBounds = false,
+  }) : _nominatim = nominatim ?? SambasNominatim(),
+       _ownsNominatim = nominatim == null;
 
   final Dio _dio;
   final SambasNominatim _nominatim;
   final bool _ownsNominatim;
+  /// Wisata: koordinat resolve harus dalam bbox Kab. Sambas.
+  final bool requireSambasBounds;
   CancelToken? _cancel;
   int _seq = 0;
 
@@ -290,7 +295,7 @@ class MapsUrlResolveApi {
       // 2) Ambil !3d!4d / @ / q dari URL final.
       var coords = extractCoordsFromMapsUrl(working);
       if (coords != null) {
-        return _hitOrBounds(coords, working);
+        return _mapsHit(coords, working);
       }
 
       // 3) Place-id-only (banyak share Maps): geocode nama di path.
@@ -340,7 +345,10 @@ class MapsUrlResolveApi {
     try {
       final res = await _dio.post<dynamic>(
         '/api/v1/geo/resolve-maps-url',
-        data: {'url': working},
+        data: {
+          'url': working,
+          if (requireSambasBounds) 'require_sambas_bounds': true,
+        },
         cancelToken: token,
         options: Options(
           sendTimeout: const Duration(seconds: 8),
@@ -370,7 +378,7 @@ class MapsUrlResolveApi {
           code: 'MAPS_URL_RESOLVE_FAILED',
         );
       }
-      return _hitOrBounds(MapsCoords(lat, lng), canonical);
+      return _mapsHit(MapsCoords(lat, lng), canonical);
     } on DioException catch (e) {
       if (CancelToken.isCancel(e) || seq != _seq) {
         throw const MapsUrlResolveException('', code: 'CANCELLED');
@@ -400,8 +408,8 @@ class MapsUrlResolveApi {
     }
   }
 
-  MapsUrlResolveHit _hitOrBounds(MapsCoords coords, String canonical) {
-    if (!inSambasBounds(coords.lat, coords.lng)) {
+  MapsUrlResolveHit _mapsHit(MapsCoords coords, String canonical) {
+    if (requireSambasBounds && !inSambasBounds(coords.lat, coords.lng)) {
       throw MapsUrlResolveException(
         l10n.placePinPickerMapsUrlOutOfBounds,
         code: 'MAPS_URL_OUT_OF_BOUNDS',

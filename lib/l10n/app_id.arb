@@ -1546,11 +1546,23 @@
   "suggestCategoryMeaningGroupDesc": "Gabungkan kata bermakna sama dalam satu kelompok",
   "suggestCategorySpellingVariant": "Variasi penulisan",
   "suggestCategorySpellingVariantDesc": "Ejaan lain tanpa entri sendiri (tetap di lemma ini)",
-  "suggestCategoryChangeCategories": "Ubah kategori",
+  "suggestCategoryChangeCategories": "Ubah kategori topik",
   "@suggestCategoryChangeCategories": {
     "description": "Kategori usulan: tag topik lemma (chip)"
   },
   "suggestCategoryChangeCategoriesDesc": "Tambah atau lepas kategori topik di lemma ini",
+  "suggestCategoryChangeUsageLabels": "Label register & peringatan",
+  "@suggestCategoryChangeUsageLabels": {
+    "description": "Kategori usulan: ubah usage_labels pada kata existing"
+  },
+  "suggestCategoryChangeUsageLabelsDesc": "Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.",
+  "@suggestCategoryChangeUsageLabelsDesc": {
+    "description": "Subjudul tile usul perubahan untuk usage_labels"
+  },
+  "suggestUsageLabelsSectionInfo": "Pilih label yang sesuai. Kamu bisa menambah atau melepas penanda.",
+  "@suggestUsageLabelsSectionInfo": {
+    "description": "Info di form usul perubahan untuk usage_labels"
+  },
   "suggestCategoryPickHint": "Pilih kategori topik",
   "suggestCategoryNoneSelected": "Belum ada kategori",
   "suggestCategoryLemmaNotes": "Lainnya",
@@ -7378,6 +7390,25 @@
   "@eventFormEndDateLabel": {},
   "eventFormEndTimeLabel": "Jam selesai (opsional)",
   "@eventFormEndTimeLabel": {},
+  "eventScheduleRange": "{start} - {end}",
+  "@eventScheduleRange": {
+    "description": "Rentang jadwal acara tanpa jam pasti di salah satu ujung",
+    "placeholders": {
+      "start": {"type": "String"},
+      "end": {"type": "String"}
+    }
+  },
+  "eventFormSchedulePreview": "Pratinjau: {schedule}",
+  "@eventFormSchedulePreview": {
+    "description": "Ringkasan jadwal di form usulan acara",
+    "placeholders": {
+      "schedule": {"type": "String"}
+    }
+  },
+  "eventFormEndTimePlaceholderThroughEndDate": "Opsional - sampai tanggal selesai",
+  "@eventFormEndTimePlaceholderThroughEndDate": {
+    "description": "Placeholder jam selesai bila tanggal selesai sudah diisi"
+  },
   "eventFormLocationLabel": "Lokasi",
   "@eventFormLocationLabel": {},
   "eventFormLocationHint": "Opsional - nama tempat atau alamat",
@@ -10239,5 +10270,21 @@
   "expHistoryViewAll": "Lihat Riwayat EXP",
   "@expHistoryViewAll": {
     "description": "Tombol aksi membuka layar riwayat EXP dari bottom sheet level"
+  }
+,
+  "balehoBookPhoneLabel": "No. HP / WhatsApp",
+  "@balehoBookPhoneLabel": {"description": "Label kontak konfirmasi pesanan Baleho"},
+  "balehoBookPhoneHint": "Untuk konfirmasi pembayaran",
+  "@balehoBookPhoneHint": {"description": "Hint kontak Baleho"},
+  "balehoValidationPhone": "Isi nomor HP/WA format internasional 62… atau 60…",
+  "@balehoValidationPhone": {"description": "Validasi nomor Baleho"},
+  "balehoStartDateLabel": "Tanggal mulai tayang",
+  "@balehoStartDateLabel": {"description": "Tile jadwal mulai Baleho"},
+  "balehoEndDateLabel": "Tanggal berakhir tayang",
+  "@balehoEndDateLabel": {"description": "Tile jadwal berakhir Baleho"},
+  "balehoDurationDaysCount": "Durasi: {days} hari",
+  "@balehoDurationDaysCount": {
+    "description": "Ringkasan durasi setelah pilih tanggal",
+    "placeholders": {"days": {"type": "int"}}
   }
 }
