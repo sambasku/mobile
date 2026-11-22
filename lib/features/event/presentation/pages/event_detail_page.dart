@@ -20,6 +20,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/event.dart';
 import '../../event_router.dart';
 import '../providers/event_providers.dart';
+import '../../domain/event_schedule_format.dart';
 import '../widgets/event_ui.dart';
 
 /// Rasio poster hero detail acara (sama dengan hero wisata).
@@ -397,7 +398,7 @@ class _InfoGroup extends ConsumerWidget {
           prefix: const Icon(FLucideIcons.calendarClock, size: 18),
           title: Text(l10n.eventStart),
           subtitle: Text(
-            formatEventSchedule(event),
+            formatEventSchedule(l10n, event),
             maxLines: 2,
             softWrap: true,
           ),

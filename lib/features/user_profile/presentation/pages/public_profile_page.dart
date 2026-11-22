@@ -280,6 +280,7 @@ class _ProfileBody extends HookConsumerWidget {
                                 leveling: profile.leveling!,
                                 // Compact header rata kiri - jangan center.
                                 alignCenter: false,
+                                username: profile.username,
                               ),
                         stats: ProfileStatRow(
                           words: profile.wordsApproved,

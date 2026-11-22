@@ -4,11 +4,11 @@ import '../domain/sambas_map_config.dart';
 /// Label jenis pengajuan kuliner (kode wire API -> teks UI).
 String culinaryKindLabel(AppLocalizations l10n, String kind) => switch (kind) {
   'new_cuisine' => l10n.culinaryKindNewCuisine,
-  'new_place' => l10n.culinaryKindNewPlace,
+  'new_place' || 'new_usaha' => l10n.culinaryKindNewPlace,
   'cuisine_edit' => l10n.culinaryKindCuisineEdit,
-  'place_edit' => l10n.culinaryKindPlaceEdit,
+  'place_edit' || 'usaha_edit' => l10n.culinaryKindPlaceEdit,
   'link' || 'link_edit' => l10n.culinaryKindLink,
-  'place_operational' => l10n.culinaryKindOperational,
+  'place_operational' || 'usaha_operational' => l10n.culinaryKindOperational,
   'archive' => l10n.culinaryKindArchive,
   'restore' => l10n.culinaryKindRestore,
   _ => '',

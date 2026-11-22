@@ -13,7 +13,6 @@ import '../../../explore/explore_router.dart';
 import '../../karya_router.dart';
 import '../../domain/karya.dart';
 import '../karya_providers.dart';
-import '../widgets/karya_filter_sheet.dart';
 
 class KaryaListPage extends ConsumerStatefulWidget {
   const KaryaListPage({super.key});
@@ -25,23 +24,12 @@ class KaryaListPage extends ConsumerStatefulWidget {
 class _KaryaListPageState extends ConsumerState<KaryaListPage> {
   String? _kind;
   String _q = '';
-  int? _year;
-  String? _language;
-  String? _sambasType;
   Timer? _debounce;
 
   KaryaBrowseQuery get _query => KaryaBrowseQuery(
         kind: _kind,
         q: _q,
-        year: _year,
-        language: _language,
-        sambasType: _sambasType,
       );
-
-  bool get _hasExtraFilter =>
-      _year != null ||
-      (_language != null && _language!.isNotEmpty) ||
-      (_sambasType != null && _sambasType!.isNotEmpty);
 
   @override
   void dispose() {
@@ -130,29 +118,9 @@ class _KaryaListPageState extends ConsumerState<KaryaListPage> {
                 : context.go(ExploreRouter.hub.path),
           ),
         ],
-        suffixes: [
-          FHeaderAction(
-            icon: Icon(
-              FLucideIcons.slidersHorizontal,
-              color: _hasExtraFilter ? context.theme.colors.primary : null,
-            ),
-            onPress: () async {
-              final picked = await showKaryaFilterSheet(
-                context,
-                selectedYear: _year,
-                selectedLanguage: _language,
-                selectedSambasType: _sambasType,
-              );
-              if (picked == null || !mounted) return;
-              setState(() {
-                _year = picked.year;
-                _language = picked.language;
-                _sambasType = picked.sambasType;
-              });
-            },
-          ),
-          FHeaderAction(
-            icon: const Icon(FLucideIcons.clipboardList),
+          suffixes: [
+            FHeaderAction(
+              icon: const Icon(FLucideIcons.clipboardList),
             onPress: () async {
               final authed =
                   ref.read(authStatusProvider).value?.isAuth ?? false;
@@ -200,8 +168,7 @@ class _KaryaListPageState extends ConsumerState<KaryaListPage> {
               data: (items) {
                 if (items.isEmpty) {
                   return _EmptyBody(
-                    hasFilter:
-                        _kind != null || _q.trim().isNotEmpty || _hasExtraFilter,
+                    hasFilter: _kind != null || _q.trim().isNotEmpty,
                     onPropose: _propose,
                     onRefresh: _reload,
                   );

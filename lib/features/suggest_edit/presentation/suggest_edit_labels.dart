@@ -23,6 +23,8 @@ String suggestCategoryLabel(SuggestCategory c, AppLocalizations l10n) =>
       SuggestCategory.meaningGroup => l10n.suggestCategoryMeaningGroup,
       SuggestCategory.spellingVariant => l10n.suggestCategorySpellingVariant,
       SuggestCategory.changeCategories => l10n.suggestCategoryChangeCategories,
+      SuggestCategory.changeUsageLabels =>
+        l10n.suggestCategoryChangeUsageLabels,
       SuggestCategory.lemmaNotes => l10n.suggestCategoryLemmaNotes,
     };
 
@@ -49,6 +51,8 @@ String suggestCategoryDescription(
   SuggestCategory.spellingVariant => l10n.suggestCategorySpellingVariantDesc,
   SuggestCategory.changeCategories =>
     l10n.suggestCategoryChangeCategoriesDesc,
+  SuggestCategory.changeUsageLabels =>
+    l10n.suggestCategoryChangeUsageLabelsDesc,
   SuggestCategory.lemmaNotes => l10n.suggestCategoryLemmaNotesDesc,
 };
 

@@ -154,7 +154,7 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
               onPress: _openFilter,
             ),
             FHeaderAction(
-              icon: const Icon(FLucideIcons.history),
+              icon: const Icon(FLucideIcons.clipboardList),
               onPress: () => context.push(UsahaRouter.proposals.path),
             ),
             FHeaderAction(

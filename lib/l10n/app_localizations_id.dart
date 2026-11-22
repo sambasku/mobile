@@ -269,12 +269,13 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String balehoLeaderboardScoreBreakdown(int contrib, int verif) {
-    return '+$contrib kontrib · +$verif verif';
+  String balehoLeaderboardScoreBreakdown(
+    int submitted,
+    int approved,
+    int verif,
+  ) {
+    return '+$submitted usul · +$approved acc · +$verif verif';
   }
-
-  @override
-  String get balehoLeaderboardVerifierBadge => 'Verifikator';
 
   @override
   String get balehoLeaderboardEmpty => 'Belum ada peringkat minggu ini.';
@@ -2119,11 +2120,22 @@ class AppLocalizationsId extends AppLocalizations {
       'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
 
   @override
-  String get suggestCategoryChangeCategories => 'Ubah kategori';
+  String get suggestCategoryChangeCategories => 'Ubah kategori topik';
 
   @override
   String get suggestCategoryChangeCategoriesDesc =>
       'Tambah atau lepas kategori topik di lemma ini';
+
+  @override
+  String get suggestCategoryChangeUsageLabels => 'Label register & peringatan';
+
+  @override
+  String get suggestCategoryChangeUsageLabelsDesc =>
+      'Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.';
+
+  @override
+  String get suggestUsageLabelsSectionInfo =>
+      'Pilih label yang sesuai. Kamu bisa menambah atau melepas penanda.';
 
   @override
   String get suggestCategoryPickHint => 'Pilih kategori topik';
@@ -4167,7 +4179,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get reviewExploreCulinaryKindNewCuisine => 'Usulan kuliner baru';
 
   @override
-  String get reviewExploreCulinaryKindNewPlace => 'Usulan tempat baru';
+  String get reviewExploreCulinaryKindNewPlace => 'Usulan usaha baru';
 
   @override
   String get reviewExploreCulinaryKindLink => 'Hubungan kuliner-tempat';
@@ -4176,14 +4188,14 @@ class AppLocalizationsId extends AppLocalizations {
   String get reviewExploreCulinaryKindCuisineEdit => 'Perbaikan data kuliner';
 
   @override
-  String get reviewExploreCulinaryKindPlaceEdit => 'Perbaikan data tempat';
+  String get reviewExploreCulinaryKindPlaceEdit => 'Perbaikan data usaha';
 
   @override
   String get reviewExploreCulinaryKindLinkEdit => 'Ubah ketersediaan relasi';
 
   @override
   String get reviewExploreCulinaryKindPlaceOperational =>
-      'Status operasional tempat';
+      'Status operasional usaha';
 
   @override
   String get reviewExploreCulinaryKindArchive => 'Minta arsip';
@@ -6911,6 +6923,19 @@ class AppLocalizationsId extends AppLocalizations {
       'Belum ada foto dari pengunjung. Jadi yang pertama yuk.';
 
   @override
+  String usahaMorePhotos(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Lihat lainnya ($count foto)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get usahaAllPhotos => 'Lihat semua foto & unggah';
+
+  @override
   String get usahaClaimSheetTitle => 'Klaim usaha ini';
 
   @override
@@ -7132,19 +7157,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get culinaryKindNewCuisine => 'Usulan kuliner baru';
 
   @override
-  String get culinaryKindNewPlace => 'Usulan tempat baru';
+  String get culinaryKindNewPlace => 'Usulan usaha baru';
 
   @override
   String get culinaryKindCuisineEdit => 'Perbaikan data kuliner';
 
   @override
-  String get culinaryKindPlaceEdit => 'Perbaikan data tempat';
+  String get culinaryKindPlaceEdit => 'Perbaikan data usaha';
 
   @override
   String get culinaryKindLink => 'Relasi kuliner-tempat';
 
   @override
-  String get culinaryKindOperational => 'Status buka';
+  String get culinaryKindOperational => 'Status operasional usaha';
 
   @override
   String get culinaryKindArchive => 'Minta arsip';
@@ -8515,13 +8540,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get culinaryStatusUnknown => 'Belum diketahui';
 
   @override
-  String get culinaryPlacesContribute => 'Usulkan tempat kuliner';
+  String get culinaryPlacesContribute => 'Usulkan usaha';
 
   @override
-  String get culinaryPlacesSearchHint => 'Cari tempat atau penjual...';
+  String get culinaryPlacesSearchHint => 'Cari penjual atau usaha...';
 
   @override
-  String get culinaryPlacesEmpty => 'Belum ada tempat yang cocok.';
+  String get culinaryPlacesEmpty => 'Belum ada usaha yang cocok.';
 
   @override
   String get culinaryLoginTitle => 'Masuk dulu ya';
@@ -8531,7 +8556,7 @@ class AppLocalizationsId extends AppLocalizations {
       'Klaim, usul status, dan laporan butuh akun supaya bisa ditindak lanjuti.';
 
   @override
-  String get culinaryClaimPlace => 'Klaim tempat ini';
+  String get culinaryClaimPlace => 'Klaim usaha ini';
 
   @override
   String get culinaryClaimPlaceBody => 'Kamu pemilik atau pengelola sah?';
@@ -8581,7 +8606,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get culinaryPlaceReportSentBody =>
-      'Terima kasih. Admin akan memeriksa tempat ini.';
+      'Terima kasih. Admin akan memeriksa usaha ini.';
 
   @override
   String get culinaryReportFailed => 'Gagal melapor';
@@ -8967,7 +8992,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get culinaryFormTitleCuisine => 'Usul kuliner';
 
   @override
-  String get culinaryFormTitlePlace => 'Usul tempat';
+  String get culinaryFormTitlePlace => 'Usul usaha';
 
   @override
   String get culinaryFormTitleLink => 'Tandai penjual';
@@ -8993,19 +9018,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get culinaryFormSearchCuisine => 'Cari kuliner';
 
   @override
-  String get culinaryFormFieldPlace => 'Tempat/penjual';
+  String get culinaryFormFieldPlace => 'Usaha/penjual';
 
   @override
-  String get culinaryFormSearchPlace => 'Cari tempat';
+  String get culinaryFormSearchPlace => 'Cari usaha';
 
   @override
   String get culinaryFormNameCuisineLabel => 'Nama kuliner';
 
   @override
-  String get culinaryFormNamePlaceLabel => 'Nama tempat';
+  String get culinaryFormNamePlaceLabel => 'Nama usaha';
 
   @override
-  String get culinaryFormNamePlaceHint => 'Nama tempat atau penjual';
+  String get culinaryFormNamePlaceHint => 'Nama usaha atau penjual';
 
   @override
   String get culinaryFormIngredientsOptional => 'Bahan (opsional)';
@@ -10430,6 +10455,20 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get eventFormEndTimeLabel => 'Jam selesai (opsional)';
+
+  @override
+  String eventScheduleRange(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String eventFormSchedulePreview(String schedule) {
+    return 'Pratinjau: $schedule';
+  }
+
+  @override
+  String get eventFormEndTimePlaceholderThroughEndDate =>
+      'Opsional - sampai tanggal selesai';
 
   @override
   String get eventFormLocationLabel => 'Lokasi';
@@ -13273,6 +13312,55 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get dictCommunityVoteNoPendingBody =>
       'Makna menunggu tidak tampil di sini. Lanjut di Periksa Kata untuk vote.';
+
+  @override
+  String get expHistoryTitle => 'Riwayat EXP';
+
+  @override
+  String get expHistorySubtitle =>
+      'Pergerakan poin mingguan dan snapshot EXP akun.';
+
+  @override
+  String get expHistoryEmpty => 'Belum ada riwayat mingguan yang tercatat.';
+
+  @override
+  String expHistoryWeeklyPoints(int points) {
+    return '+$points poin minggu ini';
+  }
+
+  @override
+  String expHistoryWeekEndXp(int xp) {
+    return 'EXP akumulasi: $xp';
+  }
+
+  @override
+  String expHistoryBreakdown(int submitted, int approved, int verif) {
+    return '+$submitted usul · +$approved acc · +$verif verif';
+  }
+
+  @override
+  String get expHistoryViewAll => 'Lihat Riwayat EXP';
+
+  @override
+  String get balehoBookPhoneLabel => 'No. HP / WhatsApp';
+
+  @override
+  String get balehoBookPhoneHint => 'Untuk konfirmasi pembayaran';
+
+  @override
+  String get balehoValidationPhone =>
+      'Isi nomor HP/WA format internasional 62… atau 60…';
+
+  @override
+  String get balehoStartDateLabel => 'Tanggal mulai tayang';
+
+  @override
+  String get balehoEndDateLabel => 'Tanggal berakhir tayang';
+
+  @override
+  String balehoDurationDaysCount(int days) {
+    return 'Durasi: $days hari';
+  }
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -13539,12 +13627,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
-  String balehoLeaderboardScoreBreakdown(int contrib, int verif) {
-    return '+$contrib kontrib · +$verif verif';
+  String balehoLeaderboardScoreBreakdown(
+    int submitted,
+    int approved,
+    int verif,
+  ) {
+    return '+$submitted usul · +$approved acc · +$verif verif';
   }
-
-  @override
-  String get balehoLeaderboardVerifierBadge => 'Verifikator';
 
   @override
   String get balehoLeaderboardEmpty => 'Belum ada peringkat minggu ini.';
@@ -15389,11 +15478,22 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
 
   @override
-  String get suggestCategoryChangeCategories => 'Ubah kategori';
+  String get suggestCategoryChangeCategories => 'Ubah kategori topik';
 
   @override
   String get suggestCategoryChangeCategoriesDesc =>
       'Tambah atau lepas kategori topik di lemma ini';
+
+  @override
+  String get suggestCategoryChangeUsageLabels => 'Label register & peringatan';
+
+  @override
+  String get suggestCategoryChangeUsageLabelsDesc =>
+      'Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.';
+
+  @override
+  String get suggestUsageLabelsSectionInfo =>
+      'Pilih label yang sesuai. Kamu bisa menambah atau melepas penanda.';
 
   @override
   String get suggestCategoryPickHint => 'Pilih kategori topik';
@@ -17437,7 +17537,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reviewExploreCulinaryKindNewCuisine => 'Usulan kuliner baru';
 
   @override
-  String get reviewExploreCulinaryKindNewPlace => 'Usulan tempat baru';
+  String get reviewExploreCulinaryKindNewPlace => 'Usulan usaha baru';
 
   @override
   String get reviewExploreCulinaryKindLink => 'Hubungan kuliner-tempat';
@@ -17446,14 +17546,14 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reviewExploreCulinaryKindCuisineEdit => 'Perbaikan data kuliner';
 
   @override
-  String get reviewExploreCulinaryKindPlaceEdit => 'Perbaikan data tempat';
+  String get reviewExploreCulinaryKindPlaceEdit => 'Perbaikan data usaha';
 
   @override
   String get reviewExploreCulinaryKindLinkEdit => 'Ubah ketersediaan relasi';
 
   @override
   String get reviewExploreCulinaryKindPlaceOperational =>
-      'Status operasional tempat';
+      'Status operasional usaha';
 
   @override
   String get reviewExploreCulinaryKindArchive => 'Minta arsip';
@@ -20097,6 +20197,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Belum ada foto dari pengunjung. Jadi yang pertama yuk.';
 
   @override
+  String usahaMorePhotos(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Lihat lainnya ($count foto)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get usahaAllPhotos => 'Lihat semua foto & unggah';
+
+  @override
   String get usahaClaimSheetTitle => 'Klaim usaha ini';
 
   @override
@@ -20318,19 +20431,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get culinaryKindNewCuisine => 'Usulan kuliner baru';
 
   @override
-  String get culinaryKindNewPlace => 'Usulan tempat baru';
+  String get culinaryKindNewPlace => 'Usulan usaha baru';
 
   @override
   String get culinaryKindCuisineEdit => 'Perbaikan data kuliner';
 
   @override
-  String get culinaryKindPlaceEdit => 'Perbaikan data tempat';
+  String get culinaryKindPlaceEdit => 'Perbaikan data usaha';
 
   @override
   String get culinaryKindLink => 'Relasi kuliner-tempat';
 
   @override
-  String get culinaryKindOperational => 'Status buka';
+  String get culinaryKindOperational => 'Status operasional usaha';
 
   @override
   String get culinaryKindArchive => 'Minta arsip';
@@ -21701,13 +21814,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get culinaryStatusUnknown => 'Belum diketahui';
 
   @override
-  String get culinaryPlacesContribute => 'Usulkan tempat kuliner';
+  String get culinaryPlacesContribute => 'Usulkan usaha';
 
   @override
-  String get culinaryPlacesSearchHint => 'Cari tempat atau penjual...';
+  String get culinaryPlacesSearchHint => 'Cari penjual atau usaha...';
 
   @override
-  String get culinaryPlacesEmpty => 'Belum ada tempat yang cocok.';
+  String get culinaryPlacesEmpty => 'Belum ada usaha yang cocok.';
 
   @override
   String get culinaryLoginTitle => 'Masuk dulu ya';
@@ -21717,7 +21830,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Klaim, usul status, dan laporan butuh akun supaya bisa ditindak lanjuti.';
 
   @override
-  String get culinaryClaimPlace => 'Klaim tempat ini';
+  String get culinaryClaimPlace => 'Klaim usaha ini';
 
   @override
   String get culinaryClaimPlaceBody => 'Kamu pemilik atau pengelola sah?';
@@ -21767,7 +21880,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get culinaryPlaceReportSentBody =>
-      'Terima kasih. Admin akan memeriksa tempat ini.';
+      'Terima kasih. Admin akan memeriksa usaha ini.';
 
   @override
   String get culinaryReportFailed => 'Gagal melapor';
@@ -22153,7 +22266,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get culinaryFormTitleCuisine => 'Usul kuliner';
 
   @override
-  String get culinaryFormTitlePlace => 'Usul tempat';
+  String get culinaryFormTitlePlace => 'Usul usaha';
 
   @override
   String get culinaryFormTitleLink => 'Tandai penjual';
@@ -22179,19 +22292,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get culinaryFormSearchCuisine => 'Cari kuliner';
 
   @override
-  String get culinaryFormFieldPlace => 'Tempat/penjual';
+  String get culinaryFormFieldPlace => 'Usaha/penjual';
 
   @override
-  String get culinaryFormSearchPlace => 'Cari tempat';
+  String get culinaryFormSearchPlace => 'Cari usaha';
 
   @override
   String get culinaryFormNameCuisineLabel => 'Nama kuliner';
 
   @override
-  String get culinaryFormNamePlaceLabel => 'Nama tempat';
+  String get culinaryFormNamePlaceLabel => 'Nama usaha';
 
   @override
-  String get culinaryFormNamePlaceHint => 'Nama tempat atau penjual';
+  String get culinaryFormNamePlaceHint => 'Nama usaha atau penjual';
 
   @override
   String get culinaryFormIngredientsOptional => 'Bahan (opsional)';
@@ -23616,6 +23729,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get eventFormEndTimeLabel => 'Jam selesai (opsional)';
+
+  @override
+  String eventScheduleRange(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String eventFormSchedulePreview(String schedule) {
+    return 'Pratinjau: $schedule';
+  }
+
+  @override
+  String get eventFormEndTimePlaceholderThroughEndDate =>
+      'Opsional - sampai tanggal selesai';
 
   @override
   String get eventFormLocationLabel => 'Lokasi';
@@ -26459,4 +26586,53 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get dictCommunityVoteNoPendingBody =>
       'Makna menunggu tidak tampil di sini. Lanjut di Periksa Kata untuk vote.';
+
+  @override
+  String get expHistoryTitle => 'Riwayat EXP';
+
+  @override
+  String get expHistorySubtitle =>
+      'Pergerakan poin mingguan dan snapshot EXP akun.';
+
+  @override
+  String get expHistoryEmpty => 'Belum ade riwayat mingguan yang tacatat.';
+
+  @override
+  String expHistoryWeeklyPoints(int points) {
+    return '+$points poin minggu situk';
+  }
+
+  @override
+  String expHistoryWeekEndXp(int xp) {
+    return 'EXP akumulasi: $xp';
+  }
+
+  @override
+  String expHistoryBreakdown(int submitted, int approved, int verif) {
+    return '+$submitted usul · +$approved acc · +$verif verif';
+  }
+
+  @override
+  String get expHistoryViewAll => 'Lihat Riwayat EXP';
+
+  @override
+  String get balehoBookPhoneLabel => 'No. HP / WhatsApp';
+
+  @override
+  String get balehoBookPhoneHint => 'Untuk konfirmasi pembayaran';
+
+  @override
+  String get balehoValidationPhone =>
+      'Isi nomor HP/WA format internasional 62… atau 60…';
+
+  @override
+  String get balehoStartDateLabel => 'Tanggal mulai tayang';
+
+  @override
+  String get balehoEndDateLabel => 'Tanggal berakhir tayang';
+
+  @override
+  String balehoDurationDaysCount(int days) {
+    return 'Durasi: $days hari';
+  }
 }

@@ -181,9 +181,9 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
       await ref
           .read(culinaryContributionApiProvider)
           .submitChange(
-            kind: target.isPlace ? 'place_edit' : 'cuisine_edit',
+            kind: target.isPlace ? 'usaha_edit' : 'cuisine_edit',
             cuisineId: target.isPlace ? null : target.id,
-            placeId: target.isPlace ? target.id : null,
+            usahaId: target.isPlace ? target.id : null,
             payload: payload,
             fields: fields,
           );

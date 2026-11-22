@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
 import '../../features/user_profile/domain/entities/public_profile.dart';
+import '../../features/user_profile/user_profile_router.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Chip level + progress di header profil. Tap → bottom sheet penjelasan.
@@ -15,9 +16,11 @@ class ProfileLevelingChip extends StatelessWidget {
     super.key,
     required this.leveling,
     this.alignCenter = true,
+    this.username,
   });
 
   final PublicProfileLeveling leveling;
+  final String? username;
 
   /// false → CrossAxisAlignment.start (profil publik).
   final bool alignCenter;
@@ -117,6 +120,20 @@ class ProfileLevelingChip extends StatelessWidget {
                     onPress: () => Navigator.of(sheetContext).pop(),
                     child: Text(l10n.infoSheetUnderstood),
                   ),
+                  if (username != null && username!.trim().isNotEmpty) ...[
+                    const Gap(8),
+                    FButton(
+                      variant: FButtonVariant.outline,
+                      onPress: () {
+                        Navigator.of(sheetContext).pop();
+                        UserProfileRouter.openExpHistory(
+                          context,
+                          username!.trim(),
+                        );
+                      },
+                      child: Text(l10n.expHistoryViewAll),
+                    ),
+                  ],
                 ],
               ),
             ),

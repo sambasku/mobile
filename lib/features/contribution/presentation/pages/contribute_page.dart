@@ -25,6 +25,7 @@ import '../../../activity/presentation/providers/activity_feed_providers.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../dictionary/presentation/utils/pronunciation_format.dart';
+import '../../../dictionary/presentation/widgets/usage_label_chips.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
 import '../../../search_miss/presentation/providers/search_miss_list_providers.dart';
 import '../../domain/failures/contribution_failure.dart';
@@ -722,7 +723,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               l10n.contributeRegisterLabel,
               info: l10n.contributeRegisterHint,
             ),
-            _UsageLabelChips(
+            UsageLabelChips(
               options: kRegisterUsageLabels,
               selected: _usageLabels,
               onToggle: _toggleUsageLabel,
@@ -732,7 +733,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               l10n.contributeWarningLabel,
               info: l10n.contributeWarningHint,
             ),
-            _UsageLabelChips(
+            UsageLabelChips(
               options: kWarningUsageLabels,
               selected: _usageLabels,
               onToggle: _toggleUsageLabel,
@@ -761,7 +762,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               l10n.contributeRegisterLabel,
               info: l10n.contributeRegisterHint,
             ),
-            _UsageLabelChips(
+            UsageLabelChips(
               options: kRegisterUsageLabels,
               selected: _usageLabels,
               onToggle: _toggleUsageLabel,
@@ -771,7 +772,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               l10n.contributeWarningLabel,
               info: l10n.contributeWarningHint,
             ),
-            _UsageLabelChips(
+            UsageLabelChips(
               options: kWarningUsageLabels,
               selected: _usageLabels,
               onToggle: _toggleUsageLabel,
@@ -2141,39 +2142,6 @@ class _WordTypeChips extends StatelessWidget {
                   ? FBadgeVariant.primary
                   : FBadgeVariant.secondary,
               child: Text(wordTypeLabel(opt, AppLocalizations.of(context))),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-/// Multi-select Register / Peringatan (`usage_labels`).
-class _UsageLabelChips extends StatelessWidget {
-  const _UsageLabelChips({
-    required this.options,
-    required this.selected,
-    required this.onToggle,
-  });
-
-  final List<String> options;
-  final Set<String> selected;
-  final ValueChanged<String> onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 6,
-      runSpacing: 6,
-      children: [
-        for (final code in options)
-          GestureDetector(
-            onTap: () => onToggle(code),
-            child: FBadge(
-              variant: selected.contains(code)
-                  ? FBadgeVariant.primary
-                  : FBadgeVariant.secondary,
-              child: Text(usageLabelLabel(code, AppLocalizations.of(context))),
             ),
           ),
       ],

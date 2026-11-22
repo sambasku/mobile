@@ -118,6 +118,18 @@ class _LayananPageState extends ConsumerState<LayananPage> {
             onPress: _openFilter,
           ),
           FHeaderAction(
+            icon: const Icon(FLucideIcons.clipboardList),
+            onPress: () async {
+              final authed =
+                  ref.read(authStatusProvider).value?.isAuth ?? false;
+              if (!authed) {
+                context.push('/login');
+                return;
+              }
+              context.push(LayananRouter.proposals.path);
+            },
+          ),
+          FHeaderAction(
             icon: const Icon(FLucideIcons.plus),
             onPress: _propose,
           ),

@@ -193,7 +193,7 @@ class _EventListPageState extends ConsumerState<EventListPage> {
           ],
           suffixes: [
             FHeaderAction(
-              icon: const Icon(FLucideIcons.history),
+              icon: const Icon(FLucideIcons.clipboardList),
               onPress: () => context.push(EventRouter.proposals.path),
             ),
             FHeaderAction(

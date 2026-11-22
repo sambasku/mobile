@@ -24,6 +24,7 @@ import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../dictionary/presentation/providers/categories_provider.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
 import '../../../dictionary/presentation/utils/pronunciation_format.dart';
+import '../../../dictionary/presentation/widgets/usage_label_chips.dart';
 import '../../domain/meaning_edit_order.dart';
 import '../../domain/suggest_category.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -129,6 +130,10 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   final Set<String> _topicCategoryIds = {};
   final Set<String> _originalTopicCategoryIds = {};
 
+  // Label register & peringatan (`usage_labels`).
+  final Set<String> _usageLabels = {};
+  final Set<String> _originalUsageLabels = {};
+
   final _reasonTextCtrl = TextEditingController();
 
   @override
@@ -179,6 +184,32 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       ..addAll(_originalTopicCategoryIds);
   }
 
+  void _initUsageLabels(WordDetail detail) {
+    _originalUsageLabels
+      ..clear()
+      ..addAll(detail.usageLabels);
+    _usageLabels
+      ..clear()
+      ..addAll(_originalUsageLabels);
+  }
+
+  void _toggleUsageLabel(String code) {
+    final selected = _usageLabels.contains(code);
+    if (!selected) {
+      final next = {..._usageLabels, code};
+      if (hasConflictingUsageLabels(next)) {
+        showFToast(
+          context: context,
+          title: Text(_l10n.contributeRegisterConflict),
+        );
+        return;
+      }
+      setState(() => _usageLabels.add(code));
+      return;
+    }
+    setState(() => _usageLabels.remove(code));
+  }
+
   /// Lazy: makna baru setelah detail di-refetch tetap dapat draft.
   ({TextEditingController def, TextEditingController pad}) _draftFor(
     WordMeaning m,
@@ -222,6 +253,10 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     _category = requested;
     if (requested == SuggestCategory.changeCategories) {
       _initTopicCategories(detail);
+    _initUsageLabels(detail);
+    }
+    if (requested == SuggestCategory.changeUsageLabels) {
+      _initUsageLabels(detail);
     }
     if (requested == SuggestCategory.changePronunciation) {
       _prefillPronunciation(detail);
@@ -490,6 +525,11 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         return buildChangeCategories(
           originalIds: _originalTopicCategoryIds,
           selectedIds: _topicCategoryIds,
+        );
+      case SuggestCategory.changeUsageLabels:
+        return buildChangeUsageLabels(
+          original: _originalUsageLabels,
+          selected: _usageLabels,
         );
       case SuggestCategory.changeExample:
         final id = _exampleId;
@@ -842,6 +882,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                   }
                   if (c == SuggestCategory.changeCategories) {
                     _initTopicCategories(detail);
+                  }
+                  if (c == SuggestCategory.changeUsageLabels) {
+                    _initUsageLabels(detail);
                   }
                 }),
               ),
@@ -1215,7 +1258,36 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         ];
       case SuggestCategory.changeCategories:
         return [_topicCategoryField()];
+      case SuggestCategory.changeUsageLabels:
+        return [_usageLabelsField()];
     }
+  }
+
+  Widget _usageLabelsField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _FieldCaption(
+          _l10n.contributeRegisterLabel,
+          info: _l10n.suggestUsageLabelsSectionInfo,
+        ),
+        UsageLabelChips(
+          options: kRegisterUsageLabels,
+          selected: _usageLabels,
+          onToggle: _toggleUsageLabel,
+        ),
+        const Gap(12),
+        _FieldCaption(
+          _l10n.contributeWarningLabel,
+          info: _l10n.contributeWarningHint,
+        ),
+        UsageLabelChips(
+          options: kWarningUsageLabels,
+          selected: _usageLabels,
+          onToggle: _toggleUsageLabel,
+        ),
+      ],
+    );
   }
 
   Widget _topicCategoryField() {

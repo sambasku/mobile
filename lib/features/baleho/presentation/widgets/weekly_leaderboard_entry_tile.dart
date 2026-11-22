@@ -149,7 +149,7 @@ class _PodiumCompactCard extends StatelessWidget {
                   ),
                   const Gap(2),
                   Text(
-                    entry.username,
+                    entry.displayName ?? entry.username,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.typography.body.sm.copyWith(
@@ -159,8 +159,9 @@ class _PodiumCompactCard extends StatelessWidget {
                   const Gap(1),
                   Text(
                     l10n.balehoLeaderboardScoreBreakdown(
-                      entry.contributions,
-                      entry.verifications,
+                      entry.submittedPoints,
+                      entry.approvedPoints,
+                      entry.verificationPoints,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -182,16 +183,7 @@ class _PodiumCompactCard extends StatelessWidget {
                     color: palette.metal,
                   ),
                 ),
-                if (entry.isVerifier) ...[
-                  const Gap(2),
-                  Text(
-                    l10n.balehoLeaderboardVerifierBadge,
-                    style: theme.typography.body.xs.copyWith(
-                      color: theme.colors.mutedForeground,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+
               ],
             ),
           ],
@@ -253,12 +245,11 @@ FTile leaderboardEntryTile({
     color: theme.colors.mutedForeground,
   );
   final breakdown = l10n.balehoLeaderboardScoreBreakdown(
-    entry.contributions,
-    entry.verifications,
+    entry.submittedPoints,
+    entry.approvedPoints,
+    entry.verificationPoints,
   );
-  final subtitleText = entry.isVerifier
-      ? '$breakdown · ${l10n.balehoLeaderboardVerifierBadge}'
-      : breakdown;
+  final subtitleText = breakdown;
 
   return FTile(
     onPress: entry.username.isEmpty
@@ -283,7 +274,7 @@ FTile leaderboardEntryTile({
         ),
       ],
     ),
-    title: Text(entry.username, style: nameStyle),
+    title: Text(entry.displayName ?? entry.username, style: nameStyle),
     subtitle: Text(subtitleText, style: breakdownStyle),
     suffix: Text(
       l10n.balehoLeaderboardScoreCombined(entry.combined),

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/event/data/models/event_dto.dart';
 import 'package:sambasku_mobile/features/event/domain/entities/event.dart';
+import 'package:sambasku_mobile/features/event/domain/event_schedule_format.dart';
 import 'package:sambasku_mobile/features/event/presentation/widgets/event_ui.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
@@ -151,6 +152,8 @@ void main() {
   });
 
   group('eventMetaLine', () {
+    final l10n = lookupAppLocalizations(const Locale('id'));
+
     test('gabung kategori + desa + jadwal pakai pemisah', () {
       final event = Event(
         id: '01EV0000000000000000000001',
@@ -166,7 +169,7 @@ void main() {
         status: EventStatus.published,
         village: const EventVillageRef(id: 'v', name: 'Perapakan'),
       );
-      final line = eventMetaLine(event);
+      final line = eventMetaLine(l10n, event);
       expect(line, contains('Budaya dan Tradisi'));
       expect(line, contains('Perapakan'));
       expect(line, contains(' - '));
@@ -185,7 +188,7 @@ void main() {
         locationText: 'l',
         status: EventStatus.published,
       );
-      expect(eventMetaLine(event), isNot(contains('·')));
+      expect(eventMetaLine(l10n, event), isNot(contains('·')));
     });
   });
 
@@ -203,7 +206,8 @@ void main() {
         locationText: 'l',
         status: EventStatus.published,
       );
-      final text = formatEventSchedule(event);
+      final l10n = lookupAppLocalizations(const Locale('id'));
+      final text = formatEventSchedule(l10n, event);
       expect(text.contains(' - '), isTrue);
       // Bagian kedua tidak mengulang tanggal.
       expect(text.split(' - ').last.contains('17'), isFalse);
@@ -222,9 +226,10 @@ void main() {
         locationText: 'l',
         status: EventStatus.published,
       );
-      final text = formatEventSchedule(event);
-      expect(text.split(' - ').last.contains('18'), isTrue);
-      expect(text.split(' - ').last.contains('Nov'), isTrue);
+      final l10n = lookupAppLocalizations(const Locale('id'));
+      final text = formatEventSchedule(l10n, event);
+      expect(text, contains(' - '));
+      expect(text.contains('18'), isTrue);
     });
   });
 

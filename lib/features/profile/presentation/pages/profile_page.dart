@@ -437,7 +437,10 @@ class _IdentitySection extends ConsumerWidget {
               profile?.isVerifier ?? (isAuth && isVerifierRole(status.role)),
           leveling: profile?.leveling == null
               ? null
-              : ProfileLevelingChip(leveling: profile!.leveling!),
+              : ProfileLevelingChip(
+                  leveling: profile!.leveling!,
+                  username: isAuth ? username : null,
+                ),
           stats: profile == null
               ? null
               : ProfileStatRow(

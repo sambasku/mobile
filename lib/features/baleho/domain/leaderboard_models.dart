@@ -2,28 +2,47 @@ class LeaderboardEntry {
   const LeaderboardEntry({
     required this.rank,
     required this.username,
+    this.displayName,
     this.avatarUrl,
-    required this.contributions,
-    required this.verifications,
+    required this.submittedPoints,
+    required this.approvedPoints,
+    required this.verificationPoints,
     required this.combined,
     required this.isVerifier,
   });
 
   final int rank;
   final String username;
+  final String? displayName;
   final String? avatarUrl;
-  final int contributions;
-  final int verifications;
+  final int submittedPoints;
+  final int approvedPoints;
+  final int verificationPoints;
   final int combined;
   final bool isVerifier;
 
+  /// Fallback backward-compat untuk kode/UI lama.
+  int get contributions => submittedPoints;
+  int get verifications => verificationPoints;
+
   factory LeaderboardEntry.fromJson(Map<String, dynamic> json) {
+    // Fallback: wire baru submitted_points/approved_points/verification_points,
+    // fallback wire/snapshot CDN lama: contributions/verifications.
+    final submitted = (json['submitted_points'] as num?)?.toInt() ??
+        (json['contributions'] as num?)?.toInt() ??
+        0;
+    final approved = (json['approved_points'] as num?)?.toInt() ?? 0;
+    final verif = (json['verification_points'] as num?)?.toInt() ??
+        (json['verifications'] as num?)?.toInt() ??
+        0;
     return LeaderboardEntry(
       rank: (json['rank'] as num?)?.toInt() ?? 0,
       username: '${json['username'] ?? ''}',
+      displayName: json['display_name'] as String?,
       avatarUrl: json['avatar_url'] as String?,
-      contributions: (json['contributions'] as num?)?.toInt() ?? 0,
-      verifications: (json['verifications'] as num?)?.toInt() ?? 0,
+      submittedPoints: submitted,
+      approvedPoints: approved,
+      verificationPoints: verif,
       combined: (json['combined'] as num?)?.toInt() ?? 0,
       isVerifier: json['is_verifier'] == true,
     );

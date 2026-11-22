@@ -349,7 +349,10 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage>
         .push<PlacePinPick>(
           MaterialPageRoute(
             fullscreenDialog: true,
-            builder: (_) => PlacePinPickerPage(initial: _point),
+            builder: (_) => PlacePinPickerPage(
+              initial: _point,
+              requireSambasBounds: false,
+            ),
           ),
         );
     if (result == null || !mounted) return;

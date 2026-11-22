@@ -391,7 +391,17 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
           suffixes: [
             FHeaderAction(
               icon: const Icon(
-                FLucideIcons.history,
+                FLucideIcons.refreshCw,
+                size: kHeaderActionIconSize,
+              ),
+              onPress: () {
+                ref.invalidate(balehoBoardProvider(1));
+                ref.invalidate(balehoBoardProvider(2));
+              },
+            ),
+            FHeaderAction(
+              icon: const Icon(
+                FLucideIcons.clipboardList,
                 size: kHeaderActionIconSize,
               ),
               onPress: () {
@@ -402,16 +412,6 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
                   return;
                 }
                 context.push(BalehoRouter.history.path);
-              },
-            ),
-            FHeaderAction(
-              icon: const Icon(
-                FLucideIcons.refreshCw,
-                size: kHeaderActionIconSize,
-              ),
-              onPress: () {
-                ref.invalidate(balehoBoardProvider(1));
-                ref.invalidate(balehoBoardProvider(2));
               },
             ),
             const ThemeToggleHeaderAction(),

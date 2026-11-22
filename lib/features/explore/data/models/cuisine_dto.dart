@@ -2,7 +2,6 @@ import '../../../../core/models/public_author_ref.dart';
 import '../../domain/entities/cuisine.dart';
 import '../../domain/entities/place.dart';
 import 'place_dto.dart';
-
 /// DTO kuliner dari API `/api/v1/culinary/cuisines`.
 ///
 /// Menerima dua bentuk kunci: snake_case (wire API: `is_main`,
@@ -14,7 +13,6 @@ import 'place_dto.dart';
 /// satu item rusak tidak mematikan seluruh koleksi.
 class CuisineDto {
   const CuisineDto({required this.cuisines});
-
   final List<CuisineDtoItem> cuisines;
 
   factory CuisineDto.fromJson(Map<String, dynamic> json) {
@@ -49,7 +47,7 @@ class CuisineDtoItem {
     required this.tags,
     required this.sources,
     this.servingSuggestion,
-    this.places = const [],
+    this.usahas = const [],
     this.author,
   });
 
@@ -63,7 +61,7 @@ class CuisineDtoItem {
   final List<String> tags;
   final String? servingSuggestion;
   final List<PlaceSource> sources;
-  final List<CuisinePlaceRef> places;
+  final List<CuisineUsahaRef> usahas;
   final PublicAuthorRef? author;
 
   /// Null = field wajib absen → item di-skip.
@@ -104,21 +102,23 @@ class CuisineDtoItem {
       }
     }
 
-    final places = <CuisinePlaceRef>[];
-    final rawPlaces = json['places'];
-    if (rawPlaces is List) {
-      for (final raw in rawPlaces.whereType<Map>()) {
-        final placeSlug = raw['place_slug'] ?? raw['placeSlug'];
-        final placeName = raw['place_name'] ?? raw['placeName'];
-        if (placeSlug is! String || placeSlug.isEmpty) continue;
+    final usahas = <CuisineUsahaRef>[];
+    final rawUsahas = json['usaha'] ?? json['usahas'] ?? json['places'];
+    if (rawUsahas is List) {
+      for (final raw in rawUsahas.whereType<Map>()) {
+        final usahaSlug =
+            raw['usaha_slug'] ?? raw['usahaSlug'] ?? raw['place_slug'] ?? raw['placeSlug'];
+        final usahaName =
+            raw['usaha_name'] ?? raw['usahaName'] ?? raw['place_name'] ?? raw['placeName'];
+        if (usahaSlug is! String || usahaSlug.isEmpty) continue;
         final availability = raw['availability'];
         final note = raw['note'];
-        places.add(
-          CuisinePlaceRef(
-            placeSlug: placeSlug,
-            placeName: placeName is String && placeName.isNotEmpty
-                ? placeName
-                : placeSlug,
+        usahas.add(
+          CuisineUsahaRef(
+            usahaSlug: usahaSlug,
+            usahaName: usahaName is String && usahaName.isNotEmpty
+                ? usahaName
+                : usahaSlug,
             availability: availability is String && availability.isNotEmpty
                 ? availability
                 : 'unknown',
@@ -139,7 +139,7 @@ class CuisineDtoItem {
       tags: stringList(json['tags']),
       servingSuggestion: optStr('serving_suggestion', 'servingSuggestion'),
       sources: parseSources(json['sources']),
-      places: places,
+      usahas: usahas,
       author: PublicAuthorRef.fromJson(json['author']),
     );
   }
@@ -155,7 +155,7 @@ class CuisineDtoItem {
     tags: tags,
     servingSuggestion: servingSuggestion,
     sources: sources,
-    places: places,
+    usahas: usahas,
     author: author,
   );
 }

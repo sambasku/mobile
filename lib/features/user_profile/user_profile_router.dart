@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
 import '../../core/router/route_definer.dart';
+import 'presentation/pages/exp_history_page.dart';
 import 'presentation/pages/public_profile_page.dart';
 
 class UserProfileRouter {
@@ -11,6 +12,11 @@ class UserProfileRouter {
   static const profile = RouteDefiner(
     path: '/users/:username',
     name: 'UserProfileRouter.profile',
+  );
+
+  static const expHistory = RouteDefiner(
+    path: '/users/:username/exp-history',
+    name: 'UserProfileRouter.expHistory',
   );
 
   /// [displayName] opsional - judul app bar instan sebelum GET profil selesai.
@@ -27,6 +33,18 @@ class UserProfileRouter {
       profile.name,
       pathParameters: {'username': handle},
       extra: (name != null && name.isNotEmpty) ? name : null,
+    );
+  }
+
+  static void openExpHistory(
+    BuildContext context,
+    String username,
+  ) {
+    final handle = username.trim().toLowerCase();
+    if (handle.isEmpty) return;
+    context.pushNamed(
+      expHistory.name,
+      pathParameters: {'username': handle},
     );
   }
 
@@ -47,6 +65,16 @@ class UserProfileRouter {
           username: username,
           initialDisplayName: initialDisplayName,
         );
+      },
+    ),
+    GoRoute(
+      path: expHistory.path,
+      name: expHistory.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) {
+        final raw = state.pathParameters['username'] ?? '';
+        final username = Uri.decodeComponent(raw).trim().toLowerCase();
+        return ExpHistoryPage(username: username);
       },
     ),
   ];

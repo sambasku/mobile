@@ -250,20 +250,19 @@
       }
     }
   },
-  "balehoLeaderboardScoreBreakdown": "+{contrib} kontrib · +{verif} verif",
+  "balehoLeaderboardScoreBreakdown": "+{submitted} usul · +{approved} acc · +{verif} verif",
   "@balehoLeaderboardScoreBreakdown": {
     "placeholders": {
-      "contrib": {
+      "submitted": {
+        "type": "int"
+      },
+      "approved": {
         "type": "int"
       },
       "verif": {
         "type": "int"
       }
     }
-  },
-  "balehoLeaderboardVerifierBadge": "Verifikator",
-  "@balehoLeaderboardVerifierBadge": {
-    "description": "Badge kecil pada entry verifikator"
   },
   "balehoLeaderboardEmpty": "Belum ada peringkat minggu ini.",
   "@balehoLeaderboardEmpty": {
@@ -1249,11 +1248,23 @@
   "suggestCategoryMeaningGroupDesc": "Gabungkan kata bermakna sama dalam satu kelompok",
   "suggestCategorySpellingVariant": "Variasi penulisan",
   "suggestCategorySpellingVariantDesc": "Ejaan lain tanpa entri sendiri (tetap di lemma ini)",
-  "suggestCategoryChangeCategories": "Ubah kategori",
+  "suggestCategoryChangeCategories": "Ubah kategori topik",
   "@suggestCategoryChangeCategories": {
     "description": "Kategori usulan: tag topik lemma (chip)"
   },
   "suggestCategoryChangeCategoriesDesc": "Tambah atau lepas kategori topik di lemma ini",
+  "suggestCategoryChangeUsageLabels": "Label register & peringatan",
+  "@suggestCategoryChangeUsageLabels": {
+    "description": "Kategori usulan: ubah usage_labels pada kata existing"
+  },
+  "suggestCategoryChangeUsageLabelsDesc": "Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.",
+  "@suggestCategoryChangeUsageLabelsDesc": {
+    "description": "Subjudul tile usul perubahan untuk usage_labels"
+  },
+  "suggestUsageLabelsSectionInfo": "Pilih label yang sesuai. Kamu bisa menambah atau melepas penanda.",
+  "@suggestUsageLabelsSectionInfo": {
+    "description": "Info di form usul perubahan untuk usage_labels"
+  },
   "suggestCategoryPickHint": "Pilih kategori topik",
   "suggestCategoryNoneSelected": "Belum ada kategori",
   "suggestCategoryLemmaNotes": "Lainnya",
@@ -1887,12 +1898,12 @@
   "reviewExploreUsahaKindArchive": "Minta arsip",
   "reviewExploreUsahaKindRestore": "Minta tayang lagi",
   "reviewExploreCulinaryKindNewCuisine": "Usulan kuliner baru",
-  "reviewExploreCulinaryKindNewPlace": "Usulan tempat baru",
+  "reviewExploreCulinaryKindNewPlace": "Usulan usaha baru",
   "reviewExploreCulinaryKindLink": "Hubungan kuliner-tempat",
   "reviewExploreCulinaryKindCuisineEdit": "Perbaikan data kuliner",
-  "reviewExploreCulinaryKindPlaceEdit": "Perbaikan data tempat",
+  "reviewExploreCulinaryKindPlaceEdit": "Perbaikan data usaha",
   "reviewExploreCulinaryKindLinkEdit": "Ubah ketersediaan relasi",
-  "reviewExploreCulinaryKindPlaceOperational": "Status operasional tempat",
+  "reviewExploreCulinaryKindPlaceOperational": "Status operasional usaha",
   "reviewExploreCulinaryKindArchive": "Minta arsip",
   "reviewExploreCulinaryKindRestore": "Minta tayang lagi",
   "reviewExplorePlaceKindNew": "Usulan wisata baru",
@@ -2751,6 +2762,17 @@
   "usahaContributorProposedBy": "Diusulkan oleh",
   "usahaPhotosTitle": "Foto usaha",
   "usahaPhotosEmpty": "Belum ada foto dari pengunjung. Jadi yang pertama yuk.",
+  "usahaMorePhotos": "{count, plural, other{Lihat lainnya ({count} foto)}}",
+  "@usahaMorePhotos": {
+    "description": "Link sisa foto di preview grid detail usaha",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "usahaAllPhotos": "Lihat semua foto & unggah",
+  "@usahaAllPhotos": {
+    "description": "Link masuk galeri penuh usaha dari detail"
+  },
   "usahaClaimSheetTitle": "Klaim usaha ini",
   "usahaClaimSheetBody": "Unggah bukti kepemilikan atau pengelolaan. Boleh foto toko, tangkapan layar WhatsApp, atau tangkapan layar media sosial (1 sampai 5 gambar).",
   "usahaClaimEvidence": "Bukti gambar",
@@ -2810,11 +2832,11 @@
   "culinaryProposalsCancelFailed": "Gagal membatalkan",
   "culinaryCancelAction": "Batalkan",
   "culinaryKindNewCuisine": "Usulan kuliner baru",
-  "culinaryKindNewPlace": "Usulan tempat baru",
+  "culinaryKindNewPlace": "Usulan usaha baru",
   "culinaryKindCuisineEdit": "Perbaikan data kuliner",
-  "culinaryKindPlaceEdit": "Perbaikan data tempat",
+  "culinaryKindPlaceEdit": "Perbaikan data usaha",
   "culinaryKindLink": "Relasi kuliner-tempat",
-  "culinaryKindOperational": "Status buka",
+  "culinaryKindOperational": "Status operasional usaha",
   "culinaryKindArchive": "Minta arsip",
   "culinaryKindRestore": "Minta tayang",
   "culinaryRejectDuplicate": "Sudah ada yang mirip",
@@ -3267,14 +3289,20 @@
   "encyclopediaClapSemantics": "Apresiasi artikel: {total} clap, kamu memberi {mine}",
   "@encyclopediaClapSemantics": {
     "placeholders": {
-      "total": { "type": "String" },
-      "mine": { "type": "String" }
+      "total": {
+        "type": "String"
+      },
+      "mine": {
+        "type": "String"
+      }
     }
   },
   "encyclopediaClapYours": "({count} dari kamu)",
   "@encyclopediaClapYours": {
     "placeholders": {
-      "count": { "type": "String" }
+      "count": {
+        "type": "String"
+      }
     }
   },
   "encyclopediaBookmarkToggleSemantics": "Bookmark artikel",
@@ -3372,12 +3400,12 @@
   "culinaryStatusTemporarilyClosed": "Tutup sementara",
   "culinaryStatusPermanentlyClosed": "Tutup permanen",
   "culinaryStatusUnknown": "Belum diketahui",
-  "culinaryPlacesContribute": "Usulkan tempat kuliner",
-  "culinaryPlacesSearchHint": "Cari tempat atau penjual...",
-  "culinaryPlacesEmpty": "Belum ada tempat yang cocok.",
+  "culinaryPlacesContribute": "Usulkan usaha",
+  "culinaryPlacesSearchHint": "Cari penjual atau usaha...",
+  "culinaryPlacesEmpty": "Belum ada usaha yang cocok.",
   "culinaryLoginTitle": "Masuk dulu ya",
   "culinaryPlacesLoginBody": "Klaim, usul status, dan laporan butuh akun supaya bisa ditindak lanjuti.",
-  "culinaryClaimPlace": "Klaim tempat ini",
+  "culinaryClaimPlace": "Klaim usaha ini",
   "culinaryClaimPlaceBody": "Kamu pemilik atau pengelola sah?",
   "culinarySuggestEdit": "Usul perbaikan data",
   "culinarySuggestEditPlaceBody": "Nama, deskripsi, atau alamat salah?",
@@ -3392,7 +3420,7 @@
   "culinaryOperationalSent": "Usulan terkirim",
   "culinaryOperationalSentBody": "Status baru akan tayang setelah admin setujui.",
   "culinaryProposalFailed": "Usulan gagal",
-  "culinaryPlaceReportSentBody": "Terima kasih. Admin akan memeriksa tempat ini.",
+  "culinaryPlaceReportSentBody": "Terima kasih. Admin akan memeriksa usaha ini.",
   "culinaryReportFailed": "Gagal melapor",
   "culinaryReportReasonTitle": "Apa yang salah?",
   "culinaryClaimEvidenceBody": "Tulis bukti bahwa kamu pemilik atau pengelola sah.",
@@ -3519,7 +3547,7 @@
   "placeProposalsKindEdit": "Suntingan",
   "placeProposalsRejectReason": "Alasan: {reason}",
   "culinaryFormTitleCuisine": "Usul kuliner",
-  "culinaryFormTitlePlace": "Usul tempat",
+  "culinaryFormTitlePlace": "Usul usaha",
   "culinaryFormTitleLink": "Tandai penjual",
   "culinaryFormPickBoth": "Pilih kuliner dan tempatnya dulu ya.",
   "culinaryFormNameTooShort": "Nama minimal 3 huruf ya.",
@@ -3527,11 +3555,11 @@
   "culinaryFormIntro": "Isi yang kamu tahu saja. Nama wajib, sisanya boleh menyusul - admin bisa melengkapi.",
   "culinaryFormFieldCuisine": "Kuliner",
   "culinaryFormSearchCuisine": "Cari kuliner",
-  "culinaryFormFieldPlace": "Tempat/penjual",
-  "culinaryFormSearchPlace": "Cari tempat",
+  "culinaryFormFieldPlace": "Usaha/penjual",
+  "culinaryFormSearchPlace": "Cari usaha",
   "culinaryFormNameCuisineLabel": "Nama kuliner",
-  "culinaryFormNamePlaceLabel": "Nama tempat",
-  "culinaryFormNamePlaceHint": "Nama tempat atau penjual",
+  "culinaryFormNamePlaceLabel": "Nama usaha",
+  "culinaryFormNamePlaceHint": "Nama usaha atau penjual",
   "culinaryFormIngredientsOptional": "Bahan (opsional)",
   "culinaryFormAddressOptional": "Alamat (opsional)",
   "culinaryFormAddressHint": "Jalan, nomor, patokan",
@@ -4326,6 +4354,25 @@
   "@eventFormEndDateLabel": {},
   "eventFormEndTimeLabel": "Jam selesai (opsional)",
   "@eventFormEndTimeLabel": {},
+  "eventScheduleRange": "{start} - {end}",
+  "@eventScheduleRange": {
+    "description": "Rentang jadwal acara tanpa jam pasti di salah satu ujung",
+    "placeholders": {
+      "start": {"type": "String"},
+      "end": {"type": "String"}
+    }
+  },
+  "eventFormSchedulePreview": "Pratinjau: {schedule}",
+  "@eventFormSchedulePreview": {
+    "description": "Ringkasan jadwal di form usulan acara",
+    "placeholders": {
+      "schedule": {"type": "String"}
+    }
+  },
+  "eventFormEndTimePlaceholderThroughEndDate": "Opsional - sampai tanggal selesai",
+  "@eventFormEndTimePlaceholderThroughEndDate": {
+    "description": "Placeholder jam selesai bila tanggal selesai sudah diisi"
+  },
   "eventFormLocationLabel": "Lokasi",
   "@eventFormLocationLabel": {},
   "eventFormLocationHint": "Opsional - nama tempat atau alamat",
@@ -6145,8 +6192,12 @@
   "@chatComposerCharCount": {
     "description": "Penghitung karakter composer chat",
     "placeholders": {
-      "current": { "type": "int" },
-      "max": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
     }
   },
   "chatComposerHint": "Tulis pesan…",
@@ -6244,14 +6295,24 @@
   "voiceStripWatching": "{count} orang di voice room",
   "@voiceStripWatching": {
     "description": "Strip voice: pengamat chat lihat jumlah peserta",
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "chatSwipeReplyHint": "Geser untuk membalas",
-  "@chatSwipeReplyHint": { "description": "Semantik geser balas chat" },
+  "@chatSwipeReplyHint": {
+    "description": "Semantik geser balas chat"
+  },
   "feedKindChat": "Chat publik",
-  "@feedKindChat": { "description": "Label jenis aktivitas ping chat" },
+  "@feedKindChat": {
+    "description": "Label jenis aktivitas ping chat"
+  },
   "feedCtaChat": "Buka chat",
-  "@feedCtaChat": { "description": "CTA feed menuju chat publik" },
+  "@feedCtaChat": {
+    "description": "CTA feed menuju chat publik"
+  },
   "voiceStripTitle": "Voice room",
   "voiceStripOptInHint": "Voice room tersedia. Aktifkan di Pengaturan dulu.",
   "voiceStripOpenSettings": "Pengaturan",
@@ -6504,5 +6565,70 @@
   "periksaKataPriorVoteMeta": "Vote sebelumnya masih aktif - tap tombol yang sama untuk batal",
   "periksaKataUnvoteDone": "Vote dibatalkan",
   "dictCommunityVoteOpenPeriksa": "Buka Periksa Kata",
-  "dictCommunityVoteNoPendingBody": "Makna menunggu tidak tampil di sini. Lanjut di Periksa Kata untuk vote."
+  "dictCommunityVoteNoPendingBody": "Makna menunggu tidak tampil di sini. Lanjut di Periksa Kata untuk vote.",
+  "expHistoryTitle": "Riwayat EXP",
+  "@expHistoryTitle": {
+    "description": "Judul layar riwayat EXP dan poin mingguan"
+  },
+  "expHistorySubtitle": "Pergerakan poin mingguan dan snapshot EXP akun.",
+  "@expHistorySubtitle": {
+    "description": "Subjudul riwayat EXP"
+  },
+  "expHistoryEmpty": "Belum ade riwayat mingguan yang tacatat.",
+  "@expHistoryEmpty": {
+    "description": "Pesan ketika belum ada data riwayat minggu selesai"
+  },
+  "expHistoryWeeklyPoints": "+{points} poin minggu situk",
+  "@expHistoryWeeklyPoints": {
+    "description": "Total poin yang didapat pada minggu tersebut",
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "expHistoryWeekEndXp": "EXP akumulasi: {xp}",
+  "@expHistoryWeekEndXp": {
+    "description": "Nilai EXP pada akhir minggu penutupan",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "expHistoryBreakdown": "+{submitted} usul · +{approved} acc · +{verif} verif",
+  "@expHistoryBreakdown": {
+    "description": "Rincian asal perolehan poin mingguan",
+    "placeholders": {
+      "submitted": {
+        "type": "int"
+      },
+      "approved": {
+        "type": "int"
+      },
+      "verif": {
+        "type": "int"
+      }
+    }
+  },
+  "expHistoryViewAll": "Lihat Riwayat EXP",
+  "@expHistoryViewAll": {
+    "description": "Tombol aksi membuka layar riwayat EXP dari bottom sheet level"
+  }
+,
+  "balehoBookPhoneLabel": "No. HP / WhatsApp",
+  "@balehoBookPhoneLabel": {"description": "Label kontak konfirmasi pesanan Baleho"},
+  "balehoBookPhoneHint": "Untuk konfirmasi pembayaran",
+  "@balehoBookPhoneHint": {"description": "Hint kontak Baleho"},
+  "balehoValidationPhone": "Isi nomor HP/WA format internasional 62… atau 60…",
+  "@balehoValidationPhone": {"description": "Validasi nomor Baleho"},
+  "balehoStartDateLabel": "Tanggal mulai tayang",
+  "@balehoStartDateLabel": {"description": "Tile jadwal mulai Baleho"},
+  "balehoEndDateLabel": "Tanggal berakhir tayang",
+  "@balehoEndDateLabel": {"description": "Tile jadwal berakhir Baleho"},
+  "balehoDurationDaysCount": "Durasi: {days} hari",
+  "@balehoDurationDaysCount": {
+    "description": "Ringkasan durasi setelah pilih tanggal",
+    "placeholders": {"days": {"type": "int"}}
+  }
 }
