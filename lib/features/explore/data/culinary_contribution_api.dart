@@ -90,12 +90,12 @@ class CulinaryContributionApi {
 
   /// Pengajuan perbaikan/hubungan umum (payload per `kind`).
   ///
-  /// `cuisine_edit`/`place_operational`/`archive`/`restore` butuh id entitas
+  /// `cuisine_edit`/`usaha_operational`/`archive`/`restore` butuh id entitas
   /// (bukan slug); `link` butuh slug pasangan di dalam payload.
   Future<void> submitChange({
     required String kind,
     String? cuisineId,
-    String? placeId,
+    String? usahaId,
     String? linkId,
     Map<String, dynamic> payload = const {},
     List<String> fields = const [],
@@ -105,7 +105,7 @@ class CulinaryContributionApi {
       data: {
         'kind': kind,
         'cuisine_id': ?cuisineId,
-        'place_id': ?placeId,
+        'usaha_id': ?usahaId,
         'link_id': ?linkId,
         'payload': payload,
         if (fields.isNotEmpty) 'fields': fields,
@@ -113,26 +113,30 @@ class CulinaryContributionApi {
     ),
   );
 
-  /// Usulkan hubungan kuliner-tempat (mis. warung X jual bubur pedas).
+  /// Usulkan hubungan kuliner-usaha (mis. warung X jual bubur pedas).
   Future<void> submitLink({
     required String cuisineSlug,
-    required String placeSlug,
+    String? usahaSlug,
+    String? placeSlug,
     String? availability,
     String? note,
-  }) => _send(
-    () => _dio.post<dynamic>(
-      '/api/v1/culinary/contributions/change',
-      data: {
-        'kind': 'link',
-        'payload': {
-          'cuisineSlug': cuisineSlug,
-          'placeSlug': placeSlug,
-          'availability': ?availability,
-          if (note != null && note.trim().isNotEmpty) 'note': note.trim(),
+  }) {
+    final slug = usahaSlug ?? placeSlug ?? '';
+    return _send(
+      () => _dio.post<dynamic>(
+        '/api/v1/culinary/contributions/change',
+        data: {
+          'kind': 'link',
+          'payload': {
+            'cuisineSlug': cuisineSlug,
+            'usahaSlug': slug,
+            'availability': ?availability,
+            if (note != null && note.trim().isNotEmpty) 'note': note.trim(),
+          },
         },
-      },
-    ),
-  );
+      ),
+    );
+  }
 
   /// Klaim pengelolaan tempat. `contactEvidence` privat, tidak pernah
   /// dikembalikan ke publik.

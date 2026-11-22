@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../core/network/api_error_text.dart';
 import '../domain/leaderboard_iso_week.dart';
 import '../domain/leaderboard_models.dart';
+import '../domain/points_history_models.dart';
 
 class LeaderboardApiException implements Exception {
   LeaderboardApiException(this.message, {this.code});
@@ -96,6 +97,33 @@ class LeaderboardApi {
       throw _fromDio(e, codeFallback: 'LEADERBOARD_LOAD_FAILED');
     } on LeaderboardApiException {
       rethrow;
+    }
+  }
+
+  /// Riwayat poin mingguan + XP snapshot user (fase 4).
+  Future<UserPointsHistoryViewData> fetchUserPointsHistory(
+    String username, {
+    int limit = 52,
+  }) async {
+    try {
+      final res = await _dio.get<dynamic>(
+        '/api/v1/leaderboard/users/\$username/points-history',
+        queryParameters: {'limit': limit},
+        options: Options(receiveTimeout: const Duration(seconds: 12)),
+      );
+      final envelope = _rootMap(res.data);
+      final data = envelope['data'];
+      if (data is Map) {
+        return UserPointsHistoryViewData.fromJson(
+          Map<String, dynamic>.from(data),
+        );
+      }
+      throw LeaderboardApiException(
+        'LEADERBOARD_LOAD_FAILED',
+        code: 'LEADERBOARD_LOAD_FAILED',
+      );
+    } on DioException catch (e) {
+      throw _fromDio(e, codeFallback: 'LEADERBOARD_LOAD_FAILED');
     }
   }
 

@@ -6,7 +6,6 @@ import 'presentation/pages/cuisine_add_photo_page.dart';
 import 'presentation/pages/cuisine_detail_page.dart';
 import 'presentation/pages/cuisine_list_page.dart';
 import 'presentation/pages/culinary_contribute_page.dart';
-import 'presentation/pages/culinary_places_page.dart';
 import 'presentation/pages/culinary_proposals_page.dart';
 import 'presentation/pages/pins_page.dart';
 import 'presentation/pages/place_contribute_page.dart';
@@ -47,22 +46,11 @@ class ExploreRouter {
     name: 'ExploreRouter.cuisineList',
   );
 
-  /// Daftar tempat/penjual kuliner (butuh segmen statis SEBELUM detail).
-  static const cuisinePlaces = RouteDefiner(
-    path: '/explore/cuisine/places',
-    name: 'ExploreRouter.cuisinePlaces',
-  );
-
   /// Form usulan kuliner/tempat/relasi. WAJIB sebelum `cuisineDetail` -
   /// `/explore/cuisine/:slug` akan menelan segmen statis ini.
   static const cuisineContribute = RouteDefiner(
     path: '/explore/cuisine/usul',
     name: 'ExploreRouter.cuisineContribute',
-  );
-
-  static const cuisinePlaceContribute = RouteDefiner(
-    path: '/explore/cuisine/usul-tempat',
-    name: 'ExploreRouter.cuisinePlaceContribute',
   );
 
   /// Status usulan kuliner milik user (pola sama dengan usulan wisata/usaha).
@@ -189,76 +177,65 @@ class ExploreRouter {
       builder: (context, state) => RegionDetailPage.desa(
         slug: Uri.decodeComponent(state.pathParameters['slug'] ?? ''),
       ),
-    ),
-    GoRoute(
-      path: cuisineList.path,
-      name: cuisineList.name,
-      builder: (context, state) => const CuisineListPage(),
-    ),
-    GoRoute(
-      path: cuisinePlaces.path,
-      name: cuisinePlaces.name,
-      builder: (context, state) => const CulinaryPlacesPage(),
-    ),
-    GoRoute(
-      path: cuisineContribute.path,
-      name: cuisineContribute.name,
-      builder: (context, state) =>
-          const CulinaryContributePage(mode: CulinaryContributeMode.cuisine),
-    ),
-    GoRoute(
-      path: cuisinePlaceContribute.path,
-      name: cuisinePlaceContribute.name,
-      builder: (context, state) =>
-          const CulinaryContributePage(mode: CulinaryContributeMode.place),
-    ),
-    GoRoute(
-      path: cuisineLink.path,
-      name: cuisineLink.name,
-      builder: (context, state) =>
-          const CulinaryContributePage(mode: CulinaryContributeMode.link),
-    ),
-    GoRoute(
-      path: cuisineProposals.path,
-      name: cuisineProposals.name,
-      builder: (context, state) => const CulinaryProposalsPage(),
-    ),
-    GoRoute(
-      path: cuisineAddPhoto.path,
-      name: cuisineAddPhoto.name,
-      builder: (context, state) {
-        final slug = state.pathParameters['slug'] ?? '';
-        return CuisineAddPhotoPage(slug: slug);
-      },
-    ),
-    GoRoute(
-      path: cuisineDetail.path,
-      name: cuisineDetail.name,
-      builder: (context, state) {
-        final slug = state.pathParameters['slug'] ?? '';
-        return CuisineDetailPage(slug: slug);
-      },
-    ),
-    GoRoute(
-      path: placePhotos.path,
-      name: placePhotos.name,
-      builder: (context, state) {
-        final slug = state.pathParameters['slug'] ?? '';
-        return PlacePhotosPage(slug: slug);
-      },
-    ),
-    GoRoute(
-      path: place.path,
-      name: place.name,
-      builder: (context, state) {
-        final slug = state.pathParameters['slug'] ?? '';
-        final entry =
-            state.uri.queryParameters['entry'] ?? (state.extra as String?);
-        return PlaceDetailPage(
-          slug: slug,
-          entry: entry == null || entry.isEmpty ? 'list' : entry,
-        );
-      },
-    ),
-  ];
+),
+GoRoute(
+path: cuisineList.path,
+name: cuisineList.name,
+builder: (context, state) => const CuisineListPage(),
+),
+GoRoute(
+path: cuisineContribute.path,
+name: cuisineContribute.name,
+builder: (context, state) =>
+const CulinaryContributePage(mode: CulinaryContributeMode.cuisine),
+),
+GoRoute(
+path: cuisineLink.path,
+name: cuisineLink.name,
+builder: (context, state) =>
+const CulinaryContributePage(mode: CulinaryContributeMode.link),
+),
+GoRoute(
+path: cuisineProposals.path,
+name: cuisineProposals.name,
+builder: (context, state) => const CulinaryProposalsPage(),
+),
+GoRoute(
+path: cuisineAddPhoto.path,
+name: cuisineAddPhoto.name,
+builder: (context, state) {
+final slug = state.pathParameters['slug'] ?? '';
+return CuisineAddPhotoPage(slug: slug);
+},
+),
+GoRoute(
+path: cuisineDetail.path,
+name: cuisineDetail.name,
+builder: (context, state) {
+final slug = state.pathParameters['slug'] ?? '';
+return CuisineDetailPage(slug: slug);
+},
+),
+GoRoute(
+path: placePhotos.path,
+name: placePhotos.name,
+builder: (context, state) {
+final slug = state.pathParameters['slug'] ?? '';
+return PlacePhotosPage(slug: slug);
+},
+),
+GoRoute(
+path: place.path,
+name: place.name,
+builder: (context, state) {
+final slug = state.pathParameters['slug'] ?? '';
+final entry =
+state.uri.queryParameters['entry'] ?? (state.extra as String?);
+return PlaceDetailPage(
+slug: slug,
+entry: entry == null || entry.isEmpty ? 'list' : entry,
+);
+},
+),
+];
 }

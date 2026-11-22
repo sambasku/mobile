@@ -379,8 +379,8 @@ class ActivityFeedTile extends ConsumerWidget {
           target.id,
         );
       case 'culinary_place':
-        // Belum ada halaman detail tempat kuliner - arahkan ke daftar.
-        return ExploreRouter.cuisinePlaces.path;
+        // Tempat sekarang adalah usaha
+        return UsahaRouter.detailPath(target.id);
       case 'article':
         return EncyclopediaRouter.detailPath(target.id);
       case 'user':

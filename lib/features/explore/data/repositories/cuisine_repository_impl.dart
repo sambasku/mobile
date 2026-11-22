@@ -1,7 +1,6 @@
 import '../../domain/entities/cuisine.dart';
 import '../datasources/cuisine_remote_datasource.dart';
 import '../models/cuisine_dto.dart';
-
 /// Repository katalog kuliner (API publik). Tanpa cache lokal: data
 /// kuliner dikoreksi cepat lewat moderasi, cache akan sajikan info usang.
 class CuisineRepositoryImpl {
@@ -15,29 +14,15 @@ class CuisineRepositoryImpl {
     String? categoryId,
     String? q,
   }) => _datasource.fetchPage(
-    limit: limit,
-    before: before,
-    categoryId: categoryId,
-    q: q,
-  );
+        limit: limit,
+        before: before,
+        categoryId: categoryId,
+        q: q,
+      );
 
   Future<CuisineDtoItem?> getBySlug(String slug) => _datasource.fetchBySlug(slug);
 
   Future<void> recordView(String slug) => _datasource.recordView(slug);
-
-  Future<CulinaryPlacePage> places({
-    int limit = cuisinesPageSize,
-    String? before,
-    String? q,
-    String? type,
-    String? operationalStatus,
-  }) => _datasource.fetchPlaces(
-    limit: limit,
-    before: before,
-    q: q,
-    type: type,
-    operationalStatus: operationalStatus,
-  );
 
   /// Seluruh kuliner (maks [cuisinesMaxPages] halaman) - dipakai halaman
   /// list yang masih filter client-side.

@@ -15,8 +15,9 @@ import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/culinary_contribution_api.dart';
 import '../providers/cuisine_providers.dart';
+import '../../../usaha/presentation/providers/usaha_browse_providers.dart';
 
-enum CulinaryContributeMode { cuisine, place, link }
+enum CulinaryContributeMode { cuisine, usaha, link }
 
 /// Lisensi baku foto warga (PRD kuliner): foto yang diunggah dari app
 /// otomatis CC BY-SA 4.0 dan diatribusikan ke akun pengunggah.
@@ -25,7 +26,7 @@ const _ccBySa = 'CC BY-SA 4.0';
 /// Form usulan kuliner. Tiga mode dalam satu layar supaya warga tidak
 /// bingung memilih alur:
 /// - [CulinaryContributeMode.cuisine] kuliner baru (boleh anonim)
-/// - [CulinaryContributeMode.place] tempat/penjual baru (boleh anonim)
+/// - [CulinaryContributeMode.usaha] usaha/penjual baru (boleh anonim)
 /// - [CulinaryContributeMode.link] tandai "tempat X jual kuliner Y" (wajib akun)
 class CulinaryContributePage extends ConsumerStatefulWidget {
   const CulinaryContributePage({super.key, required this.mode});
@@ -130,7 +131,7 @@ class _CulinaryContributePageState extends ConsumerState<CulinaryContributePage>
 
   String _titleOf(AppLocalizations l10n) => switch (widget.mode) {
     CulinaryContributeMode.cuisine => l10n.culinaryFormTitleCuisine,
-    CulinaryContributeMode.place => l10n.culinaryFormTitlePlace,
+    CulinaryContributeMode.usaha => l10n.culinaryFormTitlePlace,
     CulinaryContributeMode.link => l10n.culinaryFormTitleLink,
   };
 
@@ -359,9 +360,12 @@ class _CulinaryContributePageState extends ConsumerState<CulinaryContributePage>
             const Gap(10),
             FSelect<String>.search(
               items: {
-                for (final p
-                    in ref.watch(culinaryPlacesProvider()).value?.items ?? [])
-                  p.name: p.slug,
+                for (final u in ref
+                    .watch(usahaBrowseProvider(const UsahaBrowseQuery()))
+                    .value
+                    ?.items ??
+                    [])
+                  u.name: u.slug,
               },
               label: Text(l10n.culinaryFormFieldPlace),
               hint: l10n.culinaryFormSearchPlace,

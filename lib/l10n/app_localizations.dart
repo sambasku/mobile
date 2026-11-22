@@ -529,17 +529,15 @@ abstract class AppLocalizations {
   /// **'{score} poin'**
   String balehoLeaderboardScoreCombined(int score);
 
-  /// No description provided for @balehoLeaderboardScoreBreakdown.
+  /// Rincian skor papan peringkat mingguan (usul, bonus acc, verif)
   ///
   /// In id, this message translates to:
-  /// **'+{contrib} kontrib · +{verif} verif'**
-  String balehoLeaderboardScoreBreakdown(int contrib, int verif);
-
-  /// Badge kecil pada entry verifikator
-  ///
-  /// In id, this message translates to:
-  /// **'Verifikator'**
-  String get balehoLeaderboardVerifierBadge;
+  /// **'+{submitted} usul · +{approved} acc · +{verif} verif'**
+  String balehoLeaderboardScoreBreakdown(
+    int submitted,
+    int approved,
+    int verif,
+  );
 
   /// Empty state minggu berjalan
   ///
@@ -7304,7 +7302,7 @@ abstract class AppLocalizations {
   /// No description provided for @reviewExploreCulinaryKindNewPlace.
   ///
   /// In id, this message translates to:
-  /// **'Usulan tempat baru'**
+  /// **'Usulan usaha baru'**
   String get reviewExploreCulinaryKindNewPlace;
 
   /// No description provided for @reviewExploreCulinaryKindLink.
@@ -7322,7 +7320,7 @@ abstract class AppLocalizations {
   /// No description provided for @reviewExploreCulinaryKindPlaceEdit.
   ///
   /// In id, this message translates to:
-  /// **'Perbaikan data tempat'**
+  /// **'Perbaikan data usaha'**
   String get reviewExploreCulinaryKindPlaceEdit;
 
   /// No description provided for @reviewExploreCulinaryKindLinkEdit.
@@ -7334,7 +7332,7 @@ abstract class AppLocalizations {
   /// No description provided for @reviewExploreCulinaryKindPlaceOperational.
   ///
   /// In id, this message translates to:
-  /// **'Status operasional tempat'**
+  /// **'Status operasional usaha'**
   String get reviewExploreCulinaryKindPlaceOperational;
 
   /// No description provided for @reviewExploreCulinaryKindArchive.
@@ -12291,6 +12289,18 @@ abstract class AppLocalizations {
   /// **'Belum ada foto dari pengunjung. Jadi yang pertama yuk.'**
   String get usahaPhotosEmpty;
 
+  /// Link sisa foto di preview grid detail usaha
+  ///
+  /// In id, this message translates to:
+  /// **'{count, plural, other{Lihat lainnya ({count} foto)}}'**
+  String usahaMorePhotos(num count);
+
+  /// Link masuk galeri penuh usaha dari detail
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat semua foto & unggah'**
+  String get usahaAllPhotos;
+
   /// No description provided for @usahaClaimSheetTitle.
   ///
   /// In id, this message translates to:
@@ -12702,7 +12712,7 @@ abstract class AppLocalizations {
   /// No description provided for @culinaryKindNewPlace.
   ///
   /// In id, this message translates to:
-  /// **'Usulan tempat baru'**
+  /// **'Usulan usaha baru'**
   String get culinaryKindNewPlace;
 
   /// No description provided for @culinaryKindCuisineEdit.
@@ -12714,7 +12724,7 @@ abstract class AppLocalizations {
   /// No description provided for @culinaryKindPlaceEdit.
   ///
   /// In id, this message translates to:
-  /// **'Perbaikan data tempat'**
+  /// **'Perbaikan data usaha'**
   String get culinaryKindPlaceEdit;
 
   /// No description provided for @culinaryKindLink.
@@ -12726,7 +12736,7 @@ abstract class AppLocalizations {
   /// No description provided for @culinaryKindOperational.
   ///
   /// In id, this message translates to:
-  /// **'Status buka'**
+  /// **'Status operasional usaha'**
   String get culinaryKindOperational;
 
   /// No description provided for @culinaryKindArchive.
@@ -15300,19 +15310,19 @@ abstract class AppLocalizations {
   /// No description provided for @culinaryPlacesContribute.
   ///
   /// In id, this message translates to:
-  /// **'Usulkan tempat kuliner'**
+  /// **'Usulkan usaha'**
   String get culinaryPlacesContribute;
 
   /// No description provided for @culinaryPlacesSearchHint.
   ///
   /// In id, this message translates to:
-  /// **'Cari tempat atau penjual...'**
+  /// **'Cari penjual atau usaha...'**
   String get culinaryPlacesSearchHint;
 
   /// No description provided for @culinaryPlacesEmpty.
   ///
   /// In id, this message translates to:
-  /// **'Belum ada tempat yang cocok.'**
+  /// **'Belum ada usaha yang cocok.'**
   String get culinaryPlacesEmpty;
 
   /// No description provided for @culinaryLoginTitle.
@@ -15330,7 +15340,7 @@ abstract class AppLocalizations {
   /// No description provided for @culinaryClaimPlace.
   ///
   /// In id, this message translates to:
-  /// **'Klaim tempat ini'**
+  /// **'Klaim usaha ini'**
   String get culinaryClaimPlace;
 
   /// No description provided for @culinaryClaimPlaceBody.
@@ -15420,7 +15430,7 @@ abstract class AppLocalizations {
   /// No description provided for @culinaryPlaceReportSentBody.
   ///
   /// In id, this message translates to:
-  /// **'Terima kasih. Admin akan memeriksa tempat ini.'**
+  /// **'Terima kasih. Admin akan memeriksa usaha ini.'**
   String get culinaryPlaceReportSentBody;
 
   /// No description provided for @culinaryReportFailed.
@@ -16128,7 +16138,7 @@ abstract class AppLocalizations {
   /// No description provided for @culinaryFormTitlePlace.
   ///
   /// In id, this message translates to:
-  /// **'Usul tempat'**
+  /// **'Usul usaha'**
   String get culinaryFormTitlePlace;
 
   /// No description provided for @culinaryFormTitleLink.
@@ -16176,13 +16186,13 @@ abstract class AppLocalizations {
   /// No description provided for @culinaryFormFieldPlace.
   ///
   /// In id, this message translates to:
-  /// **'Tempat/penjual'**
+  /// **'Usaha/penjual'**
   String get culinaryFormFieldPlace;
 
   /// No description provided for @culinaryFormSearchPlace.
   ///
   /// In id, this message translates to:
-  /// **'Cari tempat'**
+  /// **'Cari usaha'**
   String get culinaryFormSearchPlace;
 
   /// No description provided for @culinaryFormNameCuisineLabel.
@@ -16194,13 +16204,13 @@ abstract class AppLocalizations {
   /// No description provided for @culinaryFormNamePlaceLabel.
   ///
   /// In id, this message translates to:
-  /// **'Nama tempat'**
+  /// **'Nama usaha'**
   String get culinaryFormNamePlaceLabel;
 
   /// No description provided for @culinaryFormNamePlaceHint.
   ///
   /// In id, this message translates to:
-  /// **'Nama tempat atau penjual'**
+  /// **'Nama usaha atau penjual'**
   String get culinaryFormNamePlaceHint;
 
   /// No description provided for @culinaryFormIngredientsOptional.
@@ -23362,6 +23372,48 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Makna menunggu tidak tampil di sini. Lanjut di Periksa Kata untuk vote.'**
   String get dictCommunityVoteNoPendingBody;
+
+  /// Judul layar riwayat EXP dan poin mingguan
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat EXP'**
+  String get expHistoryTitle;
+
+  /// Subjudul riwayat EXP
+  ///
+  /// In id, this message translates to:
+  /// **'Pergerakan poin mingguan dan snapshot EXP akun.'**
+  String get expHistorySubtitle;
+
+  /// Pesan ketika belum ada data riwayat minggu selesai
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada riwayat mingguan yang tercatat.'**
+  String get expHistoryEmpty;
+
+  /// Total poin yang didapat pada minggu tersebut
+  ///
+  /// In id, this message translates to:
+  /// **'+{points} poin minggu ini'**
+  String expHistoryWeeklyPoints(int points);
+
+  /// Nilai EXP pada akhir minggu penutupan
+  ///
+  /// In id, this message translates to:
+  /// **'EXP akumulasi: {xp}'**
+  String expHistoryWeekEndXp(int xp);
+
+  /// Rincian asal perolehan poin mingguan
+  ///
+  /// In id, this message translates to:
+  /// **'+{submitted} usul · +{approved} acc · +{verif} verif'**
+  String expHistoryBreakdown(int submitted, int approved, int verif);
+
+  /// Tombol aksi membuka layar riwayat EXP dari bottom sheet level
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat Riwayat EXP'**
+  String get expHistoryViewAll;
 }
 
 class _AppLocalizationsDelegate

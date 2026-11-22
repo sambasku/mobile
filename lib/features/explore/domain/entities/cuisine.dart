@@ -9,16 +9,17 @@ import 'place.dart';
 export 'place.dart' show PlaceImage;
 
 /// Tempat/penjual yang menyediakan satu cuisine (dari link many-to-many).
-class CuisinePlaceRef {
-  const CuisinePlaceRef({
-    required this.placeSlug,
-    required this.placeName,
+/// Sekarang `usahaSlug`/`usahaName` karena kuliner langsung ke usaha.
+class CuisineUsahaRef {
+  const CuisineUsahaRef({
+    required this.usahaSlug,
+    required this.usahaName,
     this.availability = 'unknown',
     this.note,
   });
 
-  final String placeSlug;
-  final String placeName;
+  final String usahaSlug;
+  final String usahaName;
 
   /// `unknown` | `available` | `seasonal` | `unavailable`.
   final String availability;
@@ -37,7 +38,7 @@ class Cuisine {
     required this.tags,
     required this.sources,
     this.servingSuggestion,
-    this.places = const [],
+    this.usahas = const [],
     this.author,
   });
 
@@ -59,7 +60,10 @@ class Cuisine {
   final List<PlaceSource> sources;
 
   /// Tempat/penjual penyedia. Kosong di list, terisi di detail.
-  final List<CuisinePlaceRef> places;
+  final List<CuisineUsahaRef> usahas;
+
+  /// Alias backward compatibility.
+  List<CuisineUsahaRef> get places => usahas;
 
   /// Pengusul live dari API.
   final PublicAuthorRef? author;

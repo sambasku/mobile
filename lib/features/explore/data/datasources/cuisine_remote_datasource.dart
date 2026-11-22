@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import '../../domain/entities/culinary_place.dart';
 import '../models/cuisine_dto.dart';
 
 /// Ukuran halaman daftar kuliner. Batas API 500; 40 cukup untuk ponsel.
@@ -49,7 +48,7 @@ class CuisineRemoteDatasource {
     );
   }
 
-  /// Detail by slug + `places[]` (JOIN relasi). Null bila 404.
+  /// Detail by slug + `usaha[]` (JOIN relasi). Null bila 404.
   Future<CuisineDtoItem?> fetchBySlug(String slug) async {
     try {
       final res = await _dio.get<dynamic>(
@@ -62,38 +61,6 @@ class CuisineRemoteDatasource {
       rethrow;
     }
   }
-
-  /// Daftar tempat/penjual kuliner.
-  Future<CulinaryPlacePage> fetchPlaces({
-    int limit = cuisinesPageSize,
-    String? before,
-    String? q,
-    String? type,
-    String? operationalStatus,
-  }) async {
-    final res = await _dio.get<dynamic>(
-      '/api/v1/culinary/places',
-      queryParameters: {
-        'limit': limit,
-        if (before != null && before.isNotEmpty) 'before': before,
-        if (q != null && q.trim().isNotEmpty) 'q': q.trim(),
-        if (type != null && type.isNotEmpty) 'type': type,
-        if (operationalStatus != null && operationalStatus.isNotEmpty)
-          'operational_status': operationalStatus,
-      },
-      options: Options(receiveTimeout: const Duration(seconds: 8)),
-    );
-    final data = _dataMap(res.data);
-    final raw = data['items'];
-    return CulinaryPlacePage(
-      items: [
-        if (raw is List)
-          for (final item in raw.whereType<Map>())
-            ?CulinaryPlace.fromJson(Map<String, dynamic>.from(item)),
-      ],
-      nextCursor: _cursor(data),
-    );
-  }
 }
 
 /// Satu halaman kuliner + cursor berikutnya.
@@ -101,14 +68,6 @@ class CuisinePage {
   const CuisinePage({required this.items, this.nextCursor});
 
   final List<CuisineDtoItem> items;
-  final String? nextCursor;
-}
-
-/// Satu halaman tempat kuliner + cursor berikutnya.
-class CulinaryPlacePage {
-  const CulinaryPlacePage({required this.items, this.nextCursor});
-
-  final List<CulinaryPlace> items;
   final String? nextCursor;
 }
 

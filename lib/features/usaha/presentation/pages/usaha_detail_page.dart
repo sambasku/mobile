@@ -389,7 +389,6 @@ class _BodyState extends ConsumerState<_Body> {
         _ContactSection(usaha: usaha),
         const Gap(18),
         if (usaha.images.isNotEmpty) ...[
-          const Gap(12),
           _UsahaPhotoGrid(slug: usaha.slug, images: usaha.images),
         ],
         FTileGroup(
@@ -630,51 +629,78 @@ class _UsahaPhotoGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.theme;
     final shown = images.length <= _previewCount
         ? images
         : images.sublist(0, _previewCount);
     final hidden = images.length - shown.length;
+    final l10n = AppLocalizations.of(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            for (var i = 0; i < shown.length; i++) ...[
-              if (i > 0) const Gap(4),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => showImagePreview(
-                    context,
-                    urls: [for (final im in images) im.url],
-                    initialIndex: i,
-                  ),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: CachedNetworkImageWithFallback(
-                        imageUrl:
-                            displayImageUrl(shown[i].url, width: 400) ??
-                            shown[i].url,
-                        fallbackUrl: shown[i].url,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
+        Text(
+          l10n.usahaPhotosTitle,
+          style: theme.typography.body.md.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const Gap(4),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+          ),
+          itemCount: shown.length,
+          itemBuilder: (context, i) {
+            final img = shown[i];
+            return GestureDetector(
+              onTap: () => showImagePreview(
+                context,
+                urls: [for (final im in images) im.url],
+                initialIndex: i,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: CachedNetworkImageWithFallback(
+                  imageUrl: displayImageUrl(img.url, width: 360) ?? img.url,
+                  fallbackUrl: img.url,
+                  fit: BoxFit.cover,
                 ),
               ),
-            ],
-          ],
+            );
+          },
         ),
         if (hidden > 0) ...[
           const Gap(8),
-          FButton(
-            variant: FButtonVariant.outline,
-            onPress: () => context.push(UsahaRouter.photosPath(slug)),
-            child: Text(AppLocalizations.of(context).usahaPhotosTitle),
+          GestureDetector(
+            onTap: () => context.push(UsahaRouter.photosPath(slug)),
+            child: Text(
+              l10n.usahaMorePhotos(hidden),
+              style: theme.typography.body.sm.copyWith(
+                color: theme.colors.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
+        // Jalan masuk galeri + unggah selalu ada (1-3 foto pun),
+        // pola acara/wisata: link "Lihat semua foto & unggah".
+        const Gap(8),
+        GestureDetector(
+          onTap: () => context.push(UsahaRouter.photosPath(slug)),
+          child: Text(
+            l10n.usahaAllPhotos,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.primary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
       ],
     );
   }

@@ -14,6 +14,7 @@ import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 import '../../domain/entities/cuisine.dart';
 import '../../explore_router.dart';
 import '../providers/cuisine_providers.dart';
+import '../../../usaha/usaha_router.dart';
 
 /// Grid 3 kolom: foto kotak 1:1, nama selalu 2 baris - seragam dengan
 /// halaman wisata (`place_list_page.dart`).
@@ -76,20 +77,20 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
                   context.canPop() ? context.pop() : context.go('/explore'),
             ),
           ],
-          suffixes: [
-            FHeaderAction(
-              icon: const Icon(FLucideIcons.store),
-              onPress: () => context.push(ExploreRouter.cuisinePlaces.path),
-            ),
-            FHeaderAction(
-              icon: const Icon(FLucideIcons.history),
-              onPress: () => context.push(ExploreRouter.cuisineProposals.path),
-            ),
-            FHeaderAction(
-              icon: const Icon(FLucideIcons.plus),
-              onPress: () => context.push(ExploreRouter.cuisineContribute.path),
-            ),
-          ],
+suffixes: [
+      FHeaderAction(
+        icon: const Icon(FLucideIcons.store),
+        onPress: () => context.push(UsahaRouter.list.path),
+      ),
+      FHeaderAction(
+        icon: const Icon(FLucideIcons.history),
+        onPress: () => context.push(ExploreRouter.cuisineProposals.path),
+      ),
+      FHeaderAction(
+        icon: const Icon(FLucideIcons.plus),
+        onPress: () => context.push(ExploreRouter.cuisineContribute.path),
+      ),
+    ],
         ),
         child: cuisineAsync.when(
           // Pull-to-refresh: jangan unmount grid (RefreshIndicator hilang).
