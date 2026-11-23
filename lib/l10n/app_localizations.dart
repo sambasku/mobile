@@ -2571,6 +2571,12 @@ abstract class AppLocalizations {
   /// **'Makna perlu ditinjau'**
   String get notificationTypeMeaningNeedsReview;
 
+  /// Aksi header tab Kontribusi (verifikator): pintasan form usul kata
+  ///
+  /// In id, this message translates to:
+  /// **'Usul kata baru'**
+  String get activityVoteDeckSuggestWord;
+
   /// No description provided for @voteDeckLoginPrompt.
   ///
   /// In id, this message translates to:
@@ -18100,7 +18106,7 @@ abstract class AppLocalizations {
   /// No description provided for @discussionReplyHint.
   ///
   /// In id, this message translates to:
-  /// **'Tulis balasan…'**
+  /// **'Tulis balasan… Tap kata untuk taut lemma.'**
   String get discussionReplyHint;
 
   /// No description provided for @discussionPhotoTapHintMany.
@@ -21758,7 +21764,7 @@ abstract class AppLocalizations {
   /// Hint composer komen Jinye
   ///
   /// In id, this message translates to:
-  /// **'Tulis balasan…'**
+  /// **'Tulis balasan… Tap kata setelah kirim untuk taut lemma.'**
   String get jinyeCommentHint;
 
   /// CTA kirim komen Jinye
@@ -23486,6 +23492,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Durasi: {days} hari'**
   String balehoDurationDaysCount(int days);
+
+  /// Hint composer komen Jinye - lemma span
+  ///
+  /// In id, this message translates to:
+  /// **'Setelah kirim, tap kata di komentar untuk tautkan ke kamus.'**
+  String get jinyeCommentLemmaHint;
+
+  /// Hint balasan diskusi - lemma span
+  ///
+  /// In id, this message translates to:
+  /// **'Tap kata di balasan untuk tautkan ke kamus.'**
+  String get discussionReplyLemmaHint;
 }
 
 class _AppLocalizationsDelegate

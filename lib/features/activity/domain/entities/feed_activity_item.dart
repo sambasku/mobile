@@ -191,6 +191,8 @@ class FeedActivityItem {
     this.subtitle,
     this.target,
     this.announcement,
+    this.previewImageUrl,
+    this.previewImageCount,
   });
 
   final String id;
@@ -201,4 +203,6 @@ class FeedActivityItem {
   final String? subtitle;
   final FeedActivityTarget? target;
   final FeedAnnouncement? announcement;
+  final String? previewImageUrl;
+  final int? previewImageCount;
 }

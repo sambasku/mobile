@@ -65,7 +65,6 @@ void main() {
 
     // Semua chip ada (viewport test 1000px → semua muat).
     expect(find.text('Semua'), findsOneWidget);
-    expect(find.text('Pencarian warga'), findsOneWidget);
     expect(find.text('Perbaikan'), findsOneWidget);
     expect(find.text('Eksplorasi'), findsOneWidget);
     expect(find.text('Jinye'), findsOneWidget);

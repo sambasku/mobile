@@ -28,6 +28,7 @@ import '../../../dictionary/presentation/utils/pronunciation_format.dart';
 import '../../../dictionary/presentation/widgets/usage_label_chips.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
 import '../../../search_miss/presentation/providers/search_miss_list_providers.dart';
+import '../../../review/presentation/providers/review_search_miss_providers.dart';
 import '../../domain/failures/contribution_failure.dart';
 import '../../domain/repositories/contribution_repository.dart';
 import '../../domain/usecases/submit_anon_word_use_case.dart';
@@ -51,6 +52,11 @@ import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/message_dialog.dart';
 import '../../../../shared/widgets/kbbi_source_notice.dart';
 
+/// Tab Beranda (`from=beranda`) saja yang memakai aksi **Ke beranda** setelah sukses.
+@visibleForTesting
+bool contributeSuccessFromBeranda(String? contributeFrom) =>
+    contributeFrom == 'beranda';
+
 class ContributePage extends ConsumerStatefulWidget {
   const ContributePage({
     super.key,
@@ -58,6 +64,7 @@ class ContributePage extends ConsumerStatefulWidget {
     this.initialSearchIn,
     this.initialSearchMissId,
     this.spellCorrection = false,
+    this.contributeFrom,
   });
 
   final String? initialLemma;
@@ -66,6 +73,9 @@ class ContributePage extends ConsumerStatefulWidget {
 
   /// G3b: form koreksi ejaan - term ketikan jadi varian, field isi ejaan benar.
   final bool spellCorrection;
+
+  /// Query `from` pada `/contribute` - mengatur aksi ketiga dialog sukses.
+  final String? contributeFrom;
 
   @override
   ConsumerState<ContributePage> createState() => _ContributePageState();
@@ -445,6 +455,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
         // server (filter pending). Invalidate list miss + feed supaya
         // kartu/chip hilang tanpa pull-to-refresh.
         ref.invalidate(searchMissListProvider);
+        if (widget.initialSearchMissId != null) {
+          ref.invalidate(reviewSearchMissProvider);
+        }
         for (final category in FeedCategory.values) {
           ref.invalidate(activityFeedProvider(category));
         }
@@ -569,6 +582,8 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                         if (widget.initialSearchMissId != null)
                           'miss_id': widget.initialSearchMissId!,
                         if (widget.spellCorrection) 'correction': '1',
+                        if (widget.contributeFrom != null)
+                          'from': widget.contributeFrom!,
                       },
                     ).query;
                     context.push(
@@ -1363,6 +1378,8 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               : l10n.contributeSentPublishedNoLemma)
         : l10n.contributeSentGuest;
 
+    final fromBeranda = contributeSuccessFromBeranda(widget.contributeFrom);
+
     final choice = await showFMessageDialog<String>(
       context: context,
       barrierDismissible: false,
@@ -1380,8 +1397,12 @@ class _ContributePageState extends ConsumerState<ContributePage> {
         ),
         FButton(
           variant: FButtonVariant.ghost,
-          onPress: () => Navigator.of(dialogContext).pop('home'),
-          child: Text(l10n.contributeGoHome),
+          onPress: () => Navigator.of(dialogContext).pop(
+            fromBeranda ? 'home' : 'close',
+          ),
+          child: Text(
+            fromBeranda ? l10n.contributeGoHome : l10n.commonClose,
+          ),
         ),
       ],
     );
@@ -1397,6 +1418,12 @@ class _ContributePageState extends ConsumerState<ContributePage> {
         context.pushReplacement('/contributions');
       case 'home':
         context.go('/');
+      case 'close':
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go('/');
+        }
       default:
         if (context.canPop()) {
           context.pop();

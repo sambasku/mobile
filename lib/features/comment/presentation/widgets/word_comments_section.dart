@@ -24,6 +24,9 @@ import '../../../user_profile/user_profile_router.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../domain/entities/comment_image.dart';
 import '../../domain/entities/word_comment.dart';
+import '../../../../shared/span_lemma/span_lemma_exports.dart';
+import '../../../../shared/ugc_comment_lemma/ugc_comment_lemma_client.dart';
+import '../../../../shared/ugc_comment_lemma/ugc_comment_lemma_interaction.dart';
 import '../../data/providers/comment_data_providers.dart';
 import '../../domain/failures/comment_failure.dart';
 import '../../domain/providers/comment_domain_providers.dart';
@@ -675,12 +678,38 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                           auth != null &&
                           c.isPublished &&
                           c.isOwner(auth.userId);
+                      final bodyText = c.displayBody;
                       return ThreadMessageRow(
                         username: c.username,
                         displayName: c.displayName,
                         avatarUrl: c.avatarUrl,
                         isVerifier: c.isVerifier,
-                        body: c.displayBody,
+                        body: bodyText,
+                        bodyWidget: bodyText.isEmpty
+                            ? null
+                            : ThreadLemmaBody(
+                                body: c.body ?? '',
+                                links: c.lemmaLinks,
+                                onMentionTap: (mentionedUsername) =>
+                                    UserProfileRouter.open(
+                                      context,
+                                      mentionedUsername,
+                                    ),
+                                onWordTap: (span, link) => handleUgcCommentLemmaWordTap(
+                                  context,
+                                  ref,
+                                  sheetContextId: widget.wordId,
+                                  anchor: UgcCommentLemmaAnchor.wordComment,
+                                  hostId: widget.wordId,
+                                  commentId: c.id,
+                                  span: span,
+                                  link: link,
+                                  isAuth: auth?.isAuth ?? false,
+                                  onLinked: () => ref.invalidate(
+                                    commentListControllerProvider(widget.wordId),
+                                  ),
+                                ),
+                              ),
                         dateLabel: formatRelativeCompact(
                           DateTime.tryParse(c.createdAt ?? ''),
                         ),

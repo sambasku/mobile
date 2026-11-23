@@ -29,6 +29,7 @@ abstract class CommentDto with _$CommentDto {
     String? status,
     @JsonKey(name: 'is_edited') @Default(false) bool isEdited,
     @JsonKey(name: 'updated_at') String? updatedAt,
+    @JsonKey(name: 'lemma_links') @Default([]) List<dynamic> lemmaLinks,
   }) = _CommentDto;
 
   factory CommentDto.fromJson(Map<String, dynamic> json) =>

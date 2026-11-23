@@ -1410,6 +1410,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get notificationTypeMeaningNeedsReview => 'Makna perlu ditinjau';
 
   @override
+  String get activityVoteDeckSuggestWord => 'Usul kata baru';
+
+  @override
   String get voteDeckLoginPrompt => 'Masuk dulu untuk menilai kata';
 
   @override
@@ -10237,7 +10240,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get discussionReplyLoginCta => 'Masuk untuk membalas';
 
   @override
-  String get discussionReplyHint => 'Tulis balasan…';
+  String get discussionReplyHint => 'Tulis balasan… Tap kata untuk taut lemma.';
 
   @override
   String get discussionPhotoTapHintMany =>
@@ -12372,7 +12375,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get jinyeCommentsLoadFailed => 'Gagal memuat balasan';
 
   @override
-  String get jinyeCommentHint => 'Tulis balasan…';
+  String get jinyeCommentHint =>
+      'Tulis balasan… Tap kata setelah kirim untuk taut lemma.';
 
   @override
   String get jinyeCommentSend => 'Kirim';
@@ -13361,6 +13365,14 @@ class AppLocalizationsId extends AppLocalizations {
   String balehoDurationDaysCount(int days) {
     return 'Durasi: $days hari';
   }
+
+  @override
+  String get jinyeCommentLemmaHint =>
+      'Setelah kirim, tap kata di komentar untuk tautkan ke kamus.';
+
+  @override
+  String get discussionReplyLemmaHint =>
+      'Tap kata di balasan untuk tautkan ke kamus.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -14766,6 +14778,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get notificationTypeMeaningNeedsReview => 'Makna perlu ditinjau';
+
+  @override
+  String get activityVoteDeckSuggestWord => 'Usul kata baru';
 
   @override
   String get voteDeckLoginPrompt => 'Masuk dulu untuk menilai kata';
@@ -23511,7 +23526,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get discussionReplyLoginCta => 'Masuk untuk membalas';
 
   @override
-  String get discussionReplyHint => 'Tulis balasan…';
+  String get discussionReplyHint => 'Tulis balasan… Tap kata untuk taut lemma.';
 
   @override
   String get discussionPhotoTapHintMany =>
@@ -25646,7 +25661,8 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get jinyeCommentsLoadFailed => 'Gagal memuat balasan';
 
   @override
-  String get jinyeCommentHint => 'Tulis balasan…';
+  String get jinyeCommentHint =>
+      'Tulis balasan… Tap kata setelah kirim untuk taut lemma.';
 
   @override
   String get jinyeCommentSend => 'Kirim';
@@ -26635,4 +26651,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String balehoDurationDaysCount(int days) {
     return 'Durasi: $days hari';
   }
+
+  @override
+  String get jinyeCommentLemmaHint =>
+      'Setelah kirim, tap kata di komentar untuk tautkan ke kamus.';
+
+  @override
+  String get discussionReplyLemmaHint =>
+      'Tap kata di balasan untuk tautkan ke kamus.';
 }

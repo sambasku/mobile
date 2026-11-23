@@ -1,4 +1,5 @@
 import '../../../vote/domain/entities/vote_target.dart';
+import '../../../jinye/domain/jinye_models.dart';
 import 'comment_image.dart';
 
 /// Komentar pada lemma (09-api-comment.md). Post-moderation:
@@ -25,6 +26,7 @@ class WordComment {
     this.myVote,
     this.isEdited = false,
     this.updatedAt,
+    this.lemmaLinks = const [],
   });
 
   final String id;
@@ -64,6 +66,7 @@ class WordComment {
   final int? myVote;
   final bool isEdited;
   final String? updatedAt;
+  final List<JinyeLemmaLink> lemmaLinks;
 
   VoteTarget get voteTarget => VoteTarget(type: 'comment', id: id);
 
