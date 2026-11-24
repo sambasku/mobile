@@ -1968,7 +1968,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutTagline.
   ///
   /// In id, this message translates to:
-  /// **'Kamus Digital Sambas-Indonesia'**
+  /// **'Platform digital bahasa dan budaya Sambas'**
   String get aboutTagline;
 
   /// Baris versi app
@@ -2004,7 +2004,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutWhatBody.
   ///
   /// In id, this message translates to:
-  /// **'Kamus digital Melayu Sambas-Indonesia yang dirawat bersama warga. Kamu bisa mencari arti kata, membaca contoh kalimat, menyimpan kata, mengusulkan kata baru, dan membagikan kartu kata. Usulan dari akun yang sudah masuk langsung tayang dengan label Menunggu pengecekan, lalu diperiksa verifikator.'**
+  /// **'Platform digital untuk belajar bahasa dan budaya Sambas. Kamu bisa mengenal dan mengeksplorasi Sambas lewat kosakata, tempat, kuliner, acara, komunitas, dan konten yang dirawat bersama warga.'**
   String get aboutWhatBody;
 
   /// No description provided for @aboutSponsorTitle.
@@ -2016,7 +2016,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutSponsorBody.
   ///
   /// In id, this message translates to:
-  /// **'Para pendukung operasional dan orang-orang yang merawat kamus ini.'**
+  /// **'Para pendukung operasional dan orang-orang yang merawat platform ini.'**
   String get aboutSponsorBody;
 
   /// No description provided for @aboutSponsorAction.
@@ -2034,7 +2034,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutSourceBody.
   ///
   /// In id, this message translates to:
-  /// **'SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten kamus dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.'**
+  /// **'SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.'**
   String get aboutSourceBody;
 
   /// No description provided for @aboutSourceAction.
@@ -2042,6 +2042,48 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Buka di GitHub'**
   String get aboutSourceAction;
+
+  /// Judul blok daftar pustaka open source di halaman Tentang
+  ///
+  /// In id, this message translates to:
+  /// **'Pustaka sumber terbuka'**
+  String get aboutOssTitle;
+
+  /// No description provided for @aboutOssBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Aplikasi ini memakai pustaka pihak ketiga. Setiap pustaka punya lisensi sumber terbuka sendiri.'**
+  String get aboutOssBody;
+
+  /// No description provided for @aboutOssAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat daftar pustaka'**
+  String get aboutOssAction;
+
+  /// No description provided for @aboutOssListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pustaka sumber terbuka'**
+  String get aboutOssListTitle;
+
+  /// No description provided for @aboutOssEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar pustaka belum tersedia.'**
+  String get aboutOssEmpty;
+
+  /// No description provided for @aboutOssLoading.
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat daftar pustaka'**
+  String get aboutOssLoading;
+
+  /// No description provided for @aboutOssUnknown.
+  ///
+  /// In id, this message translates to:
+  /// **'Lisensi sumber terbuka'**
+  String get aboutOssUnknown;
 
   /// No description provided for @aboutSponsorshipTitle.
   ///
@@ -2060,6 +2102,48 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tim Kami'**
   String get aboutTabTeam;
+
+  /// Chip filter Tim di halaman Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Tim'**
+  String get aboutChipTeam;
+
+  /// Chip filter Verifikator di halaman Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikator'**
+  String get aboutChipVerifiers;
+
+  /// Chip filter Kontributor di halaman Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Kontributor'**
+  String get aboutChipContributors;
+
+  /// Empty state chip Tim/Verifikator/Kontributor
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada data di sini.'**
+  String get aboutTeamChipEmpty;
+
+  /// Subtitle chip Tim di halaman Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Anggota yang merawat SambasKu - produk, data, dan komunitas.'**
+  String get aboutTeamSectionBody;
+
+  /// Subtitle chip Verifikator di halaman Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Memeriksa usulan warga supaya konten tetap akurat dan layak tayang.'**
+  String get aboutVerifiersSectionBody;
+
+  /// Subtitle chip Kontributor di halaman Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Mengusulkan kata, perbaikan, dan rekaman suara. Entri tayang setelah diverifikasi.'**
+  String get aboutContributorsSectionBody;
 
   /// No description provided for @aboutSupportTitle.
   ///
@@ -2082,7 +2166,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutTogetherBody.
   ///
   /// In id, this message translates to:
-  /// **'Kamus ini dirawat orang-orang yang mengusulkan kata, memeriksa entri, dan merekam pelafalan.'**
+  /// **'Platform ini dirawat orang-orang yang mengusulkan konten, memeriksa entri, dan merekam pelafalan.'**
   String get aboutTogetherBody;
 
   /// No description provided for @aboutContributorsTitle.
@@ -2094,7 +2178,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutContributorsBody.
   ///
   /// In id, this message translates to:
-  /// **'Mengirim kata baru atau perbaikan, dan merekam cara mengucapkan kata agar bisa didengar. Entri tayang setelah verifikasi.'**
+  /// **'Mengusulkan kata, perbaikan, dan merekam cara mengucapkan supaya bisa didengar. Entri tayang setelah verifikasi.'**
   String get aboutContributorsBody;
 
   /// No description provided for @aboutVerifiersTitle.
@@ -2106,7 +2190,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutVerifiersBody.
   ///
   /// In id, this message translates to:
-  /// **'Memeriksa usulan sebelum masuk kamus.'**
+  /// **'Memeriksa usulan sebelum tayang.'**
   String get aboutVerifiersBody;
 
   /// No description provided for @aboutSponsorsSectionTitle.
@@ -23550,8 +23634,32 @@ abstract class AppLocalizations {
   /// Empty state daftar komunitas
   ///
   /// In id, this message translates to:
-  /// **'Belum ada komunitas di kategori ini'**
+  /// **'Belum ada komunitas terdaftar'**
   String get communityOrgEmpty;
+
+  /// Hint empty list komunitas tanpa filter
+  ///
+  /// In id, this message translates to:
+  /// **'Punya komunitas atau tahu komunitas di Sambas? Boleh kamu usulkan.'**
+  String get communityOrgEmptyHint;
+
+  /// Judul empty list komunitas saat search/filter
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komunitas yang cocok'**
+  String get communityOrgEmptyQuery;
+
+  /// Hint empty list komunitas saat search/filter
+  ///
+  /// In id, this message translates to:
+  /// **'Coba kata atau kategori lain ya.'**
+  String get communityOrgEmptyQueryHint;
+
+  /// Subtitle error load daftar komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa koneksi lalu coba lagi.'**
+  String get communityLoadFailedBody;
 
   /// Tombol hubungi komunitas di bottom sheet
   ///
@@ -23666,6 +23774,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Sorotan'**
   String get communityFeaturedSection;
+
+  /// Label field kategori usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get communityContributeCategory;
 
   /// Label field deskripsi komunitas
   ///

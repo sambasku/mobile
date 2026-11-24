@@ -17,18 +17,36 @@ class CommunityApi {
 
   final Dio _dio;
 
+  Future<List<CommunityCategoryRef>> categories() async {
+    final res = await _send(
+      () => _dio.get<dynamic>(
+        '/api/v1/community/categories',
+        options: Options(receiveTimeout: const Duration(seconds: 8)),
+      ),
+    );
+    final raw = _dataMap(res.data)['items'];
+    if (raw is! List) return const [];
+    return [
+      for (final item in raw.whereType<Map>())
+        CommunityCategoryRef(
+          id: '${item['id'] ?? ''}',
+          name: '${item['name'] ?? ''}',
+        ),
+    ].where((c) => c.id.isNotEmpty).toList();
+  }
+
   Future<CommunityOrgPage> list({
     String? category,
     String? q,
     String? cursor,
-    int limit = 60,
+    int limit = 20,
   }) async {
     final res = await _send(
       () => _dio.get<dynamic>(
         '/api/v1/community/orgs',
         queryParameters: {
           'limit': limit,
-          if (category != null && category.isNotEmpty) 'category': category,
+          if (category != null && category.isNotEmpty) 'category_id': category,
           if (q != null && q.trim().isNotEmpty) 'q': q.trim(),
           if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
         },
@@ -78,6 +96,7 @@ class CommunityApi {
   Future<CommunityProposal> submit({
     required String name,
     required String description,
+    required String category,
     String? logoUrl,
   }) async {
     final res = await _send(
@@ -86,6 +105,7 @@ class CommunityApi {
         data: {
           'name': name,
           'description': description,
+          'category_id': category,
           if (logoUrl != null && logoUrl.isNotEmpty) 'logo_url': logoUrl,
         },
       ),
@@ -180,7 +200,7 @@ class CommunityOrgDto {
       id: '${json['id'] ?? ''}',
       slug: '${json['slug'] ?? json['id'] ?? ''}',
       name: '${json['name'] ?? ''}',
-      category: '${json['category'] ?? 'lain'}',
+      category: '${json['category_id'] ?? json['category'] ?? 'lain'}',
       description: '${json['description'] ?? ''}',
       logoUrl: _stringOrNull(json['logo_url']),
       coverUrl: _stringOrNull(json['cover_url']),

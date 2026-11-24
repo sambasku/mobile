@@ -13,6 +13,11 @@ part 'community_providers.g.dart';
 CommunityApi communityApi(Ref ref) => CommunityApi(ref.watch(dioProvider));
 
 @riverpod
+Future<List<CommunityCategoryRef>> communityCategories(Ref ref) {
+  return ref.watch(communityApiProvider).categories();
+}
+
+@riverpod
 Future<CommunityOrgPage> communityOrgList(
   Ref ref,
   String categoryId,
@@ -48,11 +53,15 @@ class CommunityMineController extends _$CommunityMineController {
   Future<CommunityProposal> submit({
     required String name,
     required String description,
+    required String category,
     String? logoUrl,
   }) async {
-    final proposal = await ref
-        .read(communityApiProvider)
-        .submit(name: name, description: description, logoUrl: logoUrl);
+    final proposal = await ref.read(communityApiProvider).submit(
+      name: name,
+      description: description,
+      category: category,
+      logoUrl: logoUrl,
+    );
     ref.invalidateSelf();
     return proposal;
   }

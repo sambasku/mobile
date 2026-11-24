@@ -9,6 +9,7 @@ const communityTopList = [
     category: 'lain',
     description: 'Tim pengelola SambasKu.',
     isVerified: true,
+    featuredKind: 'tim',
   ),
   CommunityOrg(
     id: 'top-sponsor',
@@ -16,6 +17,7 @@ const communityTopList = [
     category: 'lain',
     description: 'Para sponsor yang mendukung SambasKu.',
     isVerified: true,
+    featuredKind: 'sponsor',
   ),
 ];
 
@@ -213,34 +215,6 @@ const communityOrgList = [
     location: 'Kec. Sambas',
   ),
 ];
-
-/// Kategori filter untuk halaman komunitas.
-enum CommunityCategory {
-  semua,
-  seni,
-  bahasa,
-  pendidikan,
-  ukm,
-  lain;
-
-  String get id => switch (this) {
-    semua => 'semua',
-    seni => 'seni',
-    bahasa => 'bahasa',
-    pendidikan => 'pendidikan',
-    ukm => 'ukm',
-    lain => 'lain',
-  };
-
-  static CommunityCategory fromId(String id) => switch (id) {
-    'seni' => seni,
-    'bahasa' => bahasa,
-    'pendidikan' => pendidikan,
-    'ukm' => ukm,
-    'lain' => lain,
-    _ => semua,
-  };
-}
 
 /// Filter daftar komunitas berdasarkan kategori.
 List<CommunityOrg> filterCommunities(

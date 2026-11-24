@@ -28,9 +28,8 @@ class CommunityProposalsPage extends ConsumerWidget {
         title: Text(l10n.communityProposalsTitle),
         prefixes: [
           FHeaderAction.back(
-            onPress: () => context.canPop()
-                ? context.pop()
-                : context.go('/explore/komunitas'),
+            // Selalu ke daftar komunitas. pop() pada stack tipis = exit app.
+            onPress: () => context.go('/explore/komunitas'),
           ),
         ],
       ),

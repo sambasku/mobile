@@ -50,6 +50,48 @@ final class CommunityApiProvider
 
 String _$communityApiHash() => r'5b481dd4ad032d83cbec1ff56262a804574eff47';
 
+@ProviderFor(communityCategories)
+final communityCategoriesProvider = CommunityCategoriesProvider._();
+
+final class CommunityCategoriesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<CommunityCategoryRef>>,
+          List<CommunityCategoryRef>,
+          FutureOr<List<CommunityCategoryRef>>
+        >
+    with
+        $FutureModifier<List<CommunityCategoryRef>>,
+        $FutureProvider<List<CommunityCategoryRef>> {
+  CommunityCategoriesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'communityCategoriesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$communityCategoriesHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<CommunityCategoryRef>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<CommunityCategoryRef>> create(Ref ref) {
+    return communityCategories(ref);
+  }
+}
+
+String _$communityCategoriesHash() =>
+    r'a176e358128922b90a50f1c7f7d18eb59a6ad8e1';
+
 @ProviderFor(communityOrgList)
 final communityOrgListProvider = CommunityOrgListFamily._();
 
@@ -275,7 +317,7 @@ final class CommunityMineControllerProvider
 }
 
 String _$communityMineControllerHash() =>
-    r'2e15f9c262aed08250b22ad768c3c36efddd951c';
+    r'1c52d32dda5731485c092473ad33a3935608d356';
 
 abstract class _$CommunityMineController
     extends $AsyncNotifier<List<CommunityProposal>> {

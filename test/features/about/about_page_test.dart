@@ -11,11 +11,11 @@ Widget _wrap(Widget child) => ProviderScope(
   child: MaterialApp(
     theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
     localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+      ...AppLocalizations.localizationsDelegates,
+      ...FLocalizations.localizationsDelegates,
+    ],
     supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+    locale: const Locale('id'),
     home: FTheme(data: foruiPalettes['zinc']!.light.touch, child: child),
   ),
 );
@@ -38,10 +38,17 @@ void main() {
     expect(find.text('Pengembang'), findsNothing);
     expect(find.text('Ibnul Mutaki'), findsNothing);
     expect(find.text('Tentang'), findsWidgets);
+    expect(
+      find.text('Platform digital bahasa dan budaya Sambas'),
+      findsOneWidget,
+    );
     expect(find.text('Apa itu SambasKu?'), findsOneWidget);
+    expect(find.textContaining('belajar bahasa dan budaya Sambas'), findsOneWidget);
     expect(find.text('Sponsor & Tim Kami'), findsNothing);
     expect(find.text('Kode Sumber & Organisasi'), findsOneWidget);
     expect(find.text('Buka di GitHub'), findsOneWidget);
+    expect(find.text('Pustaka sumber terbuka'), findsOneWidget);
+    expect(find.text('Lihat daftar pustaka'), findsOneWidget);
 
     // Blok fitur lama dan blok Organisasi terpisah sudah dilebur.
     expect(find.text('Cari kosakata'), findsNothing);
@@ -54,6 +61,10 @@ void main() {
 
     double y(String t) => tester.getTopLeft(find.text(t)).dy;
     expect(y('Apa itu SambasKu?'), lessThan(y('Kode Sumber & Organisasi')));
+    expect(
+      y('Kode Sumber & Organisasi'),
+      lessThan(y('Pustaka sumber terbuka')),
+    );
   });
 
   testWidgets('halaman Sponsorship & Tim punya dua tab', (tester) async {

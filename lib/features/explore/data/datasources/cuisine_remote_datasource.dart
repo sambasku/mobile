@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import '../models/cuisine_dto.dart';
 
 /// Ukuran halaman daftar kuliner. Batas API 500; 40 cukup untuk ponsel.
-const cuisinesPageSize = 40;
+const cuisinesPageSize = 20;
 
 /// Pagar kalau server mengulang cursor.
 const cuisinesMaxPages = 20;

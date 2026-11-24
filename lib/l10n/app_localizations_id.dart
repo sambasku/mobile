@@ -1074,7 +1074,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get aboutTitle => 'Tentang';
 
   @override
-  String get aboutTagline => 'Kamus Digital Sambas-Indonesia';
+  String get aboutTagline => 'Platform digital bahasa dan budaya Sambas';
 
   @override
   String aboutVersion(String version) {
@@ -1097,14 +1097,14 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get aboutWhatBody =>
-      'Kamus digital Melayu Sambas-Indonesia yang dirawat bersama warga. Kamu bisa mencari arti kata, membaca contoh kalimat, menyimpan kata, mengusulkan kata baru, dan membagikan kartu kata. Usulan dari akun yang sudah masuk langsung tayang dengan label Menunggu pengecekan, lalu diperiksa verifikator.';
+      'Platform digital untuk belajar bahasa dan budaya Sambas. Kamu bisa mengenal dan mengeksplorasi Sambas lewat kosakata, tempat, kuliner, acara, komunitas, dan konten yang dirawat bersama warga.';
 
   @override
   String get aboutSponsorTitle => 'Sponsor & Tim Kami';
 
   @override
   String get aboutSponsorBody =>
-      'Para pendukung operasional dan orang-orang yang merawat kamus ini.';
+      'Para pendukung operasional dan orang-orang yang merawat platform ini.';
 
   @override
   String get aboutSponsorAction => 'Lihat Sponsor & Tim Kami';
@@ -1114,10 +1114,32 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get aboutSourceBody =>
-      'SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten kamus dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.';
+      'SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.';
 
   @override
   String get aboutSourceAction => 'Buka di GitHub';
+
+  @override
+  String get aboutOssTitle => 'Pustaka sumber terbuka';
+
+  @override
+  String get aboutOssBody =>
+      'Aplikasi ini memakai pustaka pihak ketiga. Setiap pustaka punya lisensi sumber terbuka sendiri.';
+
+  @override
+  String get aboutOssAction => 'Lihat daftar pustaka';
+
+  @override
+  String get aboutOssListTitle => 'Pustaka sumber terbuka';
+
+  @override
+  String get aboutOssEmpty => 'Daftar pustaka belum tersedia.';
+
+  @override
+  String get aboutOssLoading => 'Memuat daftar pustaka';
+
+  @override
+  String get aboutOssUnknown => 'Lisensi sumber terbuka';
 
   @override
   String get aboutSponsorshipTitle => 'Sponsor & Tim Kami';
@@ -1127,6 +1149,30 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get aboutTabTeam => 'Tim Kami';
+
+  @override
+  String get aboutChipTeam => 'Tim';
+
+  @override
+  String get aboutChipVerifiers => 'Verifikator';
+
+  @override
+  String get aboutChipContributors => 'Kontributor';
+
+  @override
+  String get aboutTeamChipEmpty => 'Belum ada data di sini.';
+
+  @override
+  String get aboutTeamSectionBody =>
+      'Anggota yang merawat SambasKu - produk, data, dan komunitas.';
+
+  @override
+  String get aboutVerifiersSectionBody =>
+      'Memeriksa usulan warga supaya konten tetap akurat dan layak tayang.';
+
+  @override
+  String get aboutContributorsSectionBody =>
+      'Mengusulkan kata, perbaikan, dan rekaman suara. Entri tayang setelah diverifikasi.';
 
   @override
   String get aboutSupportTitle => 'Ingin ikut mendukung?';
@@ -1140,20 +1186,20 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get aboutTogetherBody =>
-      'Kamus ini dirawat orang-orang yang mengusulkan kata, memeriksa entri, dan merekam pelafalan.';
+      'Platform ini dirawat orang-orang yang mengusulkan konten, memeriksa entri, dan merekam pelafalan.';
 
   @override
   String get aboutContributorsTitle => 'Kontributor';
 
   @override
   String get aboutContributorsBody =>
-      'Mengirim kata baru atau perbaikan, dan merekam cara mengucapkan kata agar bisa didengar. Entri tayang setelah verifikasi.';
+      'Mengusulkan kata, perbaikan, dan merekam cara mengucapkan supaya bisa didengar. Entri tayang setelah verifikasi.';
 
   @override
   String get aboutVerifiersTitle => 'Verifikator';
 
   @override
-  String get aboutVerifiersBody => 'Memeriksa usulan sebelum masuk kamus.';
+  String get aboutVerifiersBody => 'Memeriksa usulan sebelum tayang.';
 
   @override
   String get aboutSponsorsSectionTitle => 'Sponsor & Mitra';
@@ -13396,7 +13442,20 @@ class AppLocalizationsId extends AppLocalizations {
   String get communitySearchHint => 'Cari nama komunitas…';
 
   @override
-  String get communityOrgEmpty => 'Belum ada komunitas di kategori ini';
+  String get communityOrgEmpty => 'Belum ada komunitas terdaftar';
+
+  @override
+  String get communityOrgEmptyHint =>
+      'Punya komunitas atau tahu komunitas di Sambas? Boleh kamu usulkan.';
+
+  @override
+  String get communityOrgEmptyQuery => 'Belum ada komunitas yang cocok';
+
+  @override
+  String get communityOrgEmptyQueryHint => 'Coba kata atau kategori lain ya.';
+
+  @override
+  String get communityLoadFailedBody => 'Periksa koneksi lalu coba lagi.';
 
   @override
   String get communityOrgContact => 'Hubungi';
@@ -13459,6 +13518,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get communityFeaturedSection => 'Sorotan';
+
+  @override
+  String get communityContributeCategory => 'Kategori';
 
   @override
   String get communityContributeDesc => 'Deskripsi';
@@ -14599,7 +14661,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get aboutTitle => 'Tentang';
 
   @override
-  String get aboutTagline => 'Kamus Digital Sambas-Indonesia';
+  String get aboutTagline => 'Platform digital bahasa dan budaya Sambas';
 
   @override
   String aboutVersion(String version) {
@@ -14622,14 +14684,14 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get aboutWhatBody =>
-      'Kamus digital Melayu Sambas-Indonesia yang dirawat bersama warga. Kamu bisa mencari arti kata, membaca contoh kalimat, menyimpan kata, mengusulkan kata baru, dan membagikan kartu kata. Usulan dari akun yang sudah masuk langsung tayang dengan label Menunggu pengecekan, lalu diperiksa verifikator.';
+      'Platform digital untuk belajar bahasa dan budaya Sambas. Kamu bisa mengenal dan mengeksplorasi Sambas lewat kosakata, tempat, kuliner, acara, komunitas, dan konten yang dirawat bersama warga.';
 
   @override
   String get aboutSponsorTitle => 'Sponsor & Tim Kami';
 
   @override
   String get aboutSponsorBody =>
-      'Para pendukung operasional dan orang-orang yang merawat kamus ini.';
+      'Para pendukung operasional dan orang-orang yang merawat platform ini.';
 
   @override
   String get aboutSponsorAction => 'Lihat Sponsor & Tim Kami';
@@ -14639,10 +14701,32 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get aboutSourceBody =>
-      'SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten kamus dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.';
+      'SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.';
 
   @override
   String get aboutSourceAction => 'Buka di GitHub';
+
+  @override
+  String get aboutOssTitle => 'Pustaka sumber terbuka';
+
+  @override
+  String get aboutOssBody =>
+      'Aplikasi ini memakai pustaka pihak ketiga. Setiap pustaka punya lisensi sumber terbuka sendiri.';
+
+  @override
+  String get aboutOssAction => 'Lihat daftar pustaka';
+
+  @override
+  String get aboutOssListTitle => 'Pustaka sumber terbuka';
+
+  @override
+  String get aboutOssEmpty => 'Daftar pustaka belum tersedia.';
+
+  @override
+  String get aboutOssLoading => 'Memuat daftar pustaka';
+
+  @override
+  String get aboutOssUnknown => 'Lisensi sumber terbuka';
 
   @override
   String get aboutSponsorshipTitle => 'Sponsor & Tim Kami';
@@ -14652,6 +14736,30 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get aboutTabTeam => 'Tim Kami';
+
+  @override
+  String get aboutChipTeam => 'Tim';
+
+  @override
+  String get aboutChipVerifiers => 'Verifikator';
+
+  @override
+  String get aboutChipContributors => 'Kontributor';
+
+  @override
+  String get aboutTeamChipEmpty => 'Belum ada data di sini.';
+
+  @override
+  String get aboutTeamSectionBody =>
+      'Anggota yang merawat SambasKu - produk, data, dan komunitas.';
+
+  @override
+  String get aboutVerifiersSectionBody =>
+      'Memeriksa usulan warga supaya konten tetap akurat dan layak tayang.';
+
+  @override
+  String get aboutContributorsSectionBody =>
+      'Mengusulkan kata, perbaikan, dan rekaman suara. Entri tayang setelah diverifikasi.';
 
   @override
   String get aboutSupportTitle => 'Ingin ikut mendukung?';
@@ -14665,20 +14773,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get aboutTogetherBody =>
-      'Kamus ini dirawat orang-orang yang mengusulkan kata, memeriksa entri, dan merekam pelafalan.';
+      'Platform ini dirawat orang-orang yang mengusulkan konten, memeriksa entri, dan merekam pelafalan.';
 
   @override
   String get aboutContributorsTitle => 'Kontributor';
 
   @override
   String get aboutContributorsBody =>
-      'Mengirim kata baru atau perbaikan, dan merekam cara mengucapkan kata agar bisa didengar. Entri tayang setelah verifikasi.';
+      'Mengusulkan kata, perbaikan, dan merekam cara mengucapkan supaya bisa didengar. Entri tayang setelah verifikasi.';
 
   @override
   String get aboutVerifiersTitle => 'Verifikator';
 
   @override
-  String get aboutVerifiersBody => 'Memeriksa usulan sebelum masuk kamus.';
+  String get aboutVerifiersBody => 'Memeriksa usulan sebelum tayang.';
 
   @override
   String get aboutSponsorsSectionTitle => 'Sponsor & Mitra';
@@ -26837,7 +26945,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get communitySearchHint => 'Cari nama komunitas…';
 
   @override
-  String get communityOrgEmpty => 'Belum ada komunitas di kategori ini';
+  String get communityOrgEmpty => 'Belum ada komunitas terdaftar';
+
+  @override
+  String get communityOrgEmptyHint =>
+      'Punya komunitas atau tahu komunitas di Sambas? Boleh kamu usulkan.';
+
+  @override
+  String get communityOrgEmptyQuery => 'Belum ada komunitas yang cocok';
+
+  @override
+  String get communityOrgEmptyQueryHint => 'Coba kata atau kategori lain ya.';
+
+  @override
+  String get communityLoadFailedBody => 'Periksa koneksi lalu coba lagi.';
 
   @override
   String get communityOrgContact => 'Hubungi';
@@ -26900,6 +27021,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get communityFeaturedSection => 'Sorotan';
+
+  @override
+  String get communityContributeCategory => 'Kategori';
 
   @override
   String get communityContributeDesc => 'Deskripsi';

@@ -15,6 +15,7 @@ import '../../../../shared/widgets/image_crop_page.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../explore/explore_router.dart';
 import '../../data/community_api.dart';
+import '../../domain/community_org.dart';
 import '../providers/community_providers.dart';
 
 class CommunityContributePage extends ConsumerStatefulWidget {
@@ -31,6 +32,7 @@ class _CommunityContributePageState
   final _description = TextEditingController();
   final _picker = ImagePicker();
   File? _logo;
+  String _categoryId = CommunityCategory.lain.id;
   bool _submitting = false;
 
   @override
@@ -88,15 +90,18 @@ class _CommunityContributePageState
         );
       }
       if (!mounted) return;
-      await ref
-          .read(communityMineControllerProvider.notifier)
-          .submit(name: name, description: description, logoUrl: logoUrl);
+      await ref.read(communityMineControllerProvider.notifier).submit(
+        name: name,
+        description: description,
+        category: _categoryId,
+        logoUrl: logoUrl,
+      );
       if (!mounted) return;
       showFToast(
         context: context,
         title: Text(l10n.communityContributeSuccess),
       );
-      context.go(ExploreRouter.communityProposals.path);
+      context.pushReplacement(ExploreRouter.communityProposals.path);
     } on CommunityException catch (e) {
       if (!mounted) return;
       await showAppErrorSheet(
@@ -122,14 +127,16 @@ class _CommunityContributePageState
     final theme = context.theme;
     final auth = ref.watch(authStatusProvider);
     final authed = auth.value?.isAuth == true;
+    final catsAsync = ref.watch(communityCategoriesProvider);
 
     return FScaffold(
       header: FHeader.nested(
         title: Text(l10n.communityContributeTitle),
         prefixes: [
           FHeaderAction.back(
-            onPress: () =>
-                context.canPop() ? context.pop() : context.go('/explore'),
+            onPress: () => context.canPop()
+                ? context.pop()
+                : context.go('/explore/komunitas'),
           ),
         ],
       ),
@@ -161,6 +168,16 @@ class _CommunityContributePageState
                 logo: _logo,
                 name: _name,
                 description: _description,
+                categoryId: _categoryId,
+                categories: catsAsync.asData?.value ??
+                    [
+                      for (final c in CommunityCategory.formValues)
+                        CommunityCategoryRef(
+                          id: c.id,
+                          name: _fallbackCategoryLabel(l10n, c),
+                        ),
+                    ],
+                onCategory: (id) => setState(() => _categoryId = id),
                 onPickLogo: _pickLogo,
               )
             : _LoginGate(l10n: l10n),
@@ -169,12 +186,25 @@ class _CommunityContributePageState
   }
 }
 
+String _fallbackCategoryLabel(AppLocalizations l10n, CommunityCategory c) =>
+    switch (c) {
+      CommunityCategory.seni => l10n.communityCategorySeni,
+      CommunityCategory.bahasa => l10n.communityCategoryBahasa,
+      CommunityCategory.pendidikan => l10n.communityCategoryPendidikan,
+      CommunityCategory.ukm => l10n.communityCategoryUkm,
+      CommunityCategory.lain => l10n.communityCategoryLain,
+      CommunityCategory.semua => l10n.communityCategoryAll,
+    };
+
 class _FormBody extends StatelessWidget {
   const _FormBody({
     required this.theme,
     required this.logo,
     required this.name,
     required this.description,
+    required this.categoryId,
+    required this.categories,
+    required this.onCategory,
     required this.onPickLogo,
   });
 
@@ -182,11 +212,20 @@ class _FormBody extends StatelessWidget {
   final File? logo;
   final TextEditingController name;
   final TextEditingController description;
+  final String categoryId;
+  final List<CommunityCategoryRef> categories;
+  final ValueChanged<String> onCategory;
   final VoidCallback onPickLogo;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final selected = categories.cast<CommunityCategoryRef?>().firstWhere(
+      (c) => c!.id == categoryId,
+      orElse: () => categories.isEmpty
+          ? const CommunityCategoryRef(id: 'lain', name: 'Lainnya')
+          : categories.first,
+    )!;
 
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -234,6 +273,26 @@ class _FormBody extends StatelessWidget {
           control: FTextFieldControl.managed(controller: name),
           hint: l10n.communityContributeNameHint,
           maxLength: 100,
+        ),
+        const Gap(16),
+        FTileGroup(
+          children: [
+            FSelectMenuTile<String>(
+              key: ValueKey(selected.id),
+              title: Text(l10n.communityContributeCategory),
+              details: Text(selected.name),
+              selectControl: FMultiValueControl.managedRadio(
+                initial: selected.id,
+                onChange: (values) {
+                  if (values.length == 1) onCategory(values.first);
+                },
+              ),
+              menu: [
+                for (final c in categories)
+                  FSelectTile(value: c.id, title: Text(c.name)),
+              ],
+            ),
+          ],
         ),
         const Gap(16),
         Text(

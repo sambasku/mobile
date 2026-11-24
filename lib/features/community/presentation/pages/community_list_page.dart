@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../about/about_router.dart';
 import '../../../explore/explore_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -13,6 +14,7 @@ import '../../../user_profile/presentation/widgets/profile_activity_section.dart
     show OverlapAboveBox, ProfileBarClearanceHeader;
 import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
+import '../../data/community_org_list.dart';
 import '../../domain/community_org.dart';
 import '../providers/community_providers.dart';
 
@@ -47,12 +49,16 @@ class _CommunityListPageState extends ConsumerState<CommunityListPage> {
     });
   }
 
+  Future<void> _reload() async {
+    final provider = communityOrgListProvider(_category.id, _query);
+    ref.invalidate(provider);
+    await ref.read(provider.future);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = context.theme;
     final listAsync = ref.watch(communityOrgListProvider(_category.id, _query));
-    final featuredAsync = ref.watch(communityFeaturedProvider);
     // Chip pinned berhenti di bawah bar melayang (pola profil publik).
     final barOffset =
         MediaQuery.paddingOf(context).top + ProfileHeroShell.barHeight;
@@ -83,10 +89,12 @@ class _CommunityListPageState extends ConsumerState<CommunityListPage> {
         ],
         // Tombol aksi seragam dengan halaman ber-FHeader biasa (bukan 48dp).
         compactActions: true,
-        scrollView: CustomScrollView(
-          controller: _scroll,
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
+        scrollView: RefreshIndicator(
+          onRefresh: _reload,
+          child: CustomScrollView(
+            controller: _scroll,
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
             // Clearance pinned: hero overlap ke sini, cover full-bleed
             // tembus ke tepi atas layar (pola profil publik).
             SliverPersistentHeader(
@@ -101,13 +109,19 @@ class _CommunityListPageState extends ConsumerState<CommunityListPage> {
                   children: [
                     // Hero cover full-bleed di bawah bar melayang.
                     _Hero(l10n: l10n),
-                    // Top 2 featured: intro di bawah hero, selalu tampil,
-                    // tak kena filter/search.
+                    // Top 2 static: Tim Kami + Sponsor Kami. Selalu tampil,
+                    // tanpa API / seed.
                     _FeaturedRow(
                       l10n: l10n,
-                      items: featuredAsync.value ?? const [],
-                      onTap: (org) =>
-                          context.push('/explore/komunitas/${org.slug}'),
+                      items: communityTopList,
+                      onTap: (org) {
+                        final tab = org.featuredKind == 'tim'
+                            ? 'team'
+                            : 'sponsors';
+                        context.push(
+                          '${AboutRouter.sponsorshipTeam.path}?tab=$tab',
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -130,40 +144,27 @@ class _CommunityListPageState extends ConsumerState<CommunityListPage> {
             ...listAsync.when(
               loading: () => [
                 const SliverToBoxAdapter(
-                  child: Center(child: FCircularProgress()),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16, 48, 16, 16),
+                    child: Center(child: FCircularProgress()),
+                  ),
                 ),
               ],
               error: (_, _) => [
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 32, 16, 16),
-                    child: Center(
-                      child: Text(
-                        l10n.communityLoadFailed,
-                        style: theme.typography.body.md.copyWith(
-                          color: theme.colors.mutedForeground,
-                        ),
-                      ),
-                    ),
-                  ),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _ErrorBody(onRetry: _reload),
                 ),
               ],
               data: (page) {
                 final items = page.items;
                 if (items.isEmpty) {
+                  final hasQuery = _query.isNotEmpty ||
+                      _category != CommunityCategory.semua;
                   return [
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 32, 16, 16),
-                        child: Center(
-                          child: Text(
-                            l10n.communityOrgEmpty,
-                            style: theme.typography.body.md.copyWith(
-                              color: theme.colors.mutedForeground,
-                            ),
-                          ),
-                        ),
-                      ),
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: _EmptyBody(hasQuery: hasQuery),
                     ),
                   ];
                 }
@@ -187,7 +188,8 @@ class _CommunityListPageState extends ConsumerState<CommunityListPage> {
                 ];
               },
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -672,5 +674,102 @@ class _OrgCover extends StatelessWidget {
     // ponytail: proto - mock belum punya logo asli, pakai placeholder_512.
     // Saat data nyata: hapus fallback ini, logoUrl wajib terisi.
     return Image.asset('assets/images/placeholder_512.png', fit: BoxFit.cover);
+  }
+}
+
+class _EmptyBody extends StatelessWidget {
+  const _EmptyBody({required this.hasQuery});
+
+  final bool hasQuery;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            FLucideIcons.users,
+            size: 40,
+            color: theme.colors.mutedForeground,
+          ),
+          const Gap(10),
+          Text(
+            hasQuery ? l10n.communityOrgEmptyQuery : l10n.communityOrgEmpty,
+            textAlign: TextAlign.center,
+            style: theme.typography.body.md.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const Gap(4),
+          Text(
+            hasQuery
+                ? l10n.communityOrgEmptyQueryHint
+                : l10n.communityOrgEmptyHint,
+            textAlign: TextAlign.center,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+          const Gap(16),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: () =>
+                context.push(ExploreRouter.communityContribute.path),
+            child: Text(l10n.communityContributeTitle),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorBody extends StatelessWidget {
+  const _ErrorBody({required this.onRetry});
+
+  final Future<void> Function() onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            FLucideIcons.circleAlert,
+            size: 40,
+            color: theme.colors.mutedForeground,
+          ),
+          const Gap(10),
+          Text(
+            l10n.communityLoadFailed,
+            textAlign: TextAlign.center,
+            style: theme.typography.body.md.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const Gap(4),
+          Text(
+            l10n.communityLoadFailedBody,
+            textAlign: TextAlign.center,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+          const Gap(16),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: () => onRetry(),
+            child: Text(l10n.commonRetry),
+          ),
+        ],
+      ),
+    );
   }
 }

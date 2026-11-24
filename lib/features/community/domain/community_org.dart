@@ -69,7 +69,15 @@ class CommunityProposal {
   bool get canCancel => status == 'pending';
 }
 
-/// Kategori filter untuk halaman komunitas.
+/// Ref master `kategori_komunitas` dari API.
+class CommunityCategoryRef {
+  const CommunityCategoryRef({required this.id, required this.name});
+
+  final String id;
+  final String name;
+}
+
+/// Filter chip lokal. Id selain `semua` = id di `kategori_komunitas`.
 enum CommunityCategory {
   semua,
   seni,
@@ -77,6 +85,9 @@ enum CommunityCategory {
   pendidikan,
   ukm,
   lain;
+
+  /// Fallback opsi form bila GET categories gagal.
+  static const formValues = [seni, bahasa, pendidikan, ukm, lain];
 
   String get id => switch (this) {
     semua => 'semua',

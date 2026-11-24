@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 
 /// Ukuran halaman. Di bawah batas API (500) supaya sisa katalog
 /// diambil lewat `before` / `next_cursor`, bukan satu permintaan raksasa.
-const placesPageSize = 50;
+const placesPageSize = 20;
 
 /// Halaman daftar wisata/kuliner. Kelipatan 3 supaya grid tidak patah.
-const placesBrowsePageSize = 24;
+const placesBrowsePageSize = 20;
 
 /// Pagar kalau server mengulang cursor. 50 x 40 = 2000 tempat.
 const placesMaxPages = 40;
