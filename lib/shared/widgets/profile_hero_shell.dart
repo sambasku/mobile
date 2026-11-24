@@ -22,6 +22,10 @@ class ProfileHeroAction {
   final int badgeCount;
 }
 
+/// Peak alpha latar tombol/grup aksi di atas cover: tembus foto, ikon tetap
+/// terbaca. Saat bar solid (t→1) fill jadi 0 lewat `(1 - t) * peak`.
+const double _overlayFillPeak = 0.3;
+
 /// Halaman profil dengan cover full-bleed dan bar aksi melayang di atasnya.
 ///
 /// Cover tembus ke belakang status bar; tombol (back/edit/notifikasi) mengambang
@@ -39,6 +43,7 @@ class ProfileHeroShell extends StatefulWidget {
     this.onBack,
     this.backLabel = '',
     this.coverHeight = 160,
+    this.compactActions = false,
   });
 
   /// Isi halaman (scroll view). Harus mulai dari offset 0 di tepi atas layar.
@@ -58,6 +63,10 @@ class ProfileHeroShell extends StatefulWidget {
   /// [ProfileIdentityHeader.coverHeightOf] varian + lebar layar.
   final double coverHeight;
 
+  /// Kecilkan tombol aksi ke ukuran `FHeaderAction` supaya seragam dengan
+  /// halaman ber-`FHeader` biasa. Default `false` (ukuran sentuh 48).
+  final bool compactActions;
+
   /// Tinggi bar di luar status bar.
   static const double barHeight = ProfileIdentityHeader.actionBarHeight;
 
@@ -66,10 +75,6 @@ class ProfileHeroShell extends StatefulWidget {
 }
 
 class _ProfileHeroShellState extends State<ProfileHeroShell> {
-  /// Peak alpha latar tombol di atas cover: tembus foto, ikon masih terbaca.
-  /// Saat bar solid (t→1) fill jadi 0 lewat `(1 - t) * peak`.
-  static const double _overlayFillPeak = 0.3;
-
   /// 0 = cover penuh (bar transparan), 1 = bar solid.
   final _t = ValueNotifier<double>(0);
 
@@ -82,12 +87,24 @@ class _ProfileHeroShellState extends State<ProfileHeroShell> {
   bool _onScroll(ScrollNotification notification) {
     // depth 0 = scroll utama halaman; chip horizontal di dalamnya diabaikan.
     if (notification.depth != 0) return false;
-    final range = widget.coverHeight - ProfileHeroShell.barHeight;
-    final t = range <= 0
-        ? 1.0
-        : (notification.metrics.pixels / range).clamp(0.0, 1.0);
-    if ((t - _t.value).abs() > 0.005) _t.value = t;
+    _sync(notification.metrics);
     return false;
+  }
+
+  /// Ganti filter memangkas isi grid: offset di-clamp balik tanpa drag,
+  /// jadi tak ada [ScrollNotification]. `ScrollMetricsNotification` tetap
+  /// terkirim saat metrics berubah - tanpa ini bar bisa nyangkut solid
+  /// (t = 1) padahal sudah kembali ke atas = area bar tampak gelap.
+  bool _onMetricsChanged(ScrollMetricsNotification notification) {
+    if (notification.depth != 0) return false;
+    _sync(notification.metrics);
+    return false;
+  }
+
+  void _sync(ScrollMetrics metrics) {
+    final range = widget.coverHeight - ProfileHeroShell.barHeight;
+    final t = range <= 0 ? 1.0 : (metrics.pixels / range).clamp(0.0, 1.0);
+    if ((t - _t.value).abs() > 0.005) _t.value = t;
   }
 
   SystemUiOverlayStyle _overlayStyle(BuildContext context, double t) {
@@ -106,18 +123,16 @@ class _ProfileHeroShellState extends State<ProfileHeroShell> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            NotificationListener<ScrollNotification>(
-              onNotification: _onScroll,
-              // Instance widget stabil: Stack rebuild per frame tidak
-              // membangun ulang subtree isi halaman.
-              child: widget.scrollView,
+            NotificationListener<ScrollMetricsNotification>(
+              onNotification: _onMetricsChanged,
+              child: NotificationListener<ScrollNotification>(
+                onNotification: _onScroll,
+                // Instance widget stabil: Stack rebuild per frame tidak
+                // membangun ulang subtree isi halaman.
+                child: widget.scrollView,
+              ),
             ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: _buildBar(context, t),
-            ),
+            Positioned(top: 0, left: 0, right: 0, child: _buildBar(context, t)),
           ],
         ),
       ),
@@ -168,15 +183,23 @@ class _ProfileHeroShellState extends State<ProfileHeroShell> {
                     ),
                   ),
           ),
-          for (final action in widget.actions)
-            _button(
-              context,
-              t,
-              icon: action.icon,
-              tooltip: action.tooltip,
-              onPress: action.onPress,
-              badgeCount: action.badgeCount,
-            ),
+          if (widget.actions.isNotEmpty)
+            widget.compactActions
+                ? _ActionGroup(t: t, actions: widget.actions)
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (final action in widget.actions)
+                        _button(
+                          context,
+                          t,
+                          icon: action.icon,
+                          tooltip: action.tooltip,
+                          onPress: action.onPress,
+                          badgeCount: action.badgeCount,
+                        ),
+                    ],
+                  ),
         ],
       ),
     );
@@ -197,16 +220,33 @@ class _ProfileHeroShellState extends State<ProfileHeroShell> {
     return IconButton(
       tooltip: tooltip,
       onPressed: onPress,
-      style: floatingOverlayIconButtonStyle(
-        context,
-        fill: (1 - t) * _overlayFillPeak,
-      ),
+      // compactActions: kecilkan ke ukuran FHeaderAction Forui (44dp =
+      // ikon 22 + padding 11 per sisi) supaya seragam dengan halaman
+      // ber-FHeader biasa. shrinkWrap memotong tap target 48dp Material.
+      visualDensity: widget.compactActions
+          ? VisualDensity.compact
+          : VisualDensity.standard,
+      padding: widget.compactActions
+          ? const EdgeInsets.all(11)
+          : const EdgeInsets.all(8),
+      constraints: widget.compactActions
+          ? const BoxConstraints(minWidth: 44, minHeight: 44)
+          : null,
+      style:
+          floatingOverlayIconButtonStyle(
+            context,
+            fill: (1 - t) * _overlayFillPeak,
+          ).copyWith(
+            tapTargetSize: widget.compactActions
+                ? MaterialTapTargetSize.shrinkWrap
+                : MaterialTapTargetSize.padded,
+          ),
       icon: badgeCount > 0
           ? Stack(
               clipBehavior: Clip.none,
               alignment: Alignment.center,
               children: [
-                Icon(icon, size: 20),
+                Icon(icon, size: widget.compactActions ? 22 : 20),
                 Positioned(
                   top: 0,
                   right: 0,
@@ -221,7 +261,69 @@ class _ProfileHeroShellState extends State<ProfileHeroShell> {
                 ),
               ],
             )
-          : Icon(icon, size: 20),
+          : Icon(icon, size: widget.compactActions ? 22 : 20),
+    );
+  }
+}
+
+/// Grup aksi kanan: satu latar melayang (fill + elevation) untuk semua
+/// tombol - gap antar tombol jadi bagian container sama, bukan dua kotak
+/// terpisah. Saat bar solid (t = 1) fill memudar, tampak seperti suffixes
+/// `FHeader` biasa.
+class _ActionGroup extends StatelessWidget {
+  const _ActionGroup({required this.t, required this.actions});
+
+  final double t;
+  final List<ProfileHeroAction> actions;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final fill = (1 - t) * _overlayFillPeak;
+    return Material(
+      // Latar grup: gaya tombol back (square rounded + radius 10 + fill
+      // memudar saat bar solid) - sekali untuk semua aksi.
+      color: theme.colors.background.withValues(alpha: fill),
+      elevation: 2 * fill,
+      shadowColor: Colors.black26,
+      borderRadius: BorderRadius.circular(10),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final action in actions)
+            IconButton(
+              tooltip: action.tooltip,
+              onPressed: action.onPress,
+              visualDensity: VisualDensity.compact,
+              padding: const EdgeInsets.all(8),
+              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+              style: const ButtonStyle(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              icon: action.badgeCount > 0
+                  ? Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.center,
+                      children: [
+                        Icon(action.icon, size: 22),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: theme.colors.destructive,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Icon(action.icon, size: 22),
+            ),
+        ],
+      ),
     );
   }
 }

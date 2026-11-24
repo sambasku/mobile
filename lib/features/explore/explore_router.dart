@@ -13,6 +13,9 @@ import 'presentation/pages/place_detail_page.dart';
 import 'presentation/pages/place_photos_page.dart';
 import 'presentation/pages/place_proposals_page.dart';
 import 'presentation/pages/region_detail_page.dart';
+import '../community/presentation/pages/community_contribute_page.dart';
+import '../community/presentation/pages/community_detail_page.dart';
+import '../community/presentation/pages/community_proposals_page.dart';
 
 class ExploreRouter {
   ExploreRouter._();
@@ -75,6 +78,27 @@ class ExploreRouter {
     name: 'ExploreRouter.cuisineDetail',
   );
 
+  /// Form usul komunitas (kategori komunitas). Prototipe: submit masih
+  /// lokal, API menyusul.
+  static const communityContribute = RouteDefiner(
+    path: '/explore/komunitas/usul',
+    name: 'ExploreRouter.communityContribute',
+  );
+
+  /// Status usulan komunitas milik user. Wajib sebelum `communityDetail`
+  /// supaya `usulan` tidak tertelan sebagai orgId.
+  static const communityProposals = RouteDefiner(
+    path: '/explore/komunitas/usulan',
+    name: 'ExploreRouter.communityProposals',
+  );
+
+  /// Detail komunitas. Wajib sebelum `category` (`/explore/:id`) supaya
+  /// `komunitas/:orgId` tidak tertelan matcher kategori.
+  static const communityDetail = RouteDefiner(
+    path: '/explore/komunitas/:orgId',
+    name: 'ExploreRouter.communityDetail',
+  );
+
   static String cuisineDetailPath(String slug) =>
       cuisineDetail.path.replaceFirst(':slug', slug);
 
@@ -123,6 +147,22 @@ class ExploreRouter {
   /// Route detail di luar shell (push penuh). `pins` wajib sebelum `place`:
   /// GoRouter cocokkan berurutan, `/explore/place/:slug` menelan "pins".
   static final List<GoRoute> routes = [
+    GoRoute(
+      path: communityContribute.path,
+      name: communityContribute.name,
+      builder: (context, state) => const CommunityContributePage(),
+    ),
+    GoRoute(
+      path: communityProposals.path,
+      name: communityProposals.name,
+      builder: (context, state) => const CommunityProposalsPage(),
+    ),
+    GoRoute(
+      path: communityDetail.path,
+      name: communityDetail.name,
+      builder: (context, state) =>
+          CommunityDetailPage(orgId: state.pathParameters['orgId'] ?? ''),
+    ),
     GoRoute(
       path: category.path,
       name: category.name,
@@ -177,65 +217,65 @@ class ExploreRouter {
       builder: (context, state) => RegionDetailPage.desa(
         slug: Uri.decodeComponent(state.pathParameters['slug'] ?? ''),
       ),
-),
-GoRoute(
-path: cuisineList.path,
-name: cuisineList.name,
-builder: (context, state) => const CuisineListPage(),
-),
-GoRoute(
-path: cuisineContribute.path,
-name: cuisineContribute.name,
-builder: (context, state) =>
-const CulinaryContributePage(mode: CulinaryContributeMode.cuisine),
-),
-GoRoute(
-path: cuisineLink.path,
-name: cuisineLink.name,
-builder: (context, state) =>
-const CulinaryContributePage(mode: CulinaryContributeMode.link),
-),
-GoRoute(
-path: cuisineProposals.path,
-name: cuisineProposals.name,
-builder: (context, state) => const CulinaryProposalsPage(),
-),
-GoRoute(
-path: cuisineAddPhoto.path,
-name: cuisineAddPhoto.name,
-builder: (context, state) {
-final slug = state.pathParameters['slug'] ?? '';
-return CuisineAddPhotoPage(slug: slug);
-},
-),
-GoRoute(
-path: cuisineDetail.path,
-name: cuisineDetail.name,
-builder: (context, state) {
-final slug = state.pathParameters['slug'] ?? '';
-return CuisineDetailPage(slug: slug);
-},
-),
-GoRoute(
-path: placePhotos.path,
-name: placePhotos.name,
-builder: (context, state) {
-final slug = state.pathParameters['slug'] ?? '';
-return PlacePhotosPage(slug: slug);
-},
-),
-GoRoute(
-path: place.path,
-name: place.name,
-builder: (context, state) {
-final slug = state.pathParameters['slug'] ?? '';
-final entry =
-state.uri.queryParameters['entry'] ?? (state.extra as String?);
-return PlaceDetailPage(
-slug: slug,
-entry: entry == null || entry.isEmpty ? 'list' : entry,
-);
-},
-),
-];
+    ),
+    GoRoute(
+      path: cuisineList.path,
+      name: cuisineList.name,
+      builder: (context, state) => const CuisineListPage(),
+    ),
+    GoRoute(
+      path: cuisineContribute.path,
+      name: cuisineContribute.name,
+      builder: (context, state) =>
+          const CulinaryContributePage(mode: CulinaryContributeMode.cuisine),
+    ),
+    GoRoute(
+      path: cuisineLink.path,
+      name: cuisineLink.name,
+      builder: (context, state) =>
+          const CulinaryContributePage(mode: CulinaryContributeMode.link),
+    ),
+    GoRoute(
+      path: cuisineProposals.path,
+      name: cuisineProposals.name,
+      builder: (context, state) => const CulinaryProposalsPage(),
+    ),
+    GoRoute(
+      path: cuisineAddPhoto.path,
+      name: cuisineAddPhoto.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['slug'] ?? '';
+        return CuisineAddPhotoPage(slug: slug);
+      },
+    ),
+    GoRoute(
+      path: cuisineDetail.path,
+      name: cuisineDetail.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['slug'] ?? '';
+        return CuisineDetailPage(slug: slug);
+      },
+    ),
+    GoRoute(
+      path: placePhotos.path,
+      name: placePhotos.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['slug'] ?? '';
+        return PlacePhotosPage(slug: slug);
+      },
+    ),
+    GoRoute(
+      path: place.path,
+      name: place.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['slug'] ?? '';
+        final entry =
+            state.uri.queryParameters['entry'] ?? (state.extra as String?);
+        return PlaceDetailPage(
+          slug: slug,
+          entry: entry == null || entry.isEmpty ? 'list' : entry,
+        );
+      },
+    ),
+  ];
 }

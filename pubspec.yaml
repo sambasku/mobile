@@ -152,6 +152,7 @@ flutter:
     - assets/images/
     # Subdir wajib didaftarkan terpisah - `images/` tidak recursive.
     - assets/images/explore_covers/
+    - assets/images/community/
     - assets/svg/
     - assets/data/
     - assets/gif/

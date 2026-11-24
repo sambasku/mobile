@@ -23504,6 +23504,294 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tap kata di balasan untuk tautkan ke kamus.'**
   String get discussionReplyLemmaHint;
+
+  /// Chip filter komunitas: semua kategori
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get communityCategoryAll;
+
+  /// Chip filter komunitas kategori seni
+  ///
+  /// In id, this message translates to:
+  /// **'Seni & Budaya'**
+  String get communityCategorySeni;
+
+  /// Chip filter komunitas kategori bahasa
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa'**
+  String get communityCategoryBahasa;
+
+  /// Chip filter komunitas kategori pendidikan
+  ///
+  /// In id, this message translates to:
+  /// **'Pendidikan'**
+  String get communityCategoryPendidikan;
+
+  /// Chip filter komunitas kategori usaha mikro
+  ///
+  /// In id, this message translates to:
+  /// **'UKM'**
+  String get communityCategoryUkm;
+
+  /// Chip filter komunitas kategori lainnya
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get communityCategoryLain;
+
+  /// Hint textfield cari komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Cari nama komunitas…'**
+  String get communitySearchHint;
+
+  /// Empty state daftar komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komunitas di kategori ini'**
+  String get communityOrgEmpty;
+
+  /// Tombol hubungi komunitas di bottom sheet
+  ///
+  /// In id, this message translates to:
+  /// **'Hubungi'**
+  String get communityOrgContact;
+
+  /// Judul form usul komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usul Komunitas'**
+  String get communityContributeTitle;
+
+  /// Label field nama komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Nama Komunitas'**
+  String get communityContributeName;
+
+  /// Hint field nama komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'cth: Komunitas Melayu Sambas'**
+  String get communityContributeNameHint;
+
+  /// Validasi nama kosong atau terlalu pendek
+  ///
+  /// In id, this message translates to:
+  /// **'Nama komunitas minimal 2 huruf ya'**
+  String get communityContributeNameRequired;
+
+  /// Hint area logo placeholder
+  ///
+  /// In id, this message translates to:
+  /// **'Logo (opsional, menyusul)'**
+  String get communityContributeLogoHint;
+
+  /// Catatan alur review usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Usulanmu akan ditinjau tim sebelum tampil di daftar komunitas.'**
+  String get communityContributeNote;
+
+  /// Tombol kirim usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim Usulan'**
+  String get communityContributeSubmit;
+
+  /// Judul halaman usulan komunitas milik user
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan Saya'**
+  String get communityProposalsTitle;
+
+  /// Gate login halaman usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk lihat usulan komunitasmu'**
+  String get communityProposalsLoginGate;
+
+  /// Judul empty state usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan komunitas'**
+  String get communityProposalsEmpty;
+
+  /// Hint empty state usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan yang kamu kirim akan tampil di sini setelah ditinjau.'**
+  String get communityProposalsEmptyHint;
+
+  /// CTA empty state ke form usul komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usul Komunitas'**
+  String get communityProposalsEmptyCta;
+
+  /// Toast sukses submit usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan terkirim, terima kasih!'**
+  String get communityContributeSuccess;
+
+  /// Badge mitra resmi di detail komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Mitra Resmi'**
+  String get communityBadgeOfficialPartner;
+
+  /// Label tile kategori di detail komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get communityDetailCategory;
+
+  /// Label tile kecamatan di detail komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Kecamatan'**
+  String get communityDetailDistrict;
+
+  /// Subtitle hero halaman listing komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Komunitas, organisasi, dan perkumpulan di Sambas'**
+  String get communityListSubtitle;
+
+  /// Label kecil baris top 2 komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Sorotan'**
+  String get communityFeaturedSection;
+
+  /// Label field deskripsi komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Deskripsi'**
+  String get communityContributeDesc;
+
+  /// Hint field deskripsi komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Ceritakan singkat tentang komunitas ini'**
+  String get communityContributeDescHint;
+
+  /// Validasi deskripsi kosong/terlalu pendek
+  ///
+  /// In id, this message translates to:
+  /// **'Deskripsi minimal 10 huruf ya'**
+  String get communityContributeDescRequired;
+
+  /// Label tap untuk pilih logo
+  ///
+  /// In id, this message translates to:
+  /// **'Ganti Logo'**
+  String get communityContributePickLogo;
+
+  /// Pesan gagal memuat daftar/detail komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Komunitas belum bisa dimuat. Coba lagi ya'**
+  String get communityLoadFailed;
+
+  /// Fallback gagal submit komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan komunitas belum bisa disimpan. Coba lagi ya'**
+  String get communitySaveFailed;
+
+  /// Fallback gagal upload logo komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Logo belum bisa diunggah. Coba pilih gambar lain ya'**
+  String get communityUploadLogoFailed;
+
+  /// Judul sheet gagal submit usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan belum terkirim'**
+  String get communityContributeFailed;
+
+  /// Label CTA saat submit usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim usulan'**
+  String get communityContributeSubmitting;
+
+  /// Gate login form usul komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk mengusulkan komunitas'**
+  String get communityContributeLoginGate;
+
+  /// Pesan gagal memuat usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan komunitasmu belum bisa dimuat. Coba lagi ya'**
+  String get communityProposalsLoadFailed;
+
+  /// Judul sheet konfirmasi batal usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan usulan ini?'**
+  String get communityProposalCancelTitle;
+
+  /// Isi sheet konfirmasi batal usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan yang dibatalkan tidak akan masuk antrean tinjauan tim.'**
+  String get communityProposalCancelBody;
+
+  /// Aksi batal usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan'**
+  String get communityProposalCancelAction;
+
+  /// Opsi untuk tidak membatalkan usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Biarkan tetap antre'**
+  String get communityProposalCancelKeepTitle;
+
+  /// Tombol batal aksi pembatalan usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak jadi'**
+  String get communityProposalCancelKeepAction;
+
+  /// Judul sheet gagal membatalkan usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan belum bisa dibatalkan'**
+  String get communityProposalCancelFailed;
+
+  /// Label status usulan komunitas pending
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get communityProposalStatusPending;
+
+  /// Label status usulan komunitas approved
+  ///
+  /// In id, this message translates to:
+  /// **'Disetujui'**
+  String get communityProposalStatusApproved;
+
+  /// Label status usulan komunitas rejected
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get communityProposalStatusRejected;
+
+  /// Label status usulan komunitas cancelled
+  ///
+  /// In id, this message translates to:
+  /// **'Dibatalkan'**
+  String get communityProposalStatusCancelled;
 }
 
 class _AppLocalizationsDelegate

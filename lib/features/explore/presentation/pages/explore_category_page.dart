@@ -15,6 +15,7 @@ import '../pages/wilayah_page.dart';
 import '../../../entertainment/presentation/pages/pantun_feed_page.dart';
 import '../../../entertainment/presentation/pages/permainan_list_page.dart';
 import '../../../encyclopedia/presentation/pages/encyclopedia_article_list_page.dart';
+import '../../../community/presentation/pages/community_list_page.dart';
 
 /// Detail kategori. Wisata/Cuisine = daftar Place; lainnya segera hadir.
 class ExploreCategoryPage extends StatelessWidget {
@@ -48,6 +49,8 @@ class ExploreCategoryPage extends StatelessWidget {
         ? const PermainanListPage()
         : categoryId == 'ensiklopedia'
         ? const EncyclopediaArticleListPage()
+        : categoryId == 'komunitas'
+        ? const CommunityListPage()
         : FScaffold(
             childPad: false,
             header: FHeader.nested(

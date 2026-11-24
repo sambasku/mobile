@@ -34,6 +34,7 @@ class ProfileIdentityHeader extends StatelessWidget {
     required this.displayName,
     this.username,
     this.avatarUrl,
+    this.avatarAsset,
     this.borderUrl,
     this.bio,
     this.speakerStatus,
@@ -43,6 +44,7 @@ class ProfileIdentityHeader extends StatelessWidget {
     this.joinedLabel,
     this.actions = const [],
     this.coverUrl,
+    this.coverAsset,
     this.onAvatarTap,
     this.avatarOverlay,
     this.footer,
@@ -55,6 +57,9 @@ class ProfileIdentityHeader extends StatelessWidget {
   /// Handle tanpa `@`. Null/kosong = baris handle tidak dirender.
   final String? username;
   final String? avatarUrl;
+
+  /// Aset lokal avatar (proto): dipakai bila [avatarUrl] kosong.
+  final String? avatarAsset;
 
   /// URL aset bingkai profil aktif (achievement `profile_border`).
   final String? borderUrl;
@@ -78,6 +83,10 @@ class ProfileIdentityHeader extends StatelessWidget {
   /// sesuai [variant]; gagal load = gradien tema.
   // ponytail: sambungkan ke kolom cover_url saat fitur custom cover tersedia.
   final String? coverUrl;
+
+  /// Aset lokal cover (proto / offline): dipakai bila [coverUrl] kosong.
+  /// Null = [defaultCoverAsset] varian.
+  final String? coverAsset;
   final VoidCallback? onAvatarTap;
 
   /// Chip/badge di kanan atas frame avatar + border (mis. preview Jinye).
@@ -171,7 +180,7 @@ class ProfileIdentityHeader extends StatelessWidget {
                 height: coverHeight,
                 child: _ProfileCover(
                   url: coverUrl,
-                  asset: defaultCoverAsset(variant),
+                  asset: coverAsset ?? defaultCoverAsset(variant),
                 ),
               ),
               Positioned(

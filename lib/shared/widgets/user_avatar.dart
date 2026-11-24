@@ -8,26 +8,39 @@ import '../../core/utils/display_image_url.dart';
 /// Diameter diseragamkan lewat [SizedBox] + [ClipOval].
 /// Foto: URL asli dulu, lalu URL display (wsrv) sebagai fallback.
 class UserAvatar extends StatelessWidget {
-  const UserAvatar({super.key, this.name, this.imageUrl, this.size = 36});
+  const UserAvatar({
+    super.key,
+    this.name,
+    this.imageUrl,
+    this.size = 36,
+    this.assetUrl,
+  });
 
   /// Dipakai untuk semantics / aksesibilitas; tidak ditampilkan sebagai inisial.
   final String? name;
   final String? imageUrl;
+
+  /// Aset lokal (proto / offline): dipakai bila [imageUrl] kosong.
+  final String? assetUrl;
   final double size;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final placeholder = ColoredBox(
-      color: theme.colors.muted,
-      child: Center(
-        child: Icon(
-          FLucideIcons.userRound,
-          size: size * 0.42,
-          color: theme.colors.mutedForeground,
-        ),
-      ),
-    );
+    final Widget placeholder =
+        (assetUrl?.trim().isNotEmpty ?? false)
+        ? Image.asset(assetUrl!.trim(), width: size, height: size,
+            fit: BoxFit.cover, gaplessPlayback: true)
+        : ColoredBox(
+            color: theme.colors.muted,
+            child: Center(
+              child: Icon(
+                FLucideIcons.userRound,
+                size: size * 0.42,
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          );
 
     final raw = imageUrl?.trim();
     final hasPhoto = raw != null && raw.isNotEmpty;

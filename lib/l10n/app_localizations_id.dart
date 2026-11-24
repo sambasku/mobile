@@ -13373,6 +13373,161 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get discussionReplyLemmaHint =>
       'Tap kata di balasan untuk tautkan ke kamus.';
+
+  @override
+  String get communityCategoryAll => 'Semua';
+
+  @override
+  String get communityCategorySeni => 'Seni & Budaya';
+
+  @override
+  String get communityCategoryBahasa => 'Bahasa';
+
+  @override
+  String get communityCategoryPendidikan => 'Pendidikan';
+
+  @override
+  String get communityCategoryUkm => 'UKM';
+
+  @override
+  String get communityCategoryLain => 'Lainnya';
+
+  @override
+  String get communitySearchHint => 'Cari nama komunitas…';
+
+  @override
+  String get communityOrgEmpty => 'Belum ada komunitas di kategori ini';
+
+  @override
+  String get communityOrgContact => 'Hubungi';
+
+  @override
+  String get communityContributeTitle => 'Usul Komunitas';
+
+  @override
+  String get communityContributeName => 'Nama Komunitas';
+
+  @override
+  String get communityContributeNameHint => 'cth: Komunitas Melayu Sambas';
+
+  @override
+  String get communityContributeNameRequired =>
+      'Nama komunitas minimal 2 huruf ya';
+
+  @override
+  String get communityContributeLogoHint => 'Logo (opsional, menyusul)';
+
+  @override
+  String get communityContributeNote =>
+      'Usulanmu akan ditinjau tim sebelum tampil di daftar komunitas.';
+
+  @override
+  String get communityContributeSubmit => 'Kirim Usulan';
+
+  @override
+  String get communityProposalsTitle => 'Usulan Saya';
+
+  @override
+  String get communityProposalsLoginGate =>
+      'Masuk dulu untuk lihat usulan komunitasmu';
+
+  @override
+  String get communityProposalsEmpty => 'Belum ada usulan komunitas';
+
+  @override
+  String get communityProposalsEmptyHint =>
+      'Usulan yang kamu kirim akan tampil di sini setelah ditinjau.';
+
+  @override
+  String get communityProposalsEmptyCta => 'Usul Komunitas';
+
+  @override
+  String get communityContributeSuccess => 'Usulan terkirim, terima kasih!';
+
+  @override
+  String get communityBadgeOfficialPartner => 'Mitra Resmi';
+
+  @override
+  String get communityDetailCategory => 'Kategori';
+
+  @override
+  String get communityDetailDistrict => 'Kecamatan';
+
+  @override
+  String get communityListSubtitle =>
+      'Komunitas, organisasi, dan perkumpulan di Sambas';
+
+  @override
+  String get communityFeaturedSection => 'Sorotan';
+
+  @override
+  String get communityContributeDesc => 'Deskripsi';
+
+  @override
+  String get communityContributeDescHint =>
+      'Ceritakan singkat tentang komunitas ini';
+
+  @override
+  String get communityContributeDescRequired => 'Deskripsi minimal 10 huruf ya';
+
+  @override
+  String get communityContributePickLogo => 'Ganti Logo';
+
+  @override
+  String get communityLoadFailed => 'Komunitas belum bisa dimuat. Coba lagi ya';
+
+  @override
+  String get communitySaveFailed =>
+      'Usulan komunitas belum bisa disimpan. Coba lagi ya';
+
+  @override
+  String get communityUploadLogoFailed =>
+      'Logo belum bisa diunggah. Coba pilih gambar lain ya';
+
+  @override
+  String get communityContributeFailed => 'Usulan belum terkirim';
+
+  @override
+  String get communityContributeSubmitting => 'Mengirim usulan';
+
+  @override
+  String get communityContributeLoginGate =>
+      'Masuk dulu untuk mengusulkan komunitas';
+
+  @override
+  String get communityProposalsLoadFailed =>
+      'Usulan komunitasmu belum bisa dimuat. Coba lagi ya';
+
+  @override
+  String get communityProposalCancelTitle => 'Batalkan usulan ini?';
+
+  @override
+  String get communityProposalCancelBody =>
+      'Usulan yang dibatalkan tidak akan masuk antrean tinjauan tim.';
+
+  @override
+  String get communityProposalCancelAction => 'Batalkan';
+
+  @override
+  String get communityProposalCancelKeepTitle => 'Biarkan tetap antre';
+
+  @override
+  String get communityProposalCancelKeepAction => 'Tidak jadi';
+
+  @override
+  String get communityProposalCancelFailed => 'Usulan belum bisa dibatalkan';
+
+  @override
+  String get communityProposalStatusPending => 'Menunggu';
+
+  @override
+  String get communityProposalStatusApproved => 'Disetujui';
+
+  @override
+  String get communityProposalStatusRejected => 'Ditolak';
+
+  @override
+  String get communityProposalStatusCancelled => 'Dibatalkan';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -26659,4 +26814,159 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get discussionReplyLemmaHint =>
       'Tap kata di balasan untuk tautkan ke kamus.';
+
+  @override
+  String get communityCategoryAll => 'Semua';
+
+  @override
+  String get communityCategorySeni => 'Seni & Budaya';
+
+  @override
+  String get communityCategoryBahasa => 'Bahasa';
+
+  @override
+  String get communityCategoryPendidikan => 'Pendidikan';
+
+  @override
+  String get communityCategoryUkm => 'UKM';
+
+  @override
+  String get communityCategoryLain => 'Lainnya';
+
+  @override
+  String get communitySearchHint => 'Cari nama komunitas…';
+
+  @override
+  String get communityOrgEmpty => 'Belum ada komunitas di kategori ini';
+
+  @override
+  String get communityOrgContact => 'Hubungi';
+
+  @override
+  String get communityContributeTitle => 'Usul Komunitas';
+
+  @override
+  String get communityContributeName => 'Nama Komunitas';
+
+  @override
+  String get communityContributeNameHint => 'cth: Komunitas Melayu Sambas';
+
+  @override
+  String get communityContributeNameRequired =>
+      'Nama komunitas minimal 2 huruf ya';
+
+  @override
+  String get communityContributeLogoHint => 'Logo (opsional, menyusul)';
+
+  @override
+  String get communityContributeNote =>
+      'Usulanmu akan ditinjau tim sebelum tampil di daftar komunitas.';
+
+  @override
+  String get communityContributeSubmit => 'Kirim Usulan';
+
+  @override
+  String get communityProposalsTitle => 'Usulan Saya';
+
+  @override
+  String get communityProposalsLoginGate =>
+      'Masuk dulu untuk lihat usulan komunitasmu';
+
+  @override
+  String get communityProposalsEmpty => 'Belum ada usulan komunitas';
+
+  @override
+  String get communityProposalsEmptyHint =>
+      'Usulan yang kamu kirim akan tampil di sini setelah ditinjau.';
+
+  @override
+  String get communityProposalsEmptyCta => 'Usul Komunitas';
+
+  @override
+  String get communityContributeSuccess => 'Usulan terkirim, terima kasih!';
+
+  @override
+  String get communityBadgeOfficialPartner => 'Mitra Resmi';
+
+  @override
+  String get communityDetailCategory => 'Kategori';
+
+  @override
+  String get communityDetailDistrict => 'Kecamatan';
+
+  @override
+  String get communityListSubtitle =>
+      'Komunitas, organisasi, dan perkumpulan di Sambas';
+
+  @override
+  String get communityFeaturedSection => 'Sorotan';
+
+  @override
+  String get communityContributeDesc => 'Deskripsi';
+
+  @override
+  String get communityContributeDescHint =>
+      'Ceritakan singkat tentang komunitas ini';
+
+  @override
+  String get communityContributeDescRequired => 'Deskripsi minimal 10 huruf ya';
+
+  @override
+  String get communityContributePickLogo => 'Ganti Logo';
+
+  @override
+  String get communityLoadFailed => 'Komunitas belum bisa dimuat. Coba lagi ya';
+
+  @override
+  String get communitySaveFailed =>
+      'Usulan komunitas belum bisa disimpan. Coba lagi ya';
+
+  @override
+  String get communityUploadLogoFailed =>
+      'Logo belum bisa diunggah. Coba pilih gambar lain ya';
+
+  @override
+  String get communityContributeFailed => 'Usulan belum terkirim';
+
+  @override
+  String get communityContributeSubmitting => 'Mengirim usulan';
+
+  @override
+  String get communityContributeLoginGate =>
+      'Masuk dulu untuk mengusulkan komunitas';
+
+  @override
+  String get communityProposalsLoadFailed =>
+      'Usulan komunitasmu belum bisa dimuat. Coba lagi ya';
+
+  @override
+  String get communityProposalCancelTitle => 'Batalkan usulan ini?';
+
+  @override
+  String get communityProposalCancelBody =>
+      'Usulan yang dibatalkan tidak akan masuk antrean tinjauan tim.';
+
+  @override
+  String get communityProposalCancelAction => 'Batalkan';
+
+  @override
+  String get communityProposalCancelKeepTitle => 'Biarkan tetap antre';
+
+  @override
+  String get communityProposalCancelKeepAction => 'Tidak jadi';
+
+  @override
+  String get communityProposalCancelFailed => 'Usulan belum bisa dibatalkan';
+
+  @override
+  String get communityProposalStatusPending => 'Menunggu';
+
+  @override
+  String get communityProposalStatusApproved => 'Disetujui';
+
+  @override
+  String get communityProposalStatusRejected => 'Ditolak';
+
+  @override
+  String get communityProposalStatusCancelled => 'Dibatalkan';
 }

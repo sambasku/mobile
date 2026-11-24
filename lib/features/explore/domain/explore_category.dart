@@ -32,6 +32,7 @@ class ExploreCategory {
     'ensiklopedia' => 'assets/images/explore_covers/ensiklopedia.webp',
     'layanan' => 'assets/images/explore_covers/layanan.webp',
     'karya' => 'assets/images/explore_covers/karya.webp',
+    'komunitas' => 'assets/images/explore_covers/komunitas.webp',
     _ => null,
   };
 
@@ -84,11 +85,7 @@ class ExploreCategory {
       icon: FLucideIcons.utensilsCrossed,
       comingSoon: false,
     ),
-    ExploreCategory(
-      id: 'usaha',
-      icon: FLucideIcons.store,
-      comingSoon: false,
-    ),
+    ExploreCategory(id: 'usaha', icon: FLucideIcons.store, comingSoon: false),
     ExploreCategory(
       id: 'acara',
       icon: FLucideIcons.calendarDays,
@@ -109,18 +106,18 @@ class ExploreCategory {
       icon: FLucideIcons.bookOpen,
       comingSoon: false,
     ),
-    ExploreCategory(
-      id: 'layanan',
-      icon: FLucideIcons.phone,
-      comingSoon: false,
-    ),
+    ExploreCategory(id: 'layanan', icon: FLucideIcons.phone, comingSoon: false),
     ExploreCategory(
       id: 'karya',
       icon: FLucideIcons.clapperboard,
       comingSoon: false,
     ),
-    // Segera: grup warga & kegiatan bersama (konten API belakangan).
-    ExploreCategory(id: 'komunitas', icon: FLucideIcons.users),
+    // Komunitas - direktori organisasi / perkumpulan di Kabupaten Sambas.
+    ExploreCategory(
+      id: 'komunitas',
+      icon: FLucideIcons.users,
+      comingSoon: false,
+    ),
   ];
 
   static ExploreCategory? byId(String id) {
