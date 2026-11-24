@@ -20,6 +20,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/utils/photo_pick_constants.dart';
 import '../../../../shared/widgets/back_to_top_button.dart';
+import '../../../../shared/profile/profile_covers_provider.dart';
 import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
 import '../../../../shared/widgets/profile_leveling_chip.dart';
@@ -267,6 +268,7 @@ class _ProfileBody extends HookConsumerWidget {
                       // varian (compact), struktur dan ritme sama.
                       ProfileIdentityHeader(
                         variant: ProfileHeaderVariant.compact,
+                        coverUrl: ref.watch(profileCoversProvider).value?.publicUrl,
                         displayName: profile.displayName,
                         username: profile.username,
                         avatarUrl: avatarSrc,

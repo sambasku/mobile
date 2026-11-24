@@ -29,6 +29,7 @@ import '../../../../core/network/failover/api_host_resolver.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/app_version_label.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/profile/profile_covers_provider.dart';
 import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
 import '../../../../shared/widgets/profile_leveling_chip.dart';
@@ -391,6 +392,7 @@ class _IdentitySection extends ConsumerWidget {
     final profile = profileAsync?.asData?.value;
 
     final border = ref.watch(myActiveBorderProvider).asData?.value?.imageUrl;
+    final tabCoverUrl = ref.watch(profileCoversProvider).value?.tabUrl;
     // Tamu: label ajakan masuk tampil di header, bukan username kosong.
     final displayName = isAuth
         ? ProfilePage._displayNameOf(status, l10n.profileDefaultName)
@@ -424,6 +426,7 @@ class _IdentitySection extends ConsumerWidget {
       children: [
         ProfileIdentityHeader(
           variant: ProfileHeaderVariant.hero,
+          coverUrl: tabCoverUrl,
           // Cover full-bleed (tanpa gutter); konten identitas di dalamnya
           // tetap punya gutter 12 supaya sejajar menu di bawahnya.
           horizontalPadding: 12,

@@ -906,7 +906,7 @@
   "aboutSourceBody": "SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.",
   "aboutSourceAction": "Buka di GitHub",
   "aboutOssTitle": "Pustaka sumber terbuka",
-  "aboutOssBody": "Aplikasi ini memakai pustaka pihak ketiga. Setiap pustaka punya lisensi sumber terbuka sendiri.",
+  "aboutOssBody": "Daftar pustaka langsung di pubspec.yaml beserta lisensi sumber terbukanya.",
   "aboutOssAction": "Lihat daftar pustaka",
   "aboutOssListTitle": "Pustaka sumber terbuka",
   "aboutOssEmpty": "Daftar pustaka belum tersedia.",

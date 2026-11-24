@@ -8,6 +8,8 @@ import 'package:sambasku_mobile/features/about/presentation/pages/oss_licenses_p
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 void main() {
+  setUp(resetOssLicenseCache);
+
   test('deteksi jenis lisensi dari teks', () {
     expect(
       ossLicenseKind('MIT License\n\nPermission is hereby granted'),
@@ -25,24 +27,25 @@ void main() {
     expect(ossLicenseKind('teks tanpa judul standar'), isNull);
   });
 
-  test('kolektor memuat paket yang didaftarkan beserta teks lisensi', () async {
+  test('kolektor hanya paket di allowlist pubspec', () async {
     LicenseRegistry.addLicense(() {
-      return Stream<LicenseEntry>.value(
-        const LicenseEntryWithLineBreaks(<String>[
-          'pkg_oss_test_mit',
+      return Stream.fromIterable(const [
+        LicenseEntryWithLineBreaks(<String>[
+          'forui',
         ], 'MIT License\n\nPermission is hereby granted, free of charge.'),
-      );
+        LicenseEntryWithLineBreaks(<String>[
+          'some_transitive_pkg',
+        ], 'MIT License\n\nPermission is hereby granted, free of charge.'),
+      ]);
     });
 
-    final list = await collectOssLicenses();
-    final hit = list.singleWhere((e) => e.name == 'pkg_oss_test_mit');
-    expect(hit.kind, 'MIT');
-    expect(hit.text, contains('Permission is hereby granted'));
+    final list = await collectOssLicenses(packageNames: const {'forui', 'gap'});
+    expect(list.map((e) => e.name), ['forui']);
+    expect(list.single.kind, 'MIT');
+    expect(list.single.text, contains('Permission is hereby granted'));
   });
 
-  testWidgets('daftar menampilkan nama pustaka dan jenis lisensi', (
-    tester,
-  ) async {
+  testWidgets('daftar langsung tampil tanpa menunggu Registry', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
@@ -54,17 +57,15 @@ void main() {
         locale: const Locale('id'),
         home: FTheme(
           data: foruiPalettes['zinc']!.light.touch,
-          child: OssLicensesPage(
-            loader: () async => const [
-              OssLicense(name: 'forui', text: 'MIT License', kind: 'MIT'),
-            ],
-          ),
+          child: const OssLicensesPage(packageNames: {'forui', 'gap'}),
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    // Satu frame cukup: nama sync dari pubspec, bukan FutureBuilder Registry.
+    await tester.pump();
 
     expect(find.text('forui'), findsOneWidget);
-    expect(find.text('MIT'), findsOneWidget);
+    expect(find.text('gap'), findsOneWidget);
+    expect(find.byType(FCircularProgress), findsNothing);
   });
 }

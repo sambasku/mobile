@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'oss_direct_packages.dart';
+
 /// Satu pustaka pihak ketiga beserta teks lisensi yang dibundel Flutter.
 class OssLicense {
   const OssLicense({required this.name, required this.text, this.kind});
@@ -49,15 +51,56 @@ String _entryText(LicenseEntry entry) {
   return buf.toString().trim();
 }
 
-/// Kumpulkan lisensi yang didaftarkan Flutter (SDK + paket pub).
-Future<List<OssLicense>> collectOssLicenses() async {
+/// Nama paket langsung dari pubspec, diurutkan. Siap untuk daftar tanpa I/O.
+List<String> directOssPackageNames({
+  Set<String> packageNames = kDirectOssPackages,
+}) {
+  return packageNames.toList()
+    ..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+}
+
+Future<Map<String, OssLicense>>? _cachedMap;
+Set<String>? _cachedKeys;
+
+/// Kosongkan cache (test).
+@visibleForTesting
+void resetOssLicenseCache() {
+  _cachedMap = null;
+  _cachedKeys = null;
+}
+
+/// Peta lisensi paket langsung. Hasil di-cache; scan Registry hanya sekali.
+///
+/// Setiap beberapa entri melepaskan frame supaya UI tidak macet.
+Future<Map<String, OssLicense>> loadOssLicenseMap({
+  Set<String> packageNames = kDirectOssPackages,
+}) {
+  if (_cachedMap != null &&
+      _cachedKeys != null &&
+      _cachedKeys!.length == packageNames.length &&
+      packageNames.every(_cachedKeys!.contains)) {
+    return _cachedMap!;
+  }
+  _cachedKeys = Set<String>.from(packageNames);
+  return _cachedMap = _buildOssLicenseMap(packageNames);
+}
+
+Future<Map<String, OssLicense>> _buildOssLicenseMap(
+  Set<String> packageNames,
+) async {
   final grouped = <String, StringBuffer>{};
+  var seen = 0;
   await for (final entry in LicenseRegistry.licenses) {
+    seen += 1;
+    // Lepas frame supaya daftar/detail tetap bisa digambar.
+    if (seen % 24 == 0) {
+      await Future<void>.delayed(Duration.zero);
+    }
     final body = _entryText(entry);
     if (body.isEmpty) continue;
     for (final package in entry.packages) {
       final name = package.trim();
-      if (name.isEmpty) continue;
+      if (name.isEmpty || !packageNames.contains(name)) continue;
       final existing = grouped[name];
       if (existing == null) {
         grouped[name] = StringBuffer(body);
@@ -69,13 +112,31 @@ Future<List<OssLicense>> collectOssLicenses() async {
       }
     }
   }
-  final names = grouped.keys.toList()
-    ..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
-  return [
-    for (final name in names) _licenseFor(name, grouped[name]!.toString()),
-  ];
+  return {
+    for (final e in grouped.entries)
+      e.key: OssLicense(
+        name: e.key,
+        text: e.value.toString(),
+        kind: ossLicenseKind(e.value.toString()),
+      ),
+  };
 }
 
-OssLicense _licenseFor(String name, String text) {
-  return OssLicense(name: name, text: text, kind: ossLicenseKind(text));
+/// Satu paket dari cache / scan. Dipakai halaman detail.
+Future<OssLicense?> loadOssLicense(
+  String name, {
+  Set<String> packageNames = kDirectOssPackages,
+}) async {
+  final map = await loadOssLicenseMap(packageNames: packageNames);
+  return map[name];
+}
+
+/// Kumpulkan lisensi paket langsung (untuk test / pemakaian lama).
+Future<List<OssLicense>> collectOssLicenses({
+  Set<String> packageNames = kDirectOssPackages,
+}) async {
+  final map = await loadOssLicenseMap(packageNames: packageNames);
+  final names = map.keys.toList()
+    ..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+  return [for (final name in names) map[name]!];
 }

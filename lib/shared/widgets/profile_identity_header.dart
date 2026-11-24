@@ -81,7 +81,6 @@ class ProfileIdentityHeader extends StatelessWidget {
 
   /// Cover profil (URL jaringan). Null/kosong = pakai [defaultCoverAsset]
   /// sesuai [variant]; gagal load = gradien tema.
-  // ponytail: sambungkan ke kolom cover_url saat fitur custom cover tersedia.
   final String? coverUrl;
 
   /// Aset lokal cover (proto / offline): dipakai bila [coverUrl] kosong.

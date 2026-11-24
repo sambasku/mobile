@@ -67,25 +67,34 @@ void main() {
     );
   });
 
-  testWidgets('halaman Sponsorship & Tim punya dua tab', (tester) async {
+  testWidgets('halaman Tim Kami punya chip Tim/Verifikator/Kontributor', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(800, 1200);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(_wrap(const SponsorshipTeamPage()));
+    await tester.pumpWidget(
+      _wrap(const SponsorshipTeamPage(showTeam: true)),
+    );
     await tester.pump();
     await tester.pump();
 
-    expect(find.text('Sponsor & Mitra'), findsWidgets);
-    expect(find.text('Tim Kami'), findsOneWidget);
-
-    await tester.tap(find.text('Tim Kami'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Bersama warga Sambas'), findsOneWidget);
-    expect(find.text('Kontributor'), findsOneWidget);
+    expect(find.text('Tim Kami'), findsWidgets);
+    expect(find.text('Tim'), findsOneWidget);
     expect(find.text('Verifikator'), findsOneWidget);
-    expect(find.text('Kontributor pelafalan'), findsNothing);
+    expect(find.text('Kontributor'), findsOneWidget);
+    expect(
+      find.textContaining('Anggota yang merawat SambasKu'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Kontributor'));
+    await tester.pumpAndSettle();
+    expect(
+      find.textContaining('Mengusulkan kata, perbaikan, dan rekaman'),
+      findsOneWidget,
+    );
   });
 }

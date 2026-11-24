@@ -2052,7 +2052,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutOssBody.
   ///
   /// In id, this message translates to:
-  /// **'Aplikasi ini memakai pustaka pihak ketiga. Setiap pustaka punya lisensi sumber terbuka sendiri.'**
+  /// **'Daftar pustaka langsung di pubspec.yaml beserta lisensi sumber terbukanya.'**
   String get aboutOssBody;
 
   /// No description provided for @aboutOssAction.

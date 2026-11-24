@@ -1124,7 +1124,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get aboutOssBody =>
-      'Aplikasi ini memakai pustaka pihak ketiga. Setiap pustaka punya lisensi sumber terbuka sendiri.';
+      'Daftar pustaka langsung di pubspec.yaml beserta lisensi sumber terbukanya.';
 
   @override
   String get aboutOssAction => 'Lihat daftar pustaka';
@@ -14711,7 +14711,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get aboutOssBody =>
-      'Aplikasi ini memakai pustaka pihak ketiga. Setiap pustaka punya lisensi sumber terbuka sendiri.';
+      'Daftar pustaka langsung di pubspec.yaml beserta lisensi sumber terbukanya.';
 
   @override
   String get aboutOssAction => 'Lihat daftar pustaka';

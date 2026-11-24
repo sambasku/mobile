@@ -1025,7 +1025,7 @@
   "@aboutOssTitle": {
     "description": "Judul blok daftar pustaka open source di halaman Tentang"
   },
-  "aboutOssBody": "Aplikasi ini memakai pustaka pihak ketiga. Setiap pustaka punya lisensi sumber terbuka sendiri.",
+  "aboutOssBody": "Daftar pustaka langsung di pubspec.yaml beserta lisensi sumber terbukanya.",
   "aboutOssAction": "Lihat daftar pustaka",
   "aboutOssListTitle": "Pustaka sumber terbuka",
   "aboutOssEmpty": "Daftar pustaka belum tersedia.",
