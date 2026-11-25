@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -51,6 +54,7 @@ class LemmaMergeWordTile extends ConsumerWidget {
       child: GestureDetector(
         onLongPress: () {
           if (!sel.active) {
+            unawaited(HapticFeedback.mediumImpact());
             notifier.startWith(item);
           } else {
             notifier.toggle(item);

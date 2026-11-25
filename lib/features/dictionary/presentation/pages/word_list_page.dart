@@ -371,22 +371,27 @@ class WordListPage extends HookConsumerWidget {
                     subtitleBuilder: (ctx, item) {
                       final gloss = item.sense?.trim();
                       final matched = item.matchedTranslation?.trim();
-                      if (gloss != null && gloss.isNotEmpty) return gloss;
-                      if (state.searchIn == 'translation' &&
+                      String? subtitle;
+                      if (gloss != null && gloss.isNotEmpty) {
+                        subtitle = gloss;
+                      } else if (state.searchIn == 'translation' &&
                           matched != null &&
                           matched.isNotEmpty) {
-                        return matched;
-                      }
-                      if (state.searchIn != 'translation' && item.wordType != 'word') {
-                        return wordSummaryTypeLabel(item, AppLocalizations.of(ctx));
+                        subtitle = matched;
+                      } else if (state.searchIn != 'translation' &&
+                          item.wordType != 'word') {
+                        subtitle = wordSummaryTypeLabel(
+                          item,
+                          AppLocalizations.of(ctx),
+                        );
                       }
                       if (item.isRelatedGroupMatch) {
                         final l10n = AppLocalizations.of(ctx);
-                        return gloss == null
+                        subtitle = subtitle == null
                             ? l10n.dictRelatedMeanings
-                            : l10n.dictRelatedMeaningSubtitle(gloss);
+                            : l10n.dictRelatedMeaningSubtitle(subtitle);
                       }
-                      return null;
+                      return subtitle;
                     },
                   ),
                 ),
