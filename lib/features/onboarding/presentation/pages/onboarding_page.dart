@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -81,14 +83,57 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
   }
 
+  void _showSpeakerPickToast() {
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    showFToast(context: context, title: Text(l10n.onboardingSpeakerPickRequired));
+  }
+
   void _next() {
-    if (_index == _speakerIndex && _speakerStatus == null) return;
+    if (_index == _speakerIndex && _speakerStatus == null) {
+      _showSpeakerPickToast();
+      return;
+    }
     if (_index < _slideCount - 1) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 280),
         curve: Curves.easeOutCubic,
       );
     }
+  }
+
+  void _goToSpeakerSlide() {
+    _showSpeakerPickToast();
+    if (_index != _speakerIndex) {
+      _controller.animateToPage(
+        _speakerIndex,
+        duration: const Duration(milliseconds: 280),
+        curve: Curves.easeOutCubic,
+      );
+    }
+    setState(() => _index = _speakerIndex);
+  }
+
+  void _tryFinish({required bool requestPermission}) {
+    if (_busy) return;
+    if (_speakerStatus == null) {
+      _goToSpeakerSlide();
+      return;
+    }
+    unawaited(_finish(requestPermission: requestPermission));
+  }
+
+  void _onPageChanged(int i) {
+    if (i > _speakerIndex && _speakerStatus == null) {
+      _showSpeakerPickToast();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_controller.hasClients) return;
+        _controller.jumpToPage(_speakerIndex);
+      });
+      setState(() => _index = _speakerIndex);
+      return;
+    }
+    setState(() => _index = i);
   }
 
   @override
@@ -108,14 +153,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Gap(50),
-              const Center(child: BrandMark(size: 168)),
               const Gap(16),
+              const Center(child: BrandMark(size: kBrandMarkHeroSize)),
+              const Gap(28),
               Expanded(
                 child: PageView.builder(
                   controller: _controller,
                   itemCount: slides.length,
-                  onPageChanged: (i) => setState(() => _index = i),
+                  onPageChanged: _onPageChanged,
                   itemBuilder: (context, i) {
                     final slide = slides[i];
                     if (i == _speakerIndex) {
@@ -165,9 +210,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 )
               else ...[
                 FButton(
-                  onPress: _busy || _speakerStatus == null
+                  onPress: _busy
                       ? null
-                      : () => _finish(requestPermission: true),
+                      : () => _tryFinish(requestPermission: true),
                   child: _busy
                       ? const FCircularProgress()
                       : Text(l10n.onboardingAllowNotif),
@@ -175,9 +220,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 const Gap(10),
                 FButton(
                   variant: .ghost,
-                  onPress: _busy || _speakerStatus == null
+                  onPress: _busy
                       ? null
-                      : () => _finish(requestPermission: false),
+                      : () => _tryFinish(requestPermission: false),
                   child: Text(l10n.onboardingLater),
                 ),
               ],
@@ -209,41 +254,42 @@ class _SpeakerSlide extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = FTheme.of(context);
     final l10n = AppLocalizations.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Spacer(flex: 1),
-        Icon(icon, size: 56, color: theme.colors.primary),
-        const Gap(28),
-        Text(
-          title,
-          style: theme.typography.body.xl.copyWith(
-            fontWeight: FontWeight.w700,
-            height: 1.2,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 48, color: theme.colors.primary),
+          const Gap(20),
+          Text(
+            title,
+            style: theme.typography.body.lg.copyWith(
+              fontWeight: FontWeight.w700,
+              height: 1.25,
+            ),
           ),
-        ),
-        const Gap(14),
-        Text(
-          body,
-          style: theme.typography.body.md.copyWith(
-            color: theme.colors.mutedForeground,
-            height: 1.45,
+          const Gap(10),
+          Text(
+            body,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+              height: 1.45,
+            ),
           ),
-        ),
-        const Gap(24),
-        FButton(
-          variant: selected == SpeakerStatus.native ? .primary : .outline,
-          onPress: () => onSelect(SpeakerStatus.native),
-          child: Text(l10n.onboardingSpeakerNative),
-        ),
-        const Gap(10),
-        FButton(
-          variant: selected == SpeakerStatus.learner ? .primary : .outline,
-          onPress: () => onSelect(SpeakerStatus.learner),
-          child: Text(l10n.onboardingSpeakerLearner),
-        ),
-        const Spacer(flex: 2),
-      ],
+          const Gap(20),
+          FButton(
+            variant: selected == SpeakerStatus.native ? .primary : .outline,
+            onPress: () => onSelect(SpeakerStatus.native),
+            child: Text(l10n.onboardingSpeakerNative),
+          ),
+          const Gap(10),
+          FButton(
+            variant: selected == SpeakerStatus.learner ? .primary : .outline,
+            onPress: () => onSelect(SpeakerStatus.learner),
+            child: Text(l10n.onboardingSpeakerLearner),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -262,29 +308,30 @@ class _SlideContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = FTheme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Spacer(flex: 1),
-        Icon(icon, size: 56, color: theme.colors.primary),
-        const Gap(28),
-        Text(
-          title,
-          style: theme.typography.body.xl.copyWith(
-            fontWeight: FontWeight.w700,
-            height: 1.2,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 48, color: theme.colors.primary),
+          const Gap(20),
+          Text(
+            title,
+            style: theme.typography.body.lg.copyWith(
+              fontWeight: FontWeight.w700,
+              height: 1.25,
+            ),
           ),
-        ),
-        const Gap(14),
-        Text(
-          body,
-          style: theme.typography.body.md.copyWith(
-            color: theme.colors.mutedForeground,
-            height: 1.45,
+          const Gap(10),
+          Text(
+            body,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+              height: 1.45,
+            ),
           ),
-        ),
-        const Spacer(flex: 2),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -187,6 +187,12 @@ abstract class AppLocalizations {
   /// **'Sedang belajar'**
   String get onboardingSpeakerLearner;
 
+  /// Toast onboarding jika lanjut tanpa memilih status penutur
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dulu penutur asli atau sedang belajar.'**
+  String get onboardingSpeakerPickRequired;
+
   /// Chip profil: penutur asli
   ///
   /// In id, this message translates to:
@@ -2283,10 +2289,10 @@ abstract class AppLocalizations {
   /// **'Verifikator'**
   String get aboutChipVerifiers;
 
-  /// Chip filter Kontributor di halaman Tim Kami
+  /// Chip filter Warga di halaman Tim Kami
   ///
   /// In id, this message translates to:
-  /// **'Kontributor'**
+  /// **'Warga'**
   String get aboutChipContributors;
 
   /// Empty state chip Tim/Verifikator/Kontributor
@@ -2307,7 +2313,7 @@ abstract class AppLocalizations {
   /// **'Memeriksa usulan warga supaya konten tetap akurat dan layak tayang.'**
   String get aboutVerifiersSectionBody;
 
-  /// Subtitle chip Kontributor di halaman Tim Kami
+  /// Subtitle chip Warga di halaman Tim Kami
   ///
   /// In id, this message translates to:
   /// **'Mengusulkan kata, perbaikan, dan rekaman suara. Entri tayang setelah diverifikasi.'**
@@ -2340,7 +2346,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutContributorsTitle.
   ///
   /// In id, this message translates to:
-  /// **'Kontributor'**
+  /// **'Warga'**
   String get aboutContributorsTitle;
 
   /// No description provided for @aboutContributorsBody.

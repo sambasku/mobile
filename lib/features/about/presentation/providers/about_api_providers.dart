@@ -27,12 +27,76 @@ Future<List<AboutSponsorship>?> aboutSponsorships(Ref ref) async {
   }
 }
 
+class AboutVerifiersState {
+  const AboutVerifiersState({
+    required this.items,
+    this.nextCursor,
+    this.hasMore = false,
+    this.loadingMore = false,
+  });
+
+  final List<AboutVerifier> items;
+  final String? nextCursor;
+  final bool hasMore;
+  final bool loadingMore;
+
+  AboutVerifiersState copyWith({
+    List<AboutVerifier>? items,
+    String? nextCursor,
+    bool? hasMore,
+    bool? loadingMore,
+    bool clearCursor = false,
+  }) {
+    return AboutVerifiersState(
+      items: items ?? this.items,
+      nextCursor: clearCursor ? null : (nextCursor ?? this.nextCursor),
+      hasMore: hasMore ?? this.hasMore,
+      loadingMore: loadingMore ?? this.loadingMore,
+    );
+  }
+}
+
 @riverpod
-Future<List<AboutVerifier>?> aboutVerifiers(Ref ref) async {
-  try {
-    return await ref.watch(aboutApiDatasourceProvider).fetchVerifiers();
-  } catch (_) {
-    return null;
+class AboutVerifiers extends _$AboutVerifiers {
+  @override
+  Future<AboutVerifiersState?> build() async {
+    try {
+      final page = await ref.watch(aboutApiDatasourceProvider).fetchVerifiers();
+      if (!ref.mounted) return null;
+      return AboutVerifiersState(
+        items: page.items,
+        nextCursor: page.nextCursor,
+        hasMore: page.hasMore,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> loadMore() async {
+    final current = state.value;
+    if (current == null || !current.hasMore || current.loadingMore) return;
+    if (current.nextCursor == null) return;
+    state = AsyncData(current.copyWith(loadingMore: true));
+    try {
+      final page = await ref
+          .read(aboutApiDatasourceProvider)
+          .fetchVerifiers(cursor: current.nextCursor);
+      if (!ref.mounted) return;
+      final seen = {for (final i in current.items) i.username};
+      final fresh = page.items.where((i) => seen.add(i.username)).toList();
+      state = AsyncData(
+        AboutVerifiersState(
+          items: [...current.items, ...fresh],
+          nextCursor: page.nextCursor,
+          hasMore: page.hasMore && fresh.isNotEmpty,
+          loadingMore: false,
+        ),
+      );
+    } catch (_) {
+      if (!ref.mounted) return;
+      state = AsyncData(current.copyWith(loadingMore: false));
+    }
   }
 }
 

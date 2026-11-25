@@ -12,6 +12,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/image_placeholder_256.dart';
+import '../../../../shared/widgets/public_browse_list_divider.dart';
 import '../../data/datasources/about_api_datasource.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../providers/about_api_providers.dart';
@@ -288,21 +289,20 @@ class _TeamCoreSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final member in members) ...[
-          _PersonAvatarTile(
-            username: member.username,
-            displayName: member.displayName,
-            avatarUrl: member.avatarUrl,
-            subtitle: _teamSubtitle(member.teamNote, member.teamAs),
-          ),
-          const Gap(8),
+        for (var i = 0; i < members.length; i++) ...[
+          _TeamMemberTile(member: members[i]),
+          if (i < members.length - 1) ...[
+            const Gap(8),
+            const PublicBrowseListDivider(),
+            const Gap(8),
+          ],
         ],
       ],
     );
   }
 }
 
-/// Kontributor: nama flat + load more.
+/// Warga: nama saja + paginasi server.
 class _ContributorsFlatSection extends ConsumerWidget {
   const _ContributorsFlatSection();
 
@@ -330,7 +330,7 @@ class _ContributorsFlatSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final item in state.items) ...[
+        for (final item in state.items)
           Material(
             color: Colors.transparent,
             child: InkWell(
@@ -341,29 +341,17 @@ class _ContributorsFlatSection extends ConsumerWidget {
                 displayName: item.displayName,
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        item.displayName,
-                        style: theme.typography.body.sm.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: theme.colors.foreground,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      FLucideIcons.chevronRight,
-                      size: 16,
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ],
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  item.displayName,
+                  style: theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: theme.colors.foreground,
+                  ),
                 ),
               ),
             ),
           ),
-        ],
         if (state.hasMore) ...[
           const Gap(8),
           FButton(
@@ -380,7 +368,7 @@ class _ContributorsFlatSection extends ConsumerWidget {
   }
 }
 
-/// Verifikator: avatar + nama (apresiasi).
+/// Verifikator: satu baris kompak (avatar, nama, chevron) + paginasi server.
 class _VerifiersSection extends ConsumerWidget {
   const _VerifiersSection();
 
@@ -388,11 +376,11 @@ class _VerifiersSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final async = ref.watch(aboutVerifiersProvider);
-    final items = async.value;
-    if (async.isLoading && items == null) {
+    final state = async.value;
+    if (async.isLoading && state == null) {
       return const _SectionSkeleton(tileCount: 3);
     }
-    if (items == null || items.isEmpty) {
+    if (state == null || state.items.isEmpty) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
         child: Text(
@@ -407,26 +395,106 @@ class _VerifiersSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final v in items) ...[
-          _PersonAvatarTile(
-            username: v.username,
-            displayName: v.displayName,
-            avatarUrl: v.avatarUrl,
-          ),
+        for (var i = 0; i < state.items.length; i++) ...[
+          _CompactVerifierTile(verifier: state.items[i]),
+          if (i < state.items.length - 1) ...[
+            const Gap(6),
+            const PublicBrowseListDivider(),
+            const Gap(6),
+          ],
+        ],
+        if (state.hasMore) ...[
           const Gap(8),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: state.loadingMore
+                ? null
+                : () => ref.read(aboutVerifiersProvider.notifier).loadMore(),
+            prefix: state.loadingMore ? const FCircularProgress() : null,
+            child: Text(l10n.aboutContributorsLoadMore),
+          ),
         ],
       ],
     );
   }
 }
 
+class _CompactVerifierTile extends StatelessWidget {
+  const _CompactVerifierTile({required this.verifier});
 
-String? _teamSubtitle(String? teamNote, String? teamAs) {
-  final note = teamNote?.trim();
-  if (note != null && note.isNotEmpty) return note;
-  final role = teamAs?.trim();
-  if (role != null && role.isNotEmpty) return role;
-  return null;
+  final AboutVerifier verifier;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => UserProfileRouter.open(
+          context,
+          verifier.username,
+          displayName: verifier.displayName,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipOval(
+                child: SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: verifier.avatarUrl == null
+                      ? const ImagePlaceholder256()
+                      : CachedNetworkImageWithFallback(
+                          imageUrl: verifier.avatarUrl!,
+                          fallback: const ImagePlaceholder256(),
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
+              const Gap(10),
+              Expanded(
+                child: Text(
+                  verifier.displayName,
+                  style: theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: theme.colors.foreground,
+                  ),
+                ),
+              ),
+              Icon(
+                FLucideIcons.chevronRight,
+                size: 16,
+                color: theme.colors.mutedForeground,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class _TeamMemberTile extends StatelessWidget {
+  const _TeamMemberTile({required this.member});
+
+  final AboutTeamMember member;
+
+  @override
+  Widget build(BuildContext context) {
+    final role = member.teamAs?.trim();
+    final noteLines = member.teamNoteLines;
+    return _PersonAvatarTile(
+      username: member.username,
+      displayName: member.displayName,
+      avatarUrl: member.avatarUrl,
+      roleLine: (role != null && role.isNotEmpty) ? role : null,
+      noteLines: noteLines,
+    );
+  }
 }
 
 class _PersonAvatarTile extends StatelessWidget {
@@ -434,12 +502,16 @@ class _PersonAvatarTile extends StatelessWidget {
     required this.username,
     required this.displayName,
     this.avatarUrl,
+    this.roleLine,
+    this.noteLines = const [],
     this.subtitle,
   });
 
   final String username;
   final String displayName;
   final String? avatarUrl;
+  final String? roleLine;
+  final List<String> noteLines;
   final String? subtitle;
 
   @override
@@ -475,6 +547,27 @@ class _PersonAvatarTile extends StatelessWidget {
                   color: theme.colors.foreground,
                 ),
               ),
+              if (roleLine case final role? when role.isNotEmpty) ...[
+                const Gap(2),
+                Text(
+                  role,
+                  style: theme.typography.body.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+              if (noteLines.isNotEmpty)
+                for (final line in noteLines) ...[
+                  const Gap(2),
+                  Text(
+                    line,
+                    style: theme.typography.body.xs.copyWith(
+                      color: theme.colors.mutedForeground,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
               if (subtitle case final s? when s.isNotEmpty)
                 Text(
                   s,

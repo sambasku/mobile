@@ -139,19 +139,11 @@ final class AboutSponsorshipsProvider
 
 String _$aboutSponsorshipsHash() => r'171e2713766bd199b595af44a03363bc694587e1';
 
-@ProviderFor(aboutVerifiers)
+@ProviderFor(AboutVerifiers)
 final aboutVerifiersProvider = AboutVerifiersProvider._();
 
 final class AboutVerifiersProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<List<AboutVerifier>?>,
-          List<AboutVerifier>?,
-          FutureOr<List<AboutVerifier>?>
-        >
-    with
-        $FutureModifier<List<AboutVerifier>?>,
-        $FutureProvider<List<AboutVerifier>?> {
+    extends $AsyncNotifierProvider<AboutVerifiers, AboutVerifiersState?> {
   AboutVerifiersProvider._()
     : super(
         from: null,
@@ -168,17 +160,33 @@ final class AboutVerifiersProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<AboutVerifier>?> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<List<AboutVerifier>?> create(Ref ref) {
-    return aboutVerifiers(ref);
-  }
+  AboutVerifiers create() => AboutVerifiers();
 }
 
-String _$aboutVerifiersHash() => r'9d0c93946796a91946ddfe68549758336fe2f8be';
+String _$aboutVerifiersHash() => r'528791671fcbad141ae65254e410b56f431c9a4a';
+
+abstract class _$AboutVerifiers extends $AsyncNotifier<AboutVerifiersState?> {
+  FutureOr<AboutVerifiersState?> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<AsyncValue<AboutVerifiersState?>, AboutVerifiersState?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<AboutVerifiersState?>,
+                AboutVerifiersState?
+              >,
+              AsyncValue<AboutVerifiersState?>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
 
 @ProviderFor(AboutContributors)
 final aboutContributorsProvider = AboutContributorsProvider._();

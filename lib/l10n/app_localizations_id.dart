@@ -60,6 +60,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get onboardingSpeakerLearner => 'Sedang belajar';
 
   @override
+  String get onboardingSpeakerPickRequired =>
+      'Pilih dulu penutur asli atau sedang belajar.';
+
+  @override
   String get profileSpeakerNative => 'Penutur Sambas';
 
   @override
@@ -1258,7 +1262,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get aboutChipVerifiers => 'Verifikator';
 
   @override
-  String get aboutChipContributors => 'Kontributor';
+  String get aboutChipContributors => 'Warga';
 
   @override
   String get aboutTeamChipEmpty => 'Belum ada data di sini.';
@@ -1290,7 +1294,7 @@ class AppLocalizationsId extends AppLocalizations {
       'Platform ini dirawat orang-orang yang mengusulkan konten, memeriksa entri, dan merekam pelafalan.';
 
   @override
-  String get aboutContributorsTitle => 'Kontributor';
+  String get aboutContributorsTitle => 'Warga';
 
   @override
   String get aboutContributorsBody =>
@@ -13842,6 +13846,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get onboardingSpeakerLearner => 'Sedang belajar';
 
   @override
+  String get onboardingSpeakerPickRequired =>
+      'Pilih dulu penutur asli atau sedang belajar.';
+
+  @override
   String get profileSpeakerNative => 'Penutur Sambas';
 
   @override
@@ -15040,7 +15048,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get aboutChipVerifiers => 'Verifikator';
 
   @override
-  String get aboutChipContributors => 'Kontributor';
+  String get aboutChipContributors => 'Warga';
 
   @override
   String get aboutTeamChipEmpty => 'Belum ada data di sini.';
@@ -15072,7 +15080,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Platform ini dirawat orang-orang yang mengusulkan konten, memeriksa entri, dan merekam pelafalan.';
 
   @override
-  String get aboutContributorsTitle => 'Kontributor';
+  String get aboutContributorsTitle => 'Warga';
 
   @override
   String get aboutContributorsBody =>

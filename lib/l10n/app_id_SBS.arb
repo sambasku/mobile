@@ -80,6 +80,10 @@
   "@onboardingSpeakerLearner": {
     "description": "Pilihan onboarding: pembelajar"
   },
+  "onboardingSpeakerPickRequired": "Pilih dulu penutur asli atau sedang belajar.",
+  "@onboardingSpeakerPickRequired": {
+    "description": "Toast onboarding jika lanjut tanpa memilih status penutur"
+  },
   "profileSpeakerNative": "Penutur Sambas",
   "@profileSpeakerNative": {
     "description": "Chip profil: penutur asli"
@@ -1039,7 +1043,7 @@
   "aboutTabTeam": "Tim Kami",
   "aboutChipTeam": "Tim",
   "aboutChipVerifiers": "Verifikator",
-  "aboutChipContributors": "Kontributor",
+  "aboutChipContributors": "Warga",
   "aboutTeamChipEmpty": "Belum ada data di sini.",
   "aboutTeamSectionBody": "Anggota yang merawat SambasKu - produk, data, dan komunitas.",
   "aboutVerifiersSectionBody": "Memeriksa usulan warga supaya konten tetap akurat dan layak tayang.",
@@ -1048,7 +1052,7 @@
   "aboutSupportBody": "Dukungan bisa lewat GitHub Sponsors atau Saweria. Detail kerja sama ada di profil organisasi kami di GitHub.",
   "aboutTogetherTitle": "Bersama warga Sambas",
   "aboutTogetherBody": "Platform ini dirawat orang-orang yang mengusulkan konten, memeriksa entri, dan merekam pelafalan.",
-  "aboutContributorsTitle": "Kontributor",
+  "aboutContributorsTitle": "Warga",
   "aboutContributorsBody": "Mengusulkan kata, perbaikan, dan merekam cara mengucapkan supaya bisa didengar. Entri tayang setelah verifikasi.",
   "aboutVerifiersTitle": "Verifikator",
   "aboutVerifiersBody": "Memeriksa usulan sebelum tayang.",

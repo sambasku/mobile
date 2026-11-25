@@ -67,7 +67,7 @@ void main() {
     );
   });
 
-  testWidgets('halaman Tim Kami punya chip Tim/Verifikator/Kontributor', (
+  testWidgets('halaman Tim Kami punya chip Tim/Verifikator/Warga', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(800, 1200);
@@ -84,13 +84,13 @@ void main() {
     expect(find.text('Tim Kami'), findsWidgets);
     expect(find.text('Tim'), findsOneWidget);
     expect(find.text('Verifikator'), findsOneWidget);
-    expect(find.text('Kontributor'), findsOneWidget);
+    expect(find.text('Warga'), findsOneWidget);
     expect(
       find.textContaining('Anggota yang merawat SambasKu'),
       findsOneWidget,
     );
 
-    await tester.tap(find.text('Kontributor'));
+    await tester.tap(find.text('Warga'));
     await tester.pumpAndSettle();
     expect(
       find.textContaining('Mengusulkan kata, perbaikan, dan rekaman'),

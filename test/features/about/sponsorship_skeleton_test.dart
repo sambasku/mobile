@@ -46,12 +46,10 @@ void main() {
             _AboutMode.failed => Future.value(null),
           };
         }),
-        aboutVerifiersProvider.overrideWith((ref) {
-          return switch (mode) {
-            _AboutMode.hang => Completer<List<AboutVerifier>?>().future,
-            _AboutMode.ready => Future.value(const <AboutVerifier>[]),
-            _AboutMode.failed => Future.value(null),
-          };
+        aboutVerifiersProvider.overrideWith(switch (mode) {
+          _AboutMode.hang => _HangVerifiers.new,
+          _AboutMode.ready => _ReadyVerifiers.new,
+          _AboutMode.failed => _FailedVerifiers.new,
         }),
         aboutContributorsProvider.overrideWith(switch (mode) {
           _AboutMode.hang => _HangContributors.new,
@@ -101,7 +99,7 @@ void main() {
 
     await tester.pumpWidget(harness(_AboutMode.ready, showTeam: true));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Kontributor'));
+    await tester.tap(find.text('Warga'));
     await tester.pumpAndSettle();
 
     expect(_bones, findsNothing);
@@ -137,4 +135,22 @@ class _ReadyContributors extends AboutContributors {
 class _FailedContributors extends AboutContributors {
   @override
   Future<AboutContributorsState?> build() async => null;
+}
+
+class _HangVerifiers extends AboutVerifiers {
+  @override
+  Future<AboutVerifiersState?> build() =>
+      Completer<AboutVerifiersState?>().future;
+}
+
+class _ReadyVerifiers extends AboutVerifiers {
+  @override
+  Future<AboutVerifiersState?> build() async => const AboutVerifiersState(
+        items: [],
+      );
+}
+
+class _FailedVerifiers extends AboutVerifiers {
+  @override
+  Future<AboutVerifiersState?> build() async => null;
 }

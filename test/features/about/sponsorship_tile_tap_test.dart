@@ -48,7 +48,9 @@ void main() {
       ProviderScope(
         overrides: [
           aboutTeamProvider.overrideWith((ref) async => team),
-          aboutVerifiersProvider.overrideWith((ref) async => verifiers),
+          aboutVerifiersProvider.overrideWith(
+            () => _FakeVerifiers(verifiers),
+          ),
           aboutSponsorshipsProvider.overrideWith((ref) async => sponsorships),
           aboutContributorsProvider.overrideWith(
             () => _FakeContributors(contributors),
@@ -122,6 +124,8 @@ void main() {
     await pumpFrames(tester);
 
     expect(find.text('Ibnul Mutaki'), findsOneWidget);
+    expect(find.text('maintainer'), findsOneWidget);
+    expect(find.text('Penggagas'), findsOneWidget);
     await tester.tap(find.text('Ibnul Mutaki'));
     await tester.pumpAndSettle();
     expect(find.text('PROFILE:ibnulmutaki'), findsOneWidget);
@@ -140,7 +144,7 @@ void main() {
     );
     await pumpFrames(tester);
 
-    await tester.tap(find.text('Kontributor'));
+    await tester.tap(find.text('Warga'));
     await pumpFrames(tester);
 
     expect(find.text('Ali'), findsOneWidget);
@@ -228,5 +232,16 @@ class _FakeContributors extends AboutContributors {
   @override
   Future<AboutContributorsState?> build() async {
     return AboutContributorsState(items: items, hasMore: false);
+  }
+}
+
+class _FakeVerifiers extends AboutVerifiers {
+  _FakeVerifiers(this.items);
+
+  final List<AboutVerifier> items;
+
+  @override
+  Future<AboutVerifiersState?> build() async {
+    return AboutVerifiersState(items: items, hasMore: false);
   }
 }
