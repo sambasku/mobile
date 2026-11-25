@@ -504,7 +504,6 @@ class _PersonAvatarTile extends StatelessWidget {
     this.avatarUrl,
     this.roleLine,
     this.noteLines = const [],
-    this.subtitle,
   });
 
   final String username;
@@ -512,7 +511,6 @@ class _PersonAvatarTile extends StatelessWidget {
   final String? avatarUrl;
   final String? roleLine;
   final List<String> noteLines;
-  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -568,14 +566,6 @@ class _PersonAvatarTile extends StatelessWidget {
                     ),
                   ),
                 ],
-              if (subtitle case final s? when s.isNotEmpty)
-                Text(
-                  s,
-                  style: theme.typography.body.xs.copyWith(
-                    color: theme.colors.mutedForeground,
-                    height: 1.4,
-                  ),
-                ),
             ],
           ),
         ),
