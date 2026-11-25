@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/models/external_link.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/entity_comments/entity_comment.dart';
+import '../../../../shared/entity_comments/entity_comment_providers.dart';
 import '../../../../shared/entity_comments/entity_comments_section.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -118,9 +119,20 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
         target: EntityCommentTarget.karya,
         entityId: item.id,
       ),
-      child: ListView(
-        padding: const EdgeInsets.only(bottom: 24),
-        children: [
+      child: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(karyaBySlugProvider(widget.slug));
+          ref.invalidate(
+            entityCommentListControllerProvider(
+              EntityCommentListKey(EntityCommentTarget.karya, item.id),
+            ),
+          );
+          await ref.read(karyaBySlugProvider(widget.slug).future);
+        },
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: 24),
+          children: [
           if (item.isMusic) ...[
             KaryaMusicStage(
               item: item,
@@ -443,6 +455,7 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
             ],
           ),
         ],
+      ),
       ),
     );
   }
