@@ -23012,7 +23012,7 @@ abstract class AppLocalizations {
   /// No description provided for @karyaCommentsTitle.
   ///
   /// In id, this message translates to:
-  /// **'Komentar karya'**
+  /// **'Komentar'**
   String get karyaCommentsTitle;
 
   /// No description provided for @karyaCommentsEmpty.
@@ -23024,7 +23024,7 @@ abstract class AppLocalizations {
   /// No description provided for @karyaCommentHint.
   ///
   /// In id, this message translates to:
-  /// **'Tulis komentar tentang karya ini'**
+  /// **'Tulis komentar'**
   String get karyaCommentHint;
 
   /// No description provided for @eventMorePhotos.

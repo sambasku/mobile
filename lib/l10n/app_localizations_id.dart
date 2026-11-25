@@ -13062,13 +13062,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventCommentHint => 'Tulis komentar tentang acara ini';
 
   @override
-  String get karyaCommentsTitle => 'Komentar karya';
+  String get karyaCommentsTitle => 'Komentar';
 
   @override
   String get karyaCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
 
   @override
-  String get karyaCommentHint => 'Tulis komentar tentang karya ini';
+  String get karyaCommentHint => 'Tulis komentar';
 
   @override
   String eventMorePhotos(int count) {
@@ -26854,13 +26854,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventCommentHint => 'Tulis komentar tentang acara ini';
 
   @override
-  String get karyaCommentsTitle => 'Komentar karya';
+  String get karyaCommentsTitle => 'Komentar';
 
   @override
   String get karyaCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
 
   @override
-  String get karyaCommentHint => 'Tulis komentar tentang karya ini';
+  String get karyaCommentHint => 'Tulis komentar';
 
   @override
   String eventMorePhotos(int count) {

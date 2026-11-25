@@ -9962,11 +9962,11 @@
   "@eventCommentsEmpty": {},
   "eventCommentHint": "Tulis komentar tentang acara ini",
   "@eventCommentHint": {},
-  "karyaCommentsTitle": "Komentar karya",
+  "karyaCommentsTitle": "Komentar",
   "@karyaCommentsTitle": {},
   "karyaCommentsEmpty": "Belum ada komentar. Jadi yang pertama ya.",
   "@karyaCommentsEmpty": {},
-  "karyaCommentHint": "Tulis komentar tentang karya ini",
+  "karyaCommentHint": "Tulis komentar",
   "@karyaCommentHint": {},
   "eventMorePhotos": "Lihat lainnya ({count} foto)",
   "@eventMorePhotos": {
