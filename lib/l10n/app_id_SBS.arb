@@ -246,7 +246,7 @@
   "@balehoLeaderboardScoreCombined": {
     "placeholders": {
       "score": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -254,13 +254,13 @@
   "@balehoLeaderboardScoreBreakdown": {
     "placeholders": {
       "submitted": {
-        "type": "int"
+        "type": "String"
       },
       "approved": {
-        "type": "int"
+        "type": "String"
       },
       "verif": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -316,6 +316,132 @@
   "balehoLeaderboardHistoryLoadMore": "Lihat minggu sebelumnya",
   "@balehoLeaderboardHistoryLoadMore": {
     "description": "Tombol paginasi daftar minggu riwayat"
+  },
+  "balehoPointsGuideTitle": "Cara dapat poin",
+  "@balehoPointsGuideTitle": {
+    "description": "Judul halaman penjelasan poin papan peringkat"
+  },
+  "balehoPointsGuideEntrySubtitle": "Lihat tabel poin dan aturan biar peringkat adil",
+  "@balehoPointsGuideEntrySubtitle": {
+    "description": "Subtitle kartu pintu masuk halaman cara dapat poin"
+  },
+  "balehoPointsGuideOpenSemantics": "Buka cara dapat poin",
+  "@balehoPointsGuideOpenSemantics": {
+    "description": "Semantics ikon info di header papan peringkat"
+  },
+  "balehoPointsGuideIntro": "Semua kontributor dihitung dengan aturan yang sama. Ini rincian poin yang kamu kumpulkan tiap minggu.",
+  "@balehoPointsGuideIntro": {
+    "description": "Paragraf pembuka halaman cara dapat poin"
+  },
+  "balehoPointsGuideTableTitle": "Tabel poin",
+  "@balehoPointsGuideTableTitle": {
+    "description": "Judul section tabel poin"
+  },
+  "balehoPointsGuideCreateTitle": "Usul kata baru",
+  "@balehoPointsGuideCreateTitle": {
+    "description": "Baris tabel poin: usul kata baru. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts."
+  },
+  "balehoPointsGuideCreateWhen": "Dihitung saat usulan dikirim",
+  "@balehoPointsGuideCreateWhen": {
+    "description": "Keterangan kapan poin usul kata baru dihitung"
+  },
+  "balehoPointsGuideEditTitle": "Usul perbaikan kata",
+  "@balehoPointsGuideEditTitle": {
+    "description": "Baris tabel poin: usul perbaikan kata. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts."
+  },
+  "balehoPointsGuideEditWhen": "Dihitung saat usulan dikirim",
+  "@balehoPointsGuideEditWhen": {
+    "description": "Keterangan kapan poin usul perbaikan dihitung"
+  },
+  "balehoPointsGuideApprovedTitle": "Usulan kamu diterima",
+  "@balehoPointsGuideApprovedTitle": {
+    "description": "Baris tabel poin: bonus usulan diterima. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts."
+  },
+  "balehoPointsGuideApprovedWhen": "Bonus saat usulan disetujui atau dikoreksi verifikator",
+  "@balehoPointsGuideApprovedWhen": {
+    "description": "Keterangan kapan bonus usulan diterima dihitung"
+  },
+  "balehoPointsGuideVerifyTitle": "Verifikasi usul kata orang lain",
+  "@balehoPointsGuideVerifyTitle": {
+    "description": "Baris tabel poin: verifikasi. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts."
+  },
+  "balehoPointsGuideVerifyWhen": "Khusus verifikator, dihitung tiap keputusan terima atau tolak",
+  "@balehoPointsGuideVerifyWhen": {
+    "description": "Keterangan kapan poin verifikasi dihitung"
+  },
+  "balehoPointsGuidePoints": "+{points}",
+  "@balehoPointsGuidePoints": {
+    "description": "Nilai poin di tabel poin",
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoPointsGuideFairTitle": "Biar adil",
+  "@balehoPointsGuideFairTitle": {
+    "description": "Judul section aturan keadilan peringkat"
+  },
+  "balehoPointsGuideRuleRejected": "Usulan yang ditolak tidak dapat poin. Kalau usulan ditolak, poin usulnya ikut dicabut.",
+  "@balehoPointsGuideRuleRejected": {
+    "description": "Aturan adil: usulan ditolak"
+  },
+  "balehoPointsGuideRuleBonus": "Bonus +2 cuma diberikan kalau usulan disetujui atau dikoreksi.",
+  "@balehoPointsGuideRuleBonus": {
+    "description": "Aturan adil: bonus diterima. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts."
+  },
+  "balehoPointsGuideRuleSelfVerify": "Memverifikasi usulan sendiri tidak dapat poin.",
+  "@balehoPointsGuideRuleSelfVerify": {
+    "description": "Aturan adil: verifikasi diri sendiri"
+  },
+  "balehoPointsGuideRuleExcluded": "Akun sistem dan akun yang dikecualikan admin tidak ikut peringkat.",
+  "@balehoPointsGuideRuleExcluded": {
+    "description": "Aturan adil: akun dikecualikan"
+  },
+  "balehoPointsGuideRuleReset": "Skor di-reset tiap Senin 00:00 WIB. Minggu yang sudah lewat dibekukan di tab Riwayat.",
+  "@balehoPointsGuideRuleReset": {
+    "description": "Aturan adil: reset mingguan"
+  },
+  "balehoPointsGuideRuleShare": "Peringkat 1-25 bisa membagikan posisinya ke feed.",
+  "@balehoPointsGuideRuleShare": {
+    "description": "Aturan adil: batas bagikan posisi"
+  },
+  "balehoPointsGuideExampleTitle": "Contoh hitungan",
+  "@balehoPointsGuideExampleTitle": {
+    "description": "Judul section contoh hitungan poin"
+  },
+  "balehoPointsGuideExampleBody": "2 usul kata baru diterima = 2 x (5 + 2) = 14 poin. Tambah 1 usul perbaikan yang masih ditinjau = 14 + 3 = 17 poin.",
+  "@balehoPointsGuideExampleBody": {
+    "description": "Contoh hitungan poin. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts."
+  },
+  "balehoLeaderboardShareCta": "Bagikan posisiku ke feed",
+  "@balehoLeaderboardShareCta": {
+    "description": "Tombol bagikan posisi papan peringkat ke feed"
+  },
+  "balehoLeaderboardShareBusy": "Membagikan...",
+  "@balehoLeaderboardShareBusy": {
+    "description": "Label tombol saat proses bagikan posisi"
+  },
+  "balehoLeaderboardShareSuccess": "Posisi #{rank} kamu sudah dibagikan ke feed",
+  "@balehoLeaderboardShareSuccess": {
+    "description": "Toast sukses bagikan posisi",
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoLeaderboardShareNotInTop": "Posisi kamu belum masuk peringkat 1-25 minggu ini. Terus berkontribusi, lalu coba lagi.",
+  "@balehoLeaderboardShareNotInTop": {
+    "description": "Error bagikan posisi: di luar 1-25"
+  },
+  "balehoLeaderboardShareFailed": "Gagal membagikan posisi. Coba lagi sebentar lagi.",
+  "@balehoLeaderboardShareFailed": {
+    "description": "Error umum bagikan posisi"
+  },
+  "balehoLeaderboardShareLoginRequired": "Masuk dulu untuk membagikan posisimu ke feed.",
+  "@balehoLeaderboardShareLoginRequired": {
+    "description": "Error bagikan posisi tanpa login"
   },
   "balehoSlotAvailable": "Tersedia",
   "balehoSlotHeld": "Dipesan",
@@ -2373,6 +2499,14 @@
   "feedCtaHelpFill": "Bantu isi",
   "feedCtaSeeProfile": "Lihat profil",
   "feedCtaSeeCard": "Lihat kartu",
+  "feedKindLeaderboard": "Peringkat",
+  "@feedKindLeaderboard": {
+    "description": "Label jenis feed: bagikan posisi papan peringkat"
+  },
+  "feedCtaSeeLeaderboard": "Lihat peringkat",
+  "@feedCtaSeeLeaderboard": {
+    "description": "CTA feed: buka papan peringkat mingguan"
+  },
   "feedCtaSeeSuggestion": "Lihat usulan",
   "feedCtaSeeWord": "Lihat kata",
   "feedCtaReadAnnouncement": "Baca pengumuman",
@@ -6604,7 +6738,7 @@
     "description": "Total poin yang didapat pada minggu tersebut",
     "placeholders": {
       "points": {
-        "type": "int"
+        "type": "String"
       }
     }
   },

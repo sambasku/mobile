@@ -264,15 +264,15 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String balehoLeaderboardScoreCombined(int score) {
+  String balehoLeaderboardScoreCombined(String score) {
     return '$score poin';
   }
 
   @override
   String balehoLeaderboardScoreBreakdown(
-    int submitted,
-    int approved,
-    int verif,
+    String submitted,
+    String approved,
+    String verif,
   ) {
     return '+$submitted usul · +$approved acc · +$verif verif';
   }
@@ -318,6 +318,111 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get balehoLeaderboardHistoryLoadMore => 'Lihat minggu sebelumnya';
+
+  @override
+  String get balehoPointsGuideTitle => 'Cara dapat poin';
+
+  @override
+  String get balehoPointsGuideEntrySubtitle =>
+      'Lihat tabel poin dan aturan biar peringkat adil';
+
+  @override
+  String get balehoPointsGuideOpenSemantics => 'Buka cara dapat poin';
+
+  @override
+  String get balehoPointsGuideIntro =>
+      'Semua kontributor dihitung dengan aturan yang sama. Ini rincian poin yang kamu kumpulkan tiap minggu.';
+
+  @override
+  String get balehoPointsGuideTableTitle => 'Tabel poin';
+
+  @override
+  String get balehoPointsGuideCreateTitle => 'Usul kata baru';
+
+  @override
+  String get balehoPointsGuideCreateWhen => 'Dihitung saat usulan dikirim';
+
+  @override
+  String get balehoPointsGuideEditTitle => 'Usul perbaikan kata';
+
+  @override
+  String get balehoPointsGuideEditWhen => 'Dihitung saat usulan dikirim';
+
+  @override
+  String get balehoPointsGuideApprovedTitle => 'Usulan kamu diterima';
+
+  @override
+  String get balehoPointsGuideApprovedWhen =>
+      'Bonus saat usulan disetujui atau dikoreksi verifikator';
+
+  @override
+  String get balehoPointsGuideVerifyTitle => 'Verifikasi usul kata orang lain';
+
+  @override
+  String get balehoPointsGuideVerifyWhen =>
+      'Khusus verifikator, dihitung tiap keputusan terima atau tolak';
+
+  @override
+  String balehoPointsGuidePoints(int points) {
+    return '+$points';
+  }
+
+  @override
+  String get balehoPointsGuideFairTitle => 'Biar adil';
+
+  @override
+  String get balehoPointsGuideRuleRejected =>
+      'Usulan yang ditolak tidak dapat poin. Kalau usulan ditolak, poin usulnya ikut dicabut.';
+
+  @override
+  String get balehoPointsGuideRuleBonus =>
+      'Bonus +2 cuma diberikan kalau usulan disetujui atau dikoreksi.';
+
+  @override
+  String get balehoPointsGuideRuleSelfVerify =>
+      'Memverifikasi usulan sendiri tidak dapat poin.';
+
+  @override
+  String get balehoPointsGuideRuleExcluded =>
+      'Akun sistem dan akun yang dikecualikan admin tidak ikut peringkat.';
+
+  @override
+  String get balehoPointsGuideRuleReset =>
+      'Skor di-reset tiap Senin 00:00 WIB. Minggu yang sudah lewat dibekukan di tab Riwayat.';
+
+  @override
+  String get balehoPointsGuideRuleShare =>
+      'Peringkat 1-25 bisa membagikan posisinya ke feed.';
+
+  @override
+  String get balehoPointsGuideExampleTitle => 'Contoh hitungan';
+
+  @override
+  String get balehoPointsGuideExampleBody =>
+      '2 usul kata baru diterima = 2 x (5 + 2) = 14 poin. Tambah 1 usul perbaikan yang masih ditinjau = 14 + 3 = 17 poin.';
+
+  @override
+  String get balehoLeaderboardShareCta => 'Bagikan posisiku ke feed';
+
+  @override
+  String get balehoLeaderboardShareBusy => 'Membagikan...';
+
+  @override
+  String balehoLeaderboardShareSuccess(int rank) {
+    return 'Posisi #$rank kamu sudah dibagikan ke feed';
+  }
+
+  @override
+  String get balehoLeaderboardShareNotInTop =>
+      'Posisi kamu belum masuk peringkat 1-25 minggu ini. Terus berkontribusi, lalu coba lagi.';
+
+  @override
+  String get balehoLeaderboardShareFailed =>
+      'Gagal membagikan posisi. Coba lagi sebentar lagi.';
+
+  @override
+  String get balehoLeaderboardShareLoginRequired =>
+      'Masuk dulu untuk membagikan posisimu ke feed.';
 
   @override
   String get balehoSlotAvailable => 'Tersedia';
@@ -5667,6 +5772,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedCtaSeeCard => 'Lihat kartu';
+
+  @override
+  String get feedKindLeaderboard => 'Peringkat';
+
+  @override
+  String get feedCtaSeeLeaderboard => 'Lihat peringkat';
 
   @override
   String get feedCtaSeeSuggestion => 'Lihat usulan';
@@ -13374,7 +13485,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get expHistoryEmpty => 'Belum ada riwayat mingguan yang tercatat.';
 
   @override
-  String expHistoryWeeklyPoints(int points) {
+  String expHistoryWeeklyPoints(String points) {
     return '+$points poin minggu ini';
   }
 
@@ -13851,15 +13962,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
-  String balehoLeaderboardScoreCombined(int score) {
+  String balehoLeaderboardScoreCombined(String score) {
     return '$score poin';
   }
 
   @override
   String balehoLeaderboardScoreBreakdown(
-    int submitted,
-    int approved,
-    int verif,
+    String submitted,
+    String approved,
+    String verif,
   ) {
     return '+$submitted usul · +$approved acc · +$verif verif';
   }
@@ -13905,6 +14016,111 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoLeaderboardHistoryLoadMore => 'Lihat minggu sebelumnya';
+
+  @override
+  String get balehoPointsGuideTitle => 'Cara dapat poin';
+
+  @override
+  String get balehoPointsGuideEntrySubtitle =>
+      'Lihat tabel poin dan aturan biar peringkat adil';
+
+  @override
+  String get balehoPointsGuideOpenSemantics => 'Buka cara dapat poin';
+
+  @override
+  String get balehoPointsGuideIntro =>
+      'Semua kontributor dihitung dengan aturan yang sama. Ini rincian poin yang kamu kumpulkan tiap minggu.';
+
+  @override
+  String get balehoPointsGuideTableTitle => 'Tabel poin';
+
+  @override
+  String get balehoPointsGuideCreateTitle => 'Usul kata baru';
+
+  @override
+  String get balehoPointsGuideCreateWhen => 'Dihitung saat usulan dikirim';
+
+  @override
+  String get balehoPointsGuideEditTitle => 'Usul perbaikan kata';
+
+  @override
+  String get balehoPointsGuideEditWhen => 'Dihitung saat usulan dikirim';
+
+  @override
+  String get balehoPointsGuideApprovedTitle => 'Usulan kamu diterima';
+
+  @override
+  String get balehoPointsGuideApprovedWhen =>
+      'Bonus saat usulan disetujui atau dikoreksi verifikator';
+
+  @override
+  String get balehoPointsGuideVerifyTitle => 'Verifikasi usul kata orang lain';
+
+  @override
+  String get balehoPointsGuideVerifyWhen =>
+      'Khusus verifikator, dihitung tiap keputusan terima atau tolak';
+
+  @override
+  String balehoPointsGuidePoints(int points) {
+    return '+$points';
+  }
+
+  @override
+  String get balehoPointsGuideFairTitle => 'Biar adil';
+
+  @override
+  String get balehoPointsGuideRuleRejected =>
+      'Usulan yang ditolak tidak dapat poin. Kalau usulan ditolak, poin usulnya ikut dicabut.';
+
+  @override
+  String get balehoPointsGuideRuleBonus =>
+      'Bonus +2 cuma diberikan kalau usulan disetujui atau dikoreksi.';
+
+  @override
+  String get balehoPointsGuideRuleSelfVerify =>
+      'Memverifikasi usulan sendiri tidak dapat poin.';
+
+  @override
+  String get balehoPointsGuideRuleExcluded =>
+      'Akun sistem dan akun yang dikecualikan admin tidak ikut peringkat.';
+
+  @override
+  String get balehoPointsGuideRuleReset =>
+      'Skor di-reset tiap Senin 00:00 WIB. Minggu yang sudah lewat dibekukan di tab Riwayat.';
+
+  @override
+  String get balehoPointsGuideRuleShare =>
+      'Peringkat 1-25 bisa membagikan posisinya ke feed.';
+
+  @override
+  String get balehoPointsGuideExampleTitle => 'Contoh hitungan';
+
+  @override
+  String get balehoPointsGuideExampleBody =>
+      '2 usul kata baru diterima = 2 x (5 + 2) = 14 poin. Tambah 1 usul perbaikan yang masih ditinjau = 14 + 3 = 17 poin.';
+
+  @override
+  String get balehoLeaderboardShareCta => 'Bagikan posisiku ke feed';
+
+  @override
+  String get balehoLeaderboardShareBusy => 'Membagikan...';
+
+  @override
+  String balehoLeaderboardShareSuccess(int rank) {
+    return 'Posisi #$rank kamu sudah dibagikan ke feed';
+  }
+
+  @override
+  String get balehoLeaderboardShareNotInTop =>
+      'Posisi kamu belum masuk peringkat 1-25 minggu ini. Terus berkontribusi, lalu coba lagi.';
+
+  @override
+  String get balehoLeaderboardShareFailed =>
+      'Gagal membagikan posisi. Coba lagi sebentar lagi.';
+
+  @override
+  String get balehoLeaderboardShareLoginRequired =>
+      'Masuk dulu untuk membagikan posisimu ke feed.';
 
   @override
   String get balehoSlotAvailable => 'Tersedia';
@@ -19170,6 +19386,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get feedCtaSeeCard => 'Lihat kartu';
+
+  @override
+  String get feedKindLeaderboard => 'Peringkat';
+
+  @override
+  String get feedCtaSeeLeaderboard => 'Lihat peringkat';
 
   @override
   String get feedCtaSeeSuggestion => 'Lihat usulan';
@@ -26877,7 +27099,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get expHistoryEmpty => 'Belum ade riwayat mingguan yang tacatat.';
 
   @override
-  String expHistoryWeeklyPoints(int points) {
+  String expHistoryWeeklyPoints(String points) {
     return '+$points poin minggu situk';
   }
 

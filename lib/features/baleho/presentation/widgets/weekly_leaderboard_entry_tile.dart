@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../core/utils/format_number.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../user_profile/user_profile_router.dart';
@@ -159,9 +160,9 @@ class _PodiumCompactCard extends StatelessWidget {
                   const Gap(1),
                   Text(
                     l10n.balehoLeaderboardScoreBreakdown(
-                      entry.submittedPoints,
-                      entry.approvedPoints,
-                      entry.verificationPoints,
+                      formatRibuan(entry.submittedPoints),
+                      formatRibuan(entry.approvedPoints),
+                      formatRibuan(entry.verificationPoints),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -177,7 +178,9 @@ class _PodiumCompactCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  l10n.balehoLeaderboardScoreCombined(entry.combined),
+                  l10n.balehoLeaderboardScoreCombined(
+                    formatRibuan(entry.combined),
+                  ),
                   style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w800,
                     color: palette.metal,
@@ -245,9 +248,9 @@ FTile leaderboardEntryTile({
     color: theme.colors.mutedForeground,
   );
   final breakdown = l10n.balehoLeaderboardScoreBreakdown(
-    entry.submittedPoints,
-    entry.approvedPoints,
-    entry.verificationPoints,
+    formatRibuan(entry.submittedPoints),
+    formatRibuan(entry.approvedPoints),
+    formatRibuan(entry.verificationPoints),
   );
   final subtitleText = breakdown;
 
@@ -277,7 +280,7 @@ FTile leaderboardEntryTile({
     title: Text(entry.displayName ?? entry.username, style: nameStyle),
     subtitle: Text(subtitleText, style: breakdownStyle),
     suffix: Text(
-      l10n.balehoLeaderboardScoreCombined(entry.combined),
+      l10n.balehoLeaderboardScoreCombined(formatRibuan(entry.combined)),
       style: scoreStyle,
     ),
   );

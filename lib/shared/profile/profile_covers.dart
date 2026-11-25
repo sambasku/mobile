@@ -1,9 +1,10 @@
 /// Cover profil global dari API (`GET /about/profile-covers`).
 class ProfileCovers {
-  const ProfileCovers({this.tabUrl, this.publicUrl});
+  const ProfileCovers({this.tabUrl, this.publicUrl, this.wotdUrl});
 
   final String? tabUrl;
   final String? publicUrl;
+  final String? wotdUrl;
 
   factory ProfileCovers.fromEnvelope(Map<String, dynamic> envelope) {
     final data = envelope['data'];
@@ -19,6 +20,7 @@ class ProfileCovers {
     return ProfileCovers(
       tabUrl: read('tab_url'),
       publicUrl: read('public_url'),
+      wotdUrl: read('wotd_url'),
     );
   }
 }

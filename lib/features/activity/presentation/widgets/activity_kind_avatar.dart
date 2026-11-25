@@ -108,6 +108,11 @@ class ActivityKindAvatar extends StatelessWidget {
           icon: FLucideIcons.messageCircle,
           foreground: primary,
         );
+      case FeedActivityKind.leaderboardRank:
+        return _KindAvatarStyle(
+          icon: FLucideIcons.trophy,
+          foreground: primary,
+        );
       case FeedActivityKind.discussion:
         return _KindAvatarStyle(
           icon: FLucideIcons.messagesSquare,

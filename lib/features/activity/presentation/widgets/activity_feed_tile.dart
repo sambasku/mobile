@@ -12,6 +12,7 @@ import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/public_account_name.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../baleho/domain/baleho_models.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../dictionary/dictionary_router.dart';
@@ -307,6 +308,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.layanan => l10n.feedKindLayanan,
       FeedActivityKind.culinary => l10n.feedKindCulinary,
       FeedActivityKind.article => l10n.feedKindArticle,
+      FeedActivityKind.leaderboardRank => l10n.feedKindLeaderboard,
     };
   }
 
@@ -347,6 +349,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.layanan => l10n.feedCtaSeeLayanan,
       FeedActivityKind.culinary => l10n.feedCtaSeeCulinary,
       FeedActivityKind.article => l10n.feedCtaSeeArticle,
+      FeedActivityKind.leaderboardRank => l10n.feedCtaSeeLeaderboard,
     };
   }
 
@@ -372,6 +375,8 @@ class ActivityFeedTile extends ConsumerWidget {
         );
       case 'chat':
         return DiscussionRouter.chat.path;
+      case 'leaderboard':
+        return BalehoBoard.weeklyLeaderboardPath;
       case 'discussion':
         // Pantun dulu di-wire sebagai discussion (target.type discussion).
         // Response lama / cache L1: bedakan lewat body copy tetap API.

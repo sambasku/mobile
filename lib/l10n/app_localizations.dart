@@ -527,16 +527,16 @@ abstract class AppLocalizations {
   ///
   /// In id, this message translates to:
   /// **'{score} poin'**
-  String balehoLeaderboardScoreCombined(int score);
+  String balehoLeaderboardScoreCombined(String score);
 
   /// Rincian skor papan peringkat mingguan (usul, bonus acc, verif)
   ///
   /// In id, this message translates to:
   /// **'+{submitted} usul · +{approved} acc · +{verif} verif'**
   String balehoLeaderboardScoreBreakdown(
-    int submitted,
-    int approved,
-    int verif,
+    String submitted,
+    String approved,
+    String verif,
   );
 
   /// Empty state minggu berjalan
@@ -610,6 +610,180 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat minggu sebelumnya'**
   String get balehoLeaderboardHistoryLoadMore;
+
+  /// Judul halaman penjelasan poin papan peringkat
+  ///
+  /// In id, this message translates to:
+  /// **'Cara dapat poin'**
+  String get balehoPointsGuideTitle;
+
+  /// Subtitle kartu pintu masuk halaman cara dapat poin
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat tabel poin dan aturan biar peringkat adil'**
+  String get balehoPointsGuideEntrySubtitle;
+
+  /// Semantics ikon info di header papan peringkat
+  ///
+  /// In id, this message translates to:
+  /// **'Buka cara dapat poin'**
+  String get balehoPointsGuideOpenSemantics;
+
+  /// Paragraf pembuka halaman cara dapat poin
+  ///
+  /// In id, this message translates to:
+  /// **'Semua kontributor dihitung dengan aturan yang sama. Ini rincian poin yang kamu kumpulkan tiap minggu.'**
+  String get balehoPointsGuideIntro;
+
+  /// Judul section tabel poin
+  ///
+  /// In id, this message translates to:
+  /// **'Tabel poin'**
+  String get balehoPointsGuideTableTitle;
+
+  /// Baris tabel poin: usul kata baru. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul kata baru'**
+  String get balehoPointsGuideCreateTitle;
+
+  /// Keterangan kapan poin usul kata baru dihitung
+  ///
+  /// In id, this message translates to:
+  /// **'Dihitung saat usulan dikirim'**
+  String get balehoPointsGuideCreateWhen;
+
+  /// Baris tabel poin: usul perbaikan kata. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul perbaikan kata'**
+  String get balehoPointsGuideEditTitle;
+
+  /// Keterangan kapan poin usul perbaikan dihitung
+  ///
+  /// In id, this message translates to:
+  /// **'Dihitung saat usulan dikirim'**
+  String get balehoPointsGuideEditWhen;
+
+  /// Baris tabel poin: bonus usulan diterima. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kamu diterima'**
+  String get balehoPointsGuideApprovedTitle;
+
+  /// Keterangan kapan bonus usulan diterima dihitung
+  ///
+  /// In id, this message translates to:
+  /// **'Bonus saat usulan disetujui atau dikoreksi verifikator'**
+  String get balehoPointsGuideApprovedWhen;
+
+  /// Baris tabel poin: verifikasi. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts.
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikasi usul kata orang lain'**
+  String get balehoPointsGuideVerifyTitle;
+
+  /// Keterangan kapan poin verifikasi dihitung
+  ///
+  /// In id, this message translates to:
+  /// **'Khusus verifikator, dihitung tiap keputusan terima atau tolak'**
+  String get balehoPointsGuideVerifyWhen;
+
+  /// Nilai poin di tabel poin
+  ///
+  /// In id, this message translates to:
+  /// **'+{points}'**
+  String balehoPointsGuidePoints(int points);
+
+  /// Judul section aturan keadilan peringkat
+  ///
+  /// In id, this message translates to:
+  /// **'Biar adil'**
+  String get balehoPointsGuideFairTitle;
+
+  /// Aturan adil: usulan ditolak
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan yang ditolak tidak dapat poin. Kalau usulan ditolak, poin usulnya ikut dicabut.'**
+  String get balehoPointsGuideRuleRejected;
+
+  /// Aturan adil: bonus diterima. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts.
+  ///
+  /// In id, this message translates to:
+  /// **'Bonus +2 cuma diberikan kalau usulan disetujui atau dikoreksi.'**
+  String get balehoPointsGuideRuleBonus;
+
+  /// Aturan adil: verifikasi diri sendiri
+  ///
+  /// In id, this message translates to:
+  /// **'Memverifikasi usulan sendiri tidak dapat poin.'**
+  String get balehoPointsGuideRuleSelfVerify;
+
+  /// Aturan adil: akun dikecualikan
+  ///
+  /// In id, this message translates to:
+  /// **'Akun sistem dan akun yang dikecualikan admin tidak ikut peringkat.'**
+  String get balehoPointsGuideRuleExcluded;
+
+  /// Aturan adil: reset mingguan
+  ///
+  /// In id, this message translates to:
+  /// **'Skor di-reset tiap Senin 00:00 WIB. Minggu yang sudah lewat dibekukan di tab Riwayat.'**
+  String get balehoPointsGuideRuleReset;
+
+  /// Aturan adil: batas bagikan posisi
+  ///
+  /// In id, this message translates to:
+  /// **'Peringkat 1-25 bisa membagikan posisinya ke feed.'**
+  String get balehoPointsGuideRuleShare;
+
+  /// Judul section contoh hitungan poin
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh hitungan'**
+  String get balehoPointsGuideExampleTitle;
+
+  /// Contoh hitungan poin. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts.
+  ///
+  /// In id, this message translates to:
+  /// **'2 usul kata baru diterima = 2 x (5 + 2) = 14 poin. Tambah 1 usul perbaikan yang masih ditinjau = 14 + 3 = 17 poin.'**
+  String get balehoPointsGuideExampleBody;
+
+  /// Tombol bagikan posisi papan peringkat ke feed
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan posisiku ke feed'**
+  String get balehoLeaderboardShareCta;
+
+  /// Label tombol saat proses bagikan posisi
+  ///
+  /// In id, this message translates to:
+  /// **'Membagikan...'**
+  String get balehoLeaderboardShareBusy;
+
+  /// Toast sukses bagikan posisi
+  ///
+  /// In id, this message translates to:
+  /// **'Posisi #{rank} kamu sudah dibagikan ke feed'**
+  String balehoLeaderboardShareSuccess(int rank);
+
+  /// Error bagikan posisi: di luar 1-25
+  ///
+  /// In id, this message translates to:
+  /// **'Posisi kamu belum masuk peringkat 1-25 minggu ini. Terus berkontribusi, lalu coba lagi.'**
+  String get balehoLeaderboardShareNotInTop;
+
+  /// Error umum bagikan posisi
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membagikan posisi. Coba lagi sebentar lagi.'**
+  String get balehoLeaderboardShareFailed;
+
+  /// Error bagikan posisi tanpa login
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk membagikan posisimu ke feed.'**
+  String get balehoLeaderboardShareLoginRequired;
 
   /// No description provided for @balehoSlotAvailable.
   ///
@@ -9930,6 +10104,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat kartu'**
   String get feedCtaSeeCard;
+
+  /// Label jenis feed: bagikan posisi papan peringkat
+  ///
+  /// In id, this message translates to:
+  /// **'Peringkat'**
+  String get feedKindLeaderboard;
+
+  /// CTA feed: buka papan peringkat mingguan
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat peringkat'**
+  String get feedCtaSeeLeaderboard;
 
   /// Ajakan membuka usulan
   ///
@@ -23521,7 +23707,7 @@ abstract class AppLocalizations {
   ///
   /// In id, this message translates to:
   /// **'+{points} poin minggu ini'**
-  String expHistoryWeeklyPoints(int points);
+  String expHistoryWeeklyPoints(String points);
 
   /// Nilai EXP pada akhir minggu penutupan
   ///

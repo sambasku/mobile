@@ -8,9 +8,11 @@ void main() {
       'data': {
         'tab_url': 'https://cdn.example/tab.webp',
         'public_url': '  ',
+        'wotd_url': 'https://cdn.example/wotd.webp',
       },
     });
     expect(c.tabUrl, 'https://cdn.example/tab.webp');
     expect(c.publicUrl, isNull);
+    expect(c.wotdUrl, 'https://cdn.example/wotd.webp');
   });
 }

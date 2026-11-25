@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/utils/format_number.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../baleho/domain/points_history_models.dart';
@@ -122,7 +123,7 @@ class _HistoryCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  l10n.expHistoryWeeklyPoints(item.combined),
+                  l10n.expHistoryWeeklyPoints(formatRibuan(item.combined)),
                   style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w700,
                     color: theme.colors.primary,

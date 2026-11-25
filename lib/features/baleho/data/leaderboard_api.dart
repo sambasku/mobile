@@ -151,6 +151,25 @@ class LeaderboardApi {
     }
   }
 
+  /// Bagikan posisi minggu berjalan ke feed. Server menolak di luar 1-25
+  /// dengan `LEADERBOARD_NOT_IN_TOP`. Return peringkat yang dibagikan.
+  Future<int> shareMyRank() async {
+    try {
+      final res = await _dio.post<dynamic>('/api/v1/leaderboard/me/share');
+      final data = _rootMap(res.data)['data'];
+      final rank = data is Map ? (data['rank'] as num?)?.toInt() : null;
+      if (rank == null) {
+        throw LeaderboardApiException(
+          'LEADERBOARD_SHARE_FAILED',
+          code: 'LEADERBOARD_SHARE_FAILED',
+        );
+      }
+      return rank;
+    } on DioException catch (e) {
+      throw _fromDio(e, codeFallback: 'LEADERBOARD_SHARE_FAILED');
+    }
+  }
+
   LeaderboardApiException _fromDio(
     DioException e, {
     required String codeFallback,

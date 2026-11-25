@@ -10,6 +10,8 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../data/leaderboard_api.dart';
 import '../../domain/baleho_models.dart';
 import '../../domain/leaderboard_models.dart';
 import '../providers/weekly_leaderboard_provider.dart';
@@ -38,14 +40,25 @@ class BalehoWeeklyLeaderboardPage extends HookConsumerWidget {
       }
     });
 
+    final isAuth = ref.watch(authStatusProvider).value?.isAuth ?? false;
+
     return FScaffold(
       childPad: true,
+      footer: isAuth ? const _ShareRankFooter() : null,
       header: FHeader.nested(
         title: Text(l10n.balehoWeeklyLeaderboardTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
                 context.canPop() ? context.pop() : context.go('/baleho'),
+          ),
+        ],
+        suffixes: [
+          FHeaderAction(
+            icon: const Icon(FLucideIcons.info),
+            semanticsLabel: l10n.balehoPointsGuideOpenSemantics,
+            onPress: () =>
+                context.push(BalehoBoard.weeklyLeaderboardPointsPath),
           ),
         ],
       ),
@@ -74,6 +87,71 @@ class BalehoWeeklyLeaderboardPage extends HookConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// CTA bagikan posisi minggu berjalan ke feed. Kelayakan (peringkat 1-25)
+/// diputuskan server dari user token.
+class _ShareRankFooter extends HookConsumerWidget {
+  const _ShareRankFooter();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final busy = useState(false);
+
+    Future<void> onShare() async {
+      busy.value = true;
+      try {
+        final rank = await ref.read(leaderboardApiProvider).shareMyRank();
+        if (!context.mounted) return;
+        showFToast(
+          context: context,
+          title: Text(l10n.balehoLeaderboardShareSuccess(rank)),
+        );
+      } on LeaderboardApiException catch (e) {
+        if (!context.mounted) return;
+        switch (e.code) {
+          case 'RATE_LIMITED':
+            showFToast(context: context, title: Text(e.message));
+          case 'LEADERBOARD_NOT_IN_TOP':
+            await showAppErrorSheet(
+              context,
+              message: l10n.balehoLeaderboardShareNotInTop,
+            );
+          case 'UNAUTHORIZED':
+            await showAppErrorSheet(
+              context,
+              message: l10n.balehoLeaderboardShareLoginRequired,
+            );
+          default:
+            await showAppErrorSheet(
+              context,
+              message: l10n.balehoLeaderboardShareFailed,
+            );
+        }
+      } finally {
+        if (context.mounted) busy.value = false;
+      }
+    }
+
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+        child: FButton(
+          onPress: busy.value ? null : onShare,
+          prefix: busy.value
+              ? const FCircularProgress()
+              : const Icon(FLucideIcons.share2),
+          child: Text(
+            busy.value
+                ? l10n.balehoLeaderboardShareBusy
+                : l10n.balehoLeaderboardShareCta,
+          ),
+        ),
       ),
     );
   }
@@ -142,18 +220,32 @@ class _CurrentTabBody extends HookConsumerWidget {
             entries: view.entries,
             l10n: l10n,
             theme: theme,
-            header: WeeklyLeaderboardMetaCard(
-              theme: theme,
-              weekLabel: view.weekId != null && view.weekId!.isNotEmpty
-                  ? l10n.balehoLeaderboardWeekLabel(view.weekId!)
-                  : null,
-              subtitle: countdown ??
-                  (view.resetsAt != null
-                      ? l10n.balehoLeaderboardResetsAt(
-                          formatDateTime(view.resetsAt),
-                        )
-                      : null),
-              icon: FLucideIcons.timer,
+            header: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                WeeklyLeaderboardMetaCard(
+                  theme: theme,
+                  weekLabel: view.weekId != null && view.weekId!.isNotEmpty
+                      ? l10n.balehoLeaderboardWeekLabel(view.weekId!)
+                      : null,
+                  subtitle: countdown ??
+                      (view.resetsAt != null
+                          ? l10n.balehoLeaderboardResetsAt(
+                              formatDateTime(view.resetsAt),
+                            )
+                          : null),
+                  icon: FLucideIcons.timer,
+                ),
+                const Gap(8),
+                WeeklyLeaderboardMetaCard(
+                  theme: theme,
+                  icon: FLucideIcons.circleHelp,
+                  weekLabel: l10n.balehoPointsGuideTitle,
+                  subtitle: l10n.balehoPointsGuideEntrySubtitle,
+                  onPress: () =>
+                      context.push(BalehoBoard.weeklyLeaderboardPointsPath),
+                ),
+              ],
             ),
             emptyMessage: lastWeekReady
                 ? l10n.balehoLeaderboardLastWeekHint

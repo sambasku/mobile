@@ -51,6 +51,9 @@ class BalehoBoard {
   static String weeklyLeaderboardHistoryWeekPath(String weekId) =>
       '$weeklyLeaderboardPath/riwayat/$weekId';
 
+  /// Halaman cara dapat poin papan peringkat.
+  static const weeklyLeaderboardPointsPath = '$weeklyLeaderboardPath/poin';
+
   factory BalehoBoard.fromJson(Map<String, dynamic> json) {
     final items = json['placements'];
     // Ukuran papan = konstanta klien (4x6). Jangan ikut `rows`/`cols` API
