@@ -1,6 +1,5 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
-import '../dictionary_labels.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -8,10 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/widgets/pending_review_badge_icon.dart';
-import '../../../../core/widgets/word_approved_badge_icon.dart';
 import '../../dictionary_router.dart';
-import '../../domain/entities/word_summary.dart';
 import '../models/letter_words_state.dart';
 import '../providers/letter_words_providers.dart';
 import '../providers/word_list_providers.dart';
@@ -221,33 +217,6 @@ class LetterWordsPage extends HookConsumerWidget {
           if (state.isLoadingMore) const _LoadingMoreFooter(),
         ],
       ),
-    );
-  }
-}
-
-class _WordTile extends StatelessWidget with FTileMixin {
-  const _WordTile({required this.item});
-
-  final WordSummary item;
-
-  @override
-  Widget build(BuildContext context) {
-    final gloss = item.sense?.trim();
-    final subtitle = (gloss != null && gloss.isNotEmpty)
-        ? gloss
-        : (item.wordType != 'word'
-              ? wordSummaryTypeLabel(item, AppLocalizations.of(context))
-              : null);
-
-    return FTile(
-      title: Text(item.lemma),
-      subtitle: subtitle != null ? Text(subtitle) : null,
-      suffix: item.isVerified
-          ? const WordApprovedBadgeIcon()
-          : const PendingReviewBadgeIcon(),
-      onPress: () {
-        context.push(DictionaryRouter.detail.path.replaceFirst(':id', item.id));
-      },
     );
   }
 }
