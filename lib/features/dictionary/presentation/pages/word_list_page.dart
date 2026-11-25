@@ -18,6 +18,9 @@ import '../models/word_list_state.dart';
 import '../providers/search_history_provider.dart';
 import '../providers/categories_provider.dart';
 import '../providers/word_list_providers.dart';
+import '../providers/lemma_merge_selection_provider.dart';
+import '../widgets/lemma_merge_selection_bar.dart';
+import '../widgets/lemma_merge_word_tile.dart';
 import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 
 /// Daftar kata. q kosong di mode Sambas = A-Z (`GET /words`).
@@ -116,8 +119,18 @@ class WordListPage extends HookConsumerWidget {
 
     final theme = context.theme;
 
+    final mergeSel = ref.watch(lemmaMergeSelectionProvider);
+
     return ExcludeSemanticsOnExit(
-      child: FScaffold(
+      child: PopScope(
+        canPop: !mergeSel.active,
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop && mergeSel.active) {
+            ref.read(lemmaMergeSelectionProvider.notifier).cancel();
+          }
+        },
+        child: FScaffold(
+        footer: const LemmaMergeSelectionBar(),
         childPad: true,
         header: FHeader.nested(
           title: Text(AppLocalizations.of(context).dictListTitle),
@@ -222,6 +235,7 @@ class WordListPage extends HookConsumerWidget {
               Expanded(child: _buildBody(context, ref, theme, state, scroll)),
           ],
         ),
+      ),
       ),
     );
   }
@@ -356,9 +370,28 @@ class WordListPage extends HookConsumerWidget {
                   scrollController: scroll,
                   physics: const AlwaysScrollableScrollPhysics(),
                   count: state.items.length,
-                  tileBuilder: (context, index) => _WordTile(
+                  tileBuilder: (context, index) => LemmaMergeWordTile(
                     item: state.items[index],
-                    searchIn: state.searchIn,
+                    subtitleBuilder: (ctx, item) {
+                      final gloss = item.sense?.trim();
+                      final matched = item.matchedTranslation?.trim();
+                      if (gloss != null && gloss.isNotEmpty) return gloss;
+                      if (state.searchIn == 'translation' &&
+                          matched != null &&
+                          matched.isNotEmpty) {
+                        return matched;
+                      }
+                      if (state.searchIn != 'translation' && item.wordType != 'word') {
+                        return wordSummaryTypeLabel(item, AppLocalizations.of(ctx));
+                      }
+                      if (item.isRelatedGroupMatch) {
+                        final l10n = AppLocalizations.of(ctx);
+                        return gloss == null
+                            ? l10n.dictRelatedMeanings
+                            : l10n.dictRelatedMeaningSubtitle(gloss);
+                      }
+                      return null;
+                    },
                   ),
                 ),
               ),

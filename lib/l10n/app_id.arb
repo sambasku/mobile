@@ -10767,5 +10767,55 @@
         "type": "String"
       }
     }
+  },
+  "lemmaMergeCancel": "Batal",
+  "@lemmaMergeCancel": {
+    "description": "Keluar mode gabung kata"
+  },
+  "lemmaMergeContinue": "Lanjut",
+  "@lemmaMergeContinue": {
+    "description": "Lanjut ke pilih lemma utama"
+  },
+  "lemmaMergeSelectedCount": "{count} terpilih",
+  "@lemmaMergeSelectedCount": {
+    "description": "Jumlah kata terpilih untuk digabung",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lemmaMergeSheetTitle": "Gabung kata",
+  "@lemmaMergeSheetTitle": {
+    "description": "Judul sheet gabung lemma"
+  },
+  "lemmaMergePickPrimary": "Pilih lemma utama. Sisanya jadi variasi penulisan.",
+  "@lemmaMergePickPrimary": {
+    "description": "Petunjuk pilih penjaga"
+  },
+  "lemmaMergeReasonHint": "Kenapa ini satu kata?",
+  "@lemmaMergeReasonHint": {
+    "description": "Hint alasan gabung"
+  },
+  "lemmaMergeReasonTooShort": "Alasan min 10 karakter",
+  "@lemmaMergeReasonTooShort": {
+    "description": "Validasi alasan gabung"
+  },
+  "lemmaMergeSubmit": "Kirim",
+  "@lemmaMergeSubmit": {
+    "description": "CTA kirim usulan gabung"
+  },
+  "lemmaMergeNeedLogin": "Login dulu untuk gabung kata.",
+  "@lemmaMergeNeedLogin": {
+    "description": "Gabung kata butuh login"
+  },
+  "lemmaMergeHoldHint": "Tahan untuk gabung: {lemma}",
+  "@lemmaMergeHoldHint": {
+    "description": "Semantics long-press gabung",
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
   }
 }

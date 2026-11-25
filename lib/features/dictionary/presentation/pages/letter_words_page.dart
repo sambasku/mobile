@@ -15,6 +15,9 @@ import '../../domain/entities/word_summary.dart';
 import '../models/letter_words_state.dart';
 import '../providers/letter_words_providers.dart';
 import '../providers/word_list_providers.dart';
+import '../providers/lemma_merge_selection_provider.dart';
+import '../widgets/lemma_merge_selection_bar.dart';
+import '../widgets/lemma_merge_word_tile.dart';
 import '../widgets/alphabet_letter_strip.dart';
 
 /// Direktori kata per huruf - setara web `/huruf/:letter`.
@@ -70,8 +73,18 @@ class LetterWordsPage extends HookConsumerWidget {
       ],
     );
 
-    return FScaffold(
+    final mergeSel = ref.watch(lemmaMergeSelectionProvider);
+
+    return PopScope(
+      canPop: !mergeSel.active,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && mergeSel.active) {
+          ref.read(lemmaMergeSelectionProvider.notifier).cancel();
+        }
+      },
+      child: FScaffold(
       childPad: true,
+      footer: const LemmaMergeSelectionBar(),
       header: FHeader.nested(
         title: Text(AppLocalizations.of(context).dictLetterTitle(display)),
         prefixes: [
@@ -97,6 +110,7 @@ class LetterWordsPage extends HookConsumerWidget {
           Expanded(child: _buildBody(context, ref, theme, state, scroll)),
         ],
       ),
+    ),
     );
   }
 
@@ -197,8 +211,10 @@ class LetterWordsPage extends HookConsumerWidget {
                 scrollController: scroll,
                 physics: const AlwaysScrollableScrollPhysics(),
                 count: state.items.length,
-                tileBuilder: (context, index) =>
-                    _WordTile(item: state.items[index]),
+                tileBuilder: (context, index) => LemmaMergeWordTile(
+                  item: state.items[index],
+                  subtitleBuilder: defaultWordTileSubtitle,
+                ),
               ),
             ),
           ),

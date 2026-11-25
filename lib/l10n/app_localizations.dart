@@ -24164,6 +24164,66 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{total} poin'**
   String balehoPointsGuideExampleTotal(String total);
+
+  /// Keluar mode gabung kata
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get lemmaMergeCancel;
+
+  /// Lanjut ke pilih lemma utama
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut'**
+  String get lemmaMergeContinue;
+
+  /// Jumlah kata terpilih untuk digabung
+  ///
+  /// In id, this message translates to:
+  /// **'{count} terpilih'**
+  String lemmaMergeSelectedCount(int count);
+
+  /// Judul sheet gabung lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Gabung kata'**
+  String get lemmaMergeSheetTitle;
+
+  /// Petunjuk pilih penjaga
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih lemma utama. Sisanya jadi variasi penulisan.'**
+  String get lemmaMergePickPrimary;
+
+  /// Hint alasan gabung
+  ///
+  /// In id, this message translates to:
+  /// **'Kenapa ini satu kata?'**
+  String get lemmaMergeReasonHint;
+
+  /// Validasi alasan gabung
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan min 10 karakter'**
+  String get lemmaMergeReasonTooShort;
+
+  /// CTA kirim usulan gabung
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim'**
+  String get lemmaMergeSubmit;
+
+  /// Gabung kata butuh login
+  ///
+  /// In id, this message translates to:
+  /// **'Login dulu untuk gabung kata.'**
+  String get lemmaMergeNeedLogin;
+
+  /// Semantics long-press gabung
+  ///
+  /// In id, this message translates to:
+  /// **'Tahan untuk gabung: {lemma}'**
+  String lemmaMergeHoldHint(String lemma);
 }
 
 class _AppLocalizationsDelegate

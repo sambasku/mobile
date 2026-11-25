@@ -13750,6 +13750,41 @@ class AppLocalizationsId extends AppLocalizations {
   String balehoPointsGuideExampleTotal(String total) {
     return '$total poin';
   }
+
+  @override
+  String get lemmaMergeCancel => 'Batal';
+
+  @override
+  String get lemmaMergeContinue => 'Lanjut';
+
+  @override
+  String lemmaMergeSelectedCount(int count) {
+    return '$count terpilih';
+  }
+
+  @override
+  String get lemmaMergeSheetTitle => 'Gabung kata';
+
+  @override
+  String get lemmaMergePickPrimary =>
+      'Pilih lemma utama. Sisanya jadi variasi penulisan.';
+
+  @override
+  String get lemmaMergeReasonHint => 'Kenapa ini satu kata?';
+
+  @override
+  String get lemmaMergeReasonTooShort => 'Alasan min 10 karakter';
+
+  @override
+  String get lemmaMergeSubmit => 'Kirim';
+
+  @override
+  String get lemmaMergeNeedLogin => 'Login dulu untuk gabung kata.';
+
+  @override
+  String lemmaMergeHoldHint(String lemma) {
+    return 'Tahan untuk gabung: $lemma';
+  }
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -27412,5 +27447,40 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String balehoPointsGuideExampleTotal(String total) {
     return '$total poin';
+  }
+
+  @override
+  String get lemmaMergeCancel => 'Batal';
+
+  @override
+  String get lemmaMergeContinue => 'Lanjut';
+
+  @override
+  String lemmaMergeSelectedCount(int count) {
+    return '$count terpilih';
+  }
+
+  @override
+  String get lemmaMergeSheetTitle => 'Gabung kata';
+
+  @override
+  String get lemmaMergePickPrimary =>
+      'Pilih lemma utama. Sisanya jadi variasi penulisan.';
+
+  @override
+  String get lemmaMergeReasonHint => 'Kenapa ini satu kata?';
+
+  @override
+  String get lemmaMergeReasonTooShort => 'Alasan min 10 karakter';
+
+  @override
+  String get lemmaMergeSubmit => 'Kirim';
+
+  @override
+  String get lemmaMergeNeedLogin => 'Login dulu untuk gabung kata.';
+
+  @override
+  String lemmaMergeHoldHint(String lemma) {
+    return 'Tahan untuk gabung: $lemma';
   }
 }
