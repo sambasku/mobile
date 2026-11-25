@@ -743,12 +743,6 @@ abstract class AppLocalizations {
   /// **'Contoh hitungan'**
   String get balehoPointsGuideExampleTitle;
 
-  /// Contoh hitungan poin. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts.
-  ///
-  /// In id, this message translates to:
-  /// **'2 usul kata baru diterima = 2 x (5 + 2) = 14 poin. Tambah 1 usul perbaikan yang masih ditinjau = 14 + 3 = 17 poin.'**
-  String get balehoPointsGuideExampleBody;
-
   /// Tombol bagikan posisi papan peringkat ke feed
   ///
   /// In id, this message translates to:
@@ -24092,6 +24086,84 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Dibatalkan'**
   String get communityProposalStatusCancelled;
+
+  /// Pembuka section contoh hitungan poin
+  ///
+  /// In id, this message translates to:
+  /// **'Ini simulasi sederhana: kamu bantu lengkapi kamus selama satu minggu.'**
+  String get balehoPointsGuideExampleIntro;
+
+  /// Langkah 1: usul kata. Selaraskan angka dengan konstanta LEADERBOARD_* di api.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu mengusulkan 1 kata baru'**
+  String get balehoPointsGuideExampleLine1;
+
+  /// Detail langkah 1
+  ///
+  /// In id, this message translates to:
+  /// **'Begitu dikirim, poin usul langsung masuk.'**
+  String get balehoPointsGuideExampleLine1Detail;
+
+  /// Langkah 2: usulan diterima. Selaraskan angka dengan konstanta LEADERBOARD_* di api.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kata itu disetujui verifikator'**
+  String get balehoPointsGuideExampleLine2;
+
+  /// Detail langkah 2
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu dapat bonus karena usulan kamu lolos.'**
+  String get balehoPointsGuideExampleLine2Detail;
+
+  /// Langkah 3: usul perbaikan. Selaraskan angka dengan konstanta LEADERBOARD_* di api.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu mengusulkan 1 perbaikan makna kata'**
+  String get balehoPointsGuideExampleLine3;
+
+  /// Detail langkah 3
+  ///
+  /// In id, this message translates to:
+  /// **'Poin usul perbaikan masuk saat dikirim.'**
+  String get balehoPointsGuideExampleLine3Detail;
+
+  /// Langkah 4: verifikasi. Selaraskan angka dengan konstanta LEADERBOARD_* di api.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu memverifikasi 2 usulan orang lain'**
+  String get balehoPointsGuideExampleLine4;
+
+  /// Detail langkah 4
+  ///
+  /// In id, this message translates to:
+  /// **'Setiap keputusan verifikasi = 2 poin (bukan usulan sendiri).'**
+  String get balehoPointsGuideExampleLine4Detail;
+
+  /// Ringkasan subtotal usul pada contoh simulasi.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari usul kamu (kata baru, bonus, perbaikan): {subtotal} poin'**
+  String balehoPointsGuideExampleSubtotalWords(String subtotal);
+
+  /// Ringkasan subtotal verifikasi pada contoh.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari verifikasi: {subtotal} poin ({count} × 2)'**
+  String balehoPointsGuideExampleSubtotalVerify(String subtotal, int count);
+
+  /// Label baris total contoh
+  ///
+  /// In id, this message translates to:
+  /// **'Total poin minggu ini'**
+  String get balehoPointsGuideExampleTotalLabel;
+
+  /// Total poin pada contoh simulasi.
+  ///
+  /// In id, this message translates to:
+  /// **'{total} poin'**
+  String balehoPointsGuideExampleTotal(String total);
 }
 
 class _AppLocalizationsDelegate

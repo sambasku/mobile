@@ -43,7 +43,7 @@ class DiscussionHubShell extends StatelessWidget {
             if (isChat) const ChatPingAction(),
             if (!isChat)
               FHeaderAction(
-                icon: const Icon(FLucideIcons.history),
+                icon: const Icon(FLucideIcons.clipboardList),
                 onPress: () => context.push(DiscussionRouter.mine.path),
               ),
           ],

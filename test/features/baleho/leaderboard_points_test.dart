@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/core/utils/format_number.dart';
 import 'package:sambasku_mobile/features/baleho/domain/leaderboard_models.dart';
 import 'package:sambasku_mobile/features/baleho/presentation/pages/baleho_leaderboard_points_page.dart';
 import 'package:sambasku_mobile/features/baleho/presentation/widgets/weekly_leaderboard_entry_tile.dart';
@@ -33,11 +34,22 @@ void main() {
     expect(find.text(l10n.balehoPointsGuideEditTitle), findsOneWidget);
     expect(find.text(l10n.balehoPointsGuideApprovedTitle), findsOneWidget);
     expect(find.text(l10n.balehoPointsGuideVerifyTitle), findsOneWidget);
-    expect(find.text('+5'), findsOneWidget);
-    expect(find.text('+3'), findsOneWidget);
-    expect(find.text('+2'), findsNWidgets(2));
+    expect(find.text('+5'), findsWidgets);
+    expect(find.text('+3'), findsWidgets);
+    expect(find.text('+2'), findsWidgets);
     expect(
       find.text(l10n.balehoPointsGuideRuleRejected, skipOffstage: false),
+      findsOneWidget,
+    );
+    await tester.drag(find.byType(ListView), const Offset(0, -1200));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.balehoPointsGuideExampleIntro), findsOneWidget);
+    expect(find.text(l10n.balehoPointsGuideExampleLine1), findsOneWidget);
+    expect(
+      find.text(
+        l10n.balehoPointsGuideExampleTotal(formatRibuan(14)),
+        skipOffstage: false,
+      ),
       findsOneWidget,
     );
   });

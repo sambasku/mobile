@@ -398,10 +398,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoPointsGuideExampleTitle => 'Contoh hitungan';
 
   @override
-  String get balehoPointsGuideExampleBody =>
-      '2 usul kata baru diterima = 2 x (5 + 2) = 14 poin. Tambah 1 usul perbaikan yang masih ditinjau = 14 + 3 = 17 poin.';
-
-  @override
   String get balehoLeaderboardShareCta => 'Bagikan posisiku ke feed';
 
   @override
@@ -13701,6 +13697,59 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get communityProposalStatusCancelled => 'Dibatalkan';
+
+  @override
+  String get balehoPointsGuideExampleIntro =>
+      'Ini simulasi sederhana: kamu bantu lengkapi kamus selama satu minggu.';
+
+  @override
+  String get balehoPointsGuideExampleLine1 => 'Kamu mengusulkan 1 kata baru';
+
+  @override
+  String get balehoPointsGuideExampleLine1Detail =>
+      'Begitu dikirim, poin usul langsung masuk.';
+
+  @override
+  String get balehoPointsGuideExampleLine2 =>
+      'Usulan kata itu disetujui verifikator';
+
+  @override
+  String get balehoPointsGuideExampleLine2Detail =>
+      'Kamu dapat bonus karena usulan kamu lolos.';
+
+  @override
+  String get balehoPointsGuideExampleLine3 =>
+      'Kamu mengusulkan 1 perbaikan makna kata';
+
+  @override
+  String get balehoPointsGuideExampleLine3Detail =>
+      'Poin usul perbaikan masuk saat dikirim.';
+
+  @override
+  String get balehoPointsGuideExampleLine4 =>
+      'Kamu memverifikasi 2 usulan orang lain';
+
+  @override
+  String get balehoPointsGuideExampleLine4Detail =>
+      'Setiap keputusan verifikasi = 2 poin (bukan usulan sendiri).';
+
+  @override
+  String balehoPointsGuideExampleSubtotalWords(String subtotal) {
+    return 'Dari usul kamu (kata baru, bonus, perbaikan): $subtotal poin';
+  }
+
+  @override
+  String balehoPointsGuideExampleSubtotalVerify(String subtotal, int count) {
+    return 'Dari verifikasi: $subtotal poin ($count × 2)';
+  }
+
+  @override
+  String get balehoPointsGuideExampleTotalLabel => 'Total poin minggu ini';
+
+  @override
+  String balehoPointsGuideExampleTotal(String total) {
+    return '$total poin';
+  }
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -14094,10 +14143,6 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoPointsGuideExampleTitle => 'Contoh hitungan';
-
-  @override
-  String get balehoPointsGuideExampleBody =>
-      '2 usul kata baru diterima = 2 x (5 + 2) = 14 poin. Tambah 1 usul perbaikan yang masih ditinjau = 14 + 3 = 17 poin.';
 
   @override
   String get balehoLeaderboardShareCta => 'Bagikan posisiku ke feed';
@@ -27315,4 +27360,57 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get communityProposalStatusCancelled => 'Dibatalkan';
+
+  @override
+  String get balehoPointsGuideExampleIntro =>
+      'Ini simulasi sederhana: kamu bantu lengkapi kamus selama satu minggu.';
+
+  @override
+  String get balehoPointsGuideExampleLine1 => 'Kamu mengusulkan 1 kata baru';
+
+  @override
+  String get balehoPointsGuideExampleLine1Detail =>
+      'Begitu dikirim, poin usul langsung masuk.';
+
+  @override
+  String get balehoPointsGuideExampleLine2 =>
+      'Usulan kata itu disetujui verifikator';
+
+  @override
+  String get balehoPointsGuideExampleLine2Detail =>
+      'Kamu dapat bonus karena usulan kamu lolos.';
+
+  @override
+  String get balehoPointsGuideExampleLine3 =>
+      'Kamu mengusulkan 1 perbaikan makna kata';
+
+  @override
+  String get balehoPointsGuideExampleLine3Detail =>
+      'Poin usul perbaikan masuk saat dikirim.';
+
+  @override
+  String get balehoPointsGuideExampleLine4 =>
+      'Kamu memverifikasi 2 usulan orang lain';
+
+  @override
+  String get balehoPointsGuideExampleLine4Detail =>
+      'Setiap keputusan verifikasi = 2 poin (bukan usulan sendiri).';
+
+  @override
+  String balehoPointsGuideExampleSubtotalWords(String subtotal) {
+    return 'Dari usul kamu (kata baru, bonus, perbaikan): $subtotal poin';
+  }
+
+  @override
+  String balehoPointsGuideExampleSubtotalVerify(String subtotal, int count) {
+    return 'Dari verifikasi: $subtotal poin ($count × 2)';
+  }
+
+  @override
+  String get balehoPointsGuideExampleTotalLabel => 'Total poin minggu ini';
+
+  @override
+  String balehoPointsGuideExampleTotal(String total) {
+    return '$total poin';
+  }
 }

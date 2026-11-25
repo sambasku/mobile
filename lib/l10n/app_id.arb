@@ -472,10 +472,6 @@
   "@balehoPointsGuideExampleTitle": {
     "description": "Judul section contoh hitungan poin"
   },
-  "balehoPointsGuideExampleBody": "2 usul kata baru diterima = 2 x (5 + 2) = 14 poin. Tambah 1 usul perbaikan yang masih ditinjau = 14 + 3 = 17 poin.",
-  "@balehoPointsGuideExampleBody": {
-    "description": "Contoh hitungan poin. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts."
-  },
   "balehoLeaderboardShareCta": "Bagikan posisiku ke feed",
   "@balehoLeaderboardShareCta": {
     "description": "Tombol bagikan posisi papan peringkat ke feed"
@@ -10701,5 +10697,75 @@
   "communityProposalStatusCancelled": "Dibatalkan",
   "@communityProposalStatusCancelled": {
     "description": "Label status usulan komunitas cancelled"
+  },
+  "balehoPointsGuideExampleIntro": "Ini simulasi sederhana: kamu bantu lengkapi kamus selama satu minggu.",
+  "@balehoPointsGuideExampleIntro": {
+    "description": "Pembuka section contoh hitungan poin"
+  },
+  "balehoPointsGuideExampleLine1": "Kamu mengusulkan 1 kata baru",
+  "@balehoPointsGuideExampleLine1": {
+    "description": "Langkah 1: usul kata. Selaraskan angka dengan konstanta LEADERBOARD_* di api."
+  },
+  "balehoPointsGuideExampleLine1Detail": "Begitu dikirim, poin usul langsung masuk.",
+  "@balehoPointsGuideExampleLine1Detail": {
+    "description": "Detail langkah 1"
+  },
+  "balehoPointsGuideExampleLine2": "Usulan kata itu disetujui verifikator",
+  "@balehoPointsGuideExampleLine2": {
+    "description": "Langkah 2: usulan diterima. Selaraskan angka dengan konstanta LEADERBOARD_* di api."
+  },
+  "balehoPointsGuideExampleLine2Detail": "Kamu dapat bonus karena usulan kamu lolos.",
+  "@balehoPointsGuideExampleLine2Detail": {
+    "description": "Detail langkah 2"
+  },
+  "balehoPointsGuideExampleLine3": "Kamu mengusulkan 1 perbaikan makna kata",
+  "@balehoPointsGuideExampleLine3": {
+    "description": "Langkah 3: usul perbaikan. Selaraskan angka dengan konstanta LEADERBOARD_* di api."
+  },
+  "balehoPointsGuideExampleLine3Detail": "Poin usul perbaikan masuk saat dikirim.",
+  "@balehoPointsGuideExampleLine3Detail": {
+    "description": "Detail langkah 3"
+  },
+  "balehoPointsGuideExampleLine4": "Kamu memverifikasi 2 usulan orang lain",
+  "@balehoPointsGuideExampleLine4": {
+    "description": "Langkah 4: verifikasi. Selaraskan angka dengan konstanta LEADERBOARD_* di api."
+  },
+  "balehoPointsGuideExampleLine4Detail": "Setiap keputusan verifikasi = 2 poin (bukan usulan sendiri).",
+  "@balehoPointsGuideExampleLine4Detail": {
+    "description": "Detail langkah 4"
+  },
+  "balehoPointsGuideExampleSubtotalWords": "Dari usul kamu (kata baru, bonus, perbaikan): {subtotal} poin",
+  "@balehoPointsGuideExampleSubtotalWords": {
+    "description": "Ringkasan subtotal usul pada contoh simulasi.",
+    "placeholders": {
+      "subtotal": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoPointsGuideExampleSubtotalVerify": "Dari verifikasi: {subtotal} poin ({count} × 2)",
+  "@balehoPointsGuideExampleSubtotalVerify": {
+    "description": "Ringkasan subtotal verifikasi pada contoh.",
+    "placeholders": {
+      "subtotal": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoPointsGuideExampleTotalLabel": "Total poin minggu ini",
+  "@balehoPointsGuideExampleTotalLabel": {
+    "description": "Label baris total contoh"
+  },
+  "balehoPointsGuideExampleTotal": "{total} poin",
+  "@balehoPointsGuideExampleTotal": {
+    "description": "Total poin pada contoh simulasi.",
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
   }
 }
