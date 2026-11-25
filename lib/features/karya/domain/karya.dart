@@ -226,10 +226,38 @@ class KaryaEntry {
     return accessLinks.isEmpty ? null : accessLinks.first;
   }
 
+  /// Trailer film (kind `trailer`). Satu utama: entri pertama.
+  KaryaAccessLink? get trailerAccess {
+    for (final link in accessLinks) {
+      if (link.kind == 'trailer') return link;
+    }
+    return null;
+  }
+
+  /// Tautan tonton (bukan trailer): primary non-trailer, else first non-trailer.
+  KaryaAccessLink? get watchAccess {
+    for (final link in accessLinks) {
+      if (link.isPrimary && link.kind != 'trailer') return link;
+    }
+    for (final link in accessLinks) {
+      if (link.kind != 'trailer') return link;
+    }
+    return null;
+  }
+
   List<KaryaAccessLink> get secondaryAccess {
     final primary = primaryAccess;
     if (primary == null) return const [];
     return accessLinks.where((l) => !l.isPrimary && l.url != primary.url).toList();
+  }
+
+  /// Tautan akses di list bawah stage: selain CTA tonton + trailer.
+  List<KaryaAccessLink> get accessLinksBeyondStageCtas {
+    final watchUrl = watchAccess?.url;
+    final trailerUrl = trailerAccess?.url;
+    return accessLinks
+        .where((l) => l.url != watchUrl && l.url != trailerUrl)
+        .toList();
   }
 }
 

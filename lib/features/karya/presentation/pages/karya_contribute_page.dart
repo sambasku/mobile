@@ -587,7 +587,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
       'kind': 'trailer',
       'label': 'Trailer',
       'url': url,
-      'is_primary': true,
+      'is_primary': false,
     };
   }
 
@@ -603,15 +603,8 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
       for (final row in rows)
         if (row['kind'] != 'trailer') row,
     ];
-    // Field terisi: ganti semua trailer lama, jadikan primary.
-    final demoted = [
-      for (final row in withoutTrailer)
-        {
-          ...row,
-          if (row['is_primary'] == true) 'is_primary': false,
-        },
-    ];
-    return [trailer, ...demoted];
+    // Field terisi: ganti semua trailer lama; jangan rebut primary tonton.
+    return [...withoutTrailer, trailer];
   }
 
   Future<void> _submit() async {

@@ -34,6 +34,8 @@ Future<void> _pump(
   required KaryaEntry item,
   String? watchLabel,
   VoidCallback? onWatch,
+  String? trailerLabel,
+  VoidCallback? onTrailer,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -49,6 +51,8 @@ Future<void> _pump(
               item: item,
               watchLabel: watchLabel,
               onWatch: onWatch,
+              trailerLabel: trailerLabel,
+              onTrailer: onTrailer,
             ),
           ),
         ),
@@ -96,5 +100,21 @@ void main() {
     );
     expect(find.text(l10n.karyaFilmWatchEmpty), findsOneWidget);
     expect(find.byIcon(FLucideIcons.play), findsNothing);
+  });
+
+  testWidgets('film stage shows trailer beside watch', (tester) async {
+    await _pump(
+      tester,
+      item: _film(),
+      watchLabel: 'Tonton',
+      onWatch: () {},
+      trailerLabel: 'Trailer',
+      onTrailer: () {},
+    );
+
+    expect(find.text('Tonton'), findsOneWidget);
+    expect(find.text('Trailer'), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.play), findsOneWidget);
+    expect(find.byType(FButton), findsNWidgets(2));
   });
 }

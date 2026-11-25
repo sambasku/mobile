@@ -17,15 +17,23 @@ class KaryaFilmStage extends StatelessWidget {
     required this.item,
     this.watchLabel,
     this.onWatch,
+    this.trailerLabel,
+    this.onTrailer,
   });
 
   final KaryaEntry item;
 
-  /// Label CTA tonton dari tautan akses primer. Null = belum ada tautan.
+  /// Label CTA tonton (bukan trailer). Null = belum ada tautan tonton.
   final String? watchLabel;
 
-  /// Buka tautan tonton luar app. Null = tombol disembunyikan.
+  /// Buka tautan tonton luar app. Null = tombol tonton disembunyikan.
   final VoidCallback? onWatch;
+
+  /// Label CTA trailer terpisah. Null = tidak ada trailer.
+  final String? trailerLabel;
+
+  /// Buka tautan trailer. Null = tombol trailer disembunyikan.
+  final VoidCallback? onTrailer;
 
   static const double _posterWidth = 110;
   static const double _posterHeight = 165;
@@ -37,6 +45,8 @@ class KaryaFilmStage extends StatelessWidget {
     final director = karyaPrimaryDirectorName(item.credits);
     final meta = _metaLine(l10n);
     final canWatch = onWatch != null && (watchLabel ?? '').trim().isNotEmpty;
+    final canTrailer =
+        onTrailer != null && (trailerLabel ?? '').trim().isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -92,12 +102,30 @@ class KaryaFilmStage extends StatelessWidget {
           ),
         ],
         const Gap(12),
-        if (canWatch)
-          FButton(
-            size: .sm,
-            onPress: onWatch,
-            prefix: const Icon(FLucideIcons.play),
-            child: Text(watchLabel!.trim()),
+        if (canWatch || canTrailer)
+          Row(
+            children: [
+              if (canWatch)
+                Expanded(
+                  child: FButton(
+                    size: .sm,
+                    onPress: onWatch,
+                    prefix: const Icon(FLucideIcons.play),
+                    child: Text(watchLabel!.trim()),
+                  ),
+                ),
+              if (canWatch && canTrailer) const Gap(8),
+              if (canTrailer)
+                Expanded(
+                  child: FButton(
+                    size: .sm,
+                    variant: FButtonVariant.outline,
+                    onPress: onTrailer,
+                    prefix: const Icon(FLucideIcons.clapperboard),
+                    child: Text(trailerLabel!.trim()),
+                  ),
+                ),
+            ],
           )
         else
           Text(

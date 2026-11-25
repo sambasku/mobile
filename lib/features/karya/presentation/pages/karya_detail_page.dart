@@ -105,7 +105,11 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
     final kindLabel =
         item.isMusic ? l10n.karyaKindMusic : l10n.karyaKindFilm;
     final primary = item.primaryAccess;
-    final secondaries = item.secondaryAccess;
+    final watch = item.watchAccess;
+    final trailer = item.trailerAccess;
+    final secondaries = item.isFilm
+        ? item.accessLinksBeyondStageCtas
+        : item.secondaryAccess;
     final description = (item.description ?? '').trim();
 
     return FScaffold(
@@ -151,10 +155,18 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
           ] else if (item.isFilm) ...[
             KaryaFilmStage(
               item: item,
-              watchLabel: primary?.label,
-              onWatch: primary == null
+              watchLabel: watch?.label,
+              onWatch: watch == null
                   ? null
-                  : () => launchExternalUrl(Uri.parse(primary.url)),
+                  : () => launchExternalUrl(Uri.parse(watch.url)),
+              trailerLabel: trailer == null
+                  ? null
+                  : (trailer.label.trim().isEmpty
+                      ? l10n.karyaAccessKindTrailer
+                      : trailer.label),
+              onTrailer: trailer == null
+                  ? null
+                  : () => launchExternalUrl(Uri.parse(trailer.url)),
             ),
             if (description.isNotEmpty) ...[
               const Gap(16),

@@ -41,7 +41,7 @@ void main() {
           'kind': 'trailer',
           'label': 'Trailer',
           'url': 'https://youtube.com/watch?v=abc',
-          'is_primary': true,
+          'is_primary': false,
         },
       ],
     );
