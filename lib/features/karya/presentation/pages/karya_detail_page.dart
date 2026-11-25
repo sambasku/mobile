@@ -20,6 +20,8 @@ import '../../data/karya_api.dart';
 import '../../domain/karya.dart';
 import '../../karya_router.dart';
 import '../karya_providers.dart';
+import '../widgets/karya_film_stage.dart';
+import '../widgets/karya_music_stage.dart';
 
 class KaryaDetailPage extends ConsumerWidget {
   const KaryaDetailPage({super.key, required this.slug});
@@ -109,54 +111,75 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
         title: Text(item.title),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
-      footer: primary == null
-          ? null
-          : SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                child: FButton(
-                  onPress: () =>
-                      launchExternalUrl(Uri.parse(primary.url)),
-                  child: Text(primary.label),
-                ),
-              ),
-            ),
+      // Musik/film: CTA di panggung atas. Footer sticky tidak dipakai.
+      footer: null,
       child: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              FBadge(
-                variant: FBadgeVariant.secondary,
-                child: Text(kindLabel),
-              ),
-              if (item.year != null)
-                FBadge(
-                  variant: FBadgeVariant.outline,
-                  child: Text(l10n.karyaYearLabel(item.year!)),
-                ),
-            ],
-          ),
-          if (description.isNotEmpty) ...[
-            const Gap(12),
-            Text(
-              description,
-              style: theme.typography.body.md.copyWith(height: 1.45),
+          if (item.isMusic) ...[
+            KaryaMusicStage(
+              item: item,
+              listenLabel: primary?.label,
+              onListen: primary == null
+                  ? null
+                  : () => launchExternalUrl(Uri.parse(primary.url)),
             ),
+            if (description.isNotEmpty) ...[
+              const Gap(16),
+              Text(
+                description,
+                style: theme.typography.body.sm.copyWith(height: 1.45),
+              ),
+            ],
+          ] else if (item.isFilm) ...[
+            KaryaFilmStage(
+              item: item,
+              watchLabel: primary?.label,
+              onWatch: primary == null
+                  ? null
+                  : () => launchExternalUrl(Uri.parse(primary.url)),
+            ),
+            if (description.isNotEmpty) ...[
+              const Gap(16),
+              Text(
+                description,
+                style: theme.typography.body.sm.copyWith(height: 1.45),
+              ),
+            ],
+          ] else ...[
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                FBadge(
+                  variant: FBadgeVariant.secondary,
+                  child: Text(kindLabel),
+                ),
+                if (item.year != null)
+                  FBadge(
+                    variant: FBadgeVariant.outline,
+                    child: Text(l10n.karyaYearLabel(item.year!)),
+                  ),
+              ],
+            ),
+            if (description.isNotEmpty) ...[
+              const Gap(12),
+              Text(
+                description,
+                style: theme.typography.body.sm.copyWith(height: 1.45),
+              ),
+            ],
           ],
           const Gap(18),
           Text(
             l10n.karyaSambasSection,
-            style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
+            style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
           ),
           const Gap(8),
           if (item.sambasConnections.isEmpty)
             Text(
               l10n.karyaSambasEmpty,
-              style: theme.typography.body.sm.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             )
@@ -174,7 +197,7 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
             const Gap(18),
             Text(
               l10n.karyaRelatedSection,
-              style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
             ),
             const Gap(8),
             FTileGroup(
@@ -196,7 +219,7 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
           const Gap(18),
           Text(
             l10n.karyaCredits,
-            style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
+            style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
           ),
           const Gap(8),
           FTileGroup(
@@ -223,13 +246,13 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
           const Gap(18),
           Text(
             l10n.karyaAccess,
-            style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
+            style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
           ),
           const Gap(8),
           if (item.accessLinks.isEmpty)
             Text(
               l10n.karyaAccessEmpty,
-              style: theme.typography.body.sm.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             )
@@ -273,13 +296,13 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
           Text(
             l10n.karyaExcerptSection,
             style:
-                theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
+                theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
           ),
           const Gap(8),
           if (item.excerpts.isEmpty)
             Text(
               l10n.karyaExcerptEmpty,
-              style: theme.typography.body.sm.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             )
@@ -290,14 +313,45 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    FTileGroup(
-                      children: [
-                        FTile(
-                          title: Text(excerpt.text, maxLines: 6),
-                          subtitle: Text(_excerptKindLabel(l10n, excerpt.kind)),
+                    if (excerpt.kind == 'lyrics' || excerpt.kind == 'dialogue')
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: theme.colors.secondary,
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ],
-                    ),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _excerptKindLabel(l10n, excerpt.kind),
+                                style: theme.typography.body.xs.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: theme.colors.mutedForeground,
+                                ),
+                              ),
+                              const Gap(8),
+                              Text(
+                                excerpt.text,
+                                style: theme.typography.body.sm.copyWith(
+                                  height: 1.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      FTileGroup(
+                        children: [
+                          FTile(
+                            title: Text(excerpt.text, maxLines: 6),
+                            subtitle:
+                                Text(_excerptKindLabel(l10n, excerpt.kind)),
+                          ),
+                        ],
+                      ),
                     if (excerpt.activeLemmaLinks.isNotEmpty) ...[
                       const Gap(8),
                       Wrap(
@@ -478,6 +532,7 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
   String _accessKindLabel(AppLocalizations l10n, String kind) => switch (kind) {
         'listen' => l10n.karyaAccessKindListen,
         'watch' => l10n.karyaAccessKindWatch,
+        'trailer' => l10n.karyaAccessKindTrailer,
         'buy' => l10n.karyaAccessKindBuy,
         'read' => l10n.karyaAccessKindRead,
         'stream' => l10n.karyaAccessKindStream,

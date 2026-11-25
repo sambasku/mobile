@@ -92,7 +92,7 @@ class _KreatorProfileBodyState extends ConsumerState<_KreatorProfileBody> {
               children: [
                 Text(
                   l10n.kreatorClaimTitle,
-                  style: sheetContext.theme.typography.body.lg.copyWith(
+                  style: sheetContext.theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -210,13 +210,13 @@ class _KreatorProfileBodyState extends ConsumerState<_KreatorProfileBody> {
             const Gap(12),
             Text(
               bio,
-              style: theme.typography.body.md.copyWith(height: 1.45),
+              style: theme.typography.body.sm.copyWith(height: 1.45),
             ),
           ] else ...[
             const Gap(12),
             Text(
               l10n.kreatorBioEmpty,
-              style: theme.typography.body.sm.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -225,7 +225,7 @@ class _KreatorProfileBodyState extends ConsumerState<_KreatorProfileBody> {
             const Gap(18),
             Text(
               l10n.kreatorLinks,
-              style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
             ),
             const Gap(8),
             FTileGroup(
@@ -248,13 +248,13 @@ class _KreatorProfileBodyState extends ConsumerState<_KreatorProfileBody> {
           const Gap(18),
           Text(
             l10n.kreatorKaryaSection,
-            style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
+            style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
           ),
           const Gap(8),
           if (profile.karyas.isEmpty)
             Text(
               l10n.kreatorKaryaEmpty,
-              style: theme.typography.body.sm.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             )

@@ -217,6 +217,7 @@ class KaryaEntry {
   final DateTime updatedAt;
 
   bool get isMusic => kind == 'music';
+  bool get isFilm => kind == 'film';
 
   KaryaAccessLink? get primaryAccess {
     for (final link in accessLinks) {

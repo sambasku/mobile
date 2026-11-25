@@ -25,7 +25,7 @@ class KaryaUsedInWordSection extends StatelessWidget {
         const Gap(20),
         Text(
           l10n.karyaAppearsInWordTitle,
-          style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
+          style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(8),
         FTileGroup(

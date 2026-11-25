@@ -13573,6 +13573,12 @@ abstract class AppLocalizations {
   /// **'Tonton'**
   String get karyaAccessKindWatch;
 
+  /// Label kind access_links trailer (film saja)
+  ///
+  /// In id, this message translates to:
+  /// **'Trailer'**
+  String get karyaAccessKindTrailer;
+
   /// No description provided for @karyaAccessKindBuy.
   ///
   /// In id, this message translates to:
@@ -14353,6 +14359,24 @@ abstract class AppLocalizations {
   /// **'Contoh 2019'**
   String get karyaFormYearHint;
 
+  /// Semantics / aksi hapus satu baris kaitan Sambas di form edit karya
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus kaitan Sambas'**
+  String get karyaFormRemoveSambas;
+
+  /// Semantics / aksi hapus satu baris kredit di form edit karya
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus kredit'**
+  String get karyaFormRemoveCredit;
+
+  /// Semantics / aksi hapus satu baris tautan akses di form edit karya
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus tautan akses'**
+  String get karyaFormRemoveAccess;
+
   /// No description provided for @karyaFormAddSambas.
   ///
   /// In id, this message translates to:
@@ -14412,6 +14436,54 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tautan sumber asli (https)'**
   String get karyaFormAccessUrlHint;
+
+  /// Label field upload cover lagu di form usulan karya
+  ///
+  /// In id, this message translates to:
+  /// **'Cover lagu'**
+  String get karyaFormCoverMusic;
+
+  /// Label field upload poster film di form usulan karya
+  ///
+  /// In id, this message translates to:
+  /// **'Poster film'**
+  String get karyaFormCoverFilm;
+
+  /// Hint upload cover lagu
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional - tampil di daftar dan detail lagu'**
+  String get karyaFormCoverHintMusic;
+
+  /// Hint upload poster film
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional - tampil di daftar dan detail film'**
+  String get karyaFormCoverHintFilm;
+
+  /// Label field URL trailer di form usul film
+  ///
+  /// In id, this message translates to:
+  /// **'URL trailer'**
+  String get karyaFormTrailerUrl;
+
+  /// Hint field URL trailer film
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional - tautan https trailer (YouTube, dll)'**
+  String get karyaFormTrailerUrlHint;
+
+  /// Toast saat cover masih diunggah
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu upload cover selesai'**
+  String get karyaFormWaitUpload;
+
+  /// Toast saat cover gagal upload masih ada di form
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus cover yang gagal diunggah dulu'**
+  String get karyaFormRemoveFailedPhoto;
 
   /// No description provided for @karyaFormAddAccess.
   ///
@@ -14490,6 +14562,72 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lainnya'**
   String get karyaCreditRoleOther;
+
+  /// Jenis rilis musik: single
+  ///
+  /// In id, this message translates to:
+  /// **'Single'**
+  String get karyaMusicReleaseSingle;
+
+  /// Jenis rilis musik: trek album
+  ///
+  /// In id, this message translates to:
+  /// **'Lagu album'**
+  String get karyaMusicReleaseAlbumTrack;
+
+  /// Jenis rilis musik selain single/album
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get karyaMusicReleaseOther;
+
+  /// Badge bahwa lagu adalah cover
+  ///
+  /// In id, this message translates to:
+  /// **'Cover'**
+  String get karyaMusicIsCoverBadge;
+
+  /// Empty state saat karya musik tanpa tautan akses
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tautan dengar'**
+  String get karyaMusicListenEmpty;
+
+  /// Jenis film: feature
+  ///
+  /// In id, this message translates to:
+  /// **'Film panjang'**
+  String get karyaFilmTypeFeature;
+
+  /// Jenis film: short
+  ///
+  /// In id, this message translates to:
+  /// **'Film pendek'**
+  String get karyaFilmTypeShort;
+
+  /// Jenis film: documentary
+  ///
+  /// In id, this message translates to:
+  /// **'Dokumenter'**
+  String get karyaFilmTypeDocumentary;
+
+  /// Jenis film selain feature/short/dokumenter
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get karyaFilmTypeOther;
+
+  /// Durasi film dalam menit
+  ///
+  /// In id, this message translates to:
+  /// **'{minutes} mnt'**
+  String karyaFilmRuntimeMinutes(int minutes);
+
+  /// Empty state saat karya film tanpa tautan akses
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tautan tonton'**
+  String get karyaFilmWatchEmpty;
 
   /// No description provided for @exploreCategoryAcara.
   ///

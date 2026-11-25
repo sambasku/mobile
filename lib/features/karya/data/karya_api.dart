@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 
 import '../domain/karya.dart';
@@ -64,6 +66,37 @@ class KaryaApi {
 
   Future<void> submit(Map<String, dynamic> body) async {
     await _dio.post<dynamic>('/api/v1/karya-contributions', data: body);
+  }
+
+  /// Unggah cover lagu / poster film - multipart ke
+  /// `POST /api/v1/karya-contributions/images`.
+  Future<String> uploadCover(File file) async {
+    final form = FormData.fromMap({
+      'file': await MultipartFile.fromFile(
+        file.path,
+        filename: file.uri.pathSegments.last,
+      ),
+    });
+    try {
+      final res = await _dio.post<dynamic>(
+        '/api/v1/karya-contributions/images',
+        data: form,
+        options: Options(
+          contentType: Headers.multipartFormDataContentType,
+          headers: {Headers.contentTypeHeader: null},
+        ),
+      );
+      final url = _map(res.data)['url'];
+      if (url is! String || url.isEmpty) {
+        throw KaryaException('Gagal mengunggah cover');
+      }
+      return url;
+    } on DioException catch (e) {
+      final msg = karyaErrorMessage(e);
+      throw KaryaException(
+        msg.isNotEmpty ? msg : 'Gagal mengunggah cover',
+      );
+    }
   }
 
   Future<List<KaryaProposal>> mine() async {
@@ -365,6 +398,7 @@ Map<String, dynamic> karyaPayloadWire({
   List<Map<String, String>> sambasConnections = const [],
   List<Map<String, dynamic>> accessLinks = const [],
   String? description,
+  String? coverUrl,
 }) {
   return {
     'title': title,
@@ -388,5 +422,7 @@ Map<String, dynamic> karyaPayloadWire({
     'description':
         ?(description != null && description.isNotEmpty ? description : null),
     'access_links': ?(accessLinks.isNotEmpty ? accessLinks : null),
+    'cover_url':
+        ?(coverUrl != null && coverUrl.isNotEmpty ? coverUrl : null),
   };
 }

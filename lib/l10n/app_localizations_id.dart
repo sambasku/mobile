@@ -7614,6 +7614,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get karyaAccessKindWatch => 'Tonton';
 
   @override
+  String get karyaAccessKindTrailer => 'Trailer';
+
+  @override
   String get karyaAccessKindBuy => 'Beli';
 
   @override
@@ -8027,6 +8030,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get karyaFormYearHint => 'Contoh 2019';
 
   @override
+  String get karyaFormRemoveSambas => 'Hapus kaitan Sambas';
+
+  @override
+  String get karyaFormRemoveCredit => 'Hapus kredit';
+
+  @override
+  String get karyaFormRemoveAccess => 'Hapus tautan akses';
+
+  @override
   String get karyaFormAddSambas => 'Tambah kaitan Sambas';
 
   @override
@@ -8055,6 +8067,34 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get karyaFormAccessUrlHint => 'Tautan sumber asli (https)';
+
+  @override
+  String get karyaFormCoverMusic => 'Cover lagu';
+
+  @override
+  String get karyaFormCoverFilm => 'Poster film';
+
+  @override
+  String get karyaFormCoverHintMusic =>
+      'Opsional - tampil di daftar dan detail lagu';
+
+  @override
+  String get karyaFormCoverHintFilm =>
+      'Opsional - tampil di daftar dan detail film';
+
+  @override
+  String get karyaFormTrailerUrl => 'URL trailer';
+
+  @override
+  String get karyaFormTrailerUrlHint =>
+      'Opsional - tautan https trailer (YouTube, dll)';
+
+  @override
+  String get karyaFormWaitUpload => 'Tunggu upload cover selesai';
+
+  @override
+  String get karyaFormRemoveFailedPhoto =>
+      'Hapus cover yang gagal diunggah dulu';
 
   @override
   String get karyaFormAddAccess => 'Tambah tautan akses';
@@ -8094,6 +8134,41 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get karyaCreditRoleOther => 'Lainnya';
+
+  @override
+  String get karyaMusicReleaseSingle => 'Single';
+
+  @override
+  String get karyaMusicReleaseAlbumTrack => 'Lagu album';
+
+  @override
+  String get karyaMusicReleaseOther => 'Lainnya';
+
+  @override
+  String get karyaMusicIsCoverBadge => 'Cover';
+
+  @override
+  String get karyaMusicListenEmpty => 'Belum ada tautan dengar';
+
+  @override
+  String get karyaFilmTypeFeature => 'Film panjang';
+
+  @override
+  String get karyaFilmTypeShort => 'Film pendek';
+
+  @override
+  String get karyaFilmTypeDocumentary => 'Dokumenter';
+
+  @override
+  String get karyaFilmTypeOther => 'Lainnya';
+
+  @override
+  String karyaFilmRuntimeMinutes(int minutes) {
+    return '$minutes mnt';
+  }
+
+  @override
+  String get karyaFilmWatchEmpty => 'Belum ada tautan tonton';
 
   @override
   String get exploreCategoryAcara => 'Acara';
@@ -21316,6 +21391,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get karyaAccessKindWatch => 'Tonton';
 
   @override
+  String get karyaAccessKindTrailer => 'Trailer';
+
+  @override
   String get karyaAccessKindBuy => 'Beli';
 
   @override
@@ -21729,6 +21807,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get karyaFormYearHint => 'Contoh 2019';
 
   @override
+  String get karyaFormRemoveSambas => 'Hapus kaitan Sambas';
+
+  @override
+  String get karyaFormRemoveCredit => 'Hapus kredit';
+
+  @override
+  String get karyaFormRemoveAccess => 'Hapus tautan akses';
+
+  @override
   String get karyaFormAddSambas => 'Tambah kaitan Sambas';
 
   @override
@@ -21757,6 +21844,34 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get karyaFormAccessUrlHint => 'Tautan sumber asli (https)';
+
+  @override
+  String get karyaFormCoverMusic => 'Cover lagu';
+
+  @override
+  String get karyaFormCoverFilm => 'Poster film';
+
+  @override
+  String get karyaFormCoverHintMusic =>
+      'Opsional - tampil di daftar dan detail lagu';
+
+  @override
+  String get karyaFormCoverHintFilm =>
+      'Opsional - tampil di daftar dan detail film';
+
+  @override
+  String get karyaFormTrailerUrl => 'URL trailer';
+
+  @override
+  String get karyaFormTrailerUrlHint =>
+      'Opsional - tautan https trailer (YouTube, dll)';
+
+  @override
+  String get karyaFormWaitUpload => 'Tunggu upload cover selesai';
+
+  @override
+  String get karyaFormRemoveFailedPhoto =>
+      'Hapus cover yang gagal diunggah dulu';
 
   @override
   String get karyaFormAddAccess => 'Tambah tautan akses';
@@ -21796,6 +21911,41 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get karyaCreditRoleOther => 'Lainnya';
+
+  @override
+  String get karyaMusicReleaseSingle => 'Single';
+
+  @override
+  String get karyaMusicReleaseAlbumTrack => 'Lagu album';
+
+  @override
+  String get karyaMusicReleaseOther => 'Lainnya';
+
+  @override
+  String get karyaMusicIsCoverBadge => 'Cover';
+
+  @override
+  String get karyaMusicListenEmpty => 'Belum ada tautan dengar';
+
+  @override
+  String get karyaFilmTypeFeature => 'Film panjang';
+
+  @override
+  String get karyaFilmTypeShort => 'Film pendek';
+
+  @override
+  String get karyaFilmTypeDocumentary => 'Dokumenter';
+
+  @override
+  String get karyaFilmTypeOther => 'Lainnya';
+
+  @override
+  String karyaFilmRuntimeMinutes(int minutes) {
+    return '$minutes mnt';
+  }
+
+  @override
+  String get karyaFilmWatchEmpty => 'Belum ada tautan tonton';
 
   @override
   String get exploreCategoryAcara => 'Acara';

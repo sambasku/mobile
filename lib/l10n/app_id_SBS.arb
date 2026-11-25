@@ -3114,6 +3114,10 @@
   "karyaAccessEmpty": "Belum ada tautan akses",
   "karyaAccessKindListen": "Dengarkan",
   "karyaAccessKindWatch": "Tonton",
+  "karyaAccessKindTrailer": "Trailer",
+  "@karyaAccessKindTrailer": {
+    "description": "Label kind access_links trailer (film saja)"
+  },
   "karyaAccessKindBuy": "Beli",
   "karyaAccessKindRead": "Baca",
   "karyaAccessKindStream": "Streaming",
@@ -3268,6 +3272,18 @@
   "karyaFormTitle": "Judul",
   "karyaFormTitleHint": "Judul lagu atau film",
   "karyaFormYearHint": "Contoh 2019",
+  "karyaFormRemoveSambas": "Hapus kaitan Sambas",
+  "@karyaFormRemoveSambas": {
+    "description": "Semantics / aksi hapus satu baris kaitan Sambas di form edit karya"
+  },
+  "karyaFormRemoveCredit": "Hapus kredit",
+  "@karyaFormRemoveCredit": {
+    "description": "Semantics / aksi hapus satu baris kredit di form edit karya"
+  },
+  "karyaFormRemoveAccess": "Hapus tautan akses",
+  "@karyaFormRemoveAccess": {
+    "description": "Semantics / aksi hapus satu baris tautan akses di form edit karya"
+  },
   "karyaFormAddSambas": "Tambah kaitan Sambas",
   "karyaFormCreditRole": "Peran",
   "karyaFormCreditName": "Nama",
@@ -3278,6 +3294,38 @@
   "karyaFormAccessLabelHint": "Misal Dengarkan di Spotify",
   "karyaFormAccessUrl": "URL",
   "karyaFormAccessUrlHint": "Tautan sumber asli (https)",
+  "karyaFormCoverMusic": "Cover lagu",
+  "@karyaFormCoverMusic": {
+    "description": "Label field upload cover lagu di form usulan karya"
+  },
+  "karyaFormCoverFilm": "Poster film",
+  "@karyaFormCoverFilm": {
+    "description": "Label field upload poster film di form usulan karya"
+  },
+  "karyaFormCoverHintMusic": "Opsional - tampil di daftar dan detail lagu",
+  "@karyaFormCoverHintMusic": {
+    "description": "Hint upload cover lagu"
+  },
+  "karyaFormCoverHintFilm": "Opsional - tampil di daftar dan detail film",
+  "@karyaFormCoverHintFilm": {
+    "description": "Hint upload poster film"
+  },
+  "karyaFormTrailerUrl": "URL trailer",
+  "@karyaFormTrailerUrl": {
+    "description": "Label field URL trailer di form usul film"
+  },
+  "karyaFormTrailerUrlHint": "Opsional - tautan https trailer (YouTube, dll)",
+  "@karyaFormTrailerUrlHint": {
+    "description": "Hint field URL trailer film"
+  },
+  "karyaFormWaitUpload": "Tunggu upload cover selesai",
+  "@karyaFormWaitUpload": {
+    "description": "Toast saat cover masih diunggah"
+  },
+  "karyaFormRemoveFailedPhoto": "Hapus cover yang gagal diunggah dulu",
+  "@karyaFormRemoveFailedPhoto": {
+    "description": "Toast saat cover gagal upload masih ada di form"
+  },
   "karyaFormAddAccess": "Tambah tautan akses",
   "karyaCreditRoleVocal": "Vokal",
   "karyaCreditRoleFeat": "Feat",
@@ -3291,6 +3339,55 @@
   "karyaCreditRoleWriter": "Penulis skenario",
   "karyaCreditRoleCinematographer": "Sinema",
   "karyaCreditRoleOther": "Lainnya",
+  "karyaMusicReleaseSingle": "Single",
+  "@karyaMusicReleaseSingle": {
+    "description": "Jenis rilis musik: single"
+  },
+  "karyaMusicReleaseAlbumTrack": "Lagu album",
+  "@karyaMusicReleaseAlbumTrack": {
+    "description": "Jenis rilis musik: trek album"
+  },
+  "karyaMusicReleaseOther": "Lainnya",
+  "@karyaMusicReleaseOther": {
+    "description": "Jenis rilis musik selain single/album"
+  },
+  "karyaMusicIsCoverBadge": "Cover",
+  "@karyaMusicIsCoverBadge": {
+    "description": "Badge bahwa lagu adalah cover"
+  },
+  "karyaMusicListenEmpty": "Belum ada tautan dengar",
+  "@karyaMusicListenEmpty": {
+    "description": "Empty state saat karya musik tanpa tautan akses"
+  },
+  "karyaFilmTypeFeature": "Film panjang",
+  "@karyaFilmTypeFeature": {
+    "description": "Jenis film: feature"
+  },
+  "karyaFilmTypeShort": "Film pendek",
+  "@karyaFilmTypeShort": {
+    "description": "Jenis film: short"
+  },
+  "karyaFilmTypeDocumentary": "Dokumenter",
+  "@karyaFilmTypeDocumentary": {
+    "description": "Jenis film: documentary"
+  },
+  "karyaFilmTypeOther": "Lainnya",
+  "@karyaFilmTypeOther": {
+    "description": "Jenis film selain feature/short/dokumenter"
+  },
+  "karyaFilmRuntimeMinutes": "{minutes} mnt",
+  "@karyaFilmRuntimeMinutes": {
+    "description": "Durasi film dalam menit",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "karyaFilmWatchEmpty": "Belum ada tautan tonton",
+  "@karyaFilmWatchEmpty": {
+    "description": "Empty state saat karya film tanpa tautan akses"
+  },
   "exploreCategoryAcara": "Acara",
   "exploreCategoryAcaraSubtitle": "Festival, pameran, dan kegiatan",
   "exploreCategoryPantun": "Pantun",
