@@ -16,6 +16,8 @@ UgcCommentLemmaAnchor anchorForEntityCommentTarget(EntityCommentTarget target) {
       return UgcCommentLemmaAnchor.cuisineComment;
     case EntityCommentTarget.event:
       return UgcCommentLemmaAnchor.eventComment;
+    case EntityCommentTarget.karya:
+      return UgcCommentLemmaAnchor.karyaComment;
   }
 }
 

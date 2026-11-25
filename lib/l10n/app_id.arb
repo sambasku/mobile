@@ -4048,6 +4048,8 @@
     "description": "Label jenis aktivitas: tempat wisata terbit"
   },
   "feedKindEvent": "Acara",
+  "feedKindKarya": "Karya",
+  "@feedKindKarya": {},
   "@feedKindEvent": {
     "description": "Label jenis aktivitas: acara terbit"
   },
@@ -4153,6 +4155,8 @@
     "description": "Ajakan membuka tempat"
   },
   "feedCtaSeeEvent": "Lihat acara",
+  "feedCtaSeeKarya": "Lihat karya",
+  "@feedCtaSeeKarya": {},
   "@feedCtaSeeEvent": {
     "description": "Ajakan membuka acara"
   },
@@ -9958,6 +9962,12 @@
   "@eventCommentsEmpty": {},
   "eventCommentHint": "Tulis komentar tentang acara ini",
   "@eventCommentHint": {},
+  "karyaCommentsTitle": "Komentar karya",
+  "@karyaCommentsTitle": {},
+  "karyaCommentsEmpty": "Belum ada komentar. Jadi yang pertama ya.",
+  "@karyaCommentsEmpty": {},
+  "karyaCommentHint": "Tulis komentar tentang karya ini",
+  "@karyaCommentHint": {},
   "eventMorePhotos": "Lihat lainnya ({count} foto)",
   "@eventMorePhotos": {
     "placeholders": {

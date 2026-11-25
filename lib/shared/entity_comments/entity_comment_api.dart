@@ -18,6 +18,7 @@ class EntityCommentApi {
       EntityCommentTarget.usaha => '/api/v1/usaha/$id/comments',
       EntityCommentTarget.cuisine => '/api/v1/culinary/cuisines/$id/comments',
       EntityCommentTarget.event => '/api/v1/events/$id/comments',
+      EntityCommentTarget.karya => '/api/v1/karya/$id/comments',
     };
   }
 
@@ -31,6 +32,7 @@ class EntityCommentApi {
       EntityCommentTarget.usaha => '/api/v1/usaha/comments/$id',
       EntityCommentTarget.cuisine => '/api/v1/culinary/comments/$id',
       EntityCommentTarget.event => '/api/v1/events/comments/$id',
+      EntityCommentTarget.karya => '/api/v1/karya/comments/$id',
     };
   }
 
@@ -39,6 +41,7 @@ class EntityCommentApi {
         EntityCommentTarget.usaha => 'usaha_id',
         EntityCommentTarget.cuisine => 'cuisine_id',
         EntityCommentTarget.event => 'event_id',
+        EntityCommentTarget.karya => 'karya_id',
       };
 
   Future<EntityCommentPage> list(

@@ -10,6 +10,7 @@ enum UgcCommentLemmaAnchor {
   usahaComment('usaha_comment', '/api/v1/usaha'),
   cuisineComment('cuisine_comment', '/api/v1/culinary'),
   eventComment('event_comment', '/api/v1/events'),
+  karyaComment('karya_comment', '/api/v1/karya'),
   articleComment('article_comment', '/api/v1/encyclopedia');
 
   const UgcCommentLemmaAnchor(this.wireKind, this.apiPrefix);

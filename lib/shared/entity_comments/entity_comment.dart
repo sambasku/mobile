@@ -3,7 +3,7 @@ import '../../features/jinye/domain/jinye_models.dart';
 import '../span_lemma/lemma_links_parse.dart';
 
 /// Target komentar (wisata / usaha / kuliner / acara).
-enum EntityCommentTarget { place, usaha, cuisine, event }
+enum EntityCommentTarget { place, usaha, cuisine, event, karya }
 
 /// Satu baris komentar dari wire API (media selaras lemma).
 class EntityComment {
@@ -18,6 +18,7 @@ class EntityComment {
     this.username,
     this.displayName,
     this.avatarUrl,
+    this.isVerifier = false,
     this.updatedAt,
     this.stickerId,
     this.audioUrl,
@@ -33,6 +34,7 @@ class EntityComment {
   final String? username;
   final String? displayName;
   final String? avatarUrl;
+  final bool isVerifier;
   final String body;
   final String status;
   final bool isEdited;
@@ -91,6 +93,7 @@ class EntityComment {
       username: userMap['username'] as String?,
       displayName: userMap['display_name'] as String?,
       avatarUrl: userMap['avatar_url'] as String?,
+      isVerifier: userMap['is_verifier'] == true,
       body: json['body'] as String? ?? '',
       status: json['status'] as String? ?? 'published',
       isEdited: json['is_edited'] == true,

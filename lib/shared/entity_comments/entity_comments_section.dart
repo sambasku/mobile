@@ -62,6 +62,11 @@ EntityCommentCopy entityCommentCopy(
         empty: l10n.eventCommentsEmpty,
         hint: l10n.eventCommentHint,
       ),
+    EntityCommentTarget.karya => (
+        title: (c) => l10n.karyaCommentsTitle,
+        empty: l10n.karyaCommentsEmpty,
+        hint: l10n.karyaCommentHint,
+      ),
   };
 }
 
@@ -620,6 +625,7 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
                         username: comment.username,
                         displayName: comment.displayName,
                         avatarUrl: comment.avatarUrl,
+                        isVerifier: comment.isVerifier,
                         body: bodyText,
                         bodyWidget: bodyText.trim().isEmpty
                             ? null

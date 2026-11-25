@@ -669,6 +669,7 @@ class _JinyeThreadComment extends ConsumerWidget {
       username: comment.username,
       displayName: comment.displayName,
       avatarUrl: comment.avatarUrl,
+      isVerifier: comment.isVerifier,
       body: bodyText,
       bodyWidget: bodyText.isEmpty
           ? null

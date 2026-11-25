@@ -8,6 +8,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/models/external_link.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/entity_comments/entity_comment.dart';
+import '../../../../shared/entity_comments/entity_comments_section.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../dictionary/dictionary_router.dart';
@@ -111,8 +113,11 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
         title: Text(item.title),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
-      // Musik/film: CTA di panggung atas. Footer sticky tidak dipakai.
-      footer: null,
+      // CTA dengar/tonton di panggung. Footer = entrance komentar (pola acara).
+      footer: EntityCommentEntryBar(
+        target: EntityCommentTarget.karya,
+        entityId: item.id,
+      ),
       child: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [

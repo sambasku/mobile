@@ -9985,6 +9985,12 @@ abstract class AppLocalizations {
   /// **'Acara'**
   String get feedKindEvent;
 
+  /// No description provided for @feedKindKarya.
+  ///
+  /// In id, this message translates to:
+  /// **'Karya'**
+  String get feedKindKarya;
+
   /// Label jenis aktivitas: usaha terbit
   ///
   /// In id, this message translates to:
@@ -10146,6 +10152,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat acara'**
   String get feedCtaSeeEvent;
+
+  /// No description provided for @feedCtaSeeKarya.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat karya'**
+  String get feedCtaSeeKarya;
 
   /// Ajakan membuka usaha
   ///
@@ -22996,6 +23008,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tulis komentar tentang acara ini'**
   String get eventCommentHint;
+
+  /// No description provided for @karyaCommentsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar karya'**
+  String get karyaCommentsTitle;
+
+  /// No description provided for @karyaCommentsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komentar. Jadi yang pertama ya.'**
+  String get karyaCommentsEmpty;
+
+  /// No description provided for @karyaCommentHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis komentar tentang karya ini'**
+  String get karyaCommentHint;
 
   /// No description provided for @eventMorePhotos.
   ///

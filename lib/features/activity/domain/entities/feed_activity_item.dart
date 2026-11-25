@@ -26,6 +26,7 @@ enum FeedActivityKind {
   pantun,
   jinye,
   article,
+  karya,
   chat,
   leaderboardRank,
 }
@@ -87,6 +88,8 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.jinye;
     case 'article':
       return FeedActivityKind.article;
+    case 'karya':
+      return FeedActivityKind.karya;
     case 'chat':
       return FeedActivityKind.chat;
     case 'leaderboard_rank':

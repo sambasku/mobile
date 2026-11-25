@@ -413,6 +413,7 @@ class JinyeComment {
     this.username,
     this.displayName,
     this.avatarUrl,
+    this.isVerifier = false,
     this.status = 'published',
     this.isEdited = false,
     this.stickerId,
@@ -431,6 +432,7 @@ class JinyeComment {
   final String? username;
   final String? displayName;
   final String? avatarUrl;
+  final bool isVerifier;
   final String status;
   final bool isEdited;
   final String? stickerId;
@@ -460,6 +462,7 @@ class JinyeComment {
       username: json['username'] as String?,
       displayName: json['display_name'] as String?,
       avatarUrl: json['avatar_url'] as String?,
+      isVerifier: json['is_verifier'] == true,
       status: json['status'] as String? ?? 'published',
       isEdited: json['is_edited'] == true,
       stickerId: json['sticker_id'] as String?,

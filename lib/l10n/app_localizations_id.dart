@@ -5714,6 +5714,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get feedKindEvent => 'Acara';
 
   @override
+  String get feedKindKarya => 'Karya';
+
+  @override
   String get feedKindUsaha => 'Usaha';
 
   @override
@@ -5793,6 +5796,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedCtaSeeEvent => 'Lihat acara';
+
+  @override
+  String get feedCtaSeeKarya => 'Lihat karya';
 
   @override
   String get feedCtaSeeUsaha => 'Lihat usaha';
@@ -13056,6 +13062,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventCommentHint => 'Tulis komentar tentang acara ini';
 
   @override
+  String get karyaCommentsTitle => 'Komentar karya';
+
+  @override
+  String get karyaCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get karyaCommentHint => 'Tulis komentar tentang karya ini';
+
+  @override
   String eventMorePhotos(int count) {
     final intl.NumberFormat countNumberFormat =
         intl.NumberFormat.decimalPattern(localeName);
@@ -19491,6 +19506,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get feedKindEvent => 'Acara';
 
   @override
+  String get feedKindKarya => 'Karya';
+
+  @override
   String get feedKindUsaha => 'Usaha';
 
   @override
@@ -19570,6 +19588,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get feedCtaSeeEvent => 'Lihat acara';
+
+  @override
+  String get feedCtaSeeKarya => 'Lihat karya';
 
   @override
   String get feedCtaSeeUsaha => 'Lihat usaha';
@@ -26831,6 +26852,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get eventCommentHint => 'Tulis komentar tentang acara ini';
+
+  @override
+  String get karyaCommentsTitle => 'Komentar karya';
+
+  @override
+  String get karyaCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get karyaCommentHint => 'Tulis komentar tentang karya ini';
 
   @override
   String eventMorePhotos(int count) {
