@@ -155,15 +155,14 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
           ] else if (item.isFilm) ...[
             KaryaFilmStage(
               item: item,
-              watchLabel: watch?.label,
+              // Label CTA = teks user di form akses; kosong baru fallback kind.
+              watchLabel:
+                  watch == null ? null : _accessCtaLabel(l10n, watch),
               onWatch: watch == null
                   ? null
                   : () => launchExternalUrl(Uri.parse(watch.url)),
-              trailerLabel: trailer == null
-                  ? null
-                  : (trailer.label.trim().isEmpty
-                      ? l10n.karyaAccessKindTrailer
-                      : trailer.label),
+              trailerLabel:
+                  trailer == null ? null : _accessCtaLabel(l10n, trailer),
               onTrailer: trailer == null
                   ? null
                   : () => launchExternalUrl(Uri.parse(trailer.url)),
@@ -558,6 +557,13 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
         'other' => l10n.karyaSambasTypeOther,
         _ => type,
       };
+
+  /// Teks tombol akses: label user, atau nama kind kalau label kosong.
+  String _accessCtaLabel(AppLocalizations l10n, KaryaAccessLink link) {
+    final custom = link.label.trim();
+    if (custom.isNotEmpty) return custom;
+    return _accessKindLabel(l10n, link.kind);
+  }
 
   String _accessKindLabel(AppLocalizations l10n, String kind) => switch (kind) {
         'listen' => l10n.karyaAccessKindListen,
