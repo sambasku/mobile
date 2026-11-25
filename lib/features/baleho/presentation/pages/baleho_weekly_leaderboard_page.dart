@@ -30,16 +30,6 @@ class BalehoWeeklyLeaderboardPage extends HookConsumerWidget {
     final weekOptions = ref.watch(weeklyLeaderboardHistoryWeekOptionsProvider);
     final currentAsync = ref.watch(weeklyLeaderboardCurrentProvider);
 
-    ref.listen(weeklyLeaderboardCurrentProvider, (prev, next) {
-      if (next.hasError && context.mounted) {
-        final err = next.error;
-        final message = err is Exception
-            ? err.toString()
-            : l10n.balehoLeaderboardLoadFailed;
-        showAppErrorSheet(context, message: message);
-      }
-    });
-
     final isAuth = ref.watch(authStatusProvider).value?.isAuth ?? false;
     final section = useState(WeeklyLeaderboardSection.current);
 

@@ -5,7 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/format_number.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../baleho/domain/points_history_models.dart';
 import '../../../baleho/presentation/providers/weekly_leaderboard_provider.dart';
 
@@ -23,16 +22,6 @@ class ExpHistoryPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final historyAsync = ref.watch(userPointsHistoryProvider(username));
-
-    ref.listen(userPointsHistoryProvider(username), (prev, next) {
-      if (next.hasError && context.mounted) {
-        final err = next.error;
-        showAppErrorSheet(
-          context,
-          message: err is Exception ? err.toString() : 'Gagal memuat riwayat.',
-        );
-      }
-    });
 
     return FScaffold(
       childPad: true,
