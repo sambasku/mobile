@@ -21,6 +21,7 @@ String notificationTypeLabel(AppLocalizations l10n, String type) =>
       'pantun_reply' => l10n.notificationTypePantunReply,
       'pantun_mention' => l10n.notificationTypePantunMention,
       'jinye_comment' => l10n.notificationTypeJinyeComment,
+      'chat_mention' => l10n.notificationTypeChatMention,
       'campaign' => l10n.notificationTypeCampaign,
       'word_comment' => l10n.notificationTypeComment,
       'word_vote' => l10n.notificationTypeVote,

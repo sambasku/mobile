@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
@@ -26,6 +28,7 @@ import '../../../hot_topics/presentation/providers/hot_topics_providers.dart';
 import '../../../../shared/profile/profile_covers_provider.dart';
 import '../../../hot_topics/presentation/widgets/hot_topics_card.dart';
 import '../../../contribution/contribution_router.dart';
+import '../../../chat/presentation/providers/chat_unread_provider.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../encyclopedia/encyclopedia_router.dart';
 import '../../../entertainment/entertainment_router.dart';
@@ -91,6 +94,8 @@ class HomeSearchPage extends HookConsumerWidget {
       ref.invalidate(pinnedAnnouncementsProvider);
       ref.invalidate(hotTopicsProvider);
       ref.read(activityFeedProvider(selectedCategory.value).notifier).load();
+      // Badge Diskusi (#360): sinkron pesan yang masuk saat di background.
+      unawaited(ref.read(chatUnreadProvider.notifier).refresh());
     });
 
     useEffect(() {
@@ -327,6 +332,7 @@ class _HomeActionChips extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final unread = ref.watch(chatUnreadProvider);
     final items = <_HomeActionChip>[
       _HomeActionChip(
         icon: FLucideIcons.search,
@@ -360,8 +366,18 @@ class _HomeActionChips extends ConsumerWidget {
       _HomeActionChip(
         icon: FLucideIcons.messagesSquare,
         label: l10n.dictDiscussionChip,
-        semanticsLabel: l10n.dictDiscussionSubtitle,
-        onPress: () => context.push(DiscussionRouter.chat.path),
+        semanticsLabel: unread.personal > 0
+            ? l10n.dictDiscussionMentionSemantics(unread.personal)
+            : unread.total > 0
+            ? l10n.dictDiscussionUnreadSemantics
+            : l10n.dictDiscussionSubtitle,
+        badgeCount: unread.personal,
+        showDot: unread.personal == 0 && unread.total > 0,
+        onPress: () {
+          // Tap = tandai terbaca; pesan baru berikutnya memunculkan badge lagi.
+          unawaited(ref.read(chatUnreadProvider.notifier).markAsRead());
+          context.push(DiscussionRouter.chat.path);
+        },
       ),
       _HomeActionChip(
         icon: FLucideIcons.feather,
@@ -396,12 +412,20 @@ class _HomeActionChip {
     required this.label,
     required this.onPress,
     this.semanticsLabel,
+    this.badgeCount = 0,
+    this.showDot = false,
   });
 
   final IconData icon;
   final String label;
   final String? semanticsLabel;
   final VoidCallback onPress;
+
+  /// Angka merah (reply/mention ke saya). 0 = tidak tampil.
+  final int badgeCount;
+
+  /// Titik kecil (pesan umum baru); diabaikan bila [badgeCount] > 0.
+  final bool showDot;
 }
 
 class _HomeActionTile extends StatelessWidget {
@@ -427,19 +451,48 @@ class _HomeActionTile extends StatelessWidget {
               SizedBox(
                 width: size,
                 height: size,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: theme.colors.secondary,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: theme.colors.border),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      item.icon,
-                      size: 18,
-                      color: theme.colors.foreground,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: theme.colors.secondary,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: theme.colors.border),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            item.icon,
+                            size: 18,
+                            color: theme.colors.foreground,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    // Di dalam batas kotak: ListView horizontal memotong overflow.
+                    if (item.badgeCount > 0)
+                      Positioned(
+                        top: 2,
+                        right: 2,
+                        child: _UnreadPill(
+                          key: const ValueKey('home_chip_badge_count'),
+                          count: item.badgeCount,
+                        ),
+                      )
+                    else if (item.showDot)
+                      Positioned(
+                        top: 5,
+                        right: 5,
+                        child: DecoratedBox(
+                          key: const ValueKey('home_chip_badge_dot'),
+                          decoration: BoxDecoration(
+                            color: theme.colors.destructive,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const SizedBox(width: 8, height: 8),
+                        ),
+                      ),
+                  ],
                 ),
               ),
               const Gap(6),
@@ -456,6 +509,42 @@ class _HomeActionTile extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Pil angka merah kecil (maks `99+`) di pojok kotak chip.
+class _UnreadPill extends StatelessWidget {
+  const _UnreadPill({super.key, required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colors.destructive,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 3),
+          child: Center(
+            widthFactor: 1,
+            child: Text(
+              count > 99 ? '99+' : '$count',
+              style: theme.typography.body.xs.copyWith(
+                fontSize: 9,
+                fontWeight: FontWeight.w700,
+                height: 1,
+                color: theme.colors.destructiveForeground,
+              ),
+            ),
           ),
         ),
       ),

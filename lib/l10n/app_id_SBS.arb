@@ -2110,6 +2110,19 @@
   "@dictDiscussionChip": {
     "description": "Label chip ruang diskusi di beranda (pendek)"
   },
+  "dictDiscussionUnreadSemantics": "Diskusi, ada chat baru",
+  "@dictDiscussionUnreadSemantics": {
+    "description": "Semantics chip Diskusi di beranda saat ada chat baru (titik)"
+  },
+  "dictDiscussionMentionSemantics": "Diskusi, {count} pesan untukmu",
+  "@dictDiscussionMentionSemantics": {
+    "description": "Semantics chip Diskusi di beranda saat ada reply atau mention ke akun sendiri",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dictProposeWord": "Usul kata baru",
   "dictDiscussion": "Ruang Diskusi",
   "dictDiscussionSubtitle": "Tanya arti atau bahas kata Sambas bareng warga",
@@ -2769,6 +2782,7 @@
   "notificationTypeDiscussionReply": "Balasan diskusi",
   "notificationTypeDiscussionMention": "Sebutan diskusi",
   "notificationTypeJinyeComment": "Balasan Jinye",
+  "notificationTypeChatMention": "Sebutan di chat",
   "notificationTypePantunReply": "Balasan pantun",
   "notificationTypePantunMention": "Sebutan pantun",
   "notificationTypeCampaign": "Pengumuman",

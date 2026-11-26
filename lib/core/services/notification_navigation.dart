@@ -102,6 +102,12 @@ return;
     return;
   }
 
+  // Mention di chat (#360): buka ruang chat.
+  if (actionKind == 'chat' || type == 'chat_mention') {
+    _go(router, DiscussionRouter.chat.path);
+    return;
+  }
+
   if (actionKind == 'discussion' &&
       actionValue != null &&
       actionValue.isNotEmpty) {

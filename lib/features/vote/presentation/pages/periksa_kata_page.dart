@@ -10,6 +10,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../contribution/presentation/utils/open_verifier_contribute.dart';
 import '../../../dictionary/dictionary_router.dart';
 import '../../domain/entities/vote_deck_item.dart';
 import '../../periksa_kata_router.dart';
@@ -62,6 +63,16 @@ class _PeriksaKataPageState extends ConsumerState<PeriksaKataPage> {
         title: Text(l10n.feedContributePeriksaKata),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
         suffixes: [
+          FHeaderAction(
+            icon: const Icon(FLucideIcons.bookPlus,
+                size: kHeaderActionIconSize),
+            semanticsLabel: l10n.activityVoteDeckSuggestWord,
+            onPress: () => pushVerifierContribute(
+              context,
+              analyticsFrom: 'periksa_kata',
+              contributeFrom: 'periksa_kata',
+            ),
+          ),
           FHeaderAction(
             icon: const Icon(FLucideIcons.clipboardList,
                 size: kHeaderActionIconSize),

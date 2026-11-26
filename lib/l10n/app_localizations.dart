@@ -7939,6 +7939,18 @@ abstract class AppLocalizations {
   /// **'Diskusi'**
   String get dictDiscussionChip;
 
+  /// Semantics chip Diskusi di beranda saat ada chat baru (titik)
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi, ada chat baru'**
+  String get dictDiscussionUnreadSemantics;
+
+  /// Semantics chip Diskusi di beranda saat ada reply atau mention ke akun sendiri
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi, {count} pesan untukmu'**
+  String dictDiscussionMentionSemantics(int count);
+
   /// No description provided for @dictProposeWord.
   ///
   /// In id, this message translates to:
@@ -11508,6 +11520,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Balasan Jinye'**
   String get notificationTypeJinyeComment;
+
+  /// Label jenis notifikasi disebut (@mention) di chat
+  ///
+  /// In id, this message translates to:
+  /// **'Sebutan di chat'**
+  String get notificationTypeChatMention;
 
   /// Label UI M3 (notification/komentar/usulan/vote)
   ///

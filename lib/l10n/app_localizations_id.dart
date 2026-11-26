@@ -4531,6 +4531,14 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictDiscussionChip => 'Diskusi';
 
   @override
+  String get dictDiscussionUnreadSemantics => 'Diskusi, ada chat baru';
+
+  @override
+  String dictDiscussionMentionSemantics(int count) {
+    return 'Diskusi, $count pesan untukmu';
+  }
+
+  @override
   String get dictProposeWord => 'Usul kata baru';
 
   @override
@@ -6529,6 +6537,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get notificationTypeJinyeComment => 'Balasan Jinye';
+
+  @override
+  String get notificationTypeChatMention => 'Sebutan di chat';
 
   @override
   String get notificationTypePantunReply => 'Balasan pantun';
@@ -18485,6 +18496,14 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictDiscussionChip => 'Diskusi';
 
   @override
+  String get dictDiscussionUnreadSemantics => 'Diskusi, ada chat baru';
+
+  @override
+  String dictDiscussionMentionSemantics(int count) {
+    return 'Diskusi, $count pesan untukmu';
+  }
+
+  @override
   String get dictProposeWord => 'Usul kata baru';
 
   @override
@@ -20399,6 +20418,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get notificationTypeJinyeComment => 'Balasan Jinye';
+
+  @override
+  String get notificationTypeChatMention => 'Sebutan di chat';
 
   @override
   String get notificationTypePantunReply => 'Balasan pantun';

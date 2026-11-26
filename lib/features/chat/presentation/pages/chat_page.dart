@@ -16,6 +16,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/chat_models.dart';
 import '../providers/chat_messages_provider.dart';
 import '../providers/chat_presence_provider.dart';
+import '../providers/chat_unread_provider.dart';
 import '../providers/chat_typing_provider.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/chat_composer.dart';
@@ -257,6 +258,29 @@ class ChatPage extends HookConsumerWidget {
         });
       };
     }, [myUserId]);
+
+    // Badge Diskusi (#360): chat terbuka = semua pesan terlihat.
+    useEffect(() {
+      final unread = ref.read(chatUnreadProvider.notifier);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) unread.chatViewOpened();
+      });
+      return () {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          unread.chatViewClosed();
+        });
+      };
+    }, const []);
+
+    ref.listen(
+      chatMessagesProvider.select(
+        (s) => s.value?.items.where((m) => !m.pending).lastOrNull,
+      ),
+      (_, latest) {
+        if (latest == null) return;
+        ref.read(chatUnreadProvider.notifier).noteSeen(latest);
+      },
+    );
 
     useEffect(() {
       void onText() {
