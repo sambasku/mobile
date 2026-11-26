@@ -23,8 +23,8 @@ void main() {
       expect(fullHeight, greaterThan(80));
       // Penanda menu yang ikut menyusut = chip di baris chips header
       // (Usul, sebaris horizontal di kanan A-Z).
-      final aZ = tester.getTopLeft(find.text('A-Z'));
-      final usul = tester.getTopLeft(find.text('Usul'));
+      final aZ = tester.getTopLeft(find.text('Indeks\nA-Z'));
+      final usul = tester.getTopLeft(find.text('Tambah\nKata'));
       expect(usul.dy, aZ.dy);
       expect(usul.dx, greaterThan(aZ.dx));
 
@@ -84,12 +84,15 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     expect(tester.getSize(collapsible).height, greaterThan(80));
 
-      expect(find.text('Usul'), findsOneWidget);
+      expect(find.text('Tambah\nKata'), findsOneWidget);
       // #193: tile "Dicari warga" pindah ke chips kategori feed; menu
-      // header jadi baris chips horizontal (Cari/A-Z/Usul/Diskusi/dll).
+      // header jadi baris chips horizontal (Cari Kata / Indeks A-Z /
+      // Tambah Kata / Ruang Diskusi).
       expect(find.text('Dicari warga'), findsNothing);
-      expect(find.text('Diskusi'), findsOneWidget);
-      await tester.tap(find.text('Usul'), warnIfMissed: false);
+      expect(find.text('Ruang\nDiskusi'), findsOneWidget);
+      expect(find.text('Pantun'), findsNothing);
+      expect(find.text('Ensiklopedia'), findsNothing);
+      await tester.tap(find.text('Tambah\nKata'), warnIfMissed: false);
       await tester.pump();
       expect(tester.takeException()?.toString(), contains('No GoRouter found'));
       await tester.pump(const Duration(milliseconds: 300));

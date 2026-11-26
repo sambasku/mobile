@@ -14,32 +14,6 @@ class JinyeImageRef {
       };
 }
 
-class JinyeUploadCredentials {
-  const JinyeUploadCredentials({
-    required this.token,
-    required this.signature,
-    required this.expire,
-    required this.publicKey,
-    required this.uploadEndpoint,
-  });
-
-  final String token;
-  final String signature;
-  final int expire;
-  final String publicKey;
-  final String uploadEndpoint;
-
-  factory JinyeUploadCredentials.fromJson(Map<String, dynamic> json) {
-    return JinyeUploadCredentials(
-      token: json['token'] as String,
-      signature: json['signature'] as String,
-      expire: json['expire'] as int,
-      publicKey: json['public_key'] as String,
-      uploadEndpoint: json['upload_endpoint'] as String,
-    );
-  }
-}
-
 class JinyeImageUploadUnavailable implements Exception {
   const JinyeImageUploadUnavailable();
 }

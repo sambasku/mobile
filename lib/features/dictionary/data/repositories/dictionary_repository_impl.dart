@@ -943,6 +943,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
             isVerified: i.isVerified,
             contentWarnings: List<String>.from(i.contentWarnings),
             attribution: ImageAttribution.fromJson(i.attribution),
+            sourceJinyeId: i.sourceJinyeId,
           ),
         )
         .toList(),

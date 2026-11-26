@@ -85,7 +85,7 @@
   },
   "balehoPromoSlide": "Promosi",
   "balehoInternalSlide": "Di aplikasi",
-  "balehoFooterPromoNote": "Area Media Promosi · Ruang publikasi dan promosi SambasKu.",
+  "balehoFooterPromoNote": "Ruang publikasi dan promosi SambasKu",
   "@balehoFooterPromoNote": {
     "description": "Catatan kecil di bawah dot indicator Baleho"
   },
@@ -106,7 +106,58 @@
       }
     }
   },
-  "balehoQuoteEstimate": "Estimasi: Rp {amount} ({cells} sel x {days} hari x {slides} slide)",
+  "balehoPricingStartFrom": "Mulai dari",
+  "@balehoPricingStartFrom": {
+    "description": "Label kecil di atas nominal tarif pada bottom sheet promo Baleho"
+  },
+  "balehoPricingCurrencyValue": "Rp {amount}",
+  "@balehoPricingCurrencyValue": {
+    "description": "Format nominal rupiah pada kartu tarif Baleho",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoPricingPerUnit": "/ sel 1x1 / hari / slide",
+  "@balehoPricingPerUnit": {
+    "description": "Satuan tarif di samping nominal harga Baleho"
+  },
+  "balehoPricingPointSize": "Pilih 1 sel atau tarik beberapa sel sesuai kebutuhan kamu",
+  "@balehoPricingPointSize": {
+    "description": "Poin penjelasan ukuran fleksibel di bottom sheet tarif Baleho"
+  },
+  "balehoPricingPointExample": "Contoh: 1x1 selama 7 hari = Rp {amount}",
+  "@balehoPricingPointExample": {
+    "description": "Contoh estimasi 7 hari di bottom sheet tarif Baleho",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoPricingBadge": "Tarif transparan",
+  "@balehoPricingBadge": {
+    "description": "Lencana kecil pada kartu tarif di bottom sheet promo Baleho"
+  },
+  "balehoPricingEstimateHeading": "Simulasi 1 sel (1x1)",
+  "@balehoPricingEstimateHeading": {
+    "description": "Judul kecil di atas strip simulasi durasi di kartu tarif Baleho"
+  },
+  "balehoPricingDaysShort": "{days} hari",
+  "@balehoPricingDaysShort": {
+    "description": "Label singkat durasi hari pada simulasi tarif Baleho",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoPricingPointReach": "Pesanan akan ditayangkan setelah proses verifikasi dan pembayaran selesai.",
+  "@balehoPricingPointReach": {
+    "description": "Poin jangkauan tayang di bottom sheet tarif Baleho"
+  },
+  "balehoQuoteEstimate": "Estimasi: Rp {amount} ({cells} sel × {days} hari × {slides} slide)",
   "@balehoQuoteEstimate": {
     "description": "Estimasi satu baris (legacy); UI book pakai rincian",
     "placeholders": {
@@ -185,7 +236,7 @@
       }
     }
   },
-  "balehoQuoteFormulaHint": "Hitungan: jumlah sel x hari x tarif x slide",
+  "balehoQuoteFormulaHint": "Biaya dihitung dari ukuran sel, durasi, dan jumlah slide",
   "@balehoQuoteFormulaHint": {
     "description": "Penjelasan singkat rumus quote Baleho"
   },
@@ -198,7 +249,7 @@
       }
     }
   },
-  "balehoQuoteFooterBreakdown": "{cells} sel x {days} hari x {slides} slide",
+  "balehoQuoteFooterBreakdown": "{cells} sel × {days} hari × {slides} slide",
   "@balehoQuoteFooterBreakdown": {
     "description": "Ringkas faktor hitungan di atas tombol submit Baleho",
     "placeholders": {
@@ -620,6 +671,42 @@
   },
   "balehoReferralLabel": "Kode teman (opsional)",
   "balehoReferralHint": "Username yang mengajakmu",
+  "balehoReferralDescription": "Orang yang mengajak kamu memakai SambasKu sebagai media promosi.",
+  "@balehoReferralDescription": {
+    "description": "Penjelasan singkat field kode teman di form pesan Baleho"
+  },
+  "balehoReferralPickTitle": "Cari username teman",
+  "@balehoReferralPickTitle": {
+    "description": "Judul tile pemilih kode teman saat belum ada username terpilih"
+  },
+  "balehoReferralSelectedHint": "Ketuk untuk ganti",
+  "@balehoReferralSelectedHint": {
+    "description": "Subjudul tile kode teman saat username sudah terpilih"
+  },
+  "balehoReferralClearSemantics": "Hapus kode teman",
+  "@balehoReferralClearSemantics": {
+    "description": "Label aksesibilitas tombol hapus kode teman"
+  },
+  "balehoReferralSearchTitle": "Cari teman",
+  "@balehoReferralSearchTitle": {
+    "description": "Judul bottom sheet pencarian username teman Baleho"
+  },
+  "balehoReferralSearchHint": "Ketik username...",
+  "@balehoReferralSearchHint": {
+    "description": "Placeholder input cari username teman di bottom sheet"
+  },
+  "balehoReferralSearchPrompt": "Ketik username orang yang mengajak kamu.",
+  "@balehoReferralSearchPrompt": {
+    "description": "Teks awal saat input pencarian teman masih kosong"
+  },
+  "balehoReferralSearchEmpty": "Username tidak ditemukan.",
+  "@balehoReferralSearchEmpty": {
+    "description": "Pesan saat pencarian username teman tidak ada hasil"
+  },
+  "balehoReferralSearchFailed": "Gagal memuat pencarian. Coba lagi ya.",
+  "@balehoReferralSearchFailed": {
+    "description": "Pesan saat pencarian username teman gagal memuat"
+  },
   "balehoDaysLabel": "Berapa hari tayang?",
   "@balehoDaysLabel": {
     "description": "Label field durasi tayang"
@@ -929,6 +1016,14 @@
   "@balehoHistoryStatsTitle": {
     "description": "Judul ringkasan biaya di detail pesanan Baleho"
   },
+  "balehoHistoryDailyTitle": "7 hari terakhir",
+  "@balehoHistoryDailyTitle": {
+    "description": "Judul grafik tayang harian di detail pesanan Baleho"
+  },
+  "balehoHistoryDailyEmpty": "Belum ada data harian.",
+  "@balehoHistoryDailyEmpty": {
+    "description": "Placeholder grafik harian bila data belum ada di detail Baleho"
+  },
   "balehoHistoryCostEmpty": "Belum ada ringkasan biaya untuk pesanan ini.",
   "@balehoHistoryCostEmpty": {
     "description": "Placeholder bila quoted/CPC belum tersedia di detail Baleho"
@@ -937,7 +1032,7 @@
   "@balehoHistoryStatImpressions": {
     "description": "Label hitungan impression Baleho"
   },
-  "balehoHistoryStatTaps": "Tap baleho",
+  "balehoHistoryStatTaps": "Open",
   "@balehoHistoryStatTaps": {
     "description": "Label hitungan tap membuka sheet detail"
   },
@@ -3008,16 +3103,16 @@
   "dictCopiedWord": "Teks kata disalin",
   "dictCopiedMeaning": "Makna disalin",
   "dictSearchHint": "Cari kata Sambas...",
-  "dictSearchChip": "Cari",
+  "dictSearchChip": "Cari\nKata",
   "@dictSearchChip": {
     "description": "Label chip cari di beranda (bukan hint field list)"
   },
-  "dictAZ": "A-Z",
-  "dictProposeChip": "Usul",
+  "dictAZ": "Indeks\nA-Z",
+  "dictProposeChip": "Tambah\nKata",
   "@dictProposeChip": {
     "description": "Label chip usul kata di beranda (pendek)"
   },
-  "dictDiscussionChip": "Diskusi",
+  "dictDiscussionChip": "Ruang\nDiskusi",
   "@dictDiscussionChip": {
     "description": "Label chip ruang diskusi di beranda (pendek)"
   },
@@ -9765,6 +9860,34 @@
   "jinyePromoteFailed": "Gagal mengajukan jadi contoh",
   "@jinyePromoteFailed": {
     "description": "Error promote example"
+  },
+  "jinyePromoteImageAction": "Jadikan foto lemma",
+  "@jinyePromoteImageAction": {
+    "description": "CTA promote foto Jinye jadi foto lemma"
+  },
+  "jinyePromoteImagePickTitle": "Pilih foto",
+  "@jinyePromoteImagePickTitle": {
+    "description": "Judul sheet pilih foto Jinye untuk jadi foto lemma"
+  },
+  "jinyePromoteImagePickConfirm": "Lanjut pilih lemma",
+  "@jinyePromoteImagePickConfirm": {
+    "description": "Tombol lanjut setelah pilih foto Jinye"
+  },
+  "jinyePromoteImagePending": "Foto terkirim, menunggu dicek verifikator ya",
+  "@jinyePromoteImagePending": {
+    "description": "Toast promote foto oleh user biasa (pending review)"
+  },
+  "jinyePromoteImageDone": "Foto sudah jadi foto lemma",
+  "@jinyePromoteImageDone": {
+    "description": "Toast promote foto oleh verifikator (langsung tayang)"
+  },
+  "jinyePromoteImageFailed": "Gagal mengajukan jadi foto lemma",
+  "@jinyePromoteImageFailed": {
+    "description": "Error promote foto"
+  },
+  "jinyePromoteImageSourceLabel": "Foto dari Jinye",
+  "@jinyePromoteImageSourceLabel": {
+    "description": "Label atribusi foto lemma hasil promote Jinye"
   },
   "jinyeTranslateAction": "Usul terjemahan",
   "@jinyeTranslateAction": {

@@ -2551,7 +2551,8 @@ mixin _$WordImageDto {
 /// response lama (tanpa field ini) tetap bekerja normal.
 @JsonKey(name: 'is_verified') bool get isVerified;/// Peringatan konten visual per gambar. V1: ['kekerasan'].
 @JsonKey(name: 'content_warnings') List<String> get contentWarnings;/// Kredit foto stock (+ `provider`); null = upload / data lama.
- Map<String, dynamic>? get attribution;
+ Map<String, dynamic>? get attribution;/// Id Jinye sumber bila foto hasil promote Jinye; null = bukan dari Jinye.
+@JsonKey(name: 'source_jinye_id') String? get sourceJinyeId;
 /// Create a copy of WordImageDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2565,20 +2566,20 @@ $WordImageDtoCopyWith<WordImageDto> get copyWith => _$WordImageDtoCopyWithImpl<W
 @override
 bool operator ==(Object other) {
   final _this = this as WordImageDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WordImageDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.altText, _this.altText) || other.altText == _this.altText)&&(identical(other.isPrimary, _this.isPrimary) || other.isPrimary == _this.isPrimary)&&(identical(other.isVerified, _this.isVerified) || other.isVerified == _this.isVerified)&&const DeepCollectionEquality().equals(other.contentWarnings, _this.contentWarnings)&&const DeepCollectionEquality().equals(other.attribution, _this.attribution));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WordImageDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.altText, _this.altText) || other.altText == _this.altText)&&(identical(other.isPrimary, _this.isPrimary) || other.isPrimary == _this.isPrimary)&&(identical(other.isVerified, _this.isVerified) || other.isVerified == _this.isVerified)&&const DeepCollectionEquality().equals(other.contentWarnings, _this.contentWarnings)&&const DeepCollectionEquality().equals(other.attribution, _this.attribution)&&(identical(other.sourceJinyeId, _this.sourceJinyeId) || other.sourceJinyeId == _this.sourceJinyeId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as WordImageDto;
-  return Object.hash(runtimeType,_this.id,_this.url,_this.altText,_this.isPrimary,_this.isVerified,const DeepCollectionEquality().hash(_this.contentWarnings),const DeepCollectionEquality().hash(_this.attribution));
+  return Object.hash(runtimeType,_this.id,_this.url,_this.altText,_this.isPrimary,_this.isVerified,const DeepCollectionEquality().hash(_this.contentWarnings),const DeepCollectionEquality().hash(_this.attribution),_this.sourceJinyeId);
 }
 
 @override
 String toString() {
   final _this = this as WordImageDto;
-  return 'WordImageDto(id: ${_this.id}, url: ${_this.url}, altText: ${_this.altText}, isPrimary: ${_this.isPrimary}, isVerified: ${_this.isVerified}, contentWarnings: ${_this.contentWarnings}, attribution: ${_this.attribution})';
+  return 'WordImageDto(id: ${_this.id}, url: ${_this.url}, altText: ${_this.altText}, isPrimary: ${_this.isPrimary}, isVerified: ${_this.isVerified}, contentWarnings: ${_this.contentWarnings}, attribution: ${_this.attribution}, sourceJinyeId: ${_this.sourceJinyeId})';
 }
 
 
@@ -2589,7 +2590,7 @@ abstract mixin class $WordImageDtoCopyWith<$Res>  {
   factory $WordImageDtoCopyWith(WordImageDto value, $Res Function(WordImageDto) _then) = _$WordImageDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String url,@JsonKey(name: 'alt_text') String? altText,@JsonKey(name: 'is_primary') bool isPrimary,@JsonKey(name: 'is_verified') bool isVerified,@JsonKey(name: 'content_warnings') List<String> contentWarnings, Map<String, dynamic>? attribution
+ String id, String url,@JsonKey(name: 'alt_text') String? altText,@JsonKey(name: 'is_primary') bool isPrimary,@JsonKey(name: 'is_verified') bool isVerified,@JsonKey(name: 'content_warnings') List<String> contentWarnings, Map<String, dynamic>? attribution,@JsonKey(name: 'source_jinye_id') String? sourceJinyeId
 });
 
 
@@ -2606,7 +2607,7 @@ class _$WordImageDtoCopyWithImpl<$Res>
 
 /// Create a copy of WordImageDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? url = null,Object? altText = freezed,Object? isPrimary = null,Object? isVerified = null,Object? contentWarnings = null,Object? attribution = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? url = null,Object? altText = freezed,Object? isPrimary = null,Object? isVerified = null,Object? contentWarnings = null,Object? attribution = freezed,Object? sourceJinyeId = freezed,}) {
   return _then(WordImageDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
@@ -2615,7 +2616,8 @@ as String?,isPrimary: null == isPrimary ? _self.isPrimary : isPrimary // ignore:
 as bool,isVerified: null == isVerified ? _self.isVerified : isVerified // ignore: cast_nullable_to_non_nullable
 as bool,contentWarnings: null == contentWarnings ? _self.contentWarnings : contentWarnings // ignore: cast_nullable_to_non_nullable
 as List<String>,attribution: freezed == attribution ? _self.attribution : attribution // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>?,
+as Map<String, dynamic>?,sourceJinyeId: freezed == sourceJinyeId ? _self.sourceJinyeId : sourceJinyeId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -2700,10 +2702,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String url, @JsonKey(name: 'alt_text')  String? altText, @JsonKey(name: 'is_primary')  bool isPrimary, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'content_warnings')  List<String> contentWarnings,  Map<String, dynamic>? attribution)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String url, @JsonKey(name: 'alt_text')  String? altText, @JsonKey(name: 'is_primary')  bool isPrimary, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'content_warnings')  List<String> contentWarnings,  Map<String, dynamic>? attribution, @JsonKey(name: 'source_jinye_id')  String? sourceJinyeId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WordImageDto() when $default != null:
-return $default(_that.id,_that.url,_that.altText,_that.isPrimary,_that.isVerified,_that.contentWarnings,_that.attribution);case _:
+return $default(_that.id,_that.url,_that.altText,_that.isPrimary,_that.isVerified,_that.contentWarnings,_that.attribution,_that.sourceJinyeId);case _:
   return orElse();
 
 }
@@ -2721,10 +2723,10 @@ return $default(_that.id,_that.url,_that.altText,_that.isPrimary,_that.isVerifie
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String url, @JsonKey(name: 'alt_text')  String? altText, @JsonKey(name: 'is_primary')  bool isPrimary, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'content_warnings')  List<String> contentWarnings,  Map<String, dynamic>? attribution)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String url, @JsonKey(name: 'alt_text')  String? altText, @JsonKey(name: 'is_primary')  bool isPrimary, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'content_warnings')  List<String> contentWarnings,  Map<String, dynamic>? attribution, @JsonKey(name: 'source_jinye_id')  String? sourceJinyeId)  $default,) {final _that = this;
 switch (_that) {
 case _WordImageDto():
-return $default(_that.id,_that.url,_that.altText,_that.isPrimary,_that.isVerified,_that.contentWarnings,_that.attribution);case _:
+return $default(_that.id,_that.url,_that.altText,_that.isPrimary,_that.isVerified,_that.contentWarnings,_that.attribution,_that.sourceJinyeId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2741,10 +2743,10 @@ return $default(_that.id,_that.url,_that.altText,_that.isPrimary,_that.isVerifie
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String url, @JsonKey(name: 'alt_text')  String? altText, @JsonKey(name: 'is_primary')  bool isPrimary, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'content_warnings')  List<String> contentWarnings,  Map<String, dynamic>? attribution)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String url, @JsonKey(name: 'alt_text')  String? altText, @JsonKey(name: 'is_primary')  bool isPrimary, @JsonKey(name: 'is_verified')  bool isVerified, @JsonKey(name: 'content_warnings')  List<String> contentWarnings,  Map<String, dynamic>? attribution, @JsonKey(name: 'source_jinye_id')  String? sourceJinyeId)?  $default,) {final _that = this;
 switch (_that) {
 case _WordImageDto() when $default != null:
-return $default(_that.id,_that.url,_that.altText,_that.isPrimary,_that.isVerified,_that.contentWarnings,_that.attribution);case _:
+return $default(_that.id,_that.url,_that.altText,_that.isPrimary,_that.isVerified,_that.contentWarnings,_that.attribution,_that.sourceJinyeId);case _:
   return null;
 
 }
@@ -2756,7 +2758,7 @@ return $default(_that.id,_that.url,_that.altText,_that.isPrimary,_that.isVerifie
 @JsonSerializable()
 
 class _WordImageDto implements WordImageDto {
-  const _WordImageDto({required this.id, required this.url, @JsonKey(name: 'alt_text') this.altText, @JsonKey(name: 'is_primary') this.isPrimary = false, @JsonKey(name: 'is_verified') this.isVerified = true, @JsonKey(name: 'content_warnings')  List<String> contentWarnings = const [],  Map<String, dynamic>? attribution}): _contentWarnings = contentWarnings,_attribution = attribution;
+  const _WordImageDto({required this.id, required this.url, @JsonKey(name: 'alt_text') this.altText, @JsonKey(name: 'is_primary') this.isPrimary = false, @JsonKey(name: 'is_verified') this.isVerified = true, @JsonKey(name: 'content_warnings')  List<String> contentWarnings = const [],  Map<String, dynamic>? attribution, @JsonKey(name: 'source_jinye_id') this.sourceJinyeId}): _contentWarnings = contentWarnings,_attribution = attribution;
   factory _WordImageDto.fromJson(Map<String, dynamic> json) => _$WordImageDtoFromJson(json);
 
 @override final  String id;
@@ -2786,6 +2788,8 @@ class _WordImageDto implements WordImageDto {
   return EqualUnmodifiableMapView(value);
 }
 
+/// Id Jinye sumber bila foto hasil promote Jinye; null = bukan dari Jinye.
+@override@JsonKey(name: 'source_jinye_id') final  String? sourceJinyeId;
 
 /// Create a copy of WordImageDto
 /// with the given fields replaced by the non-null parameter values.
@@ -2800,18 +2804,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WordImageDto&&(identical(other.id, id) || other.id == id)&&(identical(other.url, url) || other.url == url)&&(identical(other.altText, altText) || other.altText == altText)&&(identical(other.isPrimary, isPrimary) || other.isPrimary == isPrimary)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&const DeepCollectionEquality().equals(other.contentWarnings, _contentWarnings)&&const DeepCollectionEquality().equals(other.attribution, _attribution));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WordImageDto&&(identical(other.id, id) || other.id == id)&&(identical(other.url, url) || other.url == url)&&(identical(other.altText, altText) || other.altText == altText)&&(identical(other.isPrimary, isPrimary) || other.isPrimary == isPrimary)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&const DeepCollectionEquality().equals(other.contentWarnings, _contentWarnings)&&const DeepCollectionEquality().equals(other.attribution, _attribution)&&(identical(other.sourceJinyeId, sourceJinyeId) || other.sourceJinyeId == sourceJinyeId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,url,altText,isPrimary,isVerified,const DeepCollectionEquality().hash(_contentWarnings),const DeepCollectionEquality().hash(_attribution));
+    return Object.hash(runtimeType,id,url,altText,isPrimary,isVerified,const DeepCollectionEquality().hash(_contentWarnings),const DeepCollectionEquality().hash(_attribution),sourceJinyeId);
 }
 
 @override
 String toString() {
-    return 'WordImageDto(id: $id, url: $url, altText: $altText, isPrimary: $isPrimary, isVerified: $isVerified, contentWarnings: $contentWarnings, attribution: $attribution)';
+    return 'WordImageDto(id: $id, url: $url, altText: $altText, isPrimary: $isPrimary, isVerified: $isVerified, contentWarnings: $contentWarnings, attribution: $attribution, sourceJinyeId: $sourceJinyeId)';
 }
 
 
@@ -2822,7 +2826,7 @@ abstract mixin class _$WordImageDtoCopyWith<$Res> implements $WordImageDtoCopyWi
   factory _$WordImageDtoCopyWith(_WordImageDto value, $Res Function(_WordImageDto) _then) = __$WordImageDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String url,@JsonKey(name: 'alt_text') String? altText,@JsonKey(name: 'is_primary') bool isPrimary,@JsonKey(name: 'is_verified') bool isVerified,@JsonKey(name: 'content_warnings') List<String> contentWarnings, Map<String, dynamic>? attribution
+ String id, String url,@JsonKey(name: 'alt_text') String? altText,@JsonKey(name: 'is_primary') bool isPrimary,@JsonKey(name: 'is_verified') bool isVerified,@JsonKey(name: 'content_warnings') List<String> contentWarnings, Map<String, dynamic>? attribution,@JsonKey(name: 'source_jinye_id') String? sourceJinyeId
 });
 
 
@@ -2839,7 +2843,7 @@ class __$WordImageDtoCopyWithImpl<$Res>
 
 /// Create a copy of WordImageDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? url = null,Object? altText = freezed,Object? isPrimary = null,Object? isVerified = null,Object? contentWarnings = null,Object? attribution = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? url = null,Object? altText = freezed,Object? isPrimary = null,Object? isVerified = null,Object? contentWarnings = null,Object? attribution = freezed,Object? sourceJinyeId = freezed,}) {
   return _then(_WordImageDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
@@ -2848,7 +2852,8 @@ as String?,isPrimary: null == isPrimary ? _self.isPrimary : isPrimary // ignore:
 as bool,isVerified: null == isVerified ? _self.isVerified : isVerified // ignore: cast_nullable_to_non_nullable
 as bool,contentWarnings: null == contentWarnings ? _self._contentWarnings : contentWarnings // ignore: cast_nullable_to_non_nullable
 as List<String>,attribution: freezed == attribution ? _self._attribution : attribution // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>?,
+as Map<String, dynamic>?,sourceJinyeId: freezed == sourceJinyeId ? _self.sourceJinyeId : sourceJinyeId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

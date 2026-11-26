@@ -30,8 +30,6 @@ import '../../../hot_topics/presentation/widgets/hot_topics_card.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../chat/presentation/providers/chat_unread_provider.dart';
 import '../../../discussion/discussion_router.dart';
-import '../../../encyclopedia/encyclopedia_router.dart';
-import '../../../entertainment/entertainment_router.dart';
 import '../../dictionary_router.dart';
 import '../providers/word_list_providers.dart';
 import '../providers/word_of_day_providers.dart';
@@ -314,16 +312,16 @@ class HomeSearchPage extends HookConsumerWidget {
   }
 }
 
-/// Satu baris tile aksi beranda (Cari / A-Z / Usulkan / Diskusi / Pantun /
-/// Ensiklopedia). Scroll horizontal; kotak ikon 1:1; label di bawahnya.
+/// Satu baris tile aksi beranda (Cari / A-Z / Tambah Kata / Ruang Diskusi).
+/// Scroll horizontal; kotak ikon 1:1; label di bawahnya.
 class _HomeActionChips extends ConsumerWidget {
   const _HomeActionChips();
 
-  /// Lebar kotak ikon (= tinggi, rasio 1:1). Sama dengan lebar kolom
-  /// supaya antar-kotak tidak ada "udara" dari padding label.
+  /// Lebar kotak ikon (= tinggi, rasio 1:1). Sama dengan lebar kolom,
+  /// supaya jarak antar kotak = separator 8px (pola chip Kontribusi).
   static const double _tileSize = 48;
 
-  /// Slot label di bawah kotak (gap ikon→teks + 2 baris kecil).
+  /// Slot label di bawah kotak (2 baris kecil).
   static const double _labelSlot = 28;
 
   /// Tinggi total baris (kotak + gap + label).
@@ -379,17 +377,6 @@ class _HomeActionChips extends ConsumerWidget {
           context.push(DiscussionRouter.chat.path);
         },
       ),
-      _HomeActionChip(
-        icon: FLucideIcons.feather,
-        label: l10n.pantunTitle,
-        onPress: () => context.push(EntertainmentRouter.pantunHub.path),
-      ),
-      _HomeActionChip(
-        icon: FLucideIcons.bookOpen,
-        label: l10n.encyclopediaChip,
-        semanticsLabel: l10n.encyclopediaTitle,
-        onPress: () => context.push(EncyclopediaRouter.list.path),
-      ),
     ];
 
     return SizedBox(
@@ -442,7 +429,7 @@ class _HomeActionTile extends StatelessWidget {
       label: item.semanticsLabel ?? item.label,
       child: FTappable(
         onPress: item.onPress,
-        // Lebar = ukuran kotak: jarak antar kotak = separator saja (4px).
+        // Lebar = ukuran kotak: jarak antar kotak = separator saja (8px).
         child: SizedBox(
           width: size,
           child: Column(

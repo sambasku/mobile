@@ -128,8 +128,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoInternalSlide => 'Di aplikasi';
 
   @override
-  String get balehoFooterPromoNote =>
-      'Area Media Promosi · Ruang publikasi dan promosi SambasKu.';
+  String get balehoFooterPromoNote => 'Ruang publikasi dan promosi SambasKu';
 
   @override
   String get balehoSlidePromoCaption => 'Ingin tampil di sini?';
@@ -144,8 +143,43 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get balehoPricingStartFrom => 'Mulai dari';
+
+  @override
+  String balehoPricingCurrencyValue(String amount) {
+    return 'Rp $amount';
+  }
+
+  @override
+  String get balehoPricingPerUnit => '/ sel 1x1 / hari / slide';
+
+  @override
+  String get balehoPricingPointSize =>
+      'Pilih 1 sel atau tarik beberapa sel sesuai kebutuhan kamu';
+
+  @override
+  String balehoPricingPointExample(String amount) {
+    return 'Contoh: 1x1 selama 7 hari = Rp $amount';
+  }
+
+  @override
+  String get balehoPricingBadge => 'Tarif transparan';
+
+  @override
+  String get balehoPricingEstimateHeading => 'Simulasi 1 sel (1x1)';
+
+  @override
+  String balehoPricingDaysShort(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String get balehoPricingPointReach =>
+      'Pesanan akan ditayangkan setelah proses verifikasi dan pembayaran selesai.';
+
+  @override
   String balehoQuoteEstimate(String amount, int cells, int days, int slides) {
-    return 'Estimasi: Rp $amount ($cells sel x $days hari x $slides slide)';
+    return 'Estimasi: Rp $amount ($cells sel × $days hari × $slides slide)';
   }
 
   @override
@@ -196,7 +230,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get balehoQuoteFormulaHint =>
-      'Hitungan: jumlah sel x hari x tarif x slide';
+      'Biaya dihitung dari ukuran sel, durasi, dan jumlah slide';
 
   @override
   String balehoQuoteFooterTotal(String amount) {
@@ -205,7 +239,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String balehoQuoteFooterBreakdown(int cells, int days, int slides) {
-    return '$cells sel x $days hari x $slides slide';
+    return '$cells sel × $days hari × $slides slide';
   }
 
   @override
@@ -517,6 +551,36 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get balehoReferralHint => 'Username yang mengajakmu';
+
+  @override
+  String get balehoReferralDescription =>
+      'Orang yang mengajak kamu memakai SambasKu sebagai media promosi.';
+
+  @override
+  String get balehoReferralPickTitle => 'Cari username teman';
+
+  @override
+  String get balehoReferralSelectedHint => 'Ketuk untuk ganti';
+
+  @override
+  String get balehoReferralClearSemantics => 'Hapus kode teman';
+
+  @override
+  String get balehoReferralSearchTitle => 'Cari teman';
+
+  @override
+  String get balehoReferralSearchHint => 'Ketik username...';
+
+  @override
+  String get balehoReferralSearchPrompt =>
+      'Ketik username orang yang mengajak kamu.';
+
+  @override
+  String get balehoReferralSearchEmpty => 'Username tidak ditemukan.';
+
+  @override
+  String get balehoReferralSearchFailed =>
+      'Gagal memuat pencarian. Coba lagi ya.';
 
   @override
   String get balehoDaysLabel => 'Berapa hari tayang?';
@@ -878,6 +942,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoHistoryStatsTitle => 'Biaya';
 
   @override
+  String get balehoHistoryDailyTitle => '7 hari terakhir';
+
+  @override
+  String get balehoHistoryDailyEmpty => 'Belum ada data harian.';
+
+  @override
   String get balehoHistoryCostEmpty =>
       'Belum ada ringkasan biaya untuk pesanan ini.';
 
@@ -885,7 +955,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoHistoryStatImpressions => 'Dilihat';
 
   @override
-  String get balehoHistoryStatTaps => 'Tap baleho';
+  String get balehoHistoryStatTaps => 'Open';
 
   @override
   String get balehoHistoryStatActions => 'Tap CTA';
@@ -4519,16 +4589,16 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictSearchHint => 'Cari kata Sambas...';
 
   @override
-  String get dictSearchChip => 'Cari';
+  String get dictSearchChip => 'Cari\nKata';
 
   @override
-  String get dictAZ => 'A-Z';
+  String get dictAZ => 'Indeks\nA-Z';
 
   @override
-  String get dictProposeChip => 'Usul';
+  String get dictProposeChip => 'Tambah\nKata';
 
   @override
-  String get dictDiscussionChip => 'Diskusi';
+  String get dictDiscussionChip => 'Ruang\nDiskusi';
 
   @override
   String get dictDiscussionUnreadSemantics => 'Diskusi, ada chat baru';
@@ -12898,6 +12968,28 @@ class AppLocalizationsId extends AppLocalizations {
   String get jinyePromoteFailed => 'Gagal mengajukan jadi contoh';
 
   @override
+  String get jinyePromoteImageAction => 'Jadikan foto lemma';
+
+  @override
+  String get jinyePromoteImagePickTitle => 'Pilih foto';
+
+  @override
+  String get jinyePromoteImagePickConfirm => 'Lanjut pilih lemma';
+
+  @override
+  String get jinyePromoteImagePending =>
+      'Foto terkirim, menunggu dicek verifikator ya';
+
+  @override
+  String get jinyePromoteImageDone => 'Foto sudah jadi foto lemma';
+
+  @override
+  String get jinyePromoteImageFailed => 'Gagal mengajukan jadi foto lemma';
+
+  @override
+  String get jinyePromoteImageSourceLabel => 'Foto dari Jinye';
+
+  @override
   String get jinyeTranslateAction => 'Usul terjemahan';
 
   @override
@@ -14093,8 +14185,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoInternalSlide => 'Di aplikasi';
 
   @override
-  String get balehoFooterPromoNote =>
-      'Area Media Promosi · Ruang publikasi dan promosi SambasKu.';
+  String get balehoFooterPromoNote => 'Ruang publikasi dan promosi SambasKu';
 
   @override
   String get balehoSlidePromoCaption => 'Ingin tampil di sini?';
@@ -14109,8 +14200,43 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
+  String get balehoPricingStartFrom => 'Mulai dari';
+
+  @override
+  String balehoPricingCurrencyValue(String amount) {
+    return 'Rp $amount';
+  }
+
+  @override
+  String get balehoPricingPerUnit => '/ sel 1x1 / hari / slide';
+
+  @override
+  String get balehoPricingPointSize =>
+      'Pilih 1 sel atau tarik beberapa sel sesuai kebutuhan kamu';
+
+  @override
+  String balehoPricingPointExample(String amount) {
+    return 'Contoh: 1x1 selama 7 hari = Rp $amount';
+  }
+
+  @override
+  String get balehoPricingBadge => 'Tarif transparan';
+
+  @override
+  String get balehoPricingEstimateHeading => 'Simulasi 1 sel (1x1)';
+
+  @override
+  String balehoPricingDaysShort(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String get balehoPricingPointReach =>
+      'Pesanan akan ditayangkan setelah proses verifikasi dan pembayaran selesai.';
+
+  @override
   String balehoQuoteEstimate(String amount, int cells, int days, int slides) {
-    return 'Estimasi: Rp $amount ($cells sel x $days hari x $slides slide)';
+    return 'Estimasi: Rp $amount ($cells sel × $days hari × $slides slide)';
   }
 
   @override
@@ -14161,7 +14287,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoQuoteFormulaHint =>
-      'Hitungan: jumlah sel x hari x tarif x slide';
+      'Biaya dihitung dari ukuran sel, durasi, dan jumlah slide';
 
   @override
   String balehoQuoteFooterTotal(String amount) {
@@ -14170,7 +14296,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String balehoQuoteFooterBreakdown(int cells, int days, int slides) {
-    return '$cells sel x $days hari x $slides slide';
+    return '$cells sel × $days hari × $slides slide';
   }
 
   @override
@@ -14482,6 +14608,36 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoReferralHint => 'Username yang mengajakmu';
+
+  @override
+  String get balehoReferralDescription =>
+      'Orang yang mengajak kamu memakai SambasKu sebagai media promosi.';
+
+  @override
+  String get balehoReferralPickTitle => 'Cari username teman';
+
+  @override
+  String get balehoReferralSelectedHint => 'Ketuk untuk ganti';
+
+  @override
+  String get balehoReferralClearSemantics => 'Hapus kode teman';
+
+  @override
+  String get balehoReferralSearchTitle => 'Cari teman';
+
+  @override
+  String get balehoReferralSearchHint => 'Ketik username...';
+
+  @override
+  String get balehoReferralSearchPrompt =>
+      'Ketik username orang yang mengajak kamu.';
+
+  @override
+  String get balehoReferralSearchEmpty => 'Username tidak ditemukan.';
+
+  @override
+  String get balehoReferralSearchFailed =>
+      'Gagal memuat pencarian. Coba lagi ya.';
 
   @override
   String get balehoDaysLabel => 'Berapa hari tayang?';
@@ -14843,6 +14999,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoHistoryStatsTitle => 'Biaya';
 
   @override
+  String get balehoHistoryDailyTitle => '7 hari terakhir';
+
+  @override
+  String get balehoHistoryDailyEmpty => 'Belum ada data harian.';
+
+  @override
   String get balehoHistoryCostEmpty =>
       'Belum ada ringkasan biaya untuk pesanan ini.';
 
@@ -14850,7 +15012,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoHistoryStatImpressions => 'Dilihat';
 
   @override
-  String get balehoHistoryStatTaps => 'Tap baleho';
+  String get balehoHistoryStatTaps => 'Open';
 
   @override
   String get balehoHistoryStatActions => 'Tap CTA';
@@ -18484,16 +18646,16 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictSearchHint => 'Cari kata Sambas...';
 
   @override
-  String get dictSearchChip => 'Cari';
+  String get dictSearchChip => 'Cari\nKata';
 
   @override
-  String get dictAZ => 'A-Z';
+  String get dictAZ => 'Indeks\nA-Z';
 
   @override
-  String get dictProposeChip => 'Usul';
+  String get dictProposeChip => 'Tambah\nKata';
 
   @override
-  String get dictDiscussionChip => 'Diskusi';
+  String get dictDiscussionChip => 'Ruang\nDiskusi';
 
   @override
   String get dictDiscussionUnreadSemantics => 'Diskusi, ada chat baru';
@@ -26777,6 +26939,28 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get jinyePromoteFailed => 'Gagal mengajukan jadi contoh';
+
+  @override
+  String get jinyePromoteImageAction => 'Jadikan foto lemma';
+
+  @override
+  String get jinyePromoteImagePickTitle => 'Pilih foto';
+
+  @override
+  String get jinyePromoteImagePickConfirm => 'Lanjut pilih lemma';
+
+  @override
+  String get jinyePromoteImagePending =>
+      'Foto terkirim, menunggu dicek verifikator ya';
+
+  @override
+  String get jinyePromoteImageDone => 'Foto sudah jadi foto lemma';
+
+  @override
+  String get jinyePromoteImageFailed => 'Gagal mengajukan jadi foto lemma';
+
+  @override
+  String get jinyePromoteImageSourceLabel => 'Foto dari Jinye';
 
   @override
   String get jinyeTranslateAction => 'Usul terjemahan';

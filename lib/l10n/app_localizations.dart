@@ -322,7 +322,7 @@ abstract class AppLocalizations {
   /// Catatan kecil di bawah dot indicator Baleho
   ///
   /// In id, this message translates to:
-  /// **'Area Media Promosi · Ruang publikasi dan promosi SambasKu.'**
+  /// **'Ruang publikasi dan promosi SambasKu'**
   String get balehoFooterPromoNote;
 
   /// Judul ajakan di atas grid slide promo Baleho
@@ -343,10 +343,64 @@ abstract class AppLocalizations {
   /// **'Tarif: 1x1 / hari / slide = Rp {amount}'**
   String balehoPricingUnitLine(String amount);
 
+  /// Label kecil di atas nominal tarif pada bottom sheet promo Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai dari'**
+  String get balehoPricingStartFrom;
+
+  /// Format nominal rupiah pada kartu tarif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Rp {amount}'**
+  String balehoPricingCurrencyValue(String amount);
+
+  /// Satuan tarif di samping nominal harga Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'/ sel 1x1 / hari / slide'**
+  String get balehoPricingPerUnit;
+
+  /// Poin penjelasan ukuran fleksibel di bottom sheet tarif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih 1 sel atau tarik beberapa sel sesuai kebutuhan kamu'**
+  String get balehoPricingPointSize;
+
+  /// Contoh estimasi 7 hari di bottom sheet tarif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: 1x1 selama 7 hari = Rp {amount}'**
+  String balehoPricingPointExample(String amount);
+
+  /// Lencana kecil pada kartu tarif di bottom sheet promo Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Tarif transparan'**
+  String get balehoPricingBadge;
+
+  /// Judul kecil di atas strip simulasi durasi di kartu tarif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Simulasi 1 sel (1x1)'**
+  String get balehoPricingEstimateHeading;
+
+  /// Label singkat durasi hari pada simulasi tarif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'{days} hari'**
+  String balehoPricingDaysShort(int days);
+
+  /// Poin jangkauan tayang di bottom sheet tarif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Pesanan akan ditayangkan setelah proses verifikasi dan pembayaran selesai.'**
+  String get balehoPricingPointReach;
+
   /// Estimasi satu baris (legacy); UI book pakai rincian
   ///
   /// In id, this message translates to:
-  /// **'Estimasi: Rp {amount} ({cells} sel x {days} hari x {slides} slide)'**
+  /// **'Estimasi: Rp {amount} ({cells} sel × {days} hari × {slides} slide)'**
   String balehoQuoteEstimate(String amount, int cells, int days, int slides);
 
   /// Placeholder saat tarif Baleho masih di-fetch
@@ -424,7 +478,7 @@ abstract class AppLocalizations {
   /// Penjelasan singkat rumus quote Baleho
   ///
   /// In id, this message translates to:
-  /// **'Hitungan: jumlah sel x hari x tarif x slide'**
+  /// **'Biaya dihitung dari ukuran sel, durasi, dan jumlah slide'**
   String get balehoQuoteFormulaHint;
 
   /// Total estimasi di atas tombol kirim form Baleho
@@ -436,7 +490,7 @@ abstract class AppLocalizations {
   /// Ringkas faktor hitungan di atas tombol submit Baleho
   ///
   /// In id, this message translates to:
-  /// **'{cells} sel x {days} hari x {slides} slide'**
+  /// **'{cells} sel × {days} hari × {slides} slide'**
   String balehoQuoteFooterBreakdown(int cells, int days, int slides);
 
   /// Label aksesibilitas tombol info caption promo Baleho
@@ -944,6 +998,60 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Username yang mengajakmu'**
   String get balehoReferralHint;
+
+  /// Penjelasan singkat field kode teman di form pesan Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Orang yang mengajak kamu memakai SambasKu sebagai media promosi.'**
+  String get balehoReferralDescription;
+
+  /// Judul tile pemilih kode teman saat belum ada username terpilih
+  ///
+  /// In id, this message translates to:
+  /// **'Cari username teman'**
+  String get balehoReferralPickTitle;
+
+  /// Subjudul tile kode teman saat username sudah terpilih
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk ganti'**
+  String get balehoReferralSelectedHint;
+
+  /// Label aksesibilitas tombol hapus kode teman
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus kode teman'**
+  String get balehoReferralClearSemantics;
+
+  /// Judul bottom sheet pencarian username teman Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Cari teman'**
+  String get balehoReferralSearchTitle;
+
+  /// Placeholder input cari username teman di bottom sheet
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik username...'**
+  String get balehoReferralSearchHint;
+
+  /// Teks awal saat input pencarian teman masih kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik username orang yang mengajak kamu.'**
+  String get balehoReferralSearchPrompt;
+
+  /// Pesan saat pencarian username teman tidak ada hasil
+  ///
+  /// In id, this message translates to:
+  /// **'Username tidak ditemukan.'**
+  String get balehoReferralSearchEmpty;
+
+  /// Pesan saat pencarian username teman gagal memuat
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat pencarian. Coba lagi ya.'**
+  String get balehoReferralSearchFailed;
 
   /// Label field durasi tayang
   ///
@@ -1593,6 +1701,18 @@ abstract class AppLocalizations {
   /// **'Biaya'**
   String get balehoHistoryStatsTitle;
 
+  /// Judul grafik tayang harian di detail pesanan Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'7 hari terakhir'**
+  String get balehoHistoryDailyTitle;
+
+  /// Placeholder grafik harian bila data belum ada di detail Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada data harian.'**
+  String get balehoHistoryDailyEmpty;
+
   /// Placeholder bila quoted/CPC belum tersedia di detail Baleho
   ///
   /// In id, this message translates to:
@@ -1608,7 +1728,7 @@ abstract class AppLocalizations {
   /// Label hitungan tap membuka sheet detail
   ///
   /// In id, this message translates to:
-  /// **'Tap baleho'**
+  /// **'Open'**
   String get balehoHistoryStatTaps;
 
   /// Label hitungan klik CTA di sheet Baleho
@@ -7918,25 +8038,25 @@ abstract class AppLocalizations {
   /// Label chip cari di beranda (bukan hint field list)
   ///
   /// In id, this message translates to:
-  /// **'Cari'**
+  /// **'Cari\nKata'**
   String get dictSearchChip;
 
   /// No description provided for @dictAZ.
   ///
   /// In id, this message translates to:
-  /// **'A-Z'**
+  /// **'Indeks\nA-Z'**
   String get dictAZ;
 
   /// Label chip usul kata di beranda (pendek)
   ///
   /// In id, this message translates to:
-  /// **'Usul'**
+  /// **'Tambah\nKata'**
   String get dictProposeChip;
 
   /// Label chip ruang diskusi di beranda (pendek)
   ///
   /// In id, this message translates to:
-  /// **'Diskusi'**
+  /// **'Ruang\nDiskusi'**
   String get dictDiscussionChip;
 
   /// Semantics chip Diskusi di beranda saat ada chat baru (titik)
@@ -22708,6 +22828,48 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Gagal mengajukan jadi contoh'**
   String get jinyePromoteFailed;
+
+  /// CTA promote foto Jinye jadi foto lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Jadikan foto lemma'**
+  String get jinyePromoteImageAction;
+
+  /// Judul sheet pilih foto Jinye untuk jadi foto lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih foto'**
+  String get jinyePromoteImagePickTitle;
+
+  /// Tombol lanjut setelah pilih foto Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut pilih lemma'**
+  String get jinyePromoteImagePickConfirm;
+
+  /// Toast promote foto oleh user biasa (pending review)
+  ///
+  /// In id, this message translates to:
+  /// **'Foto terkirim, menunggu dicek verifikator ya'**
+  String get jinyePromoteImagePending;
+
+  /// Toast promote foto oleh verifikator (langsung tayang)
+  ///
+  /// In id, this message translates to:
+  /// **'Foto sudah jadi foto lemma'**
+  String get jinyePromoteImageDone;
+
+  /// Error promote foto
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengajukan jadi foto lemma'**
+  String get jinyePromoteImageFailed;
+
+  /// Label atribusi foto lemma hasil promote Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Foto dari Jinye'**
+  String get jinyePromoteImageSourceLabel;
 
   /// CTA usul terjemahan Jinye
   ///

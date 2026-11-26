@@ -28,6 +28,7 @@ import '../../data/jinye_providers.dart';
 import '../../domain/jinye_models.dart';
 import '../../jinye_router.dart';
 import '../utils/jinye_quota_message.dart';
+import '../widgets/jinye_promote_image_sheet.dart';
 import '../widgets/jinye_comments_section.dart';
 import '../widgets/jinye_lemma_body.dart';
 import '../widgets/jinye_link_lemma_sheet.dart';
@@ -466,6 +467,67 @@ Future<void> _promoteExampleFromUi(
   }
 }
 
+bool _canPromoteImage(JinyeItem item) =>
+    item.status == 'published' &&
+    !item.isPlainRepost &&
+    item.images.any((i) => i.displaySource != null);
+
+Future<void> _promoteImageFromUi(
+  BuildContext context,
+  WidgetRef ref, {
+  required JinyeItem item,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final urls = item.images
+      .map((i) => i.displaySource)
+      .whereType<String>()
+      .toList();
+  if (urls.isEmpty) return;
+  final picked = urls.length == 1
+      ? urls
+      : await showJinyePromoteImageSheet(context, imageUrls: urls);
+  if (picked == null || picked.isEmpty || !context.mounted) return;
+
+  final opLinks =
+      item.lemmaLinks.where((l) => l.commentId == null).toList();
+  final word = await showJinyeWordPickerSheet(
+    context,
+    initialQuery: opLinks.isNotEmpty ? (opLinks.first.lemma ?? '') : '',
+  );
+  if (word == null || !context.mounted) return;
+
+  try {
+    final published = await ref.read(jinyeRepositoryProvider).promoteImage(
+          jinyeId: item.id,
+          wordId: word.id,
+          imageUrls: picked,
+        );
+    if (!context.mounted) return;
+    showFToast(
+      context: context,
+      title: Text(
+        published
+            ? l10n.jinyePromoteImageDone
+            : l10n.jinyePromoteImagePending,
+      ),
+    );
+  } on DioException catch (e) {
+    if (!context.mounted) return;
+    final msg = e.response?.data is Map
+        ? (e.response!.data as Map)['message']
+        : null;
+    await showAppErrorSheet(
+      context,
+      message: msg is String && msg.isNotEmpty
+          ? msg
+          : l10n.jinyePromoteImageFailed,
+    );
+  } catch (_) {
+    if (!context.mounted) return;
+    await showAppErrorSheet(context, message: l10n.jinyePromoteImageFailed);
+  }
+}
+
 Future<void> _translateJinyeFromUi(
   BuildContext context,
   WidgetRef ref, {
@@ -698,6 +760,12 @@ Future<void> _showOwnerActions(
                     title: Text(l10n.jinyePromoteExampleAction),
                     onPress: () => Navigator.pop(context, 'promote'),
                   ),
+                if (_canPromoteImage(item))
+                  FTile(
+                    prefix: const Icon(FLucideIcons.image, size: 18),
+                    title: Text(l10n.jinyePromoteImageAction),
+                    onPress: () => Navigator.pop(context, 'promote_image'),
+                  ),
                 // Terjemahan juga di menu pemilik (boleh usul sendiri).
                 if (item.status == 'published' && item.body.trim().isNotEmpty)
                   FTile(
@@ -733,6 +801,10 @@ Future<void> _showOwnerActions(
 
   if (action == 'promote') {
     await _promoteExampleFromUi(context, ref, item: item);
+    return;
+  }
+  if (action == 'promote_image') {
+    await _promoteImageFromUi(context, ref, item: item);
     return;
   }
   if (action == 'translate') {
@@ -837,6 +909,13 @@ Future<void> _showVisitorActions(
                   onPress: () => Navigator.pop(context, 'quote'),
                 ),
               ],
+              // API: promote-image = login siapa saja; user biasa masuk review.
+              if (_canPromoteImage(item))
+                FTile(
+                  prefix: const Icon(FLucideIcons.image, size: 18),
+                  title: Text(l10n.jinyePromoteImageAction),
+                  onPress: () => Navigator.pop(context, 'promote_image'),
+                ),
               // API: POST translations = login siapa saja (bukan owner-only).
               if (item.status == 'published' && item.body.trim().isNotEmpty)
                 FTile(
@@ -869,6 +948,10 @@ Future<void> _showVisitorActions(
   }
   if (action == 'quote') {
     await _quoteJinyeFromUi(context, ref, item: item);
+    return;
+  }
+  if (action == 'promote_image') {
+    await _promoteImageFromUi(context, ref, item: item);
     return;
   }
   if (action == 'translate') {

@@ -12,28 +12,37 @@ class JinyeRepository {
 
   static const _base = '/api/v1/jinye';
 
-  Future<JinyeUploadCredentials> getUploadToken() async {
+  /// Foto Jinye (post + komentar) langsung ke repo GitHub lewat API:
+  /// multipart `POST /api/v1/jinye/images`.
+  Future<JinyeImageRef> uploadImage(File file) async {
+    final form = FormData.fromMap({
+      'file': await MultipartFile.fromFile(
+        file.path,
+        filename: file.uri.pathSegments.last,
+      ),
+    });
     try {
-      final res = await _dio.get<Map<String, dynamic>>(
-        '$_base/upload-token',
-        queryParameters: {'folder': '/jinye'},
+      final res = await _dio.post<Map<String, dynamic>>(
+        '$_base/images',
+        data: form,
+        options: Options(
+          contentType: Headers.multipartFormDataContentType,
+          headers: {Headers.contentTypeHeader: null},
+        ),
       );
       final data = res.data?['data'];
-      if (data is! Map<String, dynamic>) {
+      final url = data is Map ? data['url'] : null;
+      final fileId = data is Map ? data['provider_file_id'] : null;
+      if (url is! String || url.isEmpty || fileId is! String || fileId.isEmpty) {
         throw DioException(
           requestOptions: res.requestOptions,
           message: l10n.jinyeResponseIncomplete,
         );
       }
-      return JinyeUploadCredentials.fromJson(data);
+      return JinyeImageRef(url: url, providerFileId: fileId);
     } on DioException catch (e) {
       if (e.response?.statusCode == 503) {
-        final code = (e.response?.data is Map)
-            ? (e.response!.data as Map)['error_code']
-            : null;
-        if (code == 'IMAGE_UPLOAD_UNAVAILABLE') {
-          throw const JinyeImageUploadUnavailable();
-        }
+        throw const JinyeImageUploadUnavailable();
       }
       rethrow;
     }
@@ -333,6 +342,28 @@ class JinyeRepository {
       );
     }
     return JinyePromoteResult.fromJson(data);
+  }
+
+  /// Ajukan foto Jinye jadi foto lemma. `true` = langsung tayang (verifikator),
+  /// `false` = masuk antrian review.
+  Future<bool> promoteImage({
+    required String jinyeId,
+    required String wordId,
+    required List<String> imageUrls,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '$_base/$jinyeId/promote-image',
+      data: {'word_id': wordId, 'image_urls': imageUrls},
+    );
+    final data = res.data?['data'];
+    final images = data is Map<String, dynamic> ? data['images'] : null;
+    if (images is! List) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return images.every((i) => i is Map && i['is_verified'] == true);
   }
 
   static const _translationsBase = '/api/v1/translations';

@@ -268,6 +268,7 @@ _WordImageDto _$WordImageDtoFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const [],
       attribution: json['attribution'] as Map<String, dynamic>?,
+      sourceJinyeId: json['source_jinye_id'] as String?,
     );
 
 Map<String, dynamic> _$WordImageDtoToJson(_WordImageDto instance) =>
@@ -279,6 +280,7 @@ Map<String, dynamic> _$WordImageDtoToJson(_WordImageDto instance) =>
       'is_verified': instance.isVerified,
       'content_warnings': instance.contentWarnings,
       'attribution': instance.attribution,
+      'source_jinye_id': instance.sourceJinyeId,
     };
 
 _RelatedWordDto _$RelatedWordDtoFromJson(Map<String, dynamic> json) =>

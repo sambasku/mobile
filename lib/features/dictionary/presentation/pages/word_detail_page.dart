@@ -22,6 +22,7 @@ import '../../../bookmark/presentation/providers/bookmark_providers.dart';
 import '../../../bookmark/presentation/widgets/bookmark_button.dart';
 import '../../../comment/presentation/widgets/word_comments_section.dart';
 import '../../../comment/presentation/providers/comment_providers.dart';
+import '../../../jinye/jinye_router.dart';
 import '../../../jinye/presentation/widgets/jinye_used_in_word_section.dart';
 import '../../../karya/presentation/widgets/karya_used_in_word_section.dart';
 import '../../../../core/services/analytics_service.dart';
@@ -781,6 +782,24 @@ class _DetailBody extends HookConsumerWidget {
                         ImageCredit(
                           attribution: img.attribution!,
                           fontSize: 11,
+                        ),
+                      ],
+                      if (primaryImage case final img?
+                          when !img.isPendingReview &&
+                              img.sourceJinyeId != null) ...[
+                        const Gap(8),
+                        GestureDetector(
+                          onTap: () => context.push(
+                            JinyeRouter.detailPath(img.sourceJinyeId!),
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context)
+                                .jinyePromoteImageSourceLabel,
+                            style: theme.typography.body.xs.copyWith(
+                              color: theme.colors.mutedForeground,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
                         ),
                       ],
 

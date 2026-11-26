@@ -172,6 +172,8 @@ abstract class WordImageDto with _$WordImageDto {
     @JsonKey(name: 'content_warnings') @Default([]) List<String> contentWarnings,
     /// Kredit foto stock (+ `provider`); null = upload / data lama.
     Map<String, dynamic>? attribution,
+    /// Id Jinye sumber bila foto hasil promote Jinye; null = bukan dari Jinye.
+    @JsonKey(name: 'source_jinye_id') String? sourceJinyeId,
   }) = _WordImageDto;
 
   factory WordImageDto.fromJson(Map<String, dynamic> json) =>

@@ -20,6 +20,7 @@ import '../../data/baleho_api.dart';
 import '../../domain/baleho_models.dart';
 import '../providers/baleho_board_provider.dart';
 import '../widgets/baleho_deeplink_picker_sheet.dart';
+import '../widgets/baleho_referral_search_sheet.dart';
 import '../widgets/baleho_slide_content_sheet.dart';
 
 const _kDayPresets = [7, 14, 30];
@@ -48,6 +49,7 @@ class _FrameForm {
   String mediaType = 'image';
   final mediaUrl = TextEditingController();
   String? uploadedUrl;
+
   /// Notifier supaya sheet konten tetap rebuild saat upload (drawer return dulu).
   final uploading = ValueNotifier<bool>(false);
 
@@ -59,6 +61,7 @@ class _FrameForm {
 
 class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
   final _frames = <_FrameForm>[_FrameForm()];
+
   /// Parent copy: dipakai semua slide di sheet + wire API.
   final _title = TextEditingController();
   final _body = TextEditingController();
@@ -87,7 +90,6 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
       d == null ? '' : DateFormat.yMMMMd('id').format(d);
 
   String get _startsOnWire => DateFormat('yyyy-MM-dd').format(_startDate);
-
 
   @override
   void initState() {
@@ -159,8 +161,6 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
     });
   }
 
-
-
   Future<void> _prefillPhone() async {
     final result = await ref.read(getMyProfileUseCaseProvider).call();
     if (!mounted) return;
@@ -201,7 +201,8 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
     _syncingDuration = false;
   }
 
-  DateTime get _maxEndDate => _startDate.add(const Duration(days: _kMaxDays - 1));
+  DateTime get _maxEndDate =>
+      _startDate.add(const Duration(days: _kMaxDays - 1));
 
   void _clampEndAfterStartChange() {
     if (_endDate.isBefore(_startDate)) {
@@ -242,9 +243,10 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
       'BALEHO_UPLOAD_FAILED' => l10n.balehoErrorUpload,
       'BALEHO_CREATE_FAILED' => l10n.balehoErrorCreate,
       'RATE_LIMITED' => l10n.balehoErrorRateLimited,
-      _ => e.message.isNotEmpty && !e.message.startsWith('BALEHO_')
-          ? e.message
-          : l10n.balehoErrorCreate,
+      _ =>
+        e.message.isNotEmpty && !e.message.startsWith('BALEHO_')
+            ? e.message
+            : l10n.balehoErrorCreate,
     };
   }
 
@@ -338,6 +340,15 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
     });
   }
 
+  Future<void> _pickReferralUser() async {
+    final picked = await showBalehoReferralSearchSheet(
+      context,
+      initialQuery: _referral.text.trim(),
+    );
+    if (!mounted || picked == null) return;
+    setState(() => _referral.text = picked.username);
+  }
+
   int get _slideCount {
     if (_reactivateCreativeId != null) {
       return _reactivateFrameCount < 1 ? 1 : _reactivateFrameCount;
@@ -382,10 +393,7 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
     final w = widget.selection.w;
     final h = widget.selection.h;
     final g = w.gcd(h);
-    return CropAspectRatio(
-      label: '${w ~/ g}:${h ~/ g}',
-      ratio: w / h,
-    );
+    return CropAspectRatio(label: '${w ~/ g}:${h ~/ g}', ratio: w / h);
   }
 
   bool get _anyUploading => _frames.any((f) => f.uploading.value);
@@ -406,10 +414,7 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
           frame.mediaType = 'image';
           frame.uploading.value = false;
           setState(() {});
-          showFToast(
-            context: context,
-            title: Text(l10n.balehoUploadOk),
-          );
+          showFToast(context: context, title: Text(l10n.balehoUploadOk));
         } on BalehoApiException catch (e) {
           frame.uploading.value = false;
           if (!mounted) return;
@@ -419,10 +424,7 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
           frame.uploading.value = false;
           if (!mounted) return;
           setState(() {});
-          await showAppErrorSheet(
-            context,
-            message: l10n.balehoErrorUpload,
-          );
+          await showAppErrorSheet(context, message: l10n.balehoErrorUpload);
         }
       },
     );
@@ -458,7 +460,9 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
             actionPayload: payload,
           ),
       ];
-      await ref.read(balehoApiProvider).createPlacement(
+      await ref
+          .read(balehoApiProvider)
+          .createPlacement(
             col: widget.selection.col,
             row: widget.selection.row,
             w: widget.selection.w,
@@ -533,8 +537,8 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
                   _anyUploading
                       ? l10n.balehoUploading
                       : _busy
-                          ? l10n.balehoSubmitting
-                          : l10n.balehoSubmit,
+                      ? l10n.balehoSubmitting
+                      : l10n.balehoSubmit,
                 ),
               ),
             ],
@@ -674,11 +678,55 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
             ],
           ),
           const Gap(12),
-          FTextField(
-            control: FTextFieldControl.managed(controller: _referral),
+          FTileGroup(
             label: Text(l10n.balehoReferralLabel),
-            hint: l10n.balehoReferralHint,
-            enabled: !_busy && _reactivateCreativeId == null,
+            description: Text(l10n.balehoReferralDescription),
+            children: [
+              FTile(
+                enabled: !_busy && _reactivateCreativeId == null,
+                prefix: Icon(
+                  _referral.text.trim().isNotEmpty
+                      ? FLucideIcons.userCheck
+                      : FLucideIcons.userSearch,
+                  size: 18,
+                  color: theme.colors.primary,
+                ),
+                title: Text(
+                  _referral.text.trim().isNotEmpty
+                      ? '@${_referral.text.trim()}'
+                      : l10n.balehoReferralPickTitle,
+                ),
+                subtitle: Text(
+                  _referral.text.trim().isNotEmpty
+                      ? l10n.balehoReferralSelectedHint
+                      : l10n.balehoReferralHint,
+                ),
+                suffix:
+                    _referral.text.trim().isNotEmpty &&
+                        !_busy &&
+                        _reactivateCreativeId == null
+                    ? Semantics(
+                        button: true,
+                        label: l10n.balehoReferralClearSemantics,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => setState(() => _referral.clear()),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: Icon(
+                              FLucideIcons.x,
+                              size: 16,
+                              color: theme.colors.mutedForeground,
+                            ),
+                          ),
+                        ),
+                      )
+                    : const Icon(FLucideIcons.chevronRight, size: 16),
+                onPress: _busy || _reactivateCreativeId != null
+                    ? null
+                    : _pickReferralUser,
+              ),
+            ],
           ),
           const Gap(12),
           FTileGroup(
@@ -690,9 +738,7 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
                   color: theme.colors.primary,
                 ),
                 title: Text(l10n.balehoReactivateCta),
-                subtitle: Text(
-                  _reactivateLabel ?? l10n.balehoReactivateHint,
-                ),
+                subtitle: Text(_reactivateLabel ?? l10n.balehoReactivateHint),
                 suffix: const Icon(FLucideIcons.chevronRight, size: 16),
                 onPress: _busy ? null : _pickReactivate,
               ),
@@ -819,8 +865,8 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
                 onRemove: _frames.length <= 1
                     ? null
                     : () => setState(() {
-                          _frames.removeAt(i).dispose();
-                        }),
+                        _frames.removeAt(i).dispose();
+                      }),
               ),
             ],
             if (_frames.length < 10) ...[
@@ -889,7 +935,9 @@ class _BalehoQuoteBreakdown extends ConsumerWidget {
     final theme = context.theme;
     final amountFmt = NumberFormat.decimalPattern('id');
 
-    return ref.watch(balehoPricePerCellPerDayProvider).when(
+    return ref
+        .watch(balehoPricePerCellPerDayProvider)
+        .when(
           loading: () => Text(
             l10n.balehoQuoteEstimateLoading,
             style: theme.typography.body.sm.copyWith(
@@ -975,7 +1023,9 @@ class _BalehoQuoteFooterTotal extends ConsumerWidget {
     final theme = context.theme;
     final amountFmt = NumberFormat.decimalPattern('id');
 
-    return ref.watch(balehoPricePerCellPerDayProvider).when(
+    return ref
+        .watch(balehoPricePerCellPerDayProvider)
+        .when(
           loading: () => Text(
             l10n.balehoQuoteEstimateLoading,
             textAlign: TextAlign.center,
@@ -1150,8 +1200,8 @@ class _FrameEditor extends StatelessWidget {
                     uploading
                         ? l10n.balehoUploading
                         : hasImage
-                            ? l10n.balehoSlideContentFilled
-                            : l10n.balehoSlideContentEmpty,
+                        ? l10n.balehoSlideContentFilled
+                        : l10n.balehoSlideContentEmpty,
                   ),
                   suffix: uploading
                       ? const FCircularProgress(size: .sm)
