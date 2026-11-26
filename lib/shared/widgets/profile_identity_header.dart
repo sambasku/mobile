@@ -5,6 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../core/models/speaker_status.dart';
 import '../../core/utils/display_image_url.dart';
+import '../utils/profile_border_asset.dart';
 import 'avatar_border_overlay.dart';
 import 'profile_stat_inline.dart';
 import 'public_account_name.dart';
@@ -36,6 +37,7 @@ class ProfileIdentityHeader extends StatelessWidget {
     this.avatarUrl,
     this.avatarAsset,
     this.borderUrl,
+    this.borderAssetKind = ProfileBorderAssetKind.image,
     this.bio,
     this.speakerStatus,
     this.isVerifier = false,
@@ -63,6 +65,7 @@ class ProfileIdentityHeader extends StatelessWidget {
 
   /// URL aset bingkai profil aktif (achievement `profile_border`).
   final String? borderUrl;
+  final ProfileBorderAssetKind borderAssetKind;
   final String? bio;
 
   /// Chip penutur/pembelajar (#258). Null = disembunyikan.
@@ -217,6 +220,7 @@ class ProfileIdentityHeader extends StatelessWidget {
                                     child: AvatarBorderOverlay(
                                       size: _avatarSize,
                                       borderUrl: borderUrl,
+                                      borderAssetKind: borderAssetKind,
                                       child: UserAvatar(
                                         name: displayName,
                                         imageUrl: avatarUrl,

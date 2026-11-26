@@ -33,7 +33,8 @@ Future<ActiveBorder?> myActiveBorder(Ref ref) async {
     if (item.isActiveBorder && item.badgeUrl != null) {
       return ActiveBorder(
         awardId: item.userAchievementId!,
-        imageUrl: item.badgeUrl!,
+        assetUrl: item.badgeUrl!,
+        assetKind: item.badgeAssetKind,
       );
     }
   }

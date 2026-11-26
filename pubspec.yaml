@@ -84,6 +84,8 @@ dependencies:
   supabase_flutter: ^2.18.3
   livekit_client: ^2.13.2
   livekit_noise_filter: 0.3.0
+  lottie: ^3.8.2
+  dotlottie_flutter: ^0.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

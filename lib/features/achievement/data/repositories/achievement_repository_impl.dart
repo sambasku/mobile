@@ -93,6 +93,7 @@ class AchievementRepositoryImpl implements AchievementRepository {
     category: dto.category,
     rewardType: dto.rewardType,
     badgeUrl: dto.badgeUrl,
+    badgeAssetKind: dto.badgeAssetKind,
     family: dto.family,
     level: dto.level,
     isActive: dto.isActive,

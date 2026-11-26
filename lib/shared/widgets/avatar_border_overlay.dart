@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import '../utils/profile_border_asset.dart';
+
 /// Avatar + bingkai profil (aset achievement `profile_border`).
 ///
 /// Bingkai digambar di atas avatar dengan skala lebih besar supaya cincin
@@ -11,12 +13,14 @@ class AvatarBorderOverlay extends StatelessWidget {
     required this.child,
     required this.size,
     this.borderUrl,
+    this.borderAssetKind = ProfileBorderAssetKind.image,
     this.scale = 1.32,
   });
 
   final Widget child;
   final double size;
   final String? borderUrl;
+  final ProfileBorderAssetKind borderAssetKind;
   final double scale;
 
   /// Sisi kotak total (avatar + ruang bingkai). Dipakai pemanggil untuk
@@ -39,12 +43,10 @@ class AvatarBorderOverlay extends StatelessWidget {
           child,
           Positioned.fill(
             child: IgnorePointer(
-              child: Image.network(
-                raw,
-                fit: BoxFit.contain,
-                gaplessPlayback: true,
-                // Bingkai gagal load = avatar tetap tampil, bukan kotak rusak.
-                errorBuilder: (_, _, _) => const SizedBox.shrink(),
+              child: ProfileBorderAssetLayer(
+                url: raw,
+                assetKind: borderAssetKind,
+                resizeWidth: size <= 72 ? 256 : null,
               ),
             ),
           ),

@@ -17,6 +17,7 @@ abstract class AchievementDto with _$AchievementDto {
     required String category,
     @JsonKey(name: 'reward_type') required String rewardType,
     @JsonKey(name: 'badge_url') String? badgeUrl,
+    @JsonKey(name: 'badge_asset_kind') @Default('image') String badgeAssetKind,
     String? family,
     int? level,
     @JsonKey(name: 'is_active') @Default(true) bool isActive,

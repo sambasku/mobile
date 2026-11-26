@@ -1,3 +1,4 @@
+import '../../../../shared/utils/profile_border_asset.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -227,8 +228,13 @@ class _ProfileBody extends HookConsumerWidget {
         ? ref.watch(myActiveBorderProvider).asData?.value
         : null;
     final borderUrl = isOwnProfile
-        ? myBorder?.imageUrl
+        ? myBorder?.assetUrl
         : profile.activeBorderUrl;
+    final borderAssetKind = profileBorderAssetKindFromWire(
+      isOwnProfile
+          ? myBorder?.assetKind
+          : profile.activeBorderAssetKind,
+    );
     final canPreviewAvatar =
         !isOwnProfile && avatarSrc != null && avatarSrc.trim().isNotEmpty;
     final uploadingAvatar = useState(false);
@@ -273,6 +279,7 @@ class _ProfileBody extends HookConsumerWidget {
                         username: profile.username,
                         avatarUrl: avatarSrc,
                         borderUrl: borderUrl,
+                        borderAssetKind: borderAssetKind,
                         bio: profile.bio,
                         speakerStatus: profile.speakerStatus,
                         isVerifier: profile.isVerifier,

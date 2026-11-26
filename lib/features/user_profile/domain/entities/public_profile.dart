@@ -40,6 +40,7 @@ class PublicProfile {
     this.speakerStatus,
     this.avatarUrl,
     this.activeBorderUrl,
+    this.activeBorderAssetKind = 'image',
     this.leveling,
   });
   final String username;
@@ -58,6 +59,9 @@ class PublicProfile {
 
   /// Bingkai profil aktif (asset achievement) - null = tanpa bingkai.
   final String? activeBorderUrl;
+
+  /// `image` | `lottie` dari API profil publik.
+  final String activeBorderAssetKind;
 
   /// Null bila API lama tanpa field leveling.
   final PublicProfileLeveling? leveling;

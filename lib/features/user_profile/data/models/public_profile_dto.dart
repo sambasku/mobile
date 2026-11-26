@@ -17,6 +17,9 @@ abstract class PublicProfileDto with _$PublicProfileDto {
 
     /// URL aset bingkai profil aktif (achievement reward_type profile_border).
     @JsonKey(name: 'active_border_url') String? activeBorderUrl,
+    @JsonKey(name: 'active_border_asset_kind')
+    @Default('image')
+    String activeBorderAssetKind,
     required PublicProfileStatsDto stats,
     PublicProfileLevelingDto? leveling,
   }) = _PublicProfileDto;

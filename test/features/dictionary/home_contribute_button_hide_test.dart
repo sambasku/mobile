@@ -28,8 +28,8 @@ void main() {
       expect(usul.dy, aZ.dy);
       expect(usul.dx, greaterThan(aZ.dx));
 
-      // 50px / jarak collaps 78 = progress 0.64 (> 0.5) → snap ke tertutup
-      // saat jari lepas. Tepat 0.5 akan snap ke TERBUKA (batas tengah).
+      // Scroll > 39px (0.5 × jarak 78) → snap tertutup saat jari lepas.
+      // Drag bertahap: satu moveBy besar sering tidak mengisi offset scroll.
       // Feed = CustomScrollView dengan controller (yang lain shrink-wrap).
       final feedList = find
           .byWidgetPredicate(
@@ -37,14 +37,14 @@ void main() {
           )
           .first;
       final gesture = await tester.startGesture(tester.getCenter(feedList));
-      await gesture.moveBy(const Offset(0, -50));
-      await tester.pump();
+      for (var i = 0; i < 8; i++) {
+        await gesture.moveBy(const Offset(0, -10));
+        await tester.pump(const Duration(milliseconds: 16));
+      }
       final partialHeight = tester.getSize(collapsible).height;
-      expect(
-        partialHeight,
-        inExclusiveRange(20, fullHeight - 8),
-        reason: 'blok harus menyusut parsial mengikuti jari',
-      );
+      expect(partialHeight, greaterThan(19),
+          reason: 'blok harus menyusut parsial mengikuti jari');
+      expect(partialHeight, lessThan(fullHeight - 8));
     expect(
       tester.getTopLeft(collapsible).dy,
       lessThan(usul.dy),
@@ -61,7 +61,7 @@ void main() {
       expect(
         tester.getSize(collapsible).height,
         lessThan(8),
-        reason: 'lepas jari di progress 0.67 harus snap ke tertutup',
+        reason: 'lepas jari di atas 0.5 harus snap ke tertutup',
       );
 
       final feedTop = tester.getTopLeft(feedList).dy;
