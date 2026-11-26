@@ -13040,13 +13040,28 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventDetailOrganizerLabel => 'Penyelenggara';
 
   @override
-  String get eventGoingAction => 'Aku hadir';
+  String get eventGoingActionPlan => 'Berencana hadir';
 
   @override
-  String get eventGoingCancel => 'Batal hadir';
+  String get eventGoingCancelPlan => 'Batal rencana';
 
   @override
-  String eventGoingCount(int count) {
+  String eventGoingCountPlan(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang berencana hadir';
+  }
+
+  @override
+  String get eventGoingActionAttend => 'Hadir';
+
+  @override
+  String get eventGoingCancelAttend => 'Batal hadir';
+
+  @override
+  String eventGoingCountAttend(int count) {
     final intl.NumberFormat countNumberFormat =
         intl.NumberFormat.decimalPattern(localeName);
     final String countString = countNumberFormat.format(count);
@@ -26892,13 +26907,28 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventDetailOrganizerLabel => 'Penyelenggara';
 
   @override
-  String get eventGoingAction => 'Aku hadir';
+  String get eventGoingActionPlan => 'Berencana hadir';
 
   @override
-  String get eventGoingCancel => 'Batal hadir';
+  String get eventGoingCancelPlan => 'Batal rencana';
 
   @override
-  String eventGoingCount(int count) {
+  String eventGoingCountPlan(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang berencana hadir';
+  }
+
+  @override
+  String get eventGoingActionAttend => 'Hadir';
+
+  @override
+  String get eventGoingCancelAttend => 'Batal hadir';
+
+  @override
+  String eventGoingCountAttend(int count) {
     final intl.NumberFormat countNumberFormat =
         intl.NumberFormat.decimalPattern(localeName);
     final String countString = countNumberFormat.format(count);

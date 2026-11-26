@@ -22985,23 +22985,41 @@ abstract class AppLocalizations {
   /// **'Penyelenggara'**
   String get eventDetailOrganizerLabel;
 
-  /// No description provided for @eventGoingAction.
+  /// CTA tandai kehadiran sebelum tanggal acara
   ///
   /// In id, this message translates to:
-  /// **'Aku hadir'**
-  String get eventGoingAction;
+  /// **'Berencana hadir'**
+  String get eventGoingActionPlan;
 
-  /// No description provided for @eventGoingCancel.
+  /// CTA batal rencana hadir sebelum tanggal acara
+  ///
+  /// In id, this message translates to:
+  /// **'Batal rencana'**
+  String get eventGoingCancelPlan;
+
+  /// Jumlah orang yang berencana hadir sebelum tanggal acara
+  ///
+  /// In id, this message translates to:
+  /// **'{count} orang berencana hadir'**
+  String eventGoingCountPlan(int count);
+
+  /// CTA tandai hadir pada hari acara dan sesudahnya
+  ///
+  /// In id, this message translates to:
+  /// **'Hadir'**
+  String get eventGoingActionAttend;
+
+  /// CTA batal hadir pada hari acara dan sesudahnya
   ///
   /// In id, this message translates to:
   /// **'Batal hadir'**
-  String get eventGoingCancel;
+  String get eventGoingCancelAttend;
 
-  /// No description provided for @eventGoingCount.
+  /// Jumlah orang hadir pada hari acara dan sesudahnya
   ///
   /// In id, this message translates to:
   /// **'{count} orang hadir'**
-  String eventGoingCount(int count);
+  String eventGoingCountAttend(int count);
 
   /// CTA tandai pernah singgah di wisata
   ///

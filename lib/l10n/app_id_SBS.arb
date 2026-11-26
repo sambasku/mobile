@@ -6370,12 +6370,35 @@
   "@eventDetailOrganizerLabel": {
     "description": "Label tile penyelenggara di detail acara"
   },
-  "eventGoingAction": "Aku hadir",
-  "@eventGoingAction": {},
-  "eventGoingCancel": "Batal hadir",
-  "@eventGoingCancel": {},
-  "eventGoingCount": "{count} orang hadir",
-  "@eventGoingCount": {
+  "eventGoingActionPlan": "Berencana hadir",
+  "@eventGoingActionPlan": {
+    "description": "CTA tandai kehadiran sebelum tanggal acara"
+  },
+  "eventGoingCancelPlan": "Batal rencana",
+  "@eventGoingCancelPlan": {
+    "description": "CTA batal rencana hadir sebelum tanggal acara"
+  },
+  "eventGoingCountPlan": "{count} orang berencana hadir",
+  "@eventGoingCountPlan": {
+    "description": "Jumlah orang yang berencana hadir sebelum tanggal acara",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "eventGoingActionAttend": "Hadir",
+  "@eventGoingActionAttend": {
+    "description": "CTA tandai hadir pada hari acara dan sesudahnya"
+  },
+  "eventGoingCancelAttend": "Batal hadir",
+  "@eventGoingCancelAttend": {
+    "description": "CTA batal hadir pada hari acara dan sesudahnya"
+  },
+  "eventGoingCountAttend": "{count} orang hadir",
+  "@eventGoingCountAttend": {
+    "description": "Jumlah orang hadir pada hari acara dan sesudahnya",
     "placeholders": {
       "count": {
         "type": "int",

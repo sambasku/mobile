@@ -152,6 +152,18 @@ class Event {
     if (now.isAfter(end)) return EventOccurrenceStatus.completed;
     return EventOccurrenceStatus.ongoing;
   }
+
+  /// Hari acara (WIB, UTC+7) sudah tiba. `startsAt` null = belum.
+  /// Pagi hari-H tetap true walau jam mulai masih nanti.
+  bool eventDateReached([DateTime? now]) {
+    final start = startsAt;
+    if (start == null) return false;
+    final n = (now ?? DateTime.now()).toUtc().add(const Duration(hours: 7));
+    final s = start.toUtc().add(const Duration(hours: 7));
+    final nDay = DateTime.utc(n.year, n.month, n.day);
+    final sDay = DateTime.utc(s.year, s.month, s.day);
+    return !nDay.isBefore(sDay);
+  }
 }
 
 /// Label status pelaksanaan untuk UI.
