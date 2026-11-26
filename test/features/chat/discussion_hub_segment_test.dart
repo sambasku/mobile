@@ -27,13 +27,15 @@ Widget _wrap({
         () => _FixedPresenceController(presence),
       ),
     ],
-    child: MaterialApp(
-      locale: const Locale('id'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: FTheme(
-        data: foruiPalettes['zinc']!.light.touch,
-        child: FScaffold(
+    child: FTheme(
+      data: foruiPalettes['zinc']!.light.touch,
+      child: MaterialApp(
+        localizationsDelegates: [
+          ...AppLocalizations.localizationsDelegates,
+          ...FLocalizations.localizationsDelegates,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: FScaffold(
           child: DiscussionHubSegment(index: index, onChanged: onChanged),
         ),
       ),

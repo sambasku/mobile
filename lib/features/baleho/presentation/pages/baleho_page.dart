@@ -531,115 +531,112 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
             ],
           ),
         ),
-        SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Slot aksi tetap tinggi - mode pesan tidak dorong/geser grid.
-                SizedBox(
-                  height: 28,
-                  child: _slideIndex == 0 && _pickMode
-                      ? (_selection == null
-                          ? Align(
-                              alignment: Alignment.centerLeft,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(2, (i) {
+                  final active = i == _slideIndex;
+                  return Semantics(
+                    button: true,
+                    selected: active,
+                    label: slideLabels[i],
+                    child: GestureDetector(
+                      onTap: () => _goToSlide(i),
+                      behavior: HitTestBehavior.opaque,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 2,
+                        ),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          height: 6,
+                          width: active ? 18 : 6,
+                          decoration: BoxDecoration(
+                            color: active
+                                ? theme.colors.primary
+                                : theme.colors.mutedForeground.withValues(
+                                    alpha: 0.35,
+                                  ),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+              const SizedBox(height: 2),
+              // Satu slot bawah tetap (note promo / aksi mode pilih) agar
+              // area bawah compact & tidak menggeser grid saat ganti mode.
+              ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 18),
+                child: _slideIndex == 0 && _pickMode
+                    ? (_selection == null
+                        ? Center(
+                            child: Text(
+                              l10n.balehoSelectionHint,
+                              maxLines: 1,
+                              softWrap: false,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.typography.body.sm.copyWith(
+                                color: theme.colors.foreground.withValues(
+                                  alpha: 0.85,
+                                ),
+                                fontSize: 11,
+                                height: 1.2,
+                              ),
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: _continueBooking,
+                            behavior: HitTestBehavior.opaque,
+                            child: Center(
                               child: Text(
-                                l10n.balehoSelectionHint,
+                                l10n.balehoContinueBook,
                                 maxLines: 1,
                                 softWrap: false,
-                                overflow: TextOverflow.fade,
+                                overflow: TextOverflow.ellipsis,
                                 style: theme.typography.body.sm.copyWith(
-                                  color: theme.colors.foreground.withValues(
-                                    alpha: 0.85,
-                                  ),
+                                  color: theme.colors.primary,
+                                  fontWeight: FontWeight.w700,
                                   fontSize: 12,
                                   height: 1.2,
                                 ),
                               ),
-                            )
-                          : Center(
-                              child: GestureDetector(
-                                onTap: _continueBooking,
-                                behavior: HitTestBehavior.opaque,
-                                child: Text(
-                                  l10n.balehoContinueBook,
-                                  style: theme.typography.body.sm.copyWith(
-                                    color: theme.colors.primary,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 12,
-                                    height: 1.2,
-                                  ),
-                                ),
-                              ),
-                            ))
-                      : null,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(2, (i) {
-                    final active = i == _slideIndex;
-                    return Semantics(
-                      button: true,
-                      selected: active,
-                      label: slideLabels[i],
-                      child: GestureDetector(
-                        onTap: () => _goToSlide(i),
-                        behavior: HitTestBehavior.opaque,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 4,
-                            vertical: 4,
+                            ),
+                          ))
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            FLucideIcons.info,
+                            size: 11,
+                            color: theme.colors.mutedForeground,
                           ),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            height: 8,
-                            width: active ? 22 : 8,
-                            decoration: BoxDecoration(
-                              color: active
-                                  ? theme.colors.primary
-                                  : theme.colors.mutedForeground.withValues(
-                                      alpha: 0.35,
-                                    ),
-                              borderRadius: BorderRadius.circular(8),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              l10n.balehoFooterPromoNote,
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              softWrap: false,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.typography.body.xs.copyWith(
+                                color: theme.colors.mutedForeground,
+                                fontSize: 10,
+                                height: 1.2,
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    );
-                  }),
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 1),
-                      child: Icon(
-                        FLucideIcons.info,
-                        size: 11,
-                        color: theme.colors.mutedForeground,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Flexible(
-                      child: Text(
-                        l10n.balehoFooterPromoNote,
-                        textAlign: TextAlign.center,
-                        softWrap: true,
-                        style: theme.typography.body.xs.copyWith(
-                          color: theme.colors.mutedForeground,
-                          fontSize: 10,
-                          height: 1.25,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
