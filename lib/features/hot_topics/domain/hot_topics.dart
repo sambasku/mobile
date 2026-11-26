@@ -1,18 +1,24 @@
 /// Respons `GET /api/v1/hot-topics` (G4/G6).
 class HotTopicsBundle {
   const HotTopicsBundle({
+    required this.verified,
+    required this.commented,
     required this.searched,
     required this.proposed,
     required this.viewed,
     required this.check,
   });
 
+  final HotTopicTab verified;
+  final HotTopicTab commented;
   final HotTopicTab searched;
   final HotTopicTab proposed;
   final HotTopicTab viewed;
   final HotTopicTab check;
 
   bool get isEmpty =>
+      verified.items.isEmpty &&
+      commented.items.isEmpty &&
       searched.items.isEmpty &&
       proposed.items.isEmpty &&
       viewed.items.isEmpty &&
@@ -40,6 +46,7 @@ class HotTopicTab {
 
 sealed class HotTopicItem {
   const HotTopicItem({required this.inWindow});
+
   final bool inWindow;
 }
 
@@ -101,4 +108,32 @@ class HotCheckItem extends HotTopicItem {
   final String lemma;
   final int downvotes;
   final String? definitionPreview;
+}
+
+class HotVerifiedItem extends HotTopicItem {
+  const HotVerifiedItem({
+    required this.wordId,
+    required this.lemma,
+    required this.verifiedAt,
+    required super.inWindow,
+  });
+
+  final String wordId;
+  final String lemma;
+  final DateTime verifiedAt;
+}
+
+class HotCommentedItem extends HotTopicItem {
+  const HotCommentedItem({
+    required this.wordId,
+    required this.lemma,
+    required this.commentCount,
+    required this.lastCommentedAt,
+    required super.inWindow,
+  });
+
+  final String wordId;
+  final String lemma;
+  final int commentCount;
+  final DateTime lastCommentedAt;
 }

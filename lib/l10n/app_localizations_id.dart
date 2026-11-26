@@ -4983,7 +4983,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get hotTopicsTitle => 'Sorotan hari ini';
 
   @override
-  String get hotTopicsTabSearched => 'Dicari';
+  String get hotTopicsTabSearched => 'Dicari warga';
 
   @override
   String get hotTopicsTabProposed => 'Usulan';
@@ -4996,7 +4996,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get hotTopicsTabEmptySearchedBody =>
-      'Belum ada pencarian kosong yang menonjol hari ini.';
+      'Belum ada kata yang dicari warga tapi belum ada di kamus.';
 
   @override
   String get hotTopicsTabEmptyProposedBody =>
@@ -5007,11 +5007,56 @@ class AppLocalizationsId extends AppLocalizations {
       'Belum ada hits dalam 2 hari terakhir.';
 
   @override
-  String get hotTopicsTabCheck => 'Cek';
+  String get hotTopicsTabCheck => 'Perlu dicek';
+
+  @override
+  String get hotTopicsTabHits => 'Hits';
+
+  @override
+  String get hotTopicsTabHitsBlurb => 'Kata yang paling sering dibuka';
+
+  @override
+  String get hotTopicsTabProposedBlurb => 'Usulan kata menunggu peninjauan';
+
+  @override
+  String get hotTopicsTabSearchedBlurb => 'Dicari warga dan belum ada di kamus';
+
+  @override
+  String get hotTopicsTabCheckBlurb => 'Makna yang dapat downvote dari warga';
+
+  @override
+  String get hotTopicsTabVerified => 'Baru';
+
+  @override
+  String get hotTopicsTabVerifiedBlurb => 'Baru diverifikasi - 10 terbaru';
+
+  @override
+  String get hotTopicsTabEmptyVerifiedBody =>
+      'Belum ada kata yang baru diverifikasi.';
+
+  @override
+  String get hotTopicsTabCommented => 'Dikomentari';
+
+  @override
+  String get hotTopicsTabCommentedBlurb => 'Lemma yang baru dikomentari';
+
+  @override
+  String get hotTopicsTabEmptyCommentedBody =>
+      'Belum ada lemma yang baru dikomentari.';
+
+  @override
+  String hotTopicsVerifiedMeta(String when) {
+    return 'diverifikasi $when';
+  }
+
+  @override
+  String hotTopicsCommentedMeta(String count, String when) {
+    return '$count komentar · $when';
+  }
 
   @override
   String get hotTopicsTabEmptyCheckBody =>
-      'Belum ada makna yang perlu dicek hari ini.';
+      'Belum ada makna yang dapat downvote dari warga.';
 
   @override
   String get hotTopicsBackfillHint => 'Sebagian dari 7 hari terakhir.';
@@ -6491,6 +6536,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get notificationTypeVote => 'Vote';
+
+  @override
+  String get notificationTypeClap => 'Clap';
 
   @override
   String get notificationTypeExample => 'Contoh';
@@ -10264,6 +10312,9 @@ class AppLocalizationsId extends AppLocalizations {
       'Permintaan terkirim, menunggu pengecekan';
 
   @override
+  String get discussionSentPublished => 'Diskusi tayang';
+
+  @override
   String get discussionStorageUnavailable =>
       'Penyimpanan gambar belum tersedia';
 
@@ -12424,6 +12475,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get discussionEditQueued =>
       'Suntingan dikirim - menunggu tinjauan lagi';
+
+  @override
+  String get discussionEditPublished =>
+      'Suntingan tersimpan - diskusi tetap tayang';
 
   @override
   String get discussionEditHistoryTitle => 'Riwayat sunting diskusi';
@@ -18859,7 +18914,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get hotTopicsTitle => 'Sorotan hari ini';
 
   @override
-  String get hotTopicsTabSearched => 'Dicari';
+  String get hotTopicsTabSearched => 'Dicari warga';
 
   @override
   String get hotTopicsTabProposed => 'Usulan';
@@ -18872,7 +18927,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get hotTopicsTabEmptySearchedBody =>
-      'Belum ada pencarian kosong yang menonjol hari ini.';
+      'Belum ada kata yang dicari warga tapi belum ada di kamus.';
 
   @override
   String get hotTopicsTabEmptyProposedBody =>
@@ -18883,11 +18938,56 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Belum ada hits dalam 2 hari terakhir.';
 
   @override
-  String get hotTopicsTabCheck => 'Cek';
+  String get hotTopicsTabCheck => 'Perlu dicek';
+
+  @override
+  String get hotTopicsTabHits => 'Hits';
+
+  @override
+  String get hotTopicsTabHitsBlurb => 'Kata yang paling sering dibuka';
+
+  @override
+  String get hotTopicsTabProposedBlurb => 'Usulan kata menunggu peninjauan';
+
+  @override
+  String get hotTopicsTabSearchedBlurb => 'Dicari warga dan belum ada di kamus';
+
+  @override
+  String get hotTopicsTabCheckBlurb => 'Makna yang dapat downvote dari warga';
+
+  @override
+  String get hotTopicsTabVerified => 'Baru';
+
+  @override
+  String get hotTopicsTabVerifiedBlurb => 'Baru diverifikasi - 10 terbaru';
+
+  @override
+  String get hotTopicsTabEmptyVerifiedBody =>
+      'Belum ada kata yang baru diverifikasi.';
+
+  @override
+  String get hotTopicsTabCommented => 'Dikomentari';
+
+  @override
+  String get hotTopicsTabCommentedBlurb => 'Lemma yang baru dikomentari';
+
+  @override
+  String get hotTopicsTabEmptyCommentedBody =>
+      'Belum ada lemma yang baru dikomentari.';
+
+  @override
+  String hotTopicsVerifiedMeta(String when) {
+    return 'diverifikasi $when';
+  }
+
+  @override
+  String hotTopicsCommentedMeta(String count, String when) {
+    return '$count komentar · $when';
+  }
 
   @override
   String get hotTopicsTabEmptyCheckBody =>
-      'Belum ada makna yang perlu dicek hari ini.';
+      'Belum ada makna yang dapat downvote dari warga.';
 
   @override
   String get hotTopicsBackfillHint => 'Sebagian dari 7 hari terakhir.';
@@ -20283,6 +20383,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get notificationTypeVote => 'Vote';
+
+  @override
+  String get notificationTypeClap => 'Clap';
 
   @override
   String get notificationTypeExample => 'Contoh';
@@ -24056,6 +24159,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Permintaan terkirim, menunggu pengecekan';
 
   @override
+  String get discussionSentPublished => 'Diskusi tayang';
+
+  @override
   String get discussionStorageUnavailable =>
       'Penyimpanan gambar belum tersedia';
 
@@ -26216,6 +26322,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get discussionEditQueued =>
       'Suntingan dikirim - menunggu tinjauan lagi';
+
+  @override
+  String get discussionEditPublished =>
+      'Suntingan tersimpan - diskusi tetap tayang';
 
   @override
   String get discussionEditHistoryTitle => 'Riwayat sunting diskusi';

@@ -8728,7 +8728,7 @@ abstract class AppLocalizations {
   /// Tab Hot: search miss 24 jam
   ///
   /// In id, this message translates to:
-  /// **'Dicari'**
+  /// **'Dicari warga'**
   String get hotTopicsTabSearched;
 
   /// Tab Sorotan: usulan kata pending
@@ -8752,7 +8752,7 @@ abstract class AppLocalizations {
   /// Subtitle empty tab Dicari
   ///
   /// In id, this message translates to:
-  /// **'Belum ada pencarian kosong yang menonjol hari ini.'**
+  /// **'Belum ada kata yang dicari warga tapi belum ada di kamus.'**
   String get hotTopicsTabEmptySearchedBody;
 
   /// Subtitle empty tab Usulan
@@ -8770,13 +8770,91 @@ abstract class AppLocalizations {
   /// Tab Sorotan: makna yang dapat downvote
   ///
   /// In id, this message translates to:
-  /// **'Cek'**
+  /// **'Perlu dicek'**
   String get hotTopicsTabCheck;
+
+  /// Tab Sorotan: kata paling sering dibuka
+  ///
+  /// In id, this message translates to:
+  /// **'Hits'**
+  String get hotTopicsTabHits;
+
+  /// No description provided for @hotTopicsTabHitsBlurb.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata yang paling sering dibuka'**
+  String get hotTopicsTabHitsBlurb;
+
+  /// No description provided for @hotTopicsTabProposedBlurb.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kata menunggu peninjauan'**
+  String get hotTopicsTabProposedBlurb;
+
+  /// No description provided for @hotTopicsTabSearchedBlurb.
+  ///
+  /// In id, this message translates to:
+  /// **'Dicari warga dan belum ada di kamus'**
+  String get hotTopicsTabSearchedBlurb;
+
+  /// No description provided for @hotTopicsTabCheckBlurb.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna yang dapat downvote dari warga'**
+  String get hotTopicsTabCheckBlurb;
+
+  /// Tab Sorotan: 10 kata baru diverifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Baru'**
+  String get hotTopicsTabVerified;
+
+  /// No description provided for @hotTopicsTabVerifiedBlurb.
+  ///
+  /// In id, this message translates to:
+  /// **'Baru diverifikasi - 10 terbaru'**
+  String get hotTopicsTabVerifiedBlurb;
+
+  /// No description provided for @hotTopicsTabEmptyVerifiedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kata yang baru diverifikasi.'**
+  String get hotTopicsTabEmptyVerifiedBody;
+
+  /// Tab Sorotan: lemma yang baru dikomentari
+  ///
+  /// In id, this message translates to:
+  /// **'Dikomentari'**
+  String get hotTopicsTabCommented;
+
+  /// No description provided for @hotTopicsTabCommentedBlurb.
+  ///
+  /// In id, this message translates to:
+  /// **'Lemma yang baru dikomentari'**
+  String get hotTopicsTabCommentedBlurb;
+
+  /// No description provided for @hotTopicsTabEmptyCommentedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada lemma yang baru dikomentari.'**
+  String get hotTopicsTabEmptyCommentedBody;
+
+  /// No description provided for @hotTopicsVerifiedMeta.
+  ///
+  /// In id, this message translates to:
+  /// **'diverifikasi {when}'**
+  String hotTopicsVerifiedMeta(String when);
+
+  /// No description provided for @hotTopicsCommentedMeta.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} komentar · {when}'**
+  String hotTopicsCommentedMeta(String count, String when);
 
   /// Subtitle empty tab Cek
   ///
   /// In id, this message translates to:
-  /// **'Belum ada makna yang perlu dicek hari ini.'**
+  /// **'Belum ada makna yang dapat downvote dari warga.'**
   String get hotTopicsTabEmptyCheckBody;
 
   /// Hint saat tab Hot memakai backfill di luar 24 jam
@@ -11448,6 +11526,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Vote'**
   String get notificationTypeVote;
+
+  /// Label jenis notifikasi clap artikel ensiklopedia
+  ///
+  /// In id, this message translates to:
+  /// **'Clap'**
+  String get notificationTypeClap;
 
   /// Label UI M3 (notification/komentar/usulan/vote)
   ///
@@ -18163,6 +18247,12 @@ abstract class AppLocalizations {
   /// **'Permintaan terkirim, menunggu pengecekan'**
   String get discussionSentPending;
 
+  /// Toast setelah create diskusi auto-publish (#338)
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi tayang'**
+  String get discussionSentPublished;
+
   /// No description provided for @discussionStorageUnavailable.
   ///
   /// In id, this message translates to:
@@ -21838,6 +21928,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Suntingan dikirim - menunggu tinjauan lagi'**
   String get discussionEditQueued;
+
+  /// Toast setelah edit OP tetap published (#338)
+  ///
+  /// In id, this message translates to:
+  /// **'Suntingan tersimpan - diskusi tetap tayang'**
+  String get discussionEditPublished;
 
   /// Judul sheet riwayat edit OP
   ///

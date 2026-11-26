@@ -4,13 +4,14 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/utils/format_number.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../dictionary/dictionary_router.dart';
 import '../../domain/hot_topics.dart';
 import '../providers/hot_topics_providers.dart';
 
-/// Kartu Sorotan di Home: Hits / Usulan / Dicari / Cek.
+/// Kartu Sorotan di Home: Baru / Dikomentari / Hits / Usulan / Dicari / Cek.
 /// Konten digeser sebagai carousel (`PageView`); chip indikator ikut
 /// sinkron (tap chip = animasi halaman, swipe halaman = chip aktif).
 /// Tinggi list tetap 10 slot supaya kontainer tidak loncat saat ganti tab.
@@ -54,7 +55,7 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
     });
   }
 
-  static const _tabCount = 4;
+  static const _tabCount = 6;
 
   late final PageController _pageController;
   final _chipScroll = ScrollController();
@@ -167,22 +168,38 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
     const emptyIcon = FLucideIcons.chartNoAxesColumn;
     final tabs = [
       (
-        label: l10n.hotTopicsTabNearThreshold,
+        label: l10n.hotTopicsTabVerified,
+        blurb: l10n.hotTopicsTabVerifiedBlurb,
+        tab: bundle.verified,
+        emptyBody: l10n.hotTopicsTabEmptyVerifiedBody,
+      ),
+      (
+        label: l10n.hotTopicsTabCommented,
+        blurb: l10n.hotTopicsTabCommentedBlurb,
+        tab: bundle.commented,
+        emptyBody: l10n.hotTopicsTabEmptyCommentedBody,
+      ),
+      (
+        label: l10n.hotTopicsTabHits,
+        blurb: l10n.hotTopicsTabHitsBlurb,
         tab: bundle.viewed,
         emptyBody: l10n.hotTopicsTabEmptyNearBody,
       ),
       (
         label: l10n.hotTopicsTabProposed,
+        blurb: l10n.hotTopicsTabProposedBlurb,
         tab: bundle.proposed,
         emptyBody: l10n.hotTopicsTabEmptyProposedBody,
       ),
       (
         label: l10n.hotTopicsTabSearched,
+        blurb: l10n.hotTopicsTabSearchedBlurb,
         tab: bundle.searched,
         emptyBody: l10n.hotTopicsTabEmptySearchedBody,
       ),
       (
         label: l10n.hotTopicsTabCheck,
+        blurb: l10n.hotTopicsTabCheckBlurb,
         tab: bundle.check,
         emptyBody: l10n.hotTopicsTabEmptyCheckBody,
       ),
@@ -243,6 +260,16 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
                 ),
               );
             },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
+          child: Text(
+            active.blurb,
+            style: theme.typography.body.xs.copyWith(
+              color: theme.colors.mutedForeground,
+              height: 1.25,
+            ),
           ),
         ),
         Padding(
@@ -374,6 +401,25 @@ class _CompactCell extends StatelessWidget {
         meta: l10n.hotTopicsViewCount(formatRibuan(viewCount)),
         onPress: () => context.push(wordDetailPath(wordId)),
       ),
+      HotVerifiedItem(:final wordId, :final lemma, :final verifiedAt) => (
+        title: lemma,
+        meta: l10n.hotTopicsVerifiedMeta(formatRelativeCompact(verifiedAt)),
+        onPress: () => context.push(wordDetailPath(wordId)),
+      ),
+      HotCommentedItem(
+        :final wordId,
+        :final lemma,
+        :final commentCount,
+        :final lastCommentedAt,
+      ) =>
+        (
+          title: lemma,
+          meta: l10n.hotTopicsCommentedMeta(
+            formatRibuan(commentCount),
+            formatRelativeCompact(lastCommentedAt),
+          ),
+          onPress: () => context.push(wordDetailPath(wordId)),
+        ),
       // Cek: fokus makna downvote (mode Periksa Kata via ?meaning=).
       HotCheckItem(
         :final wordId,

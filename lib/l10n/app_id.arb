@@ -3292,7 +3292,7 @@
   "@hotTopicsTitle": {
     "description": "Judul kartu Sorotan di beranda (G4)"
   },
-  "hotTopicsTabSearched": "Dicari",
+  "hotTopicsTabSearched": "Dicari warga",
   "@hotTopicsTabSearched": {
     "description": "Tab Hot: search miss 24 jam"
   },
@@ -3308,7 +3308,7 @@
   "@hotTopicsTabEmpty": {
     "description": "Judul empty state tab Sorotan"
   },
-  "hotTopicsTabEmptySearchedBody": "Belum ada pencarian kosong yang menonjol hari ini.",
+  "hotTopicsTabEmptySearchedBody": "Belum ada kata yang dicari warga tapi belum ada di kamus.",
   "@hotTopicsTabEmptySearchedBody": {
     "description": "Subtitle empty tab Dicari"
   },
@@ -3320,11 +3320,52 @@
   "@hotTopicsTabEmptyNearBody": {
     "description": "Subtitle empty tab Hits"
   },
-  "hotTopicsTabCheck": "Cek",
+  "hotTopicsTabCheck": "Perlu dicek",
   "@hotTopicsTabCheck": {
     "description": "Tab Sorotan: makna yang dapat downvote"
   },
-  "hotTopicsTabEmptyCheckBody": "Belum ada makna yang perlu dicek hari ini.",
+"hotTopicsTabHits": "Hits",
+  "@hotTopicsTabHits": {
+    "description": "Tab Sorotan: kata paling sering dibuka"
+  },
+  "hotTopicsTabHitsBlurb": "Kata yang paling sering dibuka",
+  "@hotTopicsTabHitsBlurb": {},
+  "hotTopicsTabProposedBlurb": "Usulan kata menunggu peninjauan",
+  "@hotTopicsTabProposedBlurb": {},
+  "hotTopicsTabSearchedBlurb": "Dicari warga dan belum ada di kamus",
+  "@hotTopicsTabSearchedBlurb": {},
+  "hotTopicsTabCheckBlurb": "Makna yang dapat downvote dari warga",
+  "@hotTopicsTabCheckBlurb": {},
+  "hotTopicsTabVerified": "Baru",
+  "@hotTopicsTabVerified": {
+    "description": "Tab Sorotan: 10 kata baru diverifikasi"
+  },
+  "hotTopicsTabVerifiedBlurb": "Baru diverifikasi - 10 terbaru",
+  "@hotTopicsTabVerifiedBlurb": {},
+  "hotTopicsTabEmptyVerifiedBody": "Belum ada kata yang baru diverifikasi.",
+  "@hotTopicsTabEmptyVerifiedBody": {},
+  "hotTopicsTabCommented": "Dikomentari",
+  "@hotTopicsTabCommented": {
+    "description": "Tab Sorotan: lemma yang baru dikomentari"
+  },
+  "hotTopicsTabCommentedBlurb": "Lemma yang baru dikomentari",
+  "@hotTopicsTabCommentedBlurb": {},
+  "hotTopicsTabEmptyCommentedBody": "Belum ada lemma yang baru dikomentari.",
+  "@hotTopicsTabEmptyCommentedBody": {},
+  "hotTopicsVerifiedMeta": "diverifikasi {when}",
+  "@hotTopicsVerifiedMeta": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "hotTopicsCommentedMeta": "{count} komentar · {when}",
+  "@hotTopicsCommentedMeta": {
+    "placeholders": {
+      "count": { "type": "String" },
+      "when": { "type": "String" }
+    }
+  },
+  "hotTopicsTabEmptyCheckBody": "Belum ada makna yang dapat downvote dari warga.",
   "@hotTopicsTabEmptyCheckBody": {
     "description": "Subtitle empty tab Cek"
   },
@@ -5074,6 +5115,10 @@
   "notificationTypeVote": "Vote",
   "@notificationTypeVote": {
     "description": "Label UI M3 (notification/komentar/usulan/vote)"
+  },
+  "notificationTypeClap": "Clap",
+  "@notificationTypeClap": {
+    "description": "Label jenis notifikasi clap artikel ensiklopedia"
   },
   "notificationTypeExample": "Contoh",
   "@notificationTypeExample": {
@@ -7362,6 +7407,10 @@
   "@discussionSentAudioFailed": {},
   "discussionSentPending": "Permintaan terkirim, menunggu pengecekan",
   "@discussionSentPending": {},
+  "discussionSentPublished": "Diskusi tayang",
+  "@discussionSentPublished": {
+    "description": "Toast setelah create diskusi auto-publish (#338)"
+  },
   "discussionStorageUnavailable": "Penyimpanan gambar belum tersedia",
   "@discussionStorageUnavailable": {},
   "discussionGenericError": "Terjadi kesalahan, coba lagi",
@@ -9169,6 +9218,10 @@
   "discussionEditQueued": "Suntingan dikirim - menunggu tinjauan lagi",
   "@discussionEditQueued": {
     "description": "Toast sukses edit OP re-queue pending"
+  },
+  "discussionEditPublished": "Suntingan tersimpan - diskusi tetap tayang",
+  "@discussionEditPublished": {
+    "description": "Toast setelah edit OP tetap published (#338)"
   },
   "discussionEditHistoryTitle": "Riwayat sunting diskusi",
   "@discussionEditHistoryTitle": {
