@@ -23,6 +23,7 @@ import '../../../activity/presentation/providers/announcement_detail_provider.da
 import '../../../activity/presentation/widgets/activity_feed_tile.dart';
 import '../../../activity/presentation/widgets/pinned_home_banner.dart';
 import '../../../hot_topics/presentation/providers/hot_topics_providers.dart';
+import '../../../../shared/profile/profile_covers_provider.dart';
 import '../../../hot_topics/presentation/widgets/hot_topics_card.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
@@ -290,8 +291,12 @@ class HomeSearchPage extends HookConsumerWidget {
     await store.delete(
       buildCacheKey(method: 'GET', path: '/api/v1/words/today'),
     );
+    await store.delete(
+      buildCacheKey(method: 'GET', path: '/api/v1/about/profile-covers'),
+    );
     await store.deleteByPrefix('GET|/api/v1/activity');
     ref.invalidate(wordOfDayProvider);
+    ref.invalidate(profileCoversProvider);
     ref.invalidate(pinnedAnnouncementsProvider);
     ref.invalidate(hotTopicsProvider);
     await Future.wait([

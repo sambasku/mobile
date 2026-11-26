@@ -4989,7 +4989,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get hotTopicsTabProposed => 'Usulan';
 
   @override
-  String get hotTopicsTabNearThreshold => 'Hits';
+  String get hotTopicsTabNearThreshold => 'Terpopuler';
 
   @override
   String get hotTopicsTabEmpty => 'Belum ada data';
@@ -5004,16 +5004,21 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get hotTopicsTabEmptyNearBody =>
-      'Belum ada hits dalam 2 hari terakhir.';
+      'Belum ada kata terpopuler dalam 2 hari terakhir.';
 
   @override
   String get hotTopicsTabCheck => 'Perlu dicek';
 
   @override
-  String get hotTopicsTabHits => 'Hits';
+  String get hotTopicsTabHits => 'Terpopuler';
 
   @override
-  String get hotTopicsTabHitsBlurb => 'Kata yang paling sering dibuka';
+  String get hotTopicsTabHitsBlurb =>
+      'Halaman kata yang paling sering dibuka warga';
+
+  @override
+  String get hotTopicsTabEmptyViewedBody =>
+      'Belum ada kata terpopuler dalam 2 hari terakhir.';
 
   @override
   String get hotTopicsTabProposedBlurb => 'Usulan kata menunggu peninjauan';
@@ -18920,7 +18925,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get hotTopicsTabProposed => 'Usulan';
 
   @override
-  String get hotTopicsTabNearThreshold => 'Hits';
+  String get hotTopicsTabNearThreshold => 'Terpopuler';
 
   @override
   String get hotTopicsTabEmpty => 'Belum ada data';
@@ -18935,16 +18940,21 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get hotTopicsTabEmptyNearBody =>
-      'Belum ada hits dalam 2 hari terakhir.';
+      'Belum ada kata terpopuler dalam 2 hari terakhir.';
 
   @override
   String get hotTopicsTabCheck => 'Perlu dicek';
 
   @override
-  String get hotTopicsTabHits => 'Hits';
+  String get hotTopicsTabHits => 'Terpopuler';
 
   @override
-  String get hotTopicsTabHitsBlurb => 'Kata yang paling sering dibuka';
+  String get hotTopicsTabHitsBlurb =>
+      'Halaman kata yang paling sering dibuka warga';
+
+  @override
+  String get hotTopicsTabEmptyViewedBody =>
+      'Belum ada kata terpopuler dalam 2 hari terakhir.';
 
   @override
   String get hotTopicsTabProposedBlurb => 'Usulan kata menunggu peninjauan';

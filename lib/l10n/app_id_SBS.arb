@@ -2243,7 +2243,7 @@
   "hotTopicsTitle": "Sorotan hari ini",
   "hotTopicsTabSearched": "Dicari warga",
   "hotTopicsTabProposed": "Usulan",
-  "hotTopicsTabNearThreshold": "Hits",
+  "hotTopicsTabNearThreshold": "Terpopuler",
   "hotTopicsTabEmpty": "Belum ada data",
   "@hotTopicsTabEmpty": {
     "description": "Judul empty state tab Sorotan"
@@ -2256,7 +2256,7 @@
   "@hotTopicsTabEmptyProposedBody": {
     "description": "Subtitle empty tab Usulan"
   },
-  "hotTopicsTabEmptyNearBody": "Belum ada hits dalam 2 hari terakhir.",
+  "hotTopicsTabEmptyNearBody": "Belum ada kata terpopuler dalam 2 hari terakhir.",
   "@hotTopicsTabEmptyNearBody": {
     "description": "Subtitle empty tab Hits"
   },
@@ -2264,12 +2264,17 @@
   "@hotTopicsTabCheck": {
     "description": "Tab Sorotan: makna yang dapat downvote"
   },
-"hotTopicsTabHits": "Hits",
+"hotTopicsTabHits": "Terpopuler",
   "@hotTopicsTabHits": {
     "description": "Tab Sorotan: kata paling sering dibuka"
   },
-  "hotTopicsTabHitsBlurb": "Kata yang paling sering dibuka",
+  "hotTopicsTabHitsBlurb": "Halaman kata yang paling sering dibuka warga",
   "@hotTopicsTabHitsBlurb": {},
+  "hotTopicsTabEmptyViewedBody": "Belum ada kata terpopuler dalam 2 hari terakhir.",
+  "@hotTopicsTabEmptyViewedBody": {
+    "description": "Empty state tab Terpopuler (word_views)"
+  },
+
   "hotTopicsTabProposedBlurb": "Usulan kata menunggu peninjauan",
   "@hotTopicsTabProposedBlurb": {},
   "hotTopicsTabSearchedBlurb": "Dicari warga dan belum ada di kamus",

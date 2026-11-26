@@ -59,12 +59,12 @@ class _WordOfDayBody extends ConsumerWidget {
         ? 0.45
         : 0.30;
 
-    // Prioritas: API cover aktif → home.json → asset bundled.
+    // URL: API cover aktif (admin). Alignment: home.json. Offline: asset bundled.
     final apiWotdUrl = ref.watch(profileCoversProvider).value?.wotdUrl;
     final config = ref.watch(cardImagesProvider).value;
     final wotdImage = config?.entryOf('wotd');
     final bgAlignment = wotdImage?.alignmentValue ?? Alignment.bottomCenter;
-    final networkUrl = apiWotdUrl ?? wotdImage?.imageUrl;
+    final networkUrl = apiWotdUrl;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -85,6 +85,7 @@ class _WordOfDayBody extends ConsumerWidget {
                     )
                   : Image.network(
                       networkUrl,
+                      key: ValueKey(networkUrl),
                       fit: BoxFit.cover,
                       alignment: bgAlignment,
                       errorBuilder: (_, _, _) => Image.asset(

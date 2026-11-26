@@ -9,7 +9,7 @@ import 'profile_covers.dart';
 
 const _profileCoversPath = '/api/v1/about/profile-covers';
 
-/// Cache L1 + SWR. Gagal total tanpa cache → null (UI pakai asset fallback).
+/// Cache L1 + SWR (TTL pendek: admin bisa ganti cover). Gagal → null.
 final profileCoversProvider = FutureProvider<ProfileCovers?>((ref) async {
   ref.keepAlive();
   final cache = ref.watch(cachedJsonClientProvider);
@@ -19,7 +19,7 @@ final profileCoversProvider = FutureProvider<ProfileCovers?>((ref) async {
   try {
     final envelope = await cache.getOrFetch(
       key: key,
-      cacheClass: CacheClass.referenceStatic,
+      cacheClass: CacheClass.feedList,
       fetch: () async {
         final resp = await dio.get<Map<String, dynamic>>(
           _profileCoversPath,

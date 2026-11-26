@@ -11,7 +11,7 @@ import '../../../dictionary/dictionary_router.dart';
 import '../../domain/hot_topics.dart';
 import '../providers/hot_topics_providers.dart';
 
-/// Kartu Sorotan di Home: Baru / Dikomentari / Hits / Usulan / Dicari / Cek.
+/// Kartu Sorotan di Home: Terpopuler / Baru / Dikomentari / Usulan / Dicari / Cek.
 /// Konten digeser sebagai carousel (`PageView`); chip indikator ikut
 /// sinkron (tap chip = animasi halaman, swipe halaman = chip aktif).
 /// Tinggi list tetap 10 slot supaya kontainer tidak loncat saat ganti tab.
@@ -168,6 +168,12 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
     const emptyIcon = FLucideIcons.chartNoAxesColumn;
     final tabs = [
       (
+        label: l10n.hotTopicsTabHits,
+        blurb: l10n.hotTopicsTabHitsBlurb,
+        tab: bundle.viewed,
+        emptyBody: l10n.hotTopicsTabEmptyViewedBody,
+      ),
+      (
         label: l10n.hotTopicsTabVerified,
         blurb: l10n.hotTopicsTabVerifiedBlurb,
         tab: bundle.verified,
@@ -178,12 +184,6 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
         blurb: l10n.hotTopicsTabCommentedBlurb,
         tab: bundle.commented,
         emptyBody: l10n.hotTopicsTabEmptyCommentedBody,
-      ),
-      (
-        label: l10n.hotTopicsTabHits,
-        blurb: l10n.hotTopicsTabHitsBlurb,
-        tab: bundle.viewed,
-        emptyBody: l10n.hotTopicsTabEmptyNearBody,
       ),
       (
         label: l10n.hotTopicsTabProposed,
@@ -395,7 +395,7 @@ class _CompactCell extends StatelessWidget {
           wordDetailPath(wordId, includeUnverified: true),
         ),
       ),
-      // Hits: detail kamus reguler (hanya makna verified).
+      // Terpopuler (word_views): detail kamus reguler (hanya makna verified).
       HotViewedItem(:final wordId, :final lemma, :final viewCount) => (
         title: lemma,
         meta: l10n.hotTopicsViewCount(formatRibuan(viewCount)),

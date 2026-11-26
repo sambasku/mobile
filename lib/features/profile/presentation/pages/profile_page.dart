@@ -31,6 +31,7 @@ import '../../../../core/widgets/app_version_label.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/profile/profile_covers_provider.dart';
 import '../../../../shared/widgets/profile_hero_shell.dart';
+import '../../../../shared/utils/profile_border_asset.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
 import '../../../../shared/widgets/profile_leveling_chip.dart';
 import '../../../../shared/widgets/profile_stat_inline.dart';
@@ -391,7 +392,11 @@ class _IdentitySection extends ConsumerWidget {
         : null;
     final profile = profileAsync?.asData?.value;
 
-    final border = ref.watch(myActiveBorderProvider).asData?.value?.imageUrl;
+    final myBorder = ref.watch(myActiveBorderProvider).asData?.value;
+    final border = isAuth ? myBorder?.assetUrl : null;
+    final borderAssetKind = profileBorderAssetKindFromWire(
+      isAuth ? myBorder?.assetKind : null,
+    );
     final tabCoverUrl = ref.watch(profileCoversProvider).value?.tabUrl;
     // Tamu: label ajakan masuk tampil di header, bukan username kosong.
     final displayName = isAuth
@@ -433,7 +438,8 @@ class _IdentitySection extends ConsumerWidget {
           displayName: displayName,
           username: isAuth ? username : null,
           avatarUrl: status.avatarUrl,
-          borderUrl: isAuth ? border : null,
+          borderUrl: border,
+          borderAssetKind: borderAssetKind,
           bio: profile?.bio,
           speakerStatus: profile?.speakerStatus,
           isVerifier:

@@ -8740,7 +8740,7 @@ abstract class AppLocalizations {
   /// Tab Sorotan: kata hits / banyak dilihat (word_views)
   ///
   /// In id, this message translates to:
-  /// **'Hits'**
+  /// **'Terpopuler'**
   String get hotTopicsTabNearThreshold;
 
   /// Judul empty state tab Sorotan
@@ -8764,7 +8764,7 @@ abstract class AppLocalizations {
   /// Subtitle empty tab Hits
   ///
   /// In id, this message translates to:
-  /// **'Belum ada hits dalam 2 hari terakhir.'**
+  /// **'Belum ada kata terpopuler dalam 2 hari terakhir.'**
   String get hotTopicsTabEmptyNearBody;
 
   /// Tab Sorotan: makna yang dapat downvote
@@ -8776,14 +8776,20 @@ abstract class AppLocalizations {
   /// Tab Sorotan: kata paling sering dibuka
   ///
   /// In id, this message translates to:
-  /// **'Hits'**
+  /// **'Terpopuler'**
   String get hotTopicsTabHits;
 
   /// No description provided for @hotTopicsTabHitsBlurb.
   ///
   /// In id, this message translates to:
-  /// **'Kata yang paling sering dibuka'**
+  /// **'Halaman kata yang paling sering dibuka warga'**
   String get hotTopicsTabHitsBlurb;
+
+  /// Empty state tab Terpopuler (word_views)
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kata terpopuler dalam 2 hari terakhir.'**
+  String get hotTopicsTabEmptyViewedBody;
 
   /// No description provided for @hotTopicsTabProposedBlurb.
   ///
