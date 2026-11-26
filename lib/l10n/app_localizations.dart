@@ -1581,6 +1581,12 @@ abstract class AppLocalizations {
   /// **'Pilih area kosong di papan, lalu aktifkan ulang creative lama.'**
   String get balehoHistoryRebookHint;
 
+  /// Judul panel dilihat, tap baleho, dan tap CTA di detail pesanan
+  ///
+  /// In id, this message translates to:
+  /// **'Performa'**
+  String get balehoHistoryPerfTitle;
+
   /// Judul ringkasan biaya di detail pesanan Baleho
   ///
   /// In id, this message translates to:
@@ -1596,19 +1602,19 @@ abstract class AppLocalizations {
   /// Label hitungan impression Baleho
   ///
   /// In id, this message translates to:
-  /// **'Tayang'**
+  /// **'Dilihat'**
   String get balehoHistoryStatImpressions;
 
   /// Label hitungan tap membuka sheet detail
   ///
   /// In id, this message translates to:
-  /// **'Buka detail'**
+  /// **'Tap baleho'**
   String get balehoHistoryStatTaps;
 
   /// Label hitungan klik CTA di sheet Baleho
   ///
   /// In id, this message translates to:
-  /// **'Klik tombol'**
+  /// **'Tap CTA'**
   String get balehoHistoryStatActions;
 
   /// CTR tap/impresi di riwayat Baleho

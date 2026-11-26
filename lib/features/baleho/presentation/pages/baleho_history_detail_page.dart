@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/utils/format_number.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/baleho_api.dart';
 import 'baleho_history_page.dart' show BalehoPerfStats, balehoHistoryProvider;
@@ -188,6 +189,22 @@ class _DetailBody extends StatelessWidget {
               formatDateTime(item.createdAt),
             ),
             if (endText != null) metaTile(l10n.balehoHistoryDetailEnd, endText),
+          ],
+        ),
+        const Gap(12),
+        Text(
+          l10n.balehoHistoryPerfTitle,
+          style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const Gap(8),
+        FTileGroup(
+          children: [
+            metaTile(
+              l10n.balehoHistoryStatImpressions,
+              formatRibuan(item.impressions),
+            ),
+            metaTile(l10n.balehoHistoryStatTaps, formatRibuan(item.taps)),
+            metaTile(l10n.balehoHistoryStatActions, formatRibuan(item.actions)),
           ],
         ),
         const Gap(12),

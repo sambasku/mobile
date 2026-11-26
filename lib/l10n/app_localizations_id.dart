@@ -872,6 +872,9 @@ class AppLocalizationsId extends AppLocalizations {
       'Pilih area kosong di papan, lalu aktifkan ulang creative lama.';
 
   @override
+  String get balehoHistoryPerfTitle => 'Performa';
+
+  @override
   String get balehoHistoryStatsTitle => 'Biaya';
 
   @override
@@ -879,13 +882,13 @@ class AppLocalizationsId extends AppLocalizations {
       'Belum ada ringkasan biaya untuk pesanan ini.';
 
   @override
-  String get balehoHistoryStatImpressions => 'Tayang';
+  String get balehoHistoryStatImpressions => 'Dilihat';
 
   @override
-  String get balehoHistoryStatTaps => 'Buka detail';
+  String get balehoHistoryStatTaps => 'Tap baleho';
 
   @override
-  String get balehoHistoryStatActions => 'Klik tombol';
+  String get balehoHistoryStatActions => 'Tap CTA';
 
   @override
   String balehoHistoryStatCtr(String percent) {
@@ -14823,6 +14826,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Pilih area kosong di papan, lalu aktifkan ulang creative lama.';
 
   @override
+  String get balehoHistoryPerfTitle => 'Performa';
+
+  @override
   String get balehoHistoryStatsTitle => 'Biaya';
 
   @override
@@ -14830,13 +14836,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Belum ada ringkasan biaya untuk pesanan ini.';
 
   @override
-  String get balehoHistoryStatImpressions => 'Tayang';
+  String get balehoHistoryStatImpressions => 'Dilihat';
 
   @override
-  String get balehoHistoryStatTaps => 'Buka detail';
+  String get balehoHistoryStatTaps => 'Tap baleho';
 
   @override
-  String get balehoHistoryStatActions => 'Klik tombol';
+  String get balehoHistoryStatActions => 'Tap CTA';
 
   @override
   String balehoHistoryStatCtr(String percent) {

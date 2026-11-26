@@ -921,6 +921,10 @@
   "@balehoHistoryRebookHint": {
     "description": "Hint singkat CTA pesan lagi di riwayat"
   },
+  "balehoHistoryPerfTitle": "Performa",
+  "@balehoHistoryPerfTitle": {
+    "description": "Judul panel dilihat, tap baleho, dan tap CTA di detail pesanan"
+  },
   "balehoHistoryStatsTitle": "Biaya",
   "@balehoHistoryStatsTitle": {
     "description": "Judul ringkasan biaya di detail pesanan Baleho"
@@ -929,15 +933,15 @@
   "@balehoHistoryCostEmpty": {
     "description": "Placeholder bila quoted/CPC belum tersedia di detail Baleho"
   },
-  "balehoHistoryStatImpressions": "Tayang",
+  "balehoHistoryStatImpressions": "Dilihat",
   "@balehoHistoryStatImpressions": {
     "description": "Label hitungan impression Baleho"
   },
-  "balehoHistoryStatTaps": "Buka detail",
+  "balehoHistoryStatTaps": "Tap baleho",
   "@balehoHistoryStatTaps": {
     "description": "Label hitungan tap membuka sheet detail"
   },
-  "balehoHistoryStatActions": "Klik tombol",
+  "balehoHistoryStatActions": "Tap CTA",
   "@balehoHistoryStatActions": {
     "description": "Label hitungan klik CTA di sheet Baleho"
   },

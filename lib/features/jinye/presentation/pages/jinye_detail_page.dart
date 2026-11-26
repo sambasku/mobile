@@ -908,6 +908,7 @@ Future<void> _editJinyeFromUi(
   );
   if (saved == null || !context.mounted) return;
   ref.invalidate(jinyeDetailProvider(item.id));
+  invalidateJinyeProfileSurfaces(ref, item.username);
   showFToast(context: context, title: Text(l10n.jinyeEditSuccess));
 }
 
