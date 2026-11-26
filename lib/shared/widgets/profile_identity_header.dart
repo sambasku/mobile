@@ -135,7 +135,11 @@ class ProfileIdentityHeader extends StatelessWidget {
   // AvatarBorderOverlay menggambar cincin di dalam kotak frame yang lebih
   // besar dari fotonya; tinggi art harus ikut frame supaya cincin tidak
   // terpotong tepi atas cover.
-  double get _avatarExtent => AvatarBorderOverlay.extent(_avatarSize);
+  double get _avatarExtent => AvatarBorderOverlay.extent(
+        _avatarSize,
+        borderUrl: borderUrl,
+        borderAssetKind: borderAssetKind,
+      );
 
   /// Lebar max overlay di kanan bahu avatar (selaras Jinye bubble 260).
   /// Parent Stack harus selebar ini - kalau tidak, tap di bagian yang

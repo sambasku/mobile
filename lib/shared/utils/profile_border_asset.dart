@@ -1,4 +1,3 @@
-import 'package:dotlottie_flutter/dotlottie_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 
@@ -22,6 +21,11 @@ bool profileBorderUrlIsDotLottie(String url) {
   return path.endsWith('.lottie');
 }
 
+bool profileBorderUrlIsLottie(String url) {
+  final path = Uri.tryParse(url)?.path.toLowerCase() ?? url.toLowerCase();
+  return path.endsWith('.lottie') || path.endsWith('.json');
+}
+
 /// Overlay aset bingkai: PNG/WebP atau animasi Lottie (.json / .lottie).
 class ProfileBorderAssetLayer extends StatelessWidget {
   const ProfileBorderAssetLayer({
@@ -30,45 +34,40 @@ class ProfileBorderAssetLayer extends StatelessWidget {
     required this.assetKind,
     this.fit = BoxFit.contain,
     this.resizeWidth,
+    this.fallback = const SizedBox.shrink(),
   });
 
   final String url;
   final ProfileBorderAssetKind assetKind;
   final BoxFit fit;
   final int? resizeWidth;
+  final Widget fallback;
 
   @override
   Widget build(BuildContext context) {
-    if (assetKind == ProfileBorderAssetKind.image) {
-      final display =
-          displayImageUrl(url, width: resizeWidth) ?? url;
+    final isLottie =
+        assetKind == ProfileBorderAssetKind.lottie ||
+        profileBorderUrlIsLottie(url);
+
+    if (!isLottie) {
+      final display = displayImageUrl(url, width: resizeWidth) ?? url;
       return Image.network(
         display,
         fit: fit,
         gaplessPlayback: true,
-        errorBuilder: (_, _, _) => const SizedBox.shrink(),
+        errorBuilder: (_, _, _) => fallback,
       );
     }
 
-    if (MediaQuery.disableAnimationsOf(context)) {
-      return const SizedBox.shrink();
-    }
-
-    if (profileBorderUrlIsDotLottie(url)) {
-      return DotLottieView(
-        source: url,
-        sourceType: 'url',
-        autoplay: true,
-        loop: true,
-        onLoadError: () {},
-      );
-    }
-
+    final disableAnimations = MediaQuery.disableAnimationsOf(context);
+    // Paket lottie 3.x sudah men-decode .lottie (ZIP berisi animations/*.json)
+    // langsung di canvas Flutter (LottieComposition.decodeZip) tanpa PlatformView.
     return Lottie.network(
       url,
       fit: fit,
-      repeat: true,
-      errorBuilder: (_, _, _) => const SizedBox.shrink(),
+      animate: !disableAnimations,
+      repeat: !disableAnimations,
+      errorBuilder: (_, _, _) => fallback,
     );
   }
 }

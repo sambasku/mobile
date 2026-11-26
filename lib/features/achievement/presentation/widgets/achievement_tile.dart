@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 
-import '../../../../core/utils/display_image_url.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/profile_border_asset.dart';
 import '../../domain/entities/achievement.dart';
 
 /// Baris satu pencapaian (semua kategori) untuk sub-tab Pencapaian.
@@ -34,10 +34,8 @@ class AchievementTile extends StatelessWidget with FTileMixin {
     final owned = item.isOwned;
     final thumbSize = dense ? 28.0 : 40.0;
     final iconSize = dense ? 14.0 : 20.0;
-    final url = owned
-        ? (displayImageUrl(item.badgeUrl, width: dense ? 64 : 128) ??
-              item.badgeUrl)
-        : null;
+    final rawUrl = owned ? item.badgeUrl : null;
+    final assetKind = profileBorderAssetKindFromWire(item.badgeAssetKind);
 
     Widget fallbackThumb() => Container(
       width: thumbSize,
@@ -54,17 +52,17 @@ class AchievementTile extends StatelessWidget with FTileMixin {
     );
 
     final Widget thumb;
-    if (url == null) {
+    if (rawUrl == null) {
       thumb = fallbackThumb();
     } else {
       thumb = SizedBox(
         width: thumbSize,
         height: thumbSize,
-        child: Image.network(
-          url,
-          fit: BoxFit.contain,
-          gaplessPlayback: true,
-          errorBuilder: (_, _, _) => fallbackThumb(),
+        child: ProfileBorderAssetLayer(
+          url: rawUrl,
+          assetKind: assetKind,
+          resizeWidth: dense ? 64 : 128,
+          fallback: fallbackThumb(),
         ),
       );
     }
@@ -128,10 +126,8 @@ class AchievementBadgeArt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final url = item.isOwned
-        ? (displayImageUrl(item.badgeUrl, width: 256) ?? item.badgeUrl)
-        : null;
-    if (url == null) {
+    final rawUrl = item.isOwned ? item.badgeUrl : null;
+    if (rawUrl == null) {
       return Container(
         width: size,
         height: size,
@@ -146,26 +142,27 @@ class AchievementBadgeArt extends StatelessWidget {
         ),
       );
     }
+    final fallback = Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: theme.colors.muted,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        FLucideIcons.award,
+        size: size * 0.45,
+        color: theme.colors.mutedForeground,
+      ),
+    );
     return SizedBox(
       width: size,
       height: size,
-      child: Image.network(
-        url,
-        fit: BoxFit.contain,
-        gaplessPlayback: true,
-        errorBuilder: (_, _, _) => Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            color: theme.colors.muted,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            FLucideIcons.award,
-            size: size * 0.45,
-            color: theme.colors.mutedForeground,
-          ),
-        ),
+      child: ProfileBorderAssetLayer(
+        url: rawUrl,
+        assetKind: profileBorderAssetKindFromWire(item.badgeAssetKind),
+        resizeWidth: 256,
+        fallback: fallback,
       ),
     );
   }

@@ -2,8 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../core/utils/display_image_url.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/profile_border_asset.dart';
 import '../../domain/entities/achievement.dart';
 
 /// Grid lencana (badge) yang dimiliki user.
@@ -123,26 +123,22 @@ class AchievementBadgeGrid extends StatelessWidget {
   }) {
     final theme = context.theme;
     final imageWidth = compact ? 96 : 256;
-    final url =
-        displayImageUrl(item.badgeUrl, width: imageWidth) ?? item.badgeUrl;
+    final rawUrl = item.badgeUrl;
     final padding = compact ? compactPadding : 8.0;
     final radius = compact ? compactRadius : 12.0;
     final imageGap = compact ? compactImageGap : 4.0;
-    final art = url == null
-        ? Icon(
-            FLucideIcons.award,
-            size: compact ? 22 : 32,
-            color: theme.colors.mutedForeground,
-          )
-        : Image.network(
-            url,
-            fit: BoxFit.contain,
-            gaplessPlayback: true,
-            errorBuilder: (_, _, _) => Icon(
-              FLucideIcons.award,
-              size: compact ? 22 : 32,
-              color: theme.colors.mutedForeground,
-            ),
+    final fallbackIcon = Icon(
+      FLucideIcons.award,
+      size: compact ? 22 : 32,
+      color: theme.colors.mutedForeground,
+    );
+    final art = rawUrl == null
+        ? fallbackIcon
+        : ProfileBorderAssetLayer(
+            url: rawUrl,
+            assetKind: profileBorderAssetKindFromWire(item.badgeAssetKind),
+            resizeWidth: imageWidth,
+            fallback: fallbackIcon,
           );
     final repeat = item.repeatCount;
     final cell = SizedBox(
