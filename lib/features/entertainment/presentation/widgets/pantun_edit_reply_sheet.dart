@@ -124,100 +124,139 @@ Future<List<String>?> showPantunReplyEditSheet(
   required List<String> initialLines,
   required Future<String?> Function(List<String> lines, String? scheme) onSave,
 }) {
-  final l10n = AppLocalizations.of(context);
   return showModalBottomSheet<List<String>?>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
-    builder: (sheetContext) {
-      final controllers = List.generate(
-        4,
-        (i) => TextEditingController(
-          text: i < initialLines.length ? initialLines[i] : '',
-        ),
-      );
-      var submitting = false;
-
-      return StatefulBuilder(
-        builder: (context, setState) {
-          final lines = controllers.map((c) => c.text.trim()).toList();
-          final allFilled = lines.every((l) => l.isNotEmpty);
-          final scheme = allFilled ? pickRhymeScheme(lines) : null;
-          final canSubmit = scheme != null && !submitting;
-
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                  child: Text(
-                    l10n.pantunReplyEditTitle,
-                    style: context.theme.typography.body.md.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      for (var i = 0; i < 4; i++) ...[
-                        FTextField(
-                          control: FTextFieldControl.managed(
-                            controller: controllers[i],
-                          ),
-                          hint: switch (i) {
-                            0 => l10n.pantunReplyEditLine1,
-                            1 => l10n.pantunReplyEditLine2,
-                            2 => l10n.pantunReplyEditLine3,
-                            _ => l10n.pantunReplyEditLine4,
-                          },
-                          enabled: !submitting,
-                          textInputAction: i < 3
-                              ? TextInputAction.next
-                              : TextInputAction.done,
-                        ),
-                        if (i < 3) const Gap(8),
-                      ],
-                    ],
-                  ),
-                ),
-                const Gap(12),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: FButton(
-                    onPress: canSubmit
-                        ? () async {
-                            setState(() => submitting = true);
-                            final err = await onSave(lines, scheme);
-                            if (!sheetContext.mounted) return;
-                            if (err == null) {
-                              Navigator.of(sheetContext).pop(lines);
-                              return;
-                            }
-                            setState(() => submitting = false);
-                            await showAppErrorSheet(
-                              sheetContext,
-                              message: err,
-                            );
-                          }
-                        : null,
-                    prefix: submitting
-                        ? const FCircularProgress(size: .sm)
-                        : null,
-                    child: Text(l10n.pantunReplyEditSave),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      );
-    },
+    builder: (_) => _PantunReplyEditSheetBody(
+      initialLines: initialLines,
+      onSave: onSave,
+    ),
   );
+}
+
+class _PantunReplyEditSheetBody extends StatefulWidget {
+  const _PantunReplyEditSheetBody({
+    required this.initialLines,
+    required this.onSave,
+  });
+
+  final List<String> initialLines;
+  final Future<String?> Function(List<String> lines, String? scheme) onSave;
+
+  @override
+  State<_PantunReplyEditSheetBody> createState() =>
+      _PantunReplyEditSheetBodyState();
+}
+
+class _PantunReplyEditSheetBodyState extends State<_PantunReplyEditSheetBody> {
+  late final List<TextEditingController> _controllers;
+  var _submitting = false;
+
+  void _onLineChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controllers = List.generate(
+      4,
+      (i) => TextEditingController(
+        text: i < widget.initialLines.length ? widget.initialLines[i] : '',
+      )..addListener(_onLineChanged),
+    );
+  }
+
+  @override
+  void dispose() {
+    for (final c in _controllers) {
+      c
+        ..removeListener(_onLineChanged)
+        ..dispose();
+    }
+    super.dispose();
+  }
+
+  Future<void> _submit(List<String> lines, String scheme) async {
+    setState(() => _submitting = true);
+    final err = await widget.onSave(lines, scheme);
+    if (!mounted) return;
+    if (err == null) {
+      Navigator.of(context).pop(lines);
+      return;
+    }
+    setState(() => _submitting = false);
+    await showAppErrorSheet(context, message: err);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    final lines = _controllers.map((c) => c.text.trim()).toList();
+    final allFilled = lines.every((l) => l.isNotEmpty);
+    final scheme = allFilled ? pickRhymeScheme(lines) : null;
+    final canSubmit = scheme != null && !_submitting;
+
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: bottomInset),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: Text(
+                  l10n.pantunReplyEditTitle,
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    for (var i = 0; i < 4; i++) ...[
+                      FTextField(
+                        control: FTextFieldControl.managed(
+                          controller: _controllers[i],
+                        ),
+                        hint: switch (i) {
+                          0 => l10n.pantunReplyEditLine1,
+                          1 => l10n.pantunReplyEditLine2,
+                          2 => l10n.pantunReplyEditLine3,
+                          _ => l10n.pantunReplyEditLine4,
+                        },
+                        enabled: !_submitting,
+                        textInputAction: i < 3
+                            ? TextInputAction.next
+                            : TextInputAction.done,
+                      ),
+                      if (i < 3) const Gap(8),
+                    ],
+                  ],
+                ),
+              ),
+              const Gap(12),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: FButton(
+                  onPress: canSubmit ? () => _submit(lines, scheme) : null,
+                  prefix: _submitting
+                      ? const FCircularProgress(size: .sm)
+                      : null,
+                  child: Text(l10n.pantunReplyEditSave),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
