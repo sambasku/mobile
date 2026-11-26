@@ -4128,7 +4128,7 @@ abstract class AppLocalizations {
   /// Kategori usulan: tag topik lemma (chip)
   ///
   /// In id, this message translates to:
-  /// **'Ubah kategori topik'**
+  /// **'Ubah kategori'**
   String get suggestCategoryChangeCategories;
 
   /// No description provided for @suggestCategoryChangeCategoriesDesc.

@@ -2277,7 +2277,7 @@ class AppLocalizationsId extends AppLocalizations {
       'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
 
   @override
-  String get suggestCategoryChangeCategories => 'Ubah kategori topik';
+  String get suggestCategoryChangeCategories => 'Ubah kategori';
 
   @override
   String get suggestCategoryChangeCategoriesDesc =>
@@ -16231,7 +16231,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
 
   @override
-  String get suggestCategoryChangeCategories => 'Ubah kategori topik';
+  String get suggestCategoryChangeCategories => 'Ubah kategori';
 
   @override
   String get suggestCategoryChangeCategoriesDesc =>

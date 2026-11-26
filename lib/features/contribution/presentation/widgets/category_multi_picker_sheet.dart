@@ -147,6 +147,7 @@ class _CategoryMultiPickerBodyState extends State<_CategoryMultiPickerBody> {
                     ),
               ),
             ),
+            const Divider(height: 1),
             Expanded(
               child: visible.isEmpty
                   ? Center(
@@ -157,36 +158,67 @@ class _CategoryMultiPickerBodyState extends State<_CategoryMultiPickerBody> {
                         ),
                       ),
                     )
-                  : ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  : ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
                       itemCount: visible.length,
-                      separatorBuilder: (_, _) => const Divider(height: 1),
                       itemBuilder: (context, index) {
                         final item = visible[index];
                         final on = _selected.contains(item.id);
-                        return FTile(
-                          title: Text(item.name),
-                          suffix: FCheckbox(
-                            value: on,
-                            onChange: (v) => setState(() {
-                              if (v) {
-                                _selected.add(item.id);
-                              } else {
-                                _selected.remove(item.id);
-                              }
-                            }),
+                        return Semantics(
+                          button: true,
+                          selected: on,
+                          // InkWell butuh Material transparan (pola sama dengan
+                          // option_picker_sheet / dialect_picker_sheet).
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () => setState(() {
+                                if (on) {
+                                  _selected.remove(item.id);
+                                } else {
+                                  _selected.add(item.id);
+                                }
+                              }),
+                              borderRadius: BorderRadius.circular(8),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 12,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        item.name,
+                                        style: theme.typography.body.sm
+                                            .copyWith(
+                                              fontWeight: on
+                                                  ? FontWeight.w700
+                                                  : FontWeight.w500,
+                                              color: on
+                                                  ? theme.colors.primary
+                                                  : theme.colors.foreground,
+                                            ),
+                                      ),
+                                    ),
+                                    if (on) ...[
+                                      const Gap(8),
+                                      Icon(
+                                        FLucideIcons.check,
+                                        size: 18,
+                                        color: theme.colors.primary,
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                          onPress: () => setState(() {
-                            if (on) {
-                              _selected.remove(item.id);
-                            } else {
-                              _selected.add(item.id);
-                            }
-                          }),
                         );
                       },
                     ),
             ),
+            const Divider(height: 1),
             SafeArea(
               top: false,
               child: Padding(

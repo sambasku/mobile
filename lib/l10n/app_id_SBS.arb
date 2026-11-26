@@ -1393,7 +1393,7 @@
   "suggestCategoryMeaningGroupDesc": "Gabungkan kata bermakna sama dalam satu kelompok",
   "suggestCategorySpellingVariant": "Variasi penulisan",
   "suggestCategorySpellingVariantDesc": "Ejaan lain tanpa entri sendiri (tetap di lemma ini)",
-  "suggestCategoryChangeCategories": "Ubah kategori topik",
+  "suggestCategoryChangeCategories": "Ubah kategori",
   "@suggestCategoryChangeCategories": {
     "description": "Kategori usulan: tag topik lemma (chip)"
   },
