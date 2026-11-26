@@ -105,14 +105,15 @@ class WordDetailPage extends HookConsumerWidget {
     final hasFocus =
         focusMeaningId != null && focusMeaningId.isNotEmpty;
     final needsCommunity = hasFocus || includeUnverified;
-    final async = needsCommunity
-        ? ref.watch(
-            wordDetailCommunityProvider((
-              id: wordId,
-              meaningId: hasFocus ? focusMeaningId : null,
-              includeUnverified: includeUnverified,
-            )),
+    final communityQuery = needsCommunity
+        ? (
+            id: wordId,
+            meaningId: hasFocus ? focusMeaningId : null,
+            includeUnverified: includeUnverified,
           )
+        : null;
+    final async = communityQuery != null
+        ? ref.watch(wordDetailCommunityProvider(communityQuery))
         : ref.watch(wordDetailProvider(wordId));
     final theme = context.theme;
     final recordedView = useRef<String?>(null);
@@ -229,7 +230,11 @@ class WordDetailPage extends HookConsumerWidget {
                     const Gap(16),
                     FButton(
                       variant: FButtonVariant.outline,
-                      onPress: () => ref.invalidate(wordDetailProvider(wordId)),
+                      onPress: () => communityQuery != null
+                          ? ref.invalidate(
+                              wordDetailCommunityProvider(communityQuery),
+                            )
+                          : ref.invalidate(wordDetailProvider(wordId)),
                       child: Text(AppLocalizations.of(context).commonRetry),
                     ),
                   ],
@@ -252,6 +257,7 @@ class WordDetailPage extends HookConsumerWidget {
               detail: shown,
               wordId: detail.id,
               focusMeaningId: focusMeaningId,
+              communityQuery: communityQuery,
             );
           },
         ),
@@ -303,17 +309,28 @@ Future<void> shareWordPublicLink(
 
 /// Pull-to-refresh: hard miss L1 detail dulu, lalu invalidate family
 /// (+ vote/bookmark/komentar) dan tunggu fetch supaya indikator selesai.
-Future<void> _refreshWordDetail(WidgetRef ref, String wordId) async {
+Future<void> _refreshWordDetail(
+  WidgetRef ref,
+  String wordId, {
+  WordDetailQuery? communityQuery,
+}) async {
   final key = wordId.trim();
-  if (looksLikeUlid(key)) {
-    await ref.read(getWordByIdUseCaseProvider)(key, forceRefresh: true);
-  } else {
-    await ref.read(getWordByLemmaUseCaseProvider)(key, forceRefresh: true);
+  if (communityQuery == null) {
+    if (looksLikeUlid(key)) {
+      await ref.read(getWordByIdUseCaseProvider)(key, forceRefresh: true);
+    } else {
+      await ref.read(getWordByLemmaUseCaseProvider)(key, forceRefresh: true);
+    }
   }
   ref.invalidate(wordDetailProvider(wordId));
+  if (communityQuery != null) {
+    ref.invalidate(wordDetailCommunityProvider(communityQuery));
+  }
   ref.invalidate(bookmarkToggleControllerProvider(wordId));
   ref.invalidate(commentListControllerProvider(wordId));
-  final detailFuture = ref.read(wordDetailProvider(wordId).future);
+  final detailFuture = communityQuery != null
+      ? ref.read(wordDetailCommunityProvider(communityQuery).future)
+      : ref.read(wordDetailProvider(wordId).future);
   final commentsFuture = ref.read(commentListControllerProvider(wordId).future);
   final detail = await detailFuture;
   await commentsFuture;
@@ -405,6 +422,7 @@ Future<void> _refreshDetailAfterDecision(WidgetRef ref, String wordId) async {
     await ref.read(getWordByLemmaUseCaseProvider)(key, forceRefresh: true);
   }
   ref.invalidate(wordDetailProvider(wordId));
+  ref.invalidate(wordDetailCommunityProvider);
   await ref.read(wordDetailProvider(wordId).future);
 }
 
@@ -553,11 +571,13 @@ class _DetailBody extends HookConsumerWidget {
     required this.detail,
     required this.wordId,
     this.focusMeaningId,
+    this.communityQuery,
   });
 
   final WordDetail detail;
   final String wordId;
   final String? focusMeaningId;
+  final WordDetailQuery? communityQuery;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -676,7 +696,11 @@ class _DetailBody extends HookConsumerWidget {
       children: [
         Expanded(
           child: RefreshIndicator(
-            onRefresh: () => _refreshWordDetail(ref, wordId),
+            onRefresh: () => _refreshWordDetail(
+              ref,
+              wordId,
+              communityQuery: communityQuery,
+            ),
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
@@ -1203,6 +1227,7 @@ Future<void> _openSuggestEdit(
   await context.push(path);
   if (context.mounted) {
     ref.invalidate(wordDetailProvider(wordId));
+    ref.invalidate(wordDetailCommunityProvider);
   }
 }
 

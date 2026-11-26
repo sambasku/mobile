@@ -29,30 +29,36 @@ class WeeklyLeaderboardSectionChips extends StatelessWidget {
       (WeeklyLeaderboardSection.current, l10n.balehoLeaderboardTabCurrent),
       (WeeklyLeaderboardSection.history, l10n.balehoLeaderboardTabHistory),
     ];
+    // Padding vertikal ListView = 2 atas/bawah (sama feed beranda). Jarak ke
+    // konten di bawah pakai Padding luar; jangan dobel di padding ListView,
+    // karena padding itu mengurangi tinggi chip dan membuatnya terpotong.
     return ColoredBox(
       color: context.theme.colors.background,
-      child: SizedBox(
-        height: height,
-        child: ListView.separated(
-          key: const ValueKey('leaderboard_section_chips'),
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.fromLTRB(0, 2, 0, 8),
-          itemCount: items.length,
-          separatorBuilder: (_, _) => const Gap(6),
-          itemBuilder: (context, i) {
-            final (section, label) = items[i];
-            final isSelected = section == selected;
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => onChanged(section),
-              child: FBadge(
-                variant: isSelected
-                    ? FBadgeVariant.primary
-                    : FBadgeVariant.secondary,
-                child: Text(label),
-              ),
-            );
-          },
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: SizedBox(
+          height: height,
+          child: ListView.separated(
+            key: const ValueKey('leaderboard_section_chips'),
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            itemCount: items.length,
+            separatorBuilder: (_, _) => const Gap(6),
+            itemBuilder: (context, i) {
+              final (section, label) = items[i];
+              final isSelected = section == selected;
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => onChanged(section),
+                child: FBadge(
+                  variant: isSelected
+                      ? FBadgeVariant.primary
+                      : FBadgeVariant.secondary,
+                  child: Text(label),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
