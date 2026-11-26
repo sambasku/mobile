@@ -243,7 +243,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
           title: Text(
             audioFailed
                 ? l10n.discussionSentAudioFailed
-                : l10n.discussionSentPending,
+                : l10n.discussionSentPublished,
           ),
         );
         context.pushReplacement(DiscussionRouter.detailPath(result.id));

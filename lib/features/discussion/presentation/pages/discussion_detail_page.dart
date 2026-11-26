@@ -387,7 +387,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
     if (!mounted || saved == null) return;
     showFToast(
       context: context,
-      title: Text(l10n.discussionEditQueued),
+      title: Text(l10n.discussionEditPublished),
       variant: FToastVariant.primary,
     );
   }

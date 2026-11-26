@@ -50,8 +50,9 @@ class EncyclopediaArticleHero extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
-                      end: Alignment(0, -0.35),
+                      end: Alignment.bottomCenter,
                       colors: [Color(0x73000000), Colors.transparent],
+                      stops: [0.0, 0.48],
                     ),
                   ),
                 ),
@@ -59,10 +60,16 @@ class EncyclopediaArticleHero extends StatelessWidget {
               const IgnorePointer(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
+                    // Gelap sampai lewat judul + excerpt 3 baris, lalu fade.
                     gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
-                      end: Alignment(0, 0.35),
-                      colors: [Color(0xE6000000), Colors.transparent],
+                      end: Alignment.topCenter,
+                      colors: [
+                        Color(0xE6000000),
+                        Color(0xCC000000),
+                        Colors.transparent,
+                      ],
+                      stops: [0.0, 0.5, 0.86],
                     ),
                   ),
                 ),
@@ -83,7 +90,8 @@ class EncyclopediaArticleHero extends StatelessWidget {
                         height: 1.2,
                       ),
                     ),
-                    if (trimmedExcerpt != null && trimmedExcerpt.isNotEmpty) ...[
+                    if (trimmedExcerpt != null &&
+                        trimmedExcerpt.isNotEmpty) ...[
                       const Gap(8),
                       Text(
                         trimmedExcerpt,

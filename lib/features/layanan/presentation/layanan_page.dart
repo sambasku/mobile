@@ -18,7 +18,7 @@ import 'layanan_providers.dart';
 import '../../../shared/widgets/public_browse_list_divider.dart';
 import 'widgets/layanan_filter_sheet.dart';
 
-/// Ukuran avatar list - pola kontak.
+/// Thumb list, sama dengan baris karya (40, sudut 8).
 const _kCoverSize = 40.0;
 
 class LayananPage extends ConsumerStatefulWidget {
@@ -35,10 +35,10 @@ class _LayananPageState extends ConsumerState<LayananPage> {
   Timer? _debounce;
 
   LayananBrowseQuery get _query => LayananBrowseQuery(
-        regionId: _regionId,
-        category: _category,
-        q: _q.trim().isEmpty ? null : _q.trim(),
-      );
+    regionId: _regionId,
+    category: _category,
+    q: _q.trim().isEmpty ? null : _q.trim(),
+  );
 
   void _onSearchChanged(String value) {
     _debounce?.cancel();
@@ -129,10 +129,7 @@ class _LayananPageState extends ConsumerState<LayananPage> {
               context.push(LayananRouter.proposals.path);
             },
           ),
-          FHeaderAction(
-            icon: const Icon(FLucideIcons.plus),
-            onPress: _propose,
-          ),
+          FHeaderAction(icon: const Icon(FLucideIcons.plus), onPress: _propose),
         ],
       ),
       child: Column(
@@ -147,11 +144,11 @@ class _LayananPageState extends ConsumerState<LayananPage> {
             clearable: (value) => value.text.isNotEmpty,
             prefixBuilder: (context, style, variants) =>
                 FTextField.prefixIconBuilder(
-              context,
-              style,
-              variants,
-              const Icon(FLucideIcons.search),
-            ),
+                  context,
+                  style,
+                  variants,
+                  const Icon(FLucideIcons.search),
+                ),
           ),
           const Gap(8),
           if (_regionId != null && regionName != null) ...[
@@ -196,7 +193,9 @@ class _LayananPageState extends ConsumerState<LayananPage> {
                 if (visible.isEmpty) {
                   return _EmptyBody(
                     hasFilter:
-                        _regionId != null || _category != null || _q.trim().isNotEmpty,
+                        _regionId != null ||
+                        _category != null ||
+                        _q.trim().isNotEmpty,
                     onPropose: _propose,
                     onRefresh: _reload,
                   );
@@ -226,12 +225,9 @@ class _LayananPageState extends ConsumerState<LayananPage> {
   }
 }
 
-/// Baris list pola ensiklopedia: cover 64 + judul/subtitle + chevron.
+/// Baris list pola karya: thumb 40 + judul/subtitle + chevron.
 class _LayananListTile extends StatelessWidget {
-  const _LayananListTile({
-    required this.item,
-    required this.showCategory,
-  });
+  const _LayananListTile({required this.item, required this.showCategory});
 
   final LayananEntry item;
   final bool showCategory;
@@ -263,7 +259,7 @@ class _LayananListTile extends StatelessWidget {
                     item.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.body.md.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -273,7 +269,7 @@ class _LayananListTile extends StatelessWidget {
                       subtitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.typography.body.sm.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -293,24 +289,24 @@ class _LayananListTile extends StatelessWidget {
     );
   }
 
-/// Kecamatan dulu; fallback alamat kalau kecamatan kosong. Kategori di belakang.
-String? _subtitle(AppLocalizations l10n) {
-  final address = (item.addressText ?? '').trim();
-  final region = (item.regionName ?? '').trim();
-  final place = region.isNotEmpty ? region : (address.isNotEmpty ? address : null);
-  if (!showCategory) return place;
-  final category =
-      item.isAmbulance ? l10n.layananAmbulance : l10n.layananFire;
-  if (place == null) return category;
-  return '$place · $category';
-}
+  /// Kecamatan dulu; fallback alamat kalau kecamatan kosong. Kategori di belakang.
+  String? _subtitle(AppLocalizations l10n) {
+    final address = (item.addressText ?? '').trim();
+    final region = (item.regionName ?? '').trim();
+    final place = region.isNotEmpty
+        ? region
+        : (address.isNotEmpty ? address : null);
+    if (!showCategory) return place;
+    final category = item.isAmbulance
+        ? l10n.layananAmbulance
+        : l10n.layananFire;
+    if (place == null) return category;
+    return '$place · $category';
+  }
 }
 
 class _CategoryBar extends StatelessWidget {
-  const _CategoryBar({
-    required this.selected,
-    required this.onSelect,
-  });
+  const _CategoryBar({required this.selected, required this.onSelect});
 
   final String? selected;
   final ValueChanged<String?> onSelect;

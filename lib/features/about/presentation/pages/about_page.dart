@@ -550,7 +550,8 @@ class _PersonAvatarTile extends StatelessWidget {
                 Text(
                   role,
                   style: theme.typography.body.xs.copyWith(
-                    color: theme.colors.mutedForeground,
+                    fontWeight: FontWeight.w500,
+                    color: theme.colors.primary,
                     height: 1.4,
                   ),
                 ),
@@ -562,6 +563,7 @@ class _PersonAvatarTile extends StatelessWidget {
                     line,
                     style: theme.typography.body.xs.copyWith(
                       color: theme.colors.mutedForeground,
+                      fontStyle: FontStyle.italic,
                       height: 1.4,
                     ),
                   ),

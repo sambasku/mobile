@@ -24,6 +24,7 @@ String notificationTypeLabel(AppLocalizations l10n, String type) =>
       'campaign' => l10n.notificationTypeCampaign,
       'word_comment' => l10n.notificationTypeComment,
       'word_vote' => l10n.notificationTypeVote,
+      'article_clap' => l10n.notificationTypeClap,
       'meaning_auto_verified' => l10n.notificationTypeMeaningAutoVerified,
       'meaning_needs_review' => l10n.notificationTypeMeaningNeedsReview,
       'word_example' => l10n.notificationTypeExample,
