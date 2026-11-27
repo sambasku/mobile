@@ -460,19 +460,37 @@ class ThreadComposer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final disableAnim = MediaQuery.disableAnimationsOf(context);
+    final sizeDur = disableAnim
+        ? Duration.zero
+        : const Duration(milliseconds: 180);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
         if (suggestBuilder != null) ...[suggestBuilder!(context), const Gap(4)],
-        if (replyBanner != null) ...[
-          replyBanner!,
-          const Gap(8),
-        ],
-        if (attachmentPreview != null) ...[
-          attachmentPreview!,
-          const Gap(8),
-        ],
+        AnimatedSize(
+          duration: sizeDur,
+          curve: Curves.easeOutCubic,
+          alignment: Alignment.bottomCenter,
+          child: replyBanner != null
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: replyBanner!,
+                )
+              : const SizedBox.shrink(),
+        ),
+        AnimatedSize(
+          duration: sizeDur,
+          curve: Curves.easeOutCubic,
+          alignment: Alignment.bottomCenter,
+          child: attachmentPreview != null
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: attachmentPreview!,
+                )
+              : const SizedBox.shrink(),
+        ),
         if (onRecordAudio != null ||
             onPickImage != null ||
             onPickSticker != null) ...[
@@ -521,43 +539,110 @@ class ThreadComposer extends StatelessWidget {
               ),
             ),
             const Gap(6),
-            Semantics(
-              button: true,
-              label: AppLocalizations.of(context).threadSend,
-              child: Material(
-                color: isSubmitting
-                    ? theme.colors.primary.withValues(alpha: 0.5)
-                    : theme.colors.primary,
-                shape: const CircleBorder(),
-                child: InkWell(
-                  customBorder: const CircleBorder(),
-                  onTap: isSubmitting ? null : onSubmit,
-                  child: SizedBox(
-                    width: 36,
-                    height: 36,
-                    child: Center(
-                      child: isSubmitting
-                          ? SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: theme.colors.primaryForeground,
-                              ),
-                            )
-                          : Icon(
-                              FLucideIcons.send,
-                              size: 16,
-                              color: theme.colors.primaryForeground,
-                            ),
-                    ),
-                  ),
-                ),
-              ),
+            _ThreadSendButton(
+              isSubmitting: isSubmitting,
+              semanticsLabel: AppLocalizations.of(context).threadSend,
+              color: theme.colors.primary,
+              foregroundColor: theme.colors.primaryForeground,
+              onSubmit: onSubmit,
             ),
           ],
         ),
       ],
+    );
+  }
+}
+
+class _ThreadSendButton extends StatefulWidget {
+  const _ThreadSendButton({
+    required this.isSubmitting,
+    required this.semanticsLabel,
+    required this.color,
+    required this.foregroundColor,
+    required this.onSubmit,
+  });
+
+  final bool isSubmitting;
+  final String semanticsLabel;
+  final Color color;
+  final Color foregroundColor;
+  final VoidCallback onSubmit;
+
+  @override
+  State<_ThreadSendButton> createState() => _ThreadSendButtonState();
+}
+
+class _ThreadSendButtonState extends State<_ThreadSendButton> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final disableAnim = MediaQuery.disableAnimationsOf(context);
+    final dur = disableAnim
+        ? Duration.zero
+        : const Duration(milliseconds: 160);
+
+    return Semantics(
+      button: true,
+      label: widget.semanticsLabel,
+      child: AnimatedScale(
+        scale: _pressed && !disableAnim ? 0.88 : 1.0,
+        duration: disableAnim
+            ? Duration.zero
+            : const Duration(milliseconds: 100),
+        curve: Curves.easeOutCubic,
+        child: Material(
+          color: Colors.transparent,
+          shape: const CircleBorder(),
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTapDown: widget.isSubmitting
+                ? null
+                : (_) => setState(() => _pressed = true),
+            onTapUp: widget.isSubmitting
+                ? null
+                : (_) => setState(() => _pressed = false),
+            onTapCancel: () {
+              if (_pressed) setState(() => _pressed = false);
+            },
+            onTap: widget.isSubmitting ? null : widget.onSubmit,
+            child: AnimatedContainer(
+              duration: dur,
+              curve: Curves.easeOutCubic,
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: widget.isSubmitting
+                    ? widget.color.withValues(alpha: 0.5)
+                    : widget.color,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: AnimatedSwitcher(
+                  duration: dur,
+                  switchInCurve: Curves.easeOutCubic,
+                  switchOutCurve: Curves.easeInCubic,
+                  transitionBuilder: (child, animation) => ScaleTransition(
+                    scale: animation,
+                    child: FadeTransition(opacity: animation, child: child),
+                  ),
+                  child: widget.isSubmitting
+                      ? const FCircularProgress(
+                          key: ValueKey('sending'),
+                          size: .xs,
+                        )
+                      : Icon(
+                          FLucideIcons.send,
+                          key: const ValueKey('send'),
+                          size: 16,
+                          color: widget.foregroundColor,
+                        ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

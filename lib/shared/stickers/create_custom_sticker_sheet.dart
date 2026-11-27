@@ -12,6 +12,7 @@ import '../../features/contribution/data/datasources/imagekit_uploader.dart';
 import '../../features/contribution/data/models/upload_credentials_dto.dart';
 import '../../l10n/app_localizations.dart';
 import '../utils/error_bottom_sheet.dart';
+import '../utils/image_sheet_drawer.dart';
 import 'sticker_models.dart';
 import 'sticker_providers.dart';
 
@@ -43,6 +44,7 @@ class _CreateCustomStickerSheetBodyState
   final _picker = ImagePicker();
   File? _pickedFile;
   var _isGif = false;
+  var _picking = false;
   var _submitting = false;
 
   @override
@@ -52,28 +54,39 @@ class _CreateCustomStickerSheetBodyState
   }
 
   Future<void> _pickImage() async {
-    if (_submitting) return;
-    final picked = await _picker.pickImage(source: ImageSource.gallery);
-    if (picked == null || !mounted) return;
-    final file = File(picked.path);
-    final lower = picked.path.toLowerCase();
-    final isGif = lower.endsWith('.gif');
-    if (isGif) {
-      final bytes = await file.length();
-      if (!mounted) return;
-      if (bytes > _kMaxGifBytes) {
-        final l10n = AppLocalizations.of(context);
-        await showAppErrorSheet(
-          context,
-          message: l10n.stickerCreateGifTooLarge,
-        );
-        return;
+    if (_submitting || _picking) return;
+    _picking = true;
+    try {
+      final file = await pickImageFromGalleryRaw(_picker);
+      if (file == null || !mounted) return;
+      final lower = file.path.toLowerCase();
+      final isGif = lower.endsWith('.gif');
+      if (isGif) {
+        final bytes = await file.length();
+        if (!mounted) return;
+        if (bytes > _kMaxGifBytes) {
+          final l10n = AppLocalizations.of(context);
+          await showAppErrorSheet(
+            context,
+            message: l10n.stickerCreateGifTooLarge,
+          );
+          return;
+        }
       }
+      setState(() {
+        _pickedFile = file;
+        _isGif = isGif;
+      });
+    } catch (e, st) {
+      debugPrint('[CustomSticker] pick image failed: $e\n$st');
+      if (!mounted) return;
+      showFToast(
+        context: context,
+        title: Text(AppLocalizations.of(context).imageSheetGalleryPickFailed),
+      );
+    } finally {
+      _picking = false;
     }
-    setState(() {
-      _pickedFile = file;
-      _isGif = isGif;
-    });
   }
 
   Future<File> _prepareFile(File original, bool isGif) async {

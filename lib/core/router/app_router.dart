@@ -166,10 +166,9 @@ class AppRouter {
               GoRoute(
                 path: '/action',
                 name: 'ActionRouter.activity',
-                builder: (context, state) => const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: ActivityPage(),
-                ),
+                // Tanpa gutter: ActionChipsRow full-bleed seperti Home
+                // (gutter dipasang di dalam halaman).
+                builder: (context, state) => const ActivityPage(),
               ),
             ],
           ),

@@ -9,6 +9,11 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/cover_hero.dart';
+import '../../../../shared/widgets/profile_hero_shell.dart';
+import '../../../../shared/widgets/profile_identity_header.dart';
+import '../../../user_profile/presentation/widgets/profile_activity_section.dart'
+    show OverlapAboveBox, ProfileBarClearanceHeader;
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/leaderboard_api.dart';
@@ -18,6 +23,28 @@ import '../providers/weekly_leaderboard_provider.dart';
 import '../widgets/weekly_leaderboard_list.dart';
 
 const _kHistoryPageSize = 10;
+
+List<Widget> _weeklyCoverSlivers(BuildContext context, AppLocalizations l10n) {
+  final barOffset =
+      MediaQuery.paddingOf(context).top + ProfileHeroShell.barHeight;
+  return [
+    SliverPersistentHeader(
+      pinned: true,
+      delegate: ProfileBarClearanceHeader(height: barOffset),
+    ),
+    SliverToBoxAdapter(
+      child: OverlapAboveBox(
+        overlap: barOffset,
+        child: CoverHero(
+          asset: 'assets/images/baleho_weekly_hero.webp',
+          title: l10n.balehoWeeklyLeaderboardTitle,
+          subtitle: l10n.balehoWeeklyLeaderboardCta,
+          semanticLabel: l10n.balehoWeeklyLeaderboardHeroSemantics,
+        ),
+      ),
+    ),
+  ];
+}
 
 /// Papan Peringkat Mingguan (Baleho).
 class BalehoWeeklyLeaderboardPage extends HookConsumerWidget {
@@ -34,52 +61,76 @@ class BalehoWeeklyLeaderboardPage extends HookConsumerWidget {
     final section = useState(WeeklyLeaderboardSection.current);
 
     return FScaffold(
-      childPad: true,
+      childPad: false,
       footer: isAuth ? const _ShareRankFooter() : null,
-      header: FHeader.nested(
-        title: Text(l10n.balehoWeeklyLeaderboardTitle),
-        prefixes: [
-          FHeaderAction.back(
-            onPress: () =>
-                context.canPop() ? context.pop() : context.go('/baleho'),
-          ),
-        ],
-        suffixes: [
-          FHeaderAction(
-            icon: const Icon(FLucideIcons.info),
-            semanticsLabel: l10n.balehoPointsGuideOpenSemantics,
+      child: ProfileHeroShell(
+        showBack: true,
+        onBack: () => context.canPop() ? context.pop() : context.go('/baleho'),
+        backLabel: l10n.commonBack,
+        coverHeight: ProfileIdentityHeader.coverHeightOf(
+          ProfileHeaderVariant.compact,
+          MediaQuery.sizeOf(context).width,
+        ),
+        title: l10n.balehoWeeklyLeaderboardTitle,
+        compactActions: true,
+        actions: [
+          ProfileHeroAction(
+            icon: FLucideIcons.info,
+            tooltip: l10n.balehoPointsGuideOpenSemantics,
             onPress: () =>
                 context.push(BalehoBoard.weeklyLeaderboardPointsPath),
           ),
         ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          WeeklyLeaderboardSectionChips(
-            selected: section.value,
-            onChanged: (value) => section.value = value,
-          ),
-          Expanded(
-            child: switch (section.value) {
-              WeeklyLeaderboardSection.current => _CurrentTabBody(
-                  async: currentAsync,
-                  weekOptions: weekOptions,
-                  l10n: l10n,
-                  theme: theme,
-                  onRefresh: () async {
-                    ref.invalidate(weeklyLeaderboardCurrentProvider);
-                    await ref.read(weeklyLeaderboardCurrentProvider.future);
+        scrollView: RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(weeklyLeaderboardCurrentProvider);
+            await ref.read(weeklyLeaderboardCurrentProvider.future);
+            if (weekOptions.isNotEmpty) {
+              final lastWeekId = weekOptions.first;
+              ref.invalidate(weeklyLeaderboardHistoryProvider(lastWeekId));
+              await ref.read(
+                weeklyLeaderboardHistoryProvider(lastWeekId).future,
+              );
+            }
+          },
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              ..._weeklyCoverSlivers(context, l10n),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                  child: WeeklyLeaderboardSectionChips(
+                    selected: section.value,
+                    onChanged: (value) => section.value = value,
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+                sliver: SliverToBoxAdapter(
+                  child: switch (section.value) {
+                    WeeklyLeaderboardSection.current => _CurrentTabBody(
+                      async: currentAsync,
+                      weekOptions: weekOptions,
+                      l10n: l10n,
+                      theme: theme,
+                      onRefresh: () async {
+                        ref.invalidate(weeklyLeaderboardCurrentProvider);
+                        await ref.read(weeklyLeaderboardCurrentProvider.future);
+                      },
+                    ),
+                    WeeklyLeaderboardSection.history => _HistoryWeekListTab(
+                      weekOptions: weekOptions,
+                      l10n: l10n,
+                      theme: theme,
+                    ),
                   },
                 ),
-              WeeklyLeaderboardSection.history => _HistoryWeekListTab(
-                  weekOptions: weekOptions,
-                  l10n: l10n,
-                  theme: theme,
-                ),
-            },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -184,7 +235,10 @@ class _CurrentTabBody extends HookConsumerWidget {
 
     return async.when(
       skipLoadingOnReload: true,
-      loading: () => const Center(child: FCircularProgress(size: .md)),
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: 48),
+        child: FCircularProgress(size: .md),
+      ),
       error: (_, _) => _ErrorScroll(
         message: l10n.balehoLeaderboardLoadFailed,
         retryLabel: l10n.commonRetry,
@@ -199,73 +253,62 @@ class _CurrentTabBody extends HookConsumerWidget {
         final lastEntries = lastSnap?.entries ?? const <LeaderboardEntry>[];
         final lastWeekReady = showLastWeek && lastEntries.isNotEmpty;
 
-        return RefreshIndicator(
-          onRefresh: () async {
-            await onRefresh();
-            if (lastWeekId != null) {
-              ref.invalidate(weeklyLeaderboardHistoryProvider(lastWeekId));
-              await ref.read(
-                weeklyLeaderboardHistoryProvider(lastWeekId).future,
-              );
-            }
-          },
-          child: WeeklyLeaderboardEntryList(
-            entries: view.entries,
-            l10n: l10n,
+        return WeeklyLeaderboardEntryList(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          entries: view.entries,
+          l10n: l10n,
+          theme: theme,
+          header: WeeklyLeaderboardStatusCard(
             theme: theme,
-            header: WeeklyLeaderboardStatusCard(
-              theme: theme,
-              l10n: l10n,
-              weekLabel: view.weekId != null && view.weekId!.isNotEmpty
-                  ? l10n.balehoLeaderboardWeekLabel(view.weekId!)
-                  : null,
-              statusLine: countdown ??
-                  (view.resetsAt != null
-                      ? l10n.balehoLeaderboardResetsAt(
-                          formatDateTime(view.resetsAt),
-                        )
-                      : null),
-              onOpenPointsGuide: () =>
-                  context.push(BalehoBoard.weeklyLeaderboardPointsPath),
-            ),
-            emptyMessage: lastWeekReady
-                ? l10n.balehoLeaderboardLastWeekHint
-                : l10n.balehoLeaderboardEmpty,
-            trailing: lastWeekReady
-                ? [
-                    const Gap(8),
-                    WeeklyLeaderboardMetaCard(
-                      theme: theme,
-                      icon: FLucideIcons.history,
-                      weekLabel: l10n.balehoLeaderboardLastWeekTitle,
-                      subtitle: l10n.balehoLeaderboardWeekLabel(lastWeekId),
-                      onPress: () => context.push(
-                        BalehoBoard.weeklyLeaderboardHistoryWeekPath(
-                          lastWeekId,
-                        ),
-                      ),
-                    ),
-                    const Gap(12),
-                    ...weeklyLeaderboardEntryChildren(
-                      context: context,
-                      entries: lastEntries,
-                      l10n: l10n,
-                      theme: theme,
-                      emptyMessage: l10n.balehoLeaderboardHistoryEmpty,
-                    ),
-                    const Gap(12),
-                    FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: () => context.push(
-                        BalehoBoard.weeklyLeaderboardHistoryWeekPath(
-                          lastWeekId,
-                        ),
-                      ),
-                      child: Text(l10n.balehoLeaderboardOpenWeek),
-                    ),
-                  ]
+            l10n: l10n,
+            weekLabel: view.weekId != null && view.weekId!.isNotEmpty
+                ? l10n.balehoLeaderboardWeekLabel(view.weekId!)
                 : null,
+            statusLine:
+                countdown ??
+                (view.resetsAt != null
+                    ? l10n.balehoLeaderboardResetsAt(
+                        formatDateTime(view.resetsAt),
+                      )
+                    : null),
+            onOpenPointsGuide: () =>
+                context.push(BalehoBoard.weeklyLeaderboardPointsPath),
           ),
+          emptyMessage: lastWeekReady
+              ? l10n.balehoLeaderboardLastWeekHint
+              : l10n.balehoLeaderboardEmpty,
+          trailing: lastWeekReady
+              ? [
+                  const Gap(8),
+                  WeeklyLeaderboardMetaCard(
+                    theme: theme,
+                    icon: FLucideIcons.history,
+                    weekLabel: l10n.balehoLeaderboardLastWeekTitle,
+                    subtitle: l10n.balehoLeaderboardWeekLabel(lastWeekId),
+                    onPress: () => context.push(
+                      BalehoBoard.weeklyLeaderboardHistoryWeekPath(lastWeekId),
+                    ),
+                  ),
+                  const Gap(12),
+                  ...weeklyLeaderboardEntryChildren(
+                    context: context,
+                    entries: lastEntries,
+                    l10n: l10n,
+                    theme: theme,
+                    emptyMessage: l10n.balehoLeaderboardHistoryEmpty,
+                  ),
+                  const Gap(12),
+                  FButton(
+                    variant: FButtonVariant.outline,
+                    onPress: () => context.push(
+                      BalehoBoard.weeklyLeaderboardHistoryWeekPath(lastWeekId),
+                    ),
+                    child: Text(l10n.balehoLeaderboardOpenWeek),
+                  ),
+                ]
+              : null,
         );
       },
     );
@@ -311,9 +354,7 @@ class _HistoryWeekListTab extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final visibleCount = useState(
-      weekOptions.isEmpty
-          ? 0
-          : weekOptions.length.clamp(0, _kHistoryPageSize),
+      weekOptions.isEmpty ? 0 : weekOptions.length.clamp(0, _kHistoryPageSize),
     );
 
     useEffect(() {
@@ -328,9 +369,8 @@ class _HistoryWeekListTab extends HookWidget {
     }, [weekOptions.length]);
 
     if (weekOptions.isEmpty) {
-      return ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
@@ -349,9 +389,8 @@ class _HistoryWeekListTab extends HookWidget {
     final shown = weekOptions.take(visibleCount.value).toList();
     final hasMore = visibleCount.value < weekOptions.length;
 
-    return ListView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         FTileGroup(
           children: [
@@ -404,8 +443,8 @@ class _ErrorScroll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      physics: const AlwaysScrollableScrollPhysics(),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: const EdgeInsets.all(24),

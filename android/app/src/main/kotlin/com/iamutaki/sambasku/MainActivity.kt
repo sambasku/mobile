@@ -2,11 +2,14 @@
 
 package com.iamutaki.sambasku
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.util.UnstableApi
@@ -28,10 +31,29 @@ import java.io.File
 
 class MainActivity : FlutterActivity() {
     private val channelName = "sambasku/share_video"
+    private val photoPickerChannelName = "sambasku/android_photo_picker"
     private var transformer: Transformer? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        // Issue mobile#385: aktifkan Android Photo Picker hanya di Android 13+
+        // yang benar-benar punya handler ACTION_PICK_IMAGES. Di Android <= 12
+        // (mis. Vivo Y12 Funtouch OS 9 / Android 11), PickVisualMedia jatuh ke
+        // backport/ACTION_OPEN_DOCUMENT yang sering gagal di ROM OEM; pakai
+        // ACTION_GET_CONTENT yang tetap tanpa izin READ_MEDIA_*.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, photoPickerChannelName)
+            .setMethodCallHandler { call, result ->
+                if (call.method != "isSupported") {
+                    result.notImplemented()
+                    return@setMethodCallHandler
+                }
+                val supported =
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                        Intent(MediaStore.ACTION_PICK_IMAGES)
+                            .resolveActivity(packageManager) != null
+                result.success(supported)
+            }
+
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channelName)
             .setMethodCallHandler { call, result ->
                 if (call.method != "compose") {

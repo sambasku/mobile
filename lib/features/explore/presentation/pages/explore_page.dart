@@ -14,13 +14,18 @@ import '../../../../core/utils/use_scroll_collapse.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../encyclopedia/encyclopedia_router.dart';
+import '../../../report_bug/report_bug_router.dart';
 import '../../domain/explore_category.dart';
 import '../../explore_router.dart';
 import '../widgets/explore_map_hero.dart';
 
 /// Tab Eksplorasi: hub kategori discovery Sambas.
 class ExplorePage extends HookConsumerWidget {
-  const ExplorePage({super.key});
+  const ExplorePage({super.key, @visibleForTesting this.mapHeroOverride});
+
+  /// Pengganti hero peta saat widget test (MapLibre platform view tidak
+  /// tersedia di headless test runner).
+  final Widget? mapHeroOverride;
 
   static const _menuColumns = 4;
   static const _menuIconSize = 48.0;
@@ -69,16 +74,18 @@ class ExplorePage extends HookConsumerWidget {
 
     // ponytail: heightFn di-invoke per frame di AnimatedBuilder, tanpa
     // AnimatedContainer (restart tween tiap tick scroll = jitter).
-    Widget hero() => AnimatedBuilder(
-      animation: collapse,
-      builder: (context, _) {
-        final t = collapse.value;
-        final heroHeight = maxHero - t * collapseDistance;
-        // Tanpa padding atas: header sudah pad bawah 6px (app.dart).
-        // Padding lama 8 + SizedBox sama tinggi = overflow 8px.
-        return ExploreMapHero(height: heroHeight);
-      },
-    );
+    Widget hero() =>
+        mapHeroOverride ??
+        AnimatedBuilder(
+          animation: collapse,
+          builder: (context, _) {
+            final t = collapse.value;
+            final heroHeight = maxHero - t * collapseDistance;
+            // Tanpa padding atas: header sudah pad bawah 6px (app.dart).
+            // Padding lama 8 + SizedBox sama tinggi = overflow 8px.
+            return ExploreMapHero(height: heroHeight);
+          },
+        );
 
     // Available dulu (urutan tetap), coming-soon di-append setelahnya -
     // toggle tidak pernah menggeser posisi kartu yang sudah aktif
@@ -141,9 +148,7 @@ class ExplorePage extends HookConsumerWidget {
                             onTap: () {
                               AnalyticsService.instance.log(
                                 'explore_coming_soon_toggle',
-                                params: {
-                                  'show': showComingSoon.value ? 0 : 1,
-                                },
+                                params: {'show': showComingSoon.value ? 0 : 1},
                               );
                               showComingSoon.value = !showComingSoon.value;
                             },
@@ -161,6 +166,23 @@ class ExplorePage extends HookConsumerWidget {
                         ),
                       ),
                     ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: _ExploreFeedbackCtaCard(
+                        title: l10n.exploreFeedbackCtaTitle,
+                        subtitle: l10n.exploreFeedbackCtaSubtitle,
+                        onPress: () {
+                          unawaited(
+                            AnalyticsService.instance.log(
+                              'explore_feedback_cta_tap',
+                            ),
+                          );
+                          context.push(ReportBugRouter.feedback.path);
+                        },
+                      ),
+                    ),
+                  ),
                   const SliverPadding(padding: EdgeInsets.only(bottom: 32)),
                 ],
               );
@@ -210,10 +232,8 @@ class _ExploreMenuTile extends StatelessWidget {
                           height: iconSize,
                           fit: BoxFit.cover,
                           gaplessPlayback: true,
-                          errorBuilder: (_, _, _) => _IconBox(
-                            icon: category.icon,
-                            size: iconSize,
-                          ),
+                          errorBuilder: (_, _, _) =>
+                              _IconBox(icon: category.icon, size: iconSize),
                         )
                       : _IconBox(icon: category.icon, size: iconSize),
                 ),
@@ -272,6 +292,90 @@ class _IconBox extends StatelessWidget {
           icon,
           size: size * 0.42,
           color: theme.colors.mutedForeground,
+        ),
+      ),
+    );
+  }
+}
+
+class _ExploreFeedbackCtaCard extends StatelessWidget {
+  const _ExploreFeedbackCtaCard({
+    required this.title,
+    required this.subtitle,
+    required this.onPress,
+  });
+
+  final String title;
+  final String subtitle;
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+
+    return FTappable(
+      onPress: onPress,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: theme.colors.secondary,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: theme.colors.border),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Row(
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: theme.colors.primary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: SizedBox(
+                  width: 26,
+                  height: 26,
+                  child: Center(
+                    child: Icon(
+                      FLucideIcons.messageSquarePlus,
+                      size: 13,
+                      color: theme.colors.primary,
+                    ),
+                  ),
+                ),
+              ),
+              const Gap(8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.typography.body.xs.copyWith(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: theme.colors.foreground,
+                        height: 1.2,
+                      ),
+                    ),
+                    const Gap(1),
+                    Text(
+                      subtitle,
+                      style: theme.typography.body.xs.copyWith(
+                        fontSize: 11,
+                        color: theme.colors.mutedForeground,
+                        height: 1.25,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Gap(6),
+              Icon(
+                FLucideIcons.chevronRight,
+                size: 14,
+                color: theme.colors.mutedForeground,
+              ),
+            ],
+          ),
         ),
       ),
     );

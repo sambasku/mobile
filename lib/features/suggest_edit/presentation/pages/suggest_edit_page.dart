@@ -25,6 +25,8 @@ import '../../../dictionary/presentation/providers/categories_provider.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
 import '../../../dictionary/presentation/utils/pronunciation_format.dart';
 import '../../../dictionary/presentation/widgets/usage_label_chips.dart';
+import '../../../review/domain/entities/word_suggestion_review.dart';
+import '../../../review/presentation/providers/review_suggestions_providers.dart';
 import '../../domain/meaning_edit_order.dart';
 import '../../domain/suggest_category.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -42,9 +44,16 @@ class SuggestEditPage extends ConsumerStatefulWidget {
     this.initialCategory,
     this.initialMeaningId,
     this.initialPronunciationId,
+    this.autoPickPhoto = false,
+    this.reviewSuggestionId,
   });
 
   final String wordId;
+
+  /// Mode tinjau: form ini dibuka dari usulan pending (`?review=`) untuk
+  /// dikoreksi. Kategori dan isi awal diambil dari usulan; submit lewat
+  /// `POST /admin/word-suggestions/:id/correct`.
+  final String? reviewSuggestionId;
 
   /// Kategori yang langsung terpilih, mis. saat dibuka dari form tinjau
   /// dengan `?category=add_meaning`. Kalau kategori ini tidak tersedia untuk
@@ -60,6 +69,10 @@ class SuggestEditPage extends ConsumerStatefulWidget {
   /// `change_pronunciation`. ID yang tidak ada di detail diabaikan.
   final String? initialPronunciationId;
 
+  /// Langsung buka sheet pilih foto saat form `add_photo` pertama tampil
+  /// (`?autoPick=1` dari container foto kosong di detail kata).
+  final bool autoPickPhoto;
+
   @override
   ConsumerState<SuggestEditPage> createState() => _SuggestEditPageState();
 }
@@ -70,6 +83,8 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   SuggestCategory? _category;
   String? _meaningId;
   bool _prefilled = false;
+  bool _reviewSeeded = false;
+  bool _autoPickPhoto = false;
   bool _submitting = false;
   Map<String, String> _fieldErrors = const {};
 
@@ -260,6 +275,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     }
     if (requested == SuggestCategory.changePronunciation) {
       _prefillPronunciation(detail);
+    }
+    if (requested == SuggestCategory.addPhoto && widget.autoPickPhoto) {
+      _autoPickPhoto = true;
     }
   }
 
@@ -583,8 +601,180 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         },
   ];
 
+  /// Isi awal form tinjau dari usulan. Sekali saja, saat usulan sudah tersedia.
+  void _seedReview(WordDetail detail, WordSuggestionDetail suggestion) {
+    if (_reviewSeeded) return;
+    _reviewSeeded = true;
+    final category = reviewCorrectableCategory(suggestion.reasonCode);
+    if (category == null) return;
+    _category = category;
+    _applyProposalPrefill(detail, category, suggestion.proposedChanges);
+  }
+
+  static List<Map<String, dynamic>> _rowsOf(
+    Map<String, dynamic> proposed,
+    String key,
+  ) => [
+    for (final row in proposed[key] as List? ?? const [])
+      if (row is Map) Map<String, dynamic>.from(row),
+  ];
+
+  static List<String> _idsOf(Object? raw) =>
+      raw is List ? [for (final id in raw) id.toString()] : const [];
+
+  /// Padanan dari `translations[0].translationText` (bentuk domain usulan).
+  static String? _proposedPadanan(Map<String, dynamic> row) {
+    final list = row['translations'];
+    if (list is! List || list.isEmpty) return null;
+    final first = list.first;
+    return first is Map ? first['translationText']?.toString() : null;
+  }
+
+  /// Isi field kategori dari usulan. Nilai asal (`original*`) tetap dari kata
+  /// sekarang, jadi `_buildProposed` menghitung diff yang sama seperti usul.
+  void _applyProposalPrefill(
+    WordDetail detail,
+    SuggestCategory category,
+    Map<String, dynamic> proposed,
+  ) {
+    final meanings = _rowsOf(proposed, 'meanings');
+    switch (category) {
+      case SuggestCategory.changeMeaning:
+        for (final row in meanings) {
+          final meaning = detail.meanings
+              .where((m) => m.id == row['meaningId'])
+              .firstOrNull;
+          if (meaning == null) continue;
+          final draft = _draftFor(meaning);
+          final definition = row['definition'];
+          if (definition is String) draft.def.text = definition;
+          final padanan = _proposedPadanan(row);
+          if (padanan != null) draft.pad.text = padanan;
+        }
+      case SuggestCategory.changeWordClass:
+        final row = meanings.firstOrNull;
+        final meaning = detail.meanings
+            .where((m) => m.id == row?['meaningId'])
+            .firstOrNull;
+        if (row == null || meaning == null) return;
+        _selectMeaning(meaning);
+        _wordClassId = row['wordClassId']?.toString();
+      case SuggestCategory.changeWordType:
+        _wordType = proposed['wordType']?.toString() ?? _wordType;
+      case SuggestCategory.addMeaning:
+        final row = meanings.firstOrNull;
+        if (row == null) return;
+        _addWordClassId = row['wordClassId']?.toString();
+        _addDefinitionCtrl.text = row['definition']?.toString() ?? '';
+        _addPadananCtrl.text = _proposedPadanan(row) ?? '';
+      case SuggestCategory.changeExample:
+        final row = _rowsOf(proposed, 'examples').firstOrNull;
+        if (row == null) return;
+        final exampleId = row['exampleId']?.toString();
+        final example = [
+          for (final m in detail.meanings) ...m.examples,
+        ].where((e) => e.id == exampleId).firstOrNull;
+        if (example != null) {
+          _originalExampleSentence = example.sourceSentence;
+          _originalExampleTranslation = example.targetSentence;
+        }
+        _exampleId = exampleId;
+        _sentenceCtrl.text =
+            row['sourceSentence']?.toString() ?? _sentenceCtrl.text;
+        if (row.containsKey('targetSentence')) {
+          _sentenceTranslationCtrl.text =
+              row['targetSentence']?.toString() ?? '';
+        }
+      case SuggestCategory.changePronunciation:
+        final row = _rowsOf(proposed, 'pronunciations').firstOrNull;
+        if (row == null) return;
+        final pronunciationId = row['pronunciationId']?.toString();
+        final pronunciation = detail.pronunciations
+            .where((p) => p.id == pronunciationId)
+            .firstOrNull;
+        if (pronunciation != null) {
+          _originalPronunciationValue = pronunciationRaw(pronunciation.value);
+        }
+        _pronunciationId = pronunciationId;
+        _pronunciationCtrl.text = row['value']?.toString() ?? '';
+      case SuggestCategory.lemmaNotes:
+        _lemmaCtrl.text = proposed['lemma']?.toString() ?? detail.lemma;
+        _notesCtrl.text = proposed['notes']?.toString() ?? detail.notes ?? '';
+      case SuggestCategory.changeCategories:
+        _initTopicCategories(detail);
+        _topicCategoryIds
+          ..addAll(_idsOf(proposed['categoryIdsToAdd']))
+          ..removeAll(_idsOf(proposed['categoryIdsToRemove']));
+      case SuggestCategory.changeUsageLabels:
+        _initUsageLabels(detail);
+        _usageLabels
+          ..addAll(_idsOf(proposed['usageLabelsToAdd']))
+          ..removeAll(_idsOf(proposed['usageLabelsToRemove']));
+      default:
+        break;
+    }
+  }
+
+  /// Submit mode tinjau: kirim hasil form ke endpoint koreksi usulan.
+  Future<void> _submitReview(WordDetail detail) async {
+    if (_submitting || _category == null) return;
+    setState(() {
+      _submitting = true;
+      _fieldErrors = const {};
+    });
+    try {
+      final proposed = await _buildProposed(detail, ref.read(dioProvider));
+      if (!mounted) return;
+      if (proposed == null) {
+        await _showError(
+          _l10n.suggestNothingChangedFor(
+            suggestCategoryLabel(_category!, _l10n).toLowerCase(),
+          ),
+          title: _l10n.suggestNothingChanged,
+        );
+        return;
+      }
+      final reasonText = _reasonTextCtrl.text.trim();
+      final result = await ref
+          .read(wordSuggestionReviewRepositoryProvider)
+          .correct(
+            widget.reviewSuggestionId!,
+            correctedChanges: proposed,
+            comment: reasonText.isEmpty ? null : reasonText,
+          );
+      if (!mounted) return;
+      await result.fold<Future<void>>(
+        (failure) => _showError(failure.message),
+        (_) => _onReviewCorrected(detail),
+      );
+    } on DioException catch (e) {
+      await _handleDioError(e);
+    } on StateError catch (e) {
+      if (mounted) await _showError(e.message);
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
+  }
+
+  Future<void> _onReviewCorrected(WordDetail detail) async {
+    final suggestionId = widget.reviewSuggestionId!;
+    invalidateReviewSuggestions(ref);
+    ref.invalidate(reviewSuggestionDetailProvider(suggestionId));
+    await invalidateWordDetailCaches(ref, widget.wordId, detail.lemma);
+    if (!mounted) return;
+    showFToast(
+      context: context,
+      title: Text(_l10n.reviewSuggestionCorrectedToast),
+    );
+    context.go('/review/suggestions');
+  }
+
   Future<void> _submit(WordDetail detail) async {
     if (_submitting || _category == null) return;
+    if (_isReview) {
+      await _submitReview(detail);
+      return;
+    }
     setState(() {
       _submitting = true;
       _fieldErrors = const {};
@@ -748,11 +938,20 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     );
   }
 
+  bool get _isReview => widget.reviewSuggestionId != null;
+
   /// #264: dari form kategori → listing opsi dulu; dari listing → keluar.
   /// Jangan pushReplacement antar opsi - state lokal `_category` saja.
   void _onBack() {
+    if (_isReview) {
+      context.pop();
+      return;
+    }
     if (_category != null) {
-      setState(() => _category = null);
+      setState(() {
+        _category = null;
+        _autoPickPhoto = false;
+      });
       return;
     }
     context.pop();
@@ -762,6 +961,11 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   Widget build(BuildContext context) {
     final auth = ref.watch(authStatusProvider).value;
     final detailAsync = ref.watch(wordDetailProvider(widget.wordId));
+    final reviewAsync = widget.reviewSuggestionId == null
+        ? null
+        : ref.watch(
+            reviewSuggestionDetailProvider(widget.reviewSuggestionId!),
+          );
 
     if (auth?.isAuth != true) {
       return FScaffold(
@@ -787,10 +991,13 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
 
     // #264: system back sama dengan header - form → listing, bukan keluar.
     return PopScope(
-      canPop: !onCategoryForm,
+      canPop: _isReview || !onCategoryForm,
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop && _category != null) {
-          setState(() => _category = null);
+          setState(() {
+        _category = null;
+        _autoPickPhoto = false;
+      });
         }
       },
       child: FScaffold(
@@ -817,7 +1024,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                           ? preSubmit.ctaBusy
                           : (isExample
                                 ? _l10n.suggestSendExample
-                                : preSubmit.cta),
+                                : _isReview ? _l10n.reviewSuggestionCorrectCta : preSubmit.cta),
                     ),
                   ),
                 ),
@@ -827,6 +1034,18 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           error: (e, _) => Center(child: Text('$e')),
           data: (detail) {
             _prefillOnce(detail);
+            if (reviewAsync != null) {
+              return reviewAsync.when(
+                loading: () => const Center(child: FCircularProgress()),
+                error: (e, _) => Center(child: Text('$e')),
+                data: (suggestion) {
+                  _seedReview(detail, suggestion);
+                  return _category == null
+                      ? _buildCategoryList(detail, preSubmit.banner)
+                      : _buildCategoryForm(detail);
+                },
+              );
+            }
             return _category == null
                 ? _buildCategoryList(detail, preSubmit.banner)
                 : _buildCategoryForm(detail);
@@ -868,6 +1087,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                 ),
                 onPress: () => setState(() {
                   _category = c;
+                  _autoPickPhoto = false;
                   _fieldErrors = const {};
                   _exampleId = null;
                   _originalExampleSentence = '';
@@ -914,6 +1134,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           ),
         ),
         const Gap(12),
+        if (!_isReview) ...[
         FTile(
           title: Text(suggestCategoryLabel(category, _l10n)),
           subtitle: Text(_l10n.suggestChangeTypeSemantics),
@@ -922,9 +1143,13 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             size: 16,
             color: theme.colors.mutedForeground,
           ),
-          onPress: () => setState(() => _category = null),
+          onPress: () => setState(() {
+        _category = null;
+        _autoPickPhoto = false;
+      }),
         ),
         const Gap(12),
+        ],
         // #230: Ubah makna menampilkan semua makna sekaligus - picker
         // makna hanya untuk kategori lain yang butuh satu makna.
         if (category.needsMeaning &&
@@ -1099,6 +1324,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           ContributeImagesField(
             enabled: true,
             images: _addImages,
+            openPickerOnMount: _autoPickPhoto,
             onChanged: (next) => setState(() => _addImages = next),
           ),
         ];

@@ -751,14 +751,6 @@ class _DetailBody extends HookConsumerWidget {
                                     color: theme.colors.mutedForeground,
                                   ),
                                 ),
-                                const Gap(12),
-                                PronunciationSection(
-                                  wordId: wordId,
-                                  languageId: detail.languageId,
-                                  audios: detail.audios,
-                                  spokenText: detail.lemma,
-                                  compact: true,
-                                ),
                               ],
                             ),
                           ),
@@ -773,8 +765,27 @@ class _DetailBody extends HookConsumerWidget {
                               onReportImage: () =>
                                   reportImageViolence(primaryImage),
                             ),
+                          ] else if (!_lemmaUsesLocalCorpus(ref)) ...[
+                            const Gap(16),
+                            _EmptyLemmaImageSlot(
+                              onPress: () => _openSuggestEdit(
+                                context,
+                                ref,
+                                wordId,
+                                category: SuggestCategory.addPhoto.code,
+                                autoPickPhoto: true,
+                              ),
+                            ),
                           ],
                         ],
+                      ),
+                      const Gap(12),
+                      PronunciationSection(
+                        wordId: wordId,
+                        languageId: detail.languageId,
+                        audios: detail.audios,
+                        spokenText: detail.lemma,
+                        compact: true,
                       ),
                       if (primaryImage case final img?
                           when !img.isPendingReview &&
@@ -1123,6 +1134,108 @@ class _DetailBody extends HookConsumerWidget {
 }
 
 /// Thumbnail 72px di kanan lemma. Tap buka gallery; badge jumlah bila >1 foto.
+/// Placeholder default di kanan header lemma saat kata belum punya foto.
+/// Memberi petunjuk visual langsung agar user bisa tap untuk menambahkan foto.
+class _EmptyLemmaImageSlot extends StatelessWidget {
+  const _EmptyLemmaImageSlot({required this.onPress});
+
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      button: true,
+      label: l10n.suggestCategoryAddPhoto,
+      child: FTappable(
+        onPress: onPress,
+        child: SizedBox(
+          width: 72,
+          height: 72,
+          child: CustomPaint(
+            painter: _DashedRRectBorderPainter(
+              color: theme.colors.mutedForeground.withValues(alpha: 0.45),
+              radius: 12,
+            ),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: theme.colors.secondary.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      FLucideIcons.imagePlus,
+                      size: 20,
+                      color: theme.colors.mutedForeground,
+                    ),
+                    const Gap(4),
+                    Text(
+                      l10n.suggestCategoryAddPhoto,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.body.xs.copyWith(
+                        fontSize: 10,
+                        height: 1.15,
+                        color: theme.colors.mutedForeground,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DashedRRectBorderPainter extends CustomPainter {
+  const _DashedRRectBorderPainter({
+    required this.color,
+    required this.radius,
+  });
+
+  final Color color;
+  final double radius;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+    final path = Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          Offset.zero & size,
+          Radius.circular(radius),
+        ),
+      );
+    const dashLength = 4.0;
+    const gapLength = 3.0;
+    for (final metric in path.computeMetrics()) {
+      var distance = 0.0;
+      while (distance < metric.length) {
+        final next = (distance + dashLength).clamp(0.0, metric.length);
+        canvas.drawPath(metric.extractPath(distance, next), paint);
+        distance += dashLength + gapLength;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedRRectBorderPainter oldDelegate) =>
+      oldDelegate.color != color || oldDelegate.radius != radius;
+}
+
 class _LemmaImageThumb extends StatelessWidget {
   const _LemmaImageThumb({
     required this.image,
@@ -1266,6 +1379,7 @@ Future<void> _openSuggestEdit(
   String wordId, {
   String? meaningId,
   String? category,
+  bool autoPickPhoto = false,
 }) async {
   final auth = await ref.read(authStatusProvider.future);
   if (!context.mounted) return;
@@ -1280,6 +1394,7 @@ Future<void> _openSuggestEdit(
   final q = <String>[
     if (category != null && category.isNotEmpty) 'category=$category',
     if (meaningId != null && meaningId.isNotEmpty) 'meaning=$meaningId',
+    if (autoPickPhoto) 'autoPick=1',
   ];
   final path = q.isEmpty
       ? '/suggest-edit/$wordId'

@@ -93,6 +93,72 @@ class RegionGeometry {
     return null;
   }
 
+  /// Bersihkan FeatureCollection agar sesuai RFC 7946 (khususnya iOS
+  /// MapLibre `MLNShape` yang menolak linear ring dengan < 4 titik).
+  static Map<String, dynamic> sanitizeFeatureCollection(
+    Map<String, dynamic> geojson,
+  ) {
+    final feats = geojson['features'];
+    if (feats is! List) return geojson;
+    final cleanFeatures = <Map<String, dynamic>>[];
+    for (final f in feats) {
+      if (f is! Map) continue;
+      final g = f['geometry'];
+      if (g is! Map) continue;
+      final type = g['type'];
+      final coords = g['coordinates'];
+      if (type == 'Polygon' && coords is List) {
+        final rings = _sanitizePolygonRings(coords);
+        if (rings.isEmpty) continue;
+        cleanFeatures.add({
+          ...Map<String, dynamic>.from(f),
+          'geometry': {'type': 'Polygon', 'coordinates': rings},
+        });
+      } else if (type == 'MultiPolygon' && coords is List) {
+        final polys = <List<List<List<double>>>>[];
+        for (final poly in coords) {
+          if (poly is! List) continue;
+          final rings = _sanitizePolygonRings(poly);
+          if (rings.isNotEmpty) polys.add(rings);
+        }
+        if (polys.isEmpty) continue;
+        cleanFeatures.add({
+          ...Map<String, dynamic>.from(f),
+          'geometry': {'type': 'MultiPolygon', 'coordinates': polys},
+        });
+      } else {
+        cleanFeatures.add(Map<String, dynamic>.from(f));
+      }
+    }
+    return {
+      ...geojson,
+      'type': 'FeatureCollection',
+      'features': cleanFeatures,
+    };
+  }
+
+  static List<List<List<double>>> _sanitizePolygonRings(List rawRings) {
+    final out = <List<List<double>>>[];
+    for (final rawRing in rawRings) {
+      if (rawRing is! List) continue;
+      final pts = <List<double>>[
+        for (final p in rawRing)
+          if (p is List && p.length >= 2 && p[0] is num && p[1] is num)
+            [(p[0] as num).toDouble(), (p[1] as num).toDouble()],
+      ];
+      if (pts.length < 3) continue;
+      final first = pts.first;
+      final last = pts.last;
+      if (first[0] != last[0] || first[1] != last[1]) {
+        pts.add([first[0], first[1]]);
+      }
+      // RFC 7946: linear ring wajib minimal 4 posisi (3 titik unik + penutup).
+      if (pts.length < 4) continue;
+      out.add(pts);
+    }
+    return out;
+  }
+
   /// Muat asset geojson + parse sekali.
   static Future<Map<String, List<List<List<double>>>>> load() async {
     final raw = await rootBundle.loadString('assets/data/regions.geojson');

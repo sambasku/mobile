@@ -71,14 +71,24 @@ class ChatComposer extends HookWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (replyTarget != null) ...[
-                ChatReplyBar(
-                  target: replyTarget!,
-                  onClear: onClearReply,
-                  onJump: onJumpToReply,
-                ),
-                const Gap(6),
-              ],
+              AnimatedSize(
+                duration: MediaQuery.disableAnimationsOf(context)
+                    ? Duration.zero
+                    : const Duration(milliseconds: 180),
+                curve: Curves.easeOutCubic,
+                alignment: Alignment.bottomCenter,
+                child: replyTarget != null
+                    ? Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: ChatReplyBar(
+                          key: ValueKey(replyTarget!.id),
+                          target: replyTarget!,
+                          onClear: onClearReply,
+                          onJump: onJumpToReply,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -147,36 +157,110 @@ class ChatComposer extends HookWidget {
                     ),
                   ),
                   const Gap(6),
-                  Semantics(
-                    button: true,
-                    label: l10n.chatSend,
-                    child: Material(
-                      color: sending
-                          ? theme.colors.primary.withValues(alpha: 0.5)
-                          : theme.colors.primary,
-                      shape: const CircleBorder(),
-                      child: InkWell(
-                        customBorder: const CircleBorder(),
-                        onTap: sending ? null : () => _guarded(onSendText),
-                        child: SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: Center(
-                            child: sending
-                                ? const FCircularProgress(size: .xs)
-                                : Icon(
-                                    FLucideIcons.send,
-                                    size: 16,
-                                    color: theme.colors.primaryForeground,
-                                  ),
-                          ),
-                        ),
-                      ),
-                    ),
+                  _ChatSendButton(
+                    sending: sending,
+                    semanticsLabel: l10n.chatSend,
+                    color: theme.colors.primary,
+                    foregroundColor: theme.colors.primaryForeground,
+                    onTap: () => _guarded(onSendText),
                   ),
                 ],
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ChatSendButton extends StatefulWidget {
+  const _ChatSendButton({
+    required this.sending,
+    required this.semanticsLabel,
+    required this.color,
+    required this.foregroundColor,
+    required this.onTap,
+  });
+
+  final bool sending;
+  final String semanticsLabel;
+  final Color color;
+  final Color foregroundColor;
+  final VoidCallback onTap;
+
+  @override
+  State<_ChatSendButton> createState() => _ChatSendButtonState();
+}
+
+class _ChatSendButtonState extends State<_ChatSendButton> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final disableAnim = MediaQuery.disableAnimationsOf(context);
+    final dur = disableAnim
+        ? Duration.zero
+        : const Duration(milliseconds: 160);
+
+    return Semantics(
+      button: true,
+      label: widget.semanticsLabel,
+      child: AnimatedScale(
+        scale: _pressed && !disableAnim ? 0.88 : 1.0,
+        duration: disableAnim
+            ? Duration.zero
+            : const Duration(milliseconds: 100),
+        curve: Curves.easeOutCubic,
+        child: Material(
+          color: Colors.transparent,
+          shape: const CircleBorder(),
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTapDown: widget.sending
+                ? null
+                : (_) => setState(() => _pressed = true),
+            onTapUp: widget.sending
+                ? null
+                : (_) => setState(() => _pressed = false),
+            onTapCancel: () {
+              if (_pressed) setState(() => _pressed = false);
+            },
+            onTap: widget.sending ? null : widget.onTap,
+            child: AnimatedContainer(
+              duration: dur,
+              curve: Curves.easeOutCubic,
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: widget.sending
+                    ? widget.color.withValues(alpha: 0.5)
+                    : widget.color,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: AnimatedSwitcher(
+                  duration: dur,
+                  switchInCurve: Curves.easeOutCubic,
+                  switchOutCurve: Curves.easeInCubic,
+                  transitionBuilder: (child, animation) => ScaleTransition(
+                    scale: animation,
+                    child: FadeTransition(opacity: animation, child: child),
+                  ),
+                  child: widget.sending
+                      ? const FCircularProgress(
+                          key: ValueKey('sending'),
+                          size: .xs,
+                        )
+                      : Icon(
+                          FLucideIcons.send,
+                          key: const ValueKey('send'),
+                          size: 16,
+                          color: widget.foregroundColor,
+                        ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

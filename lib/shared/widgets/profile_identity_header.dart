@@ -33,6 +33,7 @@ class ProfileIdentityHeader extends StatelessWidget {
     super.key,
     required this.variant,
     required this.displayName,
+    this.nameTrailing,
     this.username,
     this.avatarUrl,
     this.avatarAsset,
@@ -48,6 +49,7 @@ class ProfileIdentityHeader extends StatelessWidget {
     this.coverUrl,
     this.coverAsset,
     this.onAvatarTap,
+    this.onNameTap,
     this.avatarOverlay,
     this.footer,
     this.horizontalPadding = 16,
@@ -55,6 +57,9 @@ class ProfileIdentityHeader extends StatelessWidget {
 
   final ProfileHeaderVariant variant;
   final String displayName;
+
+  /// Aksi ringkas (mis. ikon edit) tepat di sebelah kanan [displayName].
+  final Widget? nameTrailing;
 
   /// Handle tanpa `@`. Null/kosong = baris handle tidak dirender.
   final String? username;
@@ -91,14 +96,17 @@ class ProfileIdentityHeader extends StatelessWidget {
   final String? coverAsset;
   final VoidCallback? onAvatarTap;
 
+  /// Ketuk nama tampilan (mis. buka profil publik dari tab Profil).
+  final VoidCallback? onNameTap;
+
   /// Chip/badge di kanan atas frame avatar + border (mis. preview Jinye).
   final Widget? avatarOverlay;
 
   /// Cover lokal default: tab Profil (hero) vs profil publik (compact).
   static String defaultCoverAsset(ProfileHeaderVariant variant) =>
       variant == ProfileHeaderVariant.hero
-          ? 'assets/images/profile_cover_tab.webp'
-          : 'assets/images/profile_cover_public.webp';
+      ? 'assets/images/profile_cover_tab.webp'
+      : 'assets/images/profile_cover_public.webp';
 
   /// Konten tambahan di bawah identitas (mis. ringkasan lencana).
   final Widget? footer;
@@ -136,10 +144,10 @@ class ProfileIdentityHeader extends StatelessWidget {
   // besar dari fotonya; tinggi art harus ikut frame supaya cincin tidak
   // terpotong tepi atas cover.
   double get _avatarExtent => AvatarBorderOverlay.extent(
-        _avatarSize,
-        borderUrl: borderUrl,
-        borderAssetKind: borderAssetKind,
-      );
+    _avatarSize,
+    borderUrl: borderUrl,
+    borderAssetKind: borderAssetKind,
+  );
 
   /// Lebar max overlay di kanan bahu avatar (selaras Jinye bubble 260).
   /// Parent Stack harus selebar ini - kalau tidak, tap di bagian yang
@@ -268,15 +276,40 @@ class ProfileIdentityHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: verticalAlign,
             children: [
-              PublicAccountName(
-                label: displayName,
-                isVerifier: isVerifier,
-                badgeSize: 16,
-                style: theme.typography.body.lg.copyWith(
-                  fontWeight: FontWeight.w700,
-                  height: 1.2,
+              if (nameTrailing == null)
+                _wrapNameTap(
+                  PublicAccountName(
+                    label: displayName,
+                    isVerifier: isVerifier,
+                    badgeSize: 16,
+                    style: theme.typography.body.lg.copyWith(
+                      fontWeight: FontWeight.w700,
+                      height: 1.2,
+                    ),
+                  ),
+                )
+              else
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: _wrapNameTap(
+                        PublicAccountName(
+                          label: displayName,
+                          isVerifier: isVerifier,
+                          badgeSize: 16,
+                          style: theme.typography.body.lg.copyWith(
+                            fontWeight: FontWeight.w700,
+                            height: 1.2,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Gap(4),
+                    nameTrailing!,
+                  ],
                 ),
-              ),
               if (handle != null && handle.isNotEmpty) ...[
                 const Gap(1),
                 Text(
@@ -329,6 +362,11 @@ class ProfileIdentityHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _wrapNameTap(Widget child) {
+    if (onNameTap == null) return child;
+    return FTappable(onPress: onNameTap, child: child);
   }
 }
 

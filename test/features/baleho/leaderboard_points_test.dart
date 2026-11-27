@@ -37,11 +37,17 @@ void main() {
     expect(find.text('+5'), findsWidgets);
     expect(find.text('+3'), findsWidgets);
     expect(find.text('+2'), findsWidgets);
-    expect(
-      find.text(l10n.balehoPointsGuideRuleRejected, skipOffstage: false),
-      findsOneWidget,
+    await tester.scrollUntilVisible(
+      find.text(l10n.balehoPointsGuideRuleRejected),
+      300,
+      scrollable: find.byType(Scrollable).first,
     );
-    await tester.drag(find.byType(ListView), const Offset(0, -1200));
+    expect(find.text(l10n.balehoPointsGuideRuleRejected), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text(l10n.balehoPointsGuideExampleIntro),
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
     expect(find.text(l10n.balehoPointsGuideExampleIntro), findsOneWidget);
     expect(find.text(l10n.balehoPointsGuideExampleLine1), findsOneWidget);

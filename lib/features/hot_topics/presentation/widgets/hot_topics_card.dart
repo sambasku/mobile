@@ -25,6 +25,7 @@ class HotTopicsCard extends ConsumerStatefulWidget {
 class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
   static const _slotCount = 10;
   static const _columnCount = 2;
+
   /// Judul + subtitle + badge + chevron; row rapat supaya container compact.
   static const _cellHeight = 36.0;
   static const _rowGap = 1.0;
@@ -263,12 +264,21 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
-          child: Text(
-            active.blurb,
-            style: theme.typography.body.xs.copyWith(
-              color: theme.colors.mutedForeground,
-              height: 1.25,
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: theme.colors.muted,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              child: Text(
+                active.blurb,
+                style: theme.typography.body.xs.copyWith(
+                  color: theme.colors.mutedForeground,
+                  height: 1.3,
+                ),
+              ),
             ),
           ),
         ),
@@ -391,9 +401,8 @@ class _CompactCell extends StatelessWidget {
       HotProposedItem(:final wordId, :final lemma) => (
         title: lemma,
         meta: l10n.hotTopicsProposedSubtitle,
-        onPress: () => context.push(
-          wordDetailPath(wordId, includeUnverified: true),
-        ),
+        onPress: () =>
+            context.push(wordDetailPath(wordId, includeUnverified: true)),
       ),
       // Terpopuler (word_views): detail kamus reguler (hanya makna verified).
       HotViewedItem(:final wordId, :final lemma, :final viewCount) => (
@@ -430,9 +439,8 @@ class _CompactCell extends StatelessWidget {
         (
           title: lemma,
           meta: l10n.hotTopicsDownvoteCount(formatRibuan(downvotes)),
-          onPress: () => context.push(
-            wordDetailPath(wordId, meaningId: meaningId),
-          ),
+          onPress: () =>
+              context.push(wordDetailPath(wordId, meaningId: meaningId)),
         ),
     };
 

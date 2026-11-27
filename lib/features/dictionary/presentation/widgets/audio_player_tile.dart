@@ -1,13 +1,13 @@
+import 'package:forui/forui.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
-import '../dictionary_labels.dart';
-import 'package:forui/forui.dart';
-import 'package:gap/gap.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../domain/entities/word_detail.dart';
-import '../providers/audio_player_controller.dart';
 import '../../../../core/widgets/pending_review_badge_icon.dart';
+import '../../../../shared/widgets/audio_player_surface.dart';
+import '../../domain/entities/word_detail.dart';
+import '../dictionary_labels.dart';
+import '../providers/audio_player_controller.dart';
 
 /// Tile audio compact (pola contoh kalimat): ikon + meta 1 baris + progress.
 class AudioPlayerTile extends ConsumerWidget {
@@ -24,7 +24,7 @@ class AudioPlayerTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final WordDetailAudioView view = ref.watch(
       wordDetailAudioPlayerProvider(wordId),
     );
@@ -33,25 +33,9 @@ class AudioPlayerTile extends ConsumerWidget {
     final showBar = isActive && view.showProgress;
     final canSeek = isActive && view.canSeek;
 
-    IconData icon;
-    Color iconColor = theme.colors.primary;
-    switch (playback) {
-      case AudioTilePlaybackState.loading:
-        icon = FLucideIcons.loader;
-      case AudioTilePlaybackState.playing:
-        icon = FLucideIcons.pause;
-      case AudioTilePlaybackState.paused:
-        icon = FLucideIcons.play;
-      case AudioTilePlaybackState.error:
-        icon = FLucideIcons.circleAlert;
-        iconColor = theme.colors.error;
-      case AudioTilePlaybackState.idle:
-        icon = FLucideIcons.play;
-    }
-
     final durationLabel = audio.formattedDuration;
     final metaParts = <String>[
-      displaySpeaker(audio, AppLocalizations.of(context)),
+      displaySpeaker(audio, l10n),
       if (dialectName case final d? when d.isNotEmpty) d,
     ];
     final meta = metaParts.join(' · ');
@@ -75,100 +59,34 @@ class AudioPlayerTile extends ConsumerWidget {
       AudioTilePlaybackState.idle => 'Putar audio $meta',
     };
 
-    return Semantics(
-      button: true,
-      label: semanticsLabel,
-      child: Material(
-        color: theme.colors.secondary.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(8),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(8),
-          onTap: () => _onTap(context, ref),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 28,
-                      height: 28,
-                      child: playback == AudioTilePlaybackState.loading
-                          ? Center(
-                              child: SizedBox(
-                                width: 14,
-                                height: 14,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: theme.colors.primary,
-                                ),
-                              ),
-                            )
-                          : Icon(icon, size: 18, color: iconColor),
-                    ),
-                    const Gap(6),
-                    Expanded(
-                      child: Text(
-                        meta,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.body.xs.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    if (audio.isPendingReview) ...[
-                      const Gap(4),
-                      Semantics(
-                        button: true,
-                        label: AppLocalizations.of(context).dictPendingCheck,
-                        child: GestureDetector(
-                          onTap: () => showPendingAudioReviewInfo(context),
-                          child: const PendingReviewBadgeIcon(size: 14),
-                        ),
-                      ),
-                    ],
-                    if (timeLabel != null && timeLabel.isNotEmpty) ...[
-                      const Gap(6),
-                      Text(
-                        timeLabel,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: theme.typography.body.xs.copyWith(
-                          color: theme.colors.mutedForeground,
-                          fontFeatures: const [FontFeature.tabularFigures()],
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                if (showBar) ...[
-                  const Gap(4),
-                  _ProgressBar(
-                    progress: view.progress,
-                    color: theme.colors.primary,
-                    trackColor: theme.colors.border,
-                    enabled: canSeek,
-                    onSeek: canSeek
-                        ? (ratio) {
-                            ref
-                                .read(
-                                  wordDetailAudioPlayerProvider(
-                                    wordId,
-                                  ).notifier,
-                                )
-                                .seekRatio(ratio);
-                          }
-                        : null,
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ),
+    return AudioPlayerSurface(
+      semanticsLabel: semanticsLabel,
+      label: meta,
+      isLoading: playback == AudioTilePlaybackState.loading,
+      isPlaying: playback == AudioTilePlaybackState.playing,
+      isError: playback == AudioTilePlaybackState.error,
+      showBar: showBar,
+      canSeek: canSeek,
+      position: isActive ? view.position : Duration.zero,
+      duration: effectiveDuration,
+      timeLabel: timeLabel,
+      progressSemanticsLabel: l10n.dictAudioProgress,
+      trailing: audio.isPendingReview
+          ? Semantics(
+              button: true,
+              label: l10n.dictPendingCheck,
+              child: GestureDetector(
+                onTap: () => showPendingAudioReviewInfo(context),
+                child: const PendingReviewBadgeIcon(size: 14),
+              ),
+            )
+          : null,
+      onTap: () => _onTap(context, ref),
+      onSeek: (ratio) {
+        ref
+            .read(wordDetailAudioPlayerProvider(wordId).notifier)
+            .seekRatio(ratio);
+      },
     );
   }
 
@@ -228,72 +146,4 @@ class _StopAudioOnLeaveState extends ConsumerState<StopAudioOnLeave> {
 
   @override
   Widget build(BuildContext context) => widget.child;
-}
-
-class _ProgressBar extends StatelessWidget {
-  const _ProgressBar({
-    required this.progress,
-    required this.color,
-    required this.trackColor,
-    required this.enabled,
-    this.onSeek,
-  });
-
-  final double progress;
-  final Color color;
-  final Color trackColor;
-  final bool enabled;
-  final ValueChanged<double>? onSeek;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      label: AppLocalizations.of(context).dictAudioProgress,
-      value: '${(progress * 100).round()} persen',
-      slider: enabled,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final w = constraints.maxWidth;
-          return GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTapDown: enabled && onSeek != null
-                ? (d) {
-                    if (w <= 0) return;
-                    onSeek!((d.localPosition.dx / w).clamp(0.0, 1.0));
-                  }
-                : null,
-            onHorizontalDragUpdate: enabled && onSeek != null
-                ? (d) {
-                    if (w <= 0) return;
-                    onSeek!((d.localPosition.dx / w).clamp(0.0, 1.0));
-                  }
-                : null,
-            child: SizedBox(
-              height: 14,
-              child: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(2),
-                  child: SizedBox(
-                    height: 3,
-                    width: w,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        ColoredBox(color: trackColor),
-                        FractionallySizedBox(
-                          alignment: Alignment.centerLeft,
-                          widthFactor: progress.clamp(0.0, 1.0),
-                          child: ColoredBox(color: color),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
 }

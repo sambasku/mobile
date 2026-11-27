@@ -20,13 +20,10 @@ import '../../../review/presentation/providers/review_suggestions_providers.dart
 import '../../../notification/presentation/providers/notification_providers.dart';
 import '../../../settings/settings_router.dart';
 import '../../../jinye/data/jinye_providers.dart';
-import '../../../jinye/presentation/widgets/jinye_profile_preview.dart';
 import '../../../user_profile/presentation/providers/user_profile_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../achievement/presentation/providers/achievement_providers.dart';
-import '../../../achievement/presentation/widgets/profile_achievement_tabs.dart';
 import '../../../../core/network/failover/api_host_resolver.dart';
-import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/app_version_label.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/profile/profile_covers_provider.dart';
@@ -34,7 +31,6 @@ import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/utils/profile_border_asset.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
 import '../../../../shared/widgets/profile_leveling_chip.dart';
-import '../../../../shared/widgets/profile_stat_inline.dart';
 import '../widgets/allow_notification_shortcut.dart';
 import '../widgets/api_host_tile.dart';
 
@@ -93,29 +89,13 @@ class ProfilePage extends HookConsumerWidget {
         MediaQuery.sizeOf(context).width,
       ),
       actions: [
-        if (isAuth) ...[
+        if (isAuth)
           ProfileHeroAction(
             icon: FLucideIcons.bell,
             tooltip: l10n.profileNotifications,
             badgeCount: unread ?? 0,
             onPress: () => context.push(NotificationRouter.list.path),
           ),
-          ProfileHeroAction(
-            icon: FLucideIcons.messageCircle,
-            tooltip: l10n.jinyeComposeEntryTooltip,
-            onPress: () => context.push('/jinye/create'),
-          ),
-          ProfileHeroAction(
-            icon: FLucideIcons.archive,
-            tooltip: l10n.jinyeArchivedTitle,
-            onPress: () => context.push('/jinye/archived'),
-          ),
-          ProfileHeroAction(
-            icon: FLucideIcons.pencil,
-            tooltip: l10n.profileEditSemantics,
-            onPress: () => context.push('/edit-profile'),
-          ),
-        ],
       ],
       scrollView: authStatus.when(
         loading: () => const ProfileIdentityHeaderSkeleton(
@@ -149,197 +129,191 @@ class ProfilePage extends HookConsumerWidget {
                   // Gutter 12 dulu dipasang router; sekarang di sini supaya
                   // cover bisa full-bleed.
                   padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
-                      child: Column(
-                        children: [
-                          if (state.isAuth) ...[
-                            FTileGroup(
-                              label: Text(l10n.profileGroupActivity),
-                              children: [
-                                const _NotificationTile(),
-                                _navTile(
-                                  context,
-                                  icon: FLucideIcons.filePenLine,
-                                  title: l10n.profileMyContributions,
-                                  path: '/contributions',
-                                ),
-                                _navTile(
-                                  context,
-                                  icon: FLucideIcons.bookmark,
-                                  title: l10n.profileBookmarks,
-                                  path: '/bookmarks',
-                                ),
-                                _navTile(
-                                  context,
-                                  icon: FLucideIcons.arrowBigUp,
-                                  title: l10n.profileVotes,
-                                  path: '/votes',
-                                ),
-                                _navTile(
-                                  context,
-                                  icon: FLucideIcons.messageSquare,
-                                  title: l10n.profileComments,
-                                  path: '/comments',
-                                ),
-                              ],
+                  child: Column(
+                    children: [
+                      if (state.isAuth) ...[
+                        FTileGroup(
+                          label: Text(l10n.profileGroupActivity),
+                          children: [
+                            const _NotificationTile(),
+                            _navTile(
+                              context,
+                              icon: FLucideIcons.filePenLine,
+                              title: l10n.profileMyContributions,
+                              path: '/contributions',
                             ),
-                            _sectionGap,
-                            if (state.role == 'contributor' ||
-                                canAccessReviewHome(state.role) ||
-                                canAccessAdminAnalytics(state.role)) ...[
-                              FTileGroup(
-                                label: Text(l10n.profileGroupRole),
-                                children: [
-                                  if (state.role == 'contributor')
-                                    _navTile(
-                                      context,
-                                      icon: FLucideIcons.badgeCheck,
-                                      title: l10n.profileBecomeVerifier,
-                                      path: '/verifier-application',
-                                    ),
-                                  if (canAccessReviewHome(state.role))
-                                    const _ReviewQueueTile(),
-                                  if (canAccessAdminAnalytics(state.role))
-                                    _navTile(
-                                      context,
-                                      icon: FLucideIcons.chartColumn,
-                                      title: l10n.profileAnalytics,
-                                      path: AdminAnalyticsRouter.home.path,
-                                    ),
-                                ],
-                              ),
-                              _sectionGap,
-                            ],
-                            FTileGroup(
-                              label: Text(l10n.profileGroupAccount),
-                              children: [
-                                _navTile(
-                                  context,
-                                  icon: FLucideIcons.link,
-                                  title: l10n.profileLinkedAccounts,
-                                  path: '/linked-accounts',
-                                ),
-                                _navTile(
-                                  context,
-                                  icon: FLucideIcons.keyRound,
-                                  title:
-                                      links.isLoading ||
-                                          links.hasPassword ||
-                                          links.errorMessage != null
-                                      ? l10n.profileChangePassword
-                                      : l10n.profileCreatePassword,
-                                  path:
-                                      links.isLoading ||
-                                          links.hasPassword ||
-                                          links.errorMessage != null
-                                      ? '/change-password'
-                                      : '/set-password',
-                                ),
-                              ],
+                            _navTile(
+                              context,
+                              icon: FLucideIcons.bookmark,
+                              title: l10n.profileBookmarks,
+                              path: '/bookmarks',
                             ),
-                            _sectionGap,
-                          ] else ...[
-                            FTileGroup(
-                              children: [
-                                _navTile(
-                                  context,
-                                  icon: FLucideIcons.logIn,
-                                  title: l10n.profileLogin,
-                                  path: '/login',
-                                  go: true,
-                                ),
-                                _navTile(
-                                  context,
-                                  icon: FLucideIcons.userRoundPlus,
-                                  title: l10n.profileRegister,
-                                  path: '/register',
-                                ),
-                              ],
+                            _navTile(
+                              context,
+                              icon: FLucideIcons.arrowBigUp,
+                              title: l10n.profileVotes,
+                              path: '/votes',
                             ),
-                            _sectionGap,
+                            _navTile(
+                              context,
+                              icon: FLucideIcons.messageSquare,
+                              title: l10n.profileComments,
+                              path: '/comments',
+                            ),
                           ],
+                        ),
+                        _sectionGap,
+                        if (state.role == 'contributor' ||
+                            canAccessReviewHome(state.role) ||
+                            canAccessAdminAnalytics(state.role)) ...[
                           FTileGroup(
+                            label: Text(l10n.profileGroupRole),
                             children: [
-                              apiHostTile(context, ApiHostResolver.instance),
+                              if (state.role == 'contributor')
+                                _navTile(
+                                  context,
+                                  icon: FLucideIcons.badgeCheck,
+                                  title: l10n.profileBecomeVerifier,
+                                  path: '/verifier-application',
+                                ),
+                              if (canAccessReviewHome(state.role))
+                                const _ReviewQueueTile(),
+                              if (canAccessAdminAnalytics(state.role))
+                                _navTile(
+                                  context,
+                                  icon: FLucideIcons.chartColumn,
+                                  title: l10n.profileAnalytics,
+                                  path: AdminAnalyticsRouter.home.path,
+                                ),
                             ],
                           ),
                           _sectionGap,
-                          FTileGroup(
-                            label: Text(l10n.profileGroupHelp),
-                            children: [
-                              if (allowNotif.visible)
-                                FTile(
-                                  prefix: const Icon(
-                                    FLucideIcons.bell,
-                                    size: 18,
-                                  ),
-                                  title: Text(l10n.profileAllowNotif),
-                                  subtitle: Text(
-                                    l10n.profileAllowNotifSubtitle,
-                                  ),
-                                  enabled: !allowNotif.busy,
-                                  suffix: allowNotif.busy
-                                      ? const FCircularProgress(size: .sm)
-                                      : _chevron,
-                                  onPress: allowNotif.busy
-                                      ? null
-                                      : () => allowNotif.onPress(context),
-                                ),
-                              _navTile(
-                                context,
-                                icon: FLucideIcons.settings,
-                                title: l10n.profileSettingsTile,
-                                subtitle: l10n.profileSettingsSubtitle,
-                                path: SettingsRouter.root.path,
-                              ),
-                            ],
-                          ),
-                          if (state.isAuth) ...[
-                            _sectionGap,
-                            FTileGroup(
-                              label: Text(l10n.profileGroupLogout),
-                              children: [
-                                FTile(
-                                  variant: .destructive,
-                                  prefix: const Icon(FLucideIcons.userRoundX),
-                                  title: Text(l10n.profileDeleteAccount),
-                                  suffix: _chevron,
-                                  onPress: () =>
-                                      context.push('/delete-account'),
-                                ),
-                                FTile(
-                                  variant: .destructive,
-                                  prefix: state.isLoggingOut
-                                      ? const FCircularProgress(size: .sm)
-                                      : const Icon(FLucideIcons.logOut),
-                                  title: Text(
-                                    state.isLoggingOut
-                                        ? l10n.profileLoggingOut
-                                        : l10n.profileLogout,
-                                  ),
-                                  enabled: !state.isLoggingOut,
-                                  onPress: state.isLoggingOut
-                                      ? null
-                                      : () async {
-                                          await ref
-                                              .read(authStatusProvider.notifier)
-                                              .logout();
-                                          if (!context.mounted) return;
-                                          context.go('/login');
-                                        },
-                                ),
-                              ],
+                        ],
+                        FTileGroup(
+                          label: Text(l10n.profileGroupAccount),
+                          children: [
+                            _navTile(
+                              context,
+                              icon: FLucideIcons.link,
+                              title: l10n.profileLinkedAccounts,
+                              path: '/linked-accounts',
+                            ),
+                            _navTile(
+                              context,
+                              icon: FLucideIcons.keyRound,
+                              title:
+                                  links.isLoading ||
+                                      links.hasPassword ||
+                                      links.errorMessage != null
+                                  ? l10n.profileChangePassword
+                                  : l10n.profileCreatePassword,
+                              path:
+                                  links.isLoading ||
+                                      links.hasPassword ||
+                                      links.errorMessage != null
+                                  ? '/change-password'
+                                  : '/set-password',
                             ),
                           ],
-                          const Gap(16),
-                          AppVersionLabel(future: versionFuture),
+                        ),
+                        _sectionGap,
+                      ] else ...[
+                        FTileGroup(
+                          children: [
+                            _navTile(
+                              context,
+                              icon: FLucideIcons.logIn,
+                              title: l10n.profileLogin,
+                              path: '/login',
+                              go: true,
+                            ),
+                            _navTile(
+                              context,
+                              icon: FLucideIcons.userRoundPlus,
+                              title: l10n.profileRegister,
+                              path: '/register',
+                            ),
+                          ],
+                        ),
+                        _sectionGap,
+                      ],
+                      FTileGroup(
+                        children: [
+                          apiHostTile(context, ApiHostResolver.instance),
                         ],
                       ),
-                    ),
-                  ],
+                      _sectionGap,
+                      FTileGroup(
+                        label: Text(l10n.profileGroupHelp),
+                        children: [
+                          if (allowNotif.visible)
+                            FTile(
+                              prefix: const Icon(FLucideIcons.bell, size: 18),
+                              title: Text(l10n.profileAllowNotif),
+                              subtitle: Text(l10n.profileAllowNotifSubtitle),
+                              enabled: !allowNotif.busy,
+                              suffix: allowNotif.busy
+                                  ? const FCircularProgress(size: .sm)
+                                  : _chevron,
+                              onPress: allowNotif.busy
+                                  ? null
+                                  : () => allowNotif.onPress(context),
+                            ),
+                          _navTile(
+                            context,
+                            icon: FLucideIcons.settings,
+                            title: l10n.profileSettingsTile,
+                            subtitle: l10n.profileSettingsSubtitle,
+                            path: SettingsRouter.root.path,
+                          ),
+                        ],
+                      ),
+                      if (state.isAuth) ...[
+                        _sectionGap,
+                        FTileGroup(
+                          label: Text(l10n.profileGroupLogout),
+                          children: [
+                            FTile(
+                              variant: .destructive,
+                              prefix: const Icon(FLucideIcons.userRoundX),
+                              title: Text(l10n.profileDeleteAccount),
+                              suffix: _chevron,
+                              onPress: () => context.push('/delete-account'),
+                            ),
+                            FTile(
+                              variant: .destructive,
+                              prefix: state.isLoggingOut
+                                  ? const FCircularProgress(size: .sm)
+                                  : const Icon(FLucideIcons.logOut),
+                              title: Text(
+                                state.isLoggingOut
+                                    ? l10n.profileLoggingOut
+                                    : l10n.profileLogout,
+                              ),
+                              enabled: !state.isLoggingOut,
+                              onPress: state.isLoggingOut
+                                  ? null
+                                  : () async {
+                                      await ref
+                                          .read(authStatusProvider.notifier)
+                                          .logout();
+                                      if (!context.mounted) return;
+                                      context.go('/login');
+                                    },
+                            ),
+                          ],
+                        ),
+                      ],
+                      const Gap(16),
+                      AppVersionLabel(future: versionFuture),
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
+        ),
+      ),
     );
   }
 
@@ -436,12 +410,9 @@ class _IdentitySection extends ConsumerWidget {
           // tetap punya gutter 12 supaya sejajar menu di bawahnya.
           horizontalPadding: 12,
           displayName: displayName,
-          username: isAuth ? username : null,
           avatarUrl: status.avatarUrl,
           borderUrl: border,
           borderAssetKind: borderAssetKind,
-          bio: profile?.bio,
-          speakerStatus: profile?.speakerStatus,
           isVerifier:
               profile?.isVerifier ?? (isAuth && isVerifierRole(status.role)),
           leveling: profile?.leveling == null
@@ -450,104 +421,10 @@ class _IdentitySection extends ConsumerWidget {
                   leveling: profile!.leveling!,
                   username: isAuth ? username : null,
                 ),
-          stats: profile == null
-              ? null
-              : ProfileStatRow(
-                  words: profile.wordsApproved,
-                  corrections: profile.correctionsApproved,
-                ),
-          joinedLabel: profile == null
-              ? null
-              : formatDateTimeIso(profile.joinedAt),
           onAvatarTap: isAuth ? openPublicProfile : null,
-          actions: [
-            if (isAuth)
-              FButton(
-                size: .xs,
-                variant: FButtonVariant.outline,
-                mainAxisSize: MainAxisSize.min,
-                prefix: const Icon(FLucideIcons.externalLink, size: 14),
-                onPress: openPublicProfile,
-                child: Text(l10n.profileViewPublic),
-              ),
-          ],
-          footer: isAuth && username != null && username.isNotEmpty
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    JinyeProfileStatusLine(
-                      username: username,
-                      emptyChild: Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: _JinyeComposeQuoteCta(
-                          onPress: () => context.push('/jinye/create'),
-                        ),
-                      ),
-                    ),
-                    const ProfileAchievementTabs(),
-                  ],
-                )
-              : null,
+          onNameTap: isAuth ? openPublicProfile : null,
         ),
       ],
-    );
-  }
-}
-
-/// CTA buat Jinye di tab Profil: tampilan quote (garis kiri + italic).
-class _JinyeComposeQuoteCta extends StatelessWidget {
-  const _JinyeComposeQuoteCta({required this.onPress});
-
-  final VoidCallback onPress;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final l10n = AppLocalizations.of(context);
-    return FTappable(
-      onPress: onPress,
-      child: Semantics(
-        button: true,
-        label: l10n.profileJinyeComposeQuote,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: theme.colors.secondary,
-            borderRadius: BorderRadius.circular(8),
-            border: Border(
-              left: BorderSide(color: theme.colors.primary, width: 3),
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 10, 12),
-            child: Row(
-              children: [
-                Icon(
-                  FLucideIcons.quote,
-                  size: 16,
-                  color: theme.colors.primary,
-                ),
-                const Gap(10),
-                Expanded(
-                  child: Text(
-                    l10n.profileJinyeComposeQuote,
-                    style: theme.typography.body.sm.copyWith(
-                      fontStyle: FontStyle.italic,
-                      color: theme.colors.mutedForeground,
-                      height: 1.35,
-                    ),
-                  ),
-                ),
-                const Gap(8),
-                Icon(
-                  FLucideIcons.chevronRight,
-                  size: 16,
-                  color: theme.colors.mutedForeground,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

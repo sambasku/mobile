@@ -252,12 +252,43 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoWeeklyLeaderboardTitle => 'Peringkat Mingguan';
 
   @override
+  String get balehoWeeklyLeaderboardHeroSemantics =>
+      'Ilustrasi warga di podium peringkat mingguan';
+
+  @override
   String get balehoWeeklyLeaderboardCta =>
       'Siapa kontributor teratas minggu ini?';
 
   @override
   String get balehoWeeklyLeaderboardComingSoonBody =>
       'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.';
+
+  @override
+  String get balehoKosakataTotal => 'Total kata';
+
+  @override
+  String get balehoKosakataVerified => 'Diverifikasi';
+
+  @override
+  String get balehoKosakataQueue => 'Antrian';
+
+  @override
+  String get balehoKosakataRejected => 'Ditolak';
+
+  @override
+  String get balehoKosakataTotalShort => 'Kata';
+
+  @override
+  String get balehoKosakataVerifiedShort => 'Verif';
+
+  @override
+  String get balehoKosakataQueueShort => 'Antri';
+
+  @override
+  String get balehoKosakataRejectedShort => 'Tolak';
+
+  @override
+  String get balehoKosakataStatsTitle => 'Kosakata';
 
   @override
   String get balehoLeaderboardTabCurrent => 'Minggu ini';
@@ -359,6 +390,16 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get balehoPointsGuideTitle => 'Cara dapat poin';
+
+  @override
+  String get balehoPointsGuideHeroTitle => 'Bantu kamus, kumpulkan poin';
+
+  @override
+  String get balehoPointsGuideHeroBody => 'Empat cara poin masuk tiap minggu.';
+
+  @override
+  String get balehoPointsGuideHeroSemantics =>
+      'Ilustrasi warga mengumpulkan poin kontribusi';
 
   @override
   String get balehoPointsGuideEntrySubtitle =>
@@ -4046,9 +4087,6 @@ class AppLocalizationsId extends AppLocalizations {
       'Halus dan Kasar tidak bisa dipilih bersamaan';
 
   @override
-  String get reviewCorrectWordNotes => 'Catatan kata';
-
-  @override
   String get reviewCorrectRegister => 'Register';
 
   @override
@@ -4203,6 +4241,20 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get reviewRepoSuggestionRejectFailed => 'Gagal menolak usulan';
+
+  @override
+  String get reviewSuggestionCorrectButton => 'Koreksi';
+
+  @override
+  String get reviewSuggestionCorrectCta => 'Simpan koreksi';
+
+  @override
+  String get reviewSuggestionCorrectedToast =>
+      'Koreksi disimpan dan diterapkan';
+
+  @override
+  String get reviewRepoSuggestionCorrectFailed =>
+      'Gagal menyimpan koreksi usulan';
 
   @override
   String get reviewExploreLoadFailed => 'Gagal memuat usulan eksplorasi';
@@ -6042,6 +6094,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedContributePeriksaKata => 'Periksa kata';
+
+  @override
+  String get periksaKataHeroSubtitle =>
+      'Bantu pastikan makna di kamus sudah tepat.';
 
   @override
   String get feedPeriksaKataStubBody =>
@@ -8861,6 +8917,10 @@ class AppLocalizationsId extends AppLocalizations {
       'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.';
 
   @override
+  String get regionKecamatanComingSoon =>
+      'Info kecamatan ini sedang kami siapkan. Nanti kamu bisa lihat isinya di sini ya.';
+
+  @override
   String regionAgendaDesa(String name) {
     return 'Agenda di Desa $name';
   }
@@ -9600,7 +9660,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get wilayahSeeArea => 'Lihat area';
 
   @override
-  String get wilayahKecamatanProfile => 'Profil kecamatan';
+  String get wilayahKecamatanProfile => 'Lihat Kecamatan';
 
   @override
   String get wilayahScrollDown => 'Gulir ke bawah';
@@ -12170,6 +12230,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get pantunListSubtitle => 'Berbalas pantun bersama warga sambas';
 
   @override
+  String get pantunHeroSemantics =>
+      'Ilustrasi warga berbalas pantun di tepi sungai';
+
+  @override
   String get pantunComingSoon => 'Segera';
 
   @override
@@ -12658,29 +12722,38 @@ class AppLocalizationsId extends AppLocalizations {
   String get jinyeProfileJikuLabel => 'Jiku';
 
   @override
+  String get jinyeProfileJikuActionsSemantics => 'Jiku, ketuk untuk opsi';
+
+  @override
+  String get jinyeSheetViewJiku => 'Lihat jiku';
+
+  @override
+  String get jinyeSheetEditJiku => 'Edit jiku';
+
+  @override
   String get jinyeSheetReply => 'Balas';
 
   @override
   String get jinyeSheetViewDiscussion => 'Lihat diskusi';
 
   @override
-  String get jinyeSheetCreateNew => 'Buat jinye baru';
+  String get jinyeSheetCreateNew => 'Jiku baru';
 
   @override
-  String get jinyeSheetClear => 'Kosongkan jinye';
+  String get jinyeSheetClear => 'Kosongkan jiku';
 
   @override
-  String get jinyeSheetClearConfirmTitle => 'Kosongkan jinye?';
+  String get jinyeSheetClearConfirmTitle => 'Kosongkan jiku?';
 
   @override
   String get jinyeSheetClearConfirmBody =>
-      'Status di profil kamu hilang. Jinye tetap tersimpan di arsip.';
+      'Jiku di profil kamu hilang. Jinye tetap tersimpan di arsip.';
 
   @override
   String get jinyeSheetClearConfirmAction => 'Kosongkan';
 
   @override
-  String get jinyeClearedSuccess => 'Jinye dikosongkan';
+  String get jinyeClearedSuccess => 'Jiku dikosongkan';
 
   @override
   String get jinyeDiscussionEmpty =>
@@ -14244,6 +14317,163 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get communityHistoryBody =>
       'Lihat apa saja yang berubah di data komunitas ini.';
+
+  @override
+  String get periksaKataGuideOpenTooltip => 'Panduan Periksa Kata';
+
+  @override
+  String get periksaKataGuideTitle => 'Cara kerja Periksa Kata';
+
+  @override
+  String get periksaKataGuideHeroTitle => 'Jaga mutu kamus bersama';
+
+  @override
+  String get periksaKataGuideHeroBody =>
+      'Cara kerja Periksa Kata dan simulasi Voting Warga.';
+
+  @override
+  String get periksaKataGuideHeroSemantics =>
+      'Ilustrasi warga memeriksa makna bersama';
+
+  @override
+  String get periksaKataGuideStepsTitle => 'Cara memeriksa kata';
+
+  @override
+  String get periksaKataGuideStep1Title => 'Baca makna secara utuh';
+
+  @override
+  String get periksaKataGuideStep1Body =>
+      'Cek lemma, terjemahan, dan definisinya. Ketuk kartu untuk melihat detail kata.';
+
+  @override
+  String get periksaKataGuideStep2Title => 'Beri voting';
+
+  @override
+  String get periksaKataGuideStep2Body =>
+      'Pilih Sudah pas atau Perlu dicek ulang. Satu akun satu voting - ketuk lagi untuk batal.';
+
+  @override
+  String get periksaKataGuideStep3Title => 'Lewati jika ragu';
+
+  @override
+  String get periksaKataGuideStep3Body =>
+      'Geser kartu ke kiri untuk melewati tanpa memilih.';
+
+  @override
+  String get periksaKataGuideRulesTitle => 'Aturan keputusan';
+
+  @override
+  String get periksaKataGuideRuleVerifyTitle => 'Terverifikasi otomatis';
+
+  @override
+  String get periksaKataGuideRuleVerifyBody =>
+      'Selisih voting Sudah pas minimal +5 dari sedikitnya 5 pemilih.';
+
+  @override
+  String get periksaKataGuideRuleRejectTitle => 'Ditolak otomatis';
+
+  @override
+  String get periksaKataGuideRuleRejectBody =>
+      'Selisih voting Perlu dicek ulang minimal -5 dari sedikitnya 5 pemilih.';
+
+  @override
+  String get periksaKataGuideRuleWaitTitle => 'Tetap menunggu';
+
+  @override
+  String get periksaKataGuideRuleWaitBody =>
+      'Pemilih < 5 atau selisih -4 sampai +4. Voting terbanyak tampil teratas agar cepat selesai.';
+
+  @override
+  String get periksaKataGuideSimTitle => 'Simulasi Voting Warga';
+
+  @override
+  String get periksaKataGuideSimBody =>
+      'Ketuk kartu atau tombol di bawah untuk lihat perubahan status di ambang +5 / -5. Tidak mengubah data asli.';
+
+  @override
+  String get periksaKataGuideSimAgree => '+1 Sudah pas';
+
+  @override
+  String get periksaKataGuideSimDisagree => '+1 Perlu dicek ulang';
+
+  @override
+  String get periksaKataGuideSimReset => 'Ulangi simulasi';
+
+  @override
+  String get periksaKataGuideSimVerified => 'Terverifikasi otomatis';
+
+  @override
+  String get periksaKataGuideSimRejected => 'Ditolak otomatis';
+
+  @override
+  String periksaKataGuideSimWaiting(int voters, int threshold, int net) {
+    return 'Masih menunggu. $voters pemilih, selisih $net. Ambang +$threshold atau -$threshold.';
+  }
+
+  @override
+  String get periksaKataGuideBannerText =>
+      'Pahami cara kerja & coba simulasi voting';
+
+  @override
+  String get periksaKataGuideBannerAction => 'Lihat panduan';
+
+  @override
+  String get periksaKataGuideBannerDismiss => 'Tutup';
+
+  @override
+  String get periksaKataGuideSampleLemma => 'lestari';
+
+  @override
+  String get periksaKataGuideSampleTranslation => 'sustainable';
+
+  @override
+  String get periksaKataGuideSampleDefinition =>
+      'tetap terjaga dan bisa bertahan lama';
+
+  @override
+  String get periksaKataGuideIntro =>
+      'Setiap kosakata atau makna dari usulan warga akan masuk ke area voting terlebih dahulu sebelum terverifikasi. Lewat voting bersama, makna yang tepat segera disahkan dan yang keliru cepat tersaring.';
+
+  @override
+  String get exploreFeedbackCtaTitle => 'Punya kritik atau saran?';
+
+  @override
+  String get exploreFeedbackCtaSubtitle =>
+      'Bantu kami membuat pengalaman menggunakan SambasKu jadi lebih nyaman untukmu!';
+
+  @override
+  String get feedbackTitle => 'Kritik & Saran';
+
+  @override
+  String get feedbackHeroSemantics =>
+      'Ilustrasi kirim kritik dan saran untuk SambasKu';
+
+  @override
+  String get feedbackIntro =>
+      'Punya ide fitur, masukan, atau hal yang kurang pas? Ceritakan di sini ya.';
+
+  @override
+  String get feedbackGuestAnonymous => 'Masukan kamu dikirim sebagai Anonim';
+
+  @override
+  String get feedbackGuestLoginHint =>
+      'Login kalau mau melampirkan gambar pendukung';
+
+  @override
+  String get feedbackDescriptionLabel => 'Kritik atau saran';
+
+  @override
+  String get feedbackDescriptionHint =>
+      'Tulis ide, saran perbaikan, atau hal yang kamu harapkan di SambasKu';
+
+  @override
+  String get feedbackSubmit => 'Kirim Masukan';
+
+  @override
+  String get feedbackSubmitting => 'Mengirim...';
+
+  @override
+  String get feedbackThanks => 'Terima kasih, masukan kamu sudah kami terima';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -14493,12 +14723,43 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoWeeklyLeaderboardTitle => 'Peringkat Mingguan';
 
   @override
+  String get balehoWeeklyLeaderboardHeroSemantics =>
+      'Ilustrasi warga di podium peringkat mingguan';
+
+  @override
   String get balehoWeeklyLeaderboardCta =>
       'Siapa kontributor teratas minggu ini?';
 
   @override
   String get balehoWeeklyLeaderboardComingSoonBody =>
       'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.';
+
+  @override
+  String get balehoKosakataTotal => 'Total kata';
+
+  @override
+  String get balehoKosakataVerified => 'Diverifikasi';
+
+  @override
+  String get balehoKosakataQueue => 'Antrian';
+
+  @override
+  String get balehoKosakataRejected => 'Ditolak';
+
+  @override
+  String get balehoKosakataTotalShort => 'Kata';
+
+  @override
+  String get balehoKosakataVerifiedShort => 'Verif';
+
+  @override
+  String get balehoKosakataQueueShort => 'Antri';
+
+  @override
+  String get balehoKosakataRejectedShort => 'Tolak';
+
+  @override
+  String get balehoKosakataStatsTitle => 'Kosakata';
 
   @override
   String get balehoLeaderboardTabCurrent => 'Minggu ini';
@@ -14600,6 +14861,16 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoPointsGuideTitle => 'Cara dapat poin';
+
+  @override
+  String get balehoPointsGuideHeroTitle => 'Bantu kamus, kumpulkan poin';
+
+  @override
+  String get balehoPointsGuideHeroBody => 'Empat cara poin masuk tiap minggu.';
+
+  @override
+  String get balehoPointsGuideHeroSemantics =>
+      'Ilustrasi warga mengumpulkan poin kontribusi';
 
   @override
   String get balehoPointsGuideEntrySubtitle =>
@@ -18287,9 +18558,6 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Halus dan Kasar tidak bisa dipilih bersamaan';
 
   @override
-  String get reviewCorrectWordNotes => 'Catatan kata';
-
-  @override
   String get reviewCorrectRegister => 'Register';
 
   @override
@@ -18444,6 +18712,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get reviewRepoSuggestionRejectFailed => 'Gagal menolak usulan';
+
+  @override
+  String get reviewSuggestionCorrectButton => 'Koreksi';
+
+  @override
+  String get reviewSuggestionCorrectCta => 'Simpan koreksi';
+
+  @override
+  String get reviewSuggestionCorrectedToast =>
+      'Koreksi disimpan dan diterapkan';
+
+  @override
+  String get reviewRepoSuggestionCorrectFailed =>
+      'Gagal menyimpan koreksi usulan';
 
   @override
   String get reviewExploreLoadFailed => 'Gagal memuat usulan eksplorasi';
@@ -20199,6 +20481,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get feedContributePeriksaKata => 'Periksa kata';
+
+  @override
+  String get periksaKataHeroSubtitle =>
+      'Bantu pastikan makna di kamus sudah tepat.';
 
   @override
   String get feedPeriksaKataStubBody =>
@@ -23018,6 +23304,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.';
 
   @override
+  String get regionKecamatanComingSoon =>
+      'Info kecamatan ini sedang kami siapkan. Nanti kamu bisa lihat isinya di sini ya.';
+
+  @override
   String regionAgendaDesa(String name) {
     return 'Agenda di Desa $name';
   }
@@ -23757,7 +24047,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get wilayahSeeArea => 'Lihat area';
 
   @override
-  String get wilayahKecamatanProfile => 'Profil kecamatan';
+  String get wilayahKecamatanProfile => 'Lihat Kecamatan';
 
   @override
   String get wilayahScrollDown => 'Gulir ke bawah';
@@ -26327,6 +26617,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get pantunListSubtitle => 'Berbalas pantun bersama warga sambas';
 
   @override
+  String get pantunHeroSemantics =>
+      'Ilustrasi warga berbalas pantun di tepi sungai';
+
+  @override
   String get pantunComingSoon => 'Segera';
 
   @override
@@ -26815,29 +27109,38 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get jinyeProfileJikuLabel => 'Jiku';
 
   @override
+  String get jinyeProfileJikuActionsSemantics => 'Jiku, ketuk untuk opsi';
+
+  @override
+  String get jinyeSheetViewJiku => 'Lihat jiku';
+
+  @override
+  String get jinyeSheetEditJiku => 'Edit jiku';
+
+  @override
   String get jinyeSheetReply => 'Balas';
 
   @override
   String get jinyeSheetViewDiscussion => 'Lihat diskusi';
 
   @override
-  String get jinyeSheetCreateNew => 'Buat jinye baru';
+  String get jinyeSheetCreateNew => 'Jiku baru';
 
   @override
-  String get jinyeSheetClear => 'Kosongkan jinye';
+  String get jinyeSheetClear => 'Kosongkan jiku';
 
   @override
-  String get jinyeSheetClearConfirmTitle => 'Kosongkan jinye?';
+  String get jinyeSheetClearConfirmTitle => 'Kosongkan jiku?';
 
   @override
   String get jinyeSheetClearConfirmBody =>
-      'Status di profil kamu hilang. Jinye tetap tersimpan di arsip.';
+      'Jiku di profil kamu hilang. Jinye tetap tersimpan di arsip.';
 
   @override
   String get jinyeSheetClearConfirmAction => 'Kosongkan';
 
   @override
-  String get jinyeClearedSuccess => 'Jinye dikosongkan';
+  String get jinyeClearedSuccess => 'Jiku dikosongkan';
 
   @override
   String get jinyeDiscussionEmpty =>
@@ -28401,4 +28704,161 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get communityHistoryBody =>
       'Lihat apa saja yang berubah di data komunitas ini.';
+
+  @override
+  String get periksaKataGuideOpenTooltip => 'Panduan Periksa Kata';
+
+  @override
+  String get periksaKataGuideTitle => 'Cara kerja Periksa Kata';
+
+  @override
+  String get periksaKataGuideHeroTitle => 'Jaga mutu kamus bersama';
+
+  @override
+  String get periksaKataGuideHeroBody =>
+      'Cara kerja Periksa Kata dan simulasi Voting Warga.';
+
+  @override
+  String get periksaKataGuideHeroSemantics =>
+      'Ilustrasi warga memeriksa makna bersama';
+
+  @override
+  String get periksaKataGuideStepsTitle => 'Cara memeriksa kata';
+
+  @override
+  String get periksaKataGuideStep1Title => 'Baca makna secara utuh';
+
+  @override
+  String get periksaKataGuideStep1Body =>
+      'Cek lemma, terjemahan, dan definisinya. Ketuk kartu untuk melihat detail kata.';
+
+  @override
+  String get periksaKataGuideStep2Title => 'Beri voting';
+
+  @override
+  String get periksaKataGuideStep2Body =>
+      'Pilih Sudah pas atau Perlu dicek ulang. Satu akun satu voting - ketuk lagi untuk batal.';
+
+  @override
+  String get periksaKataGuideStep3Title => 'Lewati jika ragu';
+
+  @override
+  String get periksaKataGuideStep3Body =>
+      'Geser kartu ke kiri untuk melewati tanpa memilih.';
+
+  @override
+  String get periksaKataGuideRulesTitle => 'Aturan keputusan';
+
+  @override
+  String get periksaKataGuideRuleVerifyTitle => 'Terverifikasi otomatis';
+
+  @override
+  String get periksaKataGuideRuleVerifyBody =>
+      'Selisih voting Sudah pas minimal +5 dari sedikitnya 5 pemilih.';
+
+  @override
+  String get periksaKataGuideRuleRejectTitle => 'Ditolak otomatis';
+
+  @override
+  String get periksaKataGuideRuleRejectBody =>
+      'Selisih voting Perlu dicek ulang minimal -5 dari sedikitnya 5 pemilih.';
+
+  @override
+  String get periksaKataGuideRuleWaitTitle => 'Tetap menunggu';
+
+  @override
+  String get periksaKataGuideRuleWaitBody =>
+      'Pemilih < 5 atau selisih -4 sampai +4. Voting terbanyak tampil teratas agar cepat selesai.';
+
+  @override
+  String get periksaKataGuideSimTitle => 'Simulasi Voting Warga';
+
+  @override
+  String get periksaKataGuideSimBody =>
+      'Ketuk kartu atau tombol di bawah untuk lihat perubahan status di ambang +5 / -5. Tidak mengubah data asli.';
+
+  @override
+  String get periksaKataGuideSimAgree => '+1 Sudah pas';
+
+  @override
+  String get periksaKataGuideSimDisagree => '+1 Perlu dicek ulang';
+
+  @override
+  String get periksaKataGuideSimReset => 'Ulangi simulasi';
+
+  @override
+  String get periksaKataGuideSimVerified => 'Terverifikasi otomatis';
+
+  @override
+  String get periksaKataGuideSimRejected => 'Ditolak otomatis';
+
+  @override
+  String periksaKataGuideSimWaiting(int voters, int threshold, int net) {
+    return 'Masih menunggu. $voters pemilih, selisih $net. Ambang +$threshold atau -$threshold.';
+  }
+
+  @override
+  String get periksaKataGuideBannerText =>
+      'Pahami cara kerja & coba simulasi voting';
+
+  @override
+  String get periksaKataGuideBannerAction => 'Lihat panduan';
+
+  @override
+  String get periksaKataGuideBannerDismiss => 'Tutup';
+
+  @override
+  String get periksaKataGuideSampleLemma => 'lestari';
+
+  @override
+  String get periksaKataGuideSampleTranslation => 'sustainable';
+
+  @override
+  String get periksaKataGuideSampleDefinition =>
+      'tetap terjaga dan bisa bertahan lama';
+
+  @override
+  String get periksaKataGuideIntro =>
+      'Setiap kosakata atau makna dari usulan warga akan masuk ke area voting terlebih dahulu sebelum terverifikasi. Lewat voting bersama, makna yang tepat segera disahkan dan yang keliru cepat tersaring.';
+
+  @override
+  String get exploreFeedbackCtaTitle => 'Punya kritik atau saran?';
+
+  @override
+  String get exploreFeedbackCtaSubtitle =>
+      'Bantu kami membuat pengalaman menggunakan SambasKu jadi lebih nyaman untukmu!';
+
+  @override
+  String get feedbackTitle => 'Kritik & Saran';
+
+  @override
+  String get feedbackHeroSemantics =>
+      'Ilustrasi kirim kritik dan saran untuk SambasKu';
+
+  @override
+  String get feedbackIntro =>
+      'Punya ide fitur, masukan, atau hal yang kurang pas? Ceritakan di sini ya.';
+
+  @override
+  String get feedbackGuestAnonymous => 'Masukan kamu dikirim sebagai Anonim';
+
+  @override
+  String get feedbackGuestLoginHint =>
+      'Login kalau mau melampirkan gambar pendukung';
+
+  @override
+  String get feedbackDescriptionLabel => 'Kritik atau saran';
+
+  @override
+  String get feedbackDescriptionHint =>
+      'Tulis ide, saran perbaikan, atau hal yang kamu harapkan di SambasKu';
+
+  @override
+  String get feedbackSubmit => 'Kirim Masukan';
+
+  @override
+  String get feedbackSubmitting => 'Mengirim...';
+
+  @override
+  String get feedbackThanks => 'Terima kasih, masukan kamu sudah kami terima';
 }

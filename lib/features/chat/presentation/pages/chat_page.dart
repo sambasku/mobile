@@ -12,6 +12,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/record_thread_audio_sheet.dart';
+import '../../../../shared/widgets/slide_fade_in.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/chat_models.dart';
 import '../providers/chat_messages_provider.dart';
@@ -66,6 +67,9 @@ class ChatPage extends HookConsumerWidget {
     final newCount = useState(0);
     final pinnedBottom = useRef(true);
     final didInitialScroll = useRef(false);
+    final didHydrateMessages = useRef(false);
+    final seenMessageIds = useRef<Set<String>>({});
+    final justAddedMessageIds = useRef<Set<String>>({});
     final bubbleKeys = useRef<Map<String, GlobalKey>>({});
     final highlightId = useState<String?>(null);
     final highlightTimer = useRef<Timer?>(null);
@@ -783,22 +787,42 @@ class ChatPage extends HookConsumerWidget {
                             final clustered =
                                 sameAuthorAsPrev ||
                                 (sameAuthorAsNext && sameMinuteAsNext);
-                            return ChatBubble(
-                              key: keyFor(message.id),
-                              message: message,
-                              mine: mine,
-                              showName: showName,
-                              showTime: showTime,
-                              clustered: clustered,
-                              highlighted: highlightId.value == message.id,
-                              replyingTo: replyTarget.value?.id == message.id,
-                              onReply: () => startReply(message),
-                              onJumpToReply: message.replyToId == null
-                                  ? null
-                                  : () => jumpToMessage(message.replyToId!),
-                              onDelete: mine && !message.isDeleted
-                                  ? () => confirmDelete(message)
-                                  : null,
+                            if (!didHydrateMessages.value) {
+                              for (final m in items) {
+                                seenMessageIds.value.add(m.id);
+                              }
+                              didHydrateMessages.value = true;
+                            } else if (seenMessageIds.value.add(message.id) &&
+                                !state.isLoadingOlder &&
+                                (message.pending ||
+                                    itemIndex >= items.length - 5)) {
+                              justAddedMessageIds.value.add(message.id);
+                            }
+                            return SlideFadeIn(
+                              key: ValueKey('chat-anim-${message.id}'),
+                              animate: justAddedMessageIds.value.contains(
+                                message.id,
+                              ),
+                              duration: const Duration(milliseconds: 200),
+                              offset: const Offset(0, 0.12),
+                              scaleBegin: 0.97,
+                              child: ChatBubble(
+                                key: keyFor(message.id),
+                                message: message,
+                                mine: mine,
+                                showName: showName,
+                                showTime: showTime,
+                                clustered: clustered,
+                                highlighted: highlightId.value == message.id,
+                                replyingTo: replyTarget.value?.id == message.id,
+                                onReply: () => startReply(message),
+                                onJumpToReply: message.replyToId == null
+                                    ? null
+                                    : () => jumpToMessage(message.replyToId!),
+                                onDelete: mine && !message.isDeleted
+                                    ? () => confirmDelete(message)
+                                    : null,
+                              ),
                             );
                           },
                         ),

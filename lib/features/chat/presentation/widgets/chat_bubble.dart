@@ -103,39 +103,49 @@ class ChatBubble extends StatelessWidget {
         ),
         if (showMeta) ...[
           const Gap(2),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (message.pending) ...[
-                Text(
-                  l10n.chatSending,
-                  style: theme.typography.body.xs3.copyWith(
-                    color: theme.colors.mutedForeground,
-                    fontStyle: FontStyle.italic,
+          AnimatedSwitcher(
+            duration: MediaQuery.disableAnimationsOf(context)
+                ? Duration.zero
+                : const Duration(milliseconds: 160),
+            child: message.pending
+                ? Row(
+                    key: const ValueKey('pending'),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l10n.chatSending,
+                        style: theme.typography.body.xs3.copyWith(
+                          color: theme.colors.mutedForeground,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      const Gap(4),
+                      const FCircularProgress(size: .xs),
+                    ],
+                  )
+                : Row(
+                    key: ValueKey('sent-$showEdited-$timeLabel'),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (showEdited) ...[
+                        Text(
+                          l10n.chatEdited,
+                          style: theme.typography.body.xs3.copyWith(
+                            color: theme.colors.mutedForeground,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        if (showTime && timeLabel.isNotEmpty) const Gap(4),
+                      ],
+                      if (showTime && timeLabel.isNotEmpty)
+                        Text(
+                          timeLabel,
+                          style: theme.typography.body.xs3.copyWith(
+                            color: theme.colors.mutedForeground,
+                          ),
+                        ),
+                    ],
                   ),
-                ),
-                const Gap(4),
-                const FCircularProgress(size: .xs),
-              ] else ...[
-                if (showEdited) ...[
-                  Text(
-                    l10n.chatEdited,
-                    style: theme.typography.body.xs3.copyWith(
-                      color: theme.colors.mutedForeground,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                  if (showTime && timeLabel.isNotEmpty) const Gap(4),
-                ],
-                if (showTime && timeLabel.isNotEmpty)
-                  Text(
-                    timeLabel,
-                    style: theme.typography.body.xs3.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-              ],
-            ],
           ),
         ],
       ],

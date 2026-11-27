@@ -170,6 +170,7 @@
     "description": "Keterangan singkat di atas grid slide 2 Baleho"
   },
   "balehoWeeklyLeaderboardTitle": "Peringkat Mingguan",
+  "balehoWeeklyLeaderboardHeroSemantics": "Ilustrasi warga di podium peringkat mingguan",
   "@balehoWeeklyLeaderboardTitle": {
     "description": "Judul slot tetap 4x1 di slide 2 Baleho"
   },
@@ -180,6 +181,42 @@
   "balehoWeeklyLeaderboardComingSoonBody": "Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.",
   "@balehoWeeklyLeaderboardComingSoonBody": {
     "description": "Body halaman coming soon papan peringkat"
+  },
+  "balehoKosakataTotal": "Total kata",
+  "@balehoKosakataTotal": {
+    "description": "Label kartu jumlah kosakata di slide 2 Baleho"
+  },
+  "balehoKosakataVerified": "Diverifikasi",
+  "@balehoKosakataVerified": {
+    "description": "Label kartu kata yang sudah diverifikasi"
+  },
+  "balehoKosakataQueue": "Antrian",
+  "@balehoKosakataQueue": {
+    "description": "Label kartu kata yang menunggu review"
+  },
+  "balehoKosakataRejected": "Ditolak",
+  "@balehoKosakataRejected": {
+    "description": "Label kartu kata yang ditolak"
+  },
+  "balehoKosakataTotalShort": "Kata",
+  "@balehoKosakataTotalShort": {
+    "description": "Label pendek total kata di sel 1x1 Baleho"
+  },
+  "balehoKosakataVerifiedShort": "Verif",
+  "@balehoKosakataVerifiedShort": {
+    "description": "Label pendek kata diverifikasi di sel 1x1 Baleho"
+  },
+  "balehoKosakataQueueShort": "Antri",
+  "@balehoKosakataQueueShort": {
+    "description": "Label pendek antrian di sel 1x1 Baleho"
+  },
+  "balehoKosakataRejectedShort": "Tolak",
+  "@balehoKosakataRejectedShort": {
+    "description": "Label pendek kata ditolak di sel 1x1 Baleho"
+  },
+  "balehoKosakataStatsTitle": "Kosakata",
+  "@balehoKosakataStatsTitle": {
+    "description": "Judul blok statistik kosakata 2x1 di slide 2 Baleho"
   },
   "balehoLeaderboardTabCurrent": "Minggu ini",
   "@balehoLeaderboardTabCurrent": {
@@ -333,6 +370,18 @@
   "balehoPointsGuideTitle": "Cara dapat poin",
   "@balehoPointsGuideTitle": {
     "description": "Judul halaman penjelasan poin papan peringkat"
+  },
+  "balehoPointsGuideHeroTitle": "Bantu kamus, kumpulkan poin",
+  "@balehoPointsGuideHeroTitle": {
+    "description": "Judul di atas ilustrasi halaman cara dapat poin"
+  },
+  "balehoPointsGuideHeroBody": "Empat cara poin masuk tiap minggu.",
+  "@balehoPointsGuideHeroBody": {
+    "description": "Subjudul di atas ilustrasi halaman cara dapat poin"
+  },
+  "balehoPointsGuideHeroSemantics": "Ilustrasi warga mengumpulkan poin kontribusi",
+  "@balehoPointsGuideHeroSemantics": {
+    "description": "Label aksesibilitas ilustrasi hero cara dapat poin"
   },
   "balehoPointsGuideEntrySubtitle": "Lihat tabel poin dan aturan biar peringkat adil",
   "@balehoPointsGuideEntrySubtitle": {
@@ -1951,7 +2000,6 @@
   "reviewCorrectSavePending": "Simpan, tetap menunggu",
   "reviewCorrectCancel": "Batal koreksi",
   "reviewCorrectPolitenessConflict": "Halus dan Kasar tidak bisa dipilih bersamaan",
-  "reviewCorrectWordNotes": "Catatan kata",
   "reviewCorrectRegister": "Register",
   "reviewCorrectRegisterHint": "Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa bersamaan.",
   "reviewCorrectWarning": "Peringatan",
@@ -1993,6 +2041,10 @@
   "reviewRepoSuggestionLoadFailed": "Gagal memuat detail usulan edit",
   "reviewRepoSuggestionApproveFailed": "Gagal menyetujui usulan",
   "reviewRepoSuggestionRejectFailed": "Gagal menolak usulan",
+  "reviewSuggestionCorrectButton": "Koreksi",
+  "reviewSuggestionCorrectCta": "Simpan koreksi",
+  "reviewSuggestionCorrectedToast": "Koreksi disimpan dan diterapkan",
+  "reviewRepoSuggestionCorrectFailed": "Gagal menyimpan koreksi usulan",
   "reviewExploreLoadFailed": "Gagal memuat usulan eksplorasi",
   "reviewExploreApproveFailed": "Gagal menyetujui usulan eksplorasi",
   "reviewExploreRejectFailed": "Gagal menolak usulan eksplorasi",
@@ -2639,6 +2691,7 @@
   "feedContributeSearchMiss": "Dicari warga",
   "feedContributeSearchMissSubtitle": "Kata yang dicari warga tapi belum ketemu. Bantu isi artinya",
   "feedContributePeriksaKata": "Periksa kata",
+  "periksaKataHeroSubtitle": "Bantu pastikan makna di kamus sudah tepat.",
   "feedPeriksaKataStubBody": "Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.",
   "periksaKataLoginPrompt": "Masuk dulu untuk memeriksa kata",
   "periksaKataSearchHint": "Cari lemma…",
@@ -3723,6 +3776,7 @@
   "regionDesaTitle": "Desa {name}",
   "regionVillageCount": "{count} desa",
   "regionDesaComingSoon": "Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.",
+  "regionKecamatanComingSoon": "Info kecamatan ini sedang kami siapkan. Nanti kamu bisa lihat isinya di sini ya.",
   "regionAgendaDesa": "Agenda di Desa {name}",
   "placeNoCoordinatesTitle": "Lokasi tempat ini belum tersedia",
   "placeNoCoordinatesBody": "Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.",
@@ -3956,7 +4010,7 @@
   "wilayahLoadingVillageList": "Memuat daftar desa...",
   "wilayahSearchVillageCta": "Cari desa",
   "wilayahSeeArea": "Lihat area",
-  "wilayahKecamatanProfile": "Profil kecamatan",
+  "wilayahKecamatanProfile": "Lihat Kecamatan",
   "wilayahScrollDown": "Gulir ke bawah",
   "exploreUploadImageFailed": "Unggah foto gagal",
   "exploreSubmitFailed": "Gagal mengirim. Coba lagi ya.",
@@ -5809,6 +5863,10 @@
   "@editProfileSaveSuccess": {},
   "pantunListSubtitle": "Berbalas pantun bersama warga sambas",
   "@pantunListSubtitle": {},
+  "pantunHeroSemantics": "Ilustrasi warga berbalas pantun di tepi sungai",
+  "@pantunHeroSemantics": {
+    "description": "Label aksesibilitas gambar hero halaman pantun"
+  },
   "pantunComingSoon": "Segera",
   "@pantunComingSoon": {},
   "pantunRateLimited": "Terlalu banyak permintaan. Coba lagi sebentar.",
@@ -6246,14 +6304,17 @@
   "jinyePreviewPhotoOnly": "Foto",
   "jinyePreviewEmpty": "Jinye",
   "jinyeProfileJikuLabel": "Jiku",
+  "jinyeProfileJikuActionsSemantics": "Jiku, ketuk untuk opsi",
+  "jinyeSheetViewJiku": "Lihat jiku",
+  "jinyeSheetEditJiku": "Edit jiku",
   "jinyeSheetReply": "Balas",
   "jinyeSheetViewDiscussion": "Lihat diskusi",
-  "jinyeSheetCreateNew": "Buat jinye baru",
-  "jinyeSheetClear": "Kosongkan jinye",
-  "jinyeSheetClearConfirmTitle": "Kosongkan jinye?",
-  "jinyeSheetClearConfirmBody": "Status di profil kamu hilang. Jinye tetap tersimpan di arsip.",
+  "jinyeSheetCreateNew": "Jiku baru",
+  "jinyeSheetClear": "Kosongkan jiku",
+  "jinyeSheetClearConfirmTitle": "Kosongkan jiku?",
+  "jinyeSheetClearConfirmBody": "Jiku di profil kamu hilang. Jinye tetap tersimpan di arsip.",
   "jinyeSheetClearConfirmAction": "Kosongkan",
-  "jinyeClearedSuccess": "Jinye dikosongkan",
+  "jinyeClearedSuccess": "Jiku dikosongkan",
   "jinyeDiscussionEmpty": "Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.",
   "jinyeComposeEntryTooltip": "Buat Jinye",
   "jinyeCreateAudioLabel": "Rekaman suara (opsional)",
@@ -7442,5 +7503,51 @@
   "eventHistoryBody": "Lihat apa saja yang berubah di data acara ini.",
   "karyaHistoryBody": "Lihat apa saja yang berubah di data karya ini.",
   "layananHistoryBody": "Lihat apa saja yang berubah di data layanan ini.",
-  "communityHistoryBody": "Lihat apa saja yang berubah di data komunitas ini."
+  "communityHistoryBody": "Lihat apa saja yang berubah di data komunitas ini.",
+  "periksaKataGuideOpenTooltip": "Panduan Periksa Kata",
+  "periksaKataGuideTitle": "Cara kerja Periksa Kata",
+  "periksaKataGuideHeroTitle": "Jaga mutu kamus bersama",
+  "periksaKataGuideHeroBody": "Cara kerja Periksa Kata dan simulasi Voting Warga.",
+  "periksaKataGuideHeroSemantics": "Ilustrasi warga memeriksa makna bersama",
+  "periksaKataGuideStepsTitle": "Cara memeriksa kata",
+  "periksaKataGuideStep1Title": "Baca makna secara utuh",
+  "periksaKataGuideStep1Body": "Cek lemma, terjemahan, dan definisinya. Ketuk kartu untuk melihat detail kata.",
+  "periksaKataGuideStep2Title": "Beri voting",
+  "periksaKataGuideStep2Body": "Pilih Sudah pas atau Perlu dicek ulang. Satu akun satu voting - ketuk lagi untuk batal.",
+  "periksaKataGuideStep3Title": "Lewati jika ragu",
+  "periksaKataGuideStep3Body": "Geser kartu ke kiri untuk melewati tanpa memilih.",
+  "periksaKataGuideRulesTitle": "Aturan keputusan",
+  "periksaKataGuideRuleVerifyTitle": "Terverifikasi otomatis",
+  "periksaKataGuideRuleVerifyBody": "Selisih voting Sudah pas minimal +5 dari sedikitnya 5 pemilih.",
+  "periksaKataGuideRuleRejectTitle": "Ditolak otomatis",
+  "periksaKataGuideRuleRejectBody": "Selisih voting Perlu dicek ulang minimal -5 dari sedikitnya 5 pemilih.",
+  "periksaKataGuideRuleWaitTitle": "Tetap menunggu",
+  "periksaKataGuideRuleWaitBody": "Pemilih < 5 atau selisih -4 sampai +4. Voting terbanyak tampil teratas agar cepat selesai.",
+  "periksaKataGuideSimTitle": "Simulasi Voting Warga",
+  "periksaKataGuideSimBody": "Ketuk kartu atau tombol di bawah untuk lihat perubahan status di ambang +5 / -5. Tidak mengubah data asli.",
+  "periksaKataGuideSimAgree": "+1 Sudah pas",
+  "periksaKataGuideSimDisagree": "+1 Perlu dicek ulang",
+  "periksaKataGuideSimReset": "Ulangi simulasi",
+  "periksaKataGuideSimVerified": "Terverifikasi otomatis",
+  "periksaKataGuideSimRejected": "Ditolak otomatis",
+  "periksaKataGuideSimWaiting": "Masih menunggu. {voters} pemilih, selisih {net}. Ambang +{threshold} atau -{threshold}.",
+  "periksaKataGuideBannerText": "Pahami cara kerja & coba simulasi voting",
+  "periksaKataGuideBannerAction": "Lihat panduan",
+  "periksaKataGuideBannerDismiss": "Tutup",
+  "periksaKataGuideSampleLemma": "lestari",
+  "periksaKataGuideSampleTranslation": "sustainable",
+  "periksaKataGuideSampleDefinition": "tetap terjaga dan bisa bertahan lama",
+  "periksaKataGuideIntro": "Setiap kosakata atau makna dari usulan warga akan masuk ke area voting terlebih dahulu sebelum terverifikasi. Lewat voting bersama, makna yang tepat segera disahkan dan yang keliru cepat tersaring.",
+  "exploreFeedbackCtaTitle": "Punya kritik atau saran?",
+  "exploreFeedbackCtaSubtitle": "Bantu kami membuat pengalaman menggunakan SambasKu jadi lebih nyaman untukmu!",
+  "feedbackTitle": "Kritik & Saran",
+  "feedbackHeroSemantics": "Ilustrasi kirim kritik dan saran untuk SambasKu",
+  "feedbackIntro": "Punya ide fitur, masukan, atau hal yang kurang pas? Ceritakan di sini ya.",
+  "feedbackGuestAnonymous": "Masukan kamu dikirim sebagai Anonim",
+  "feedbackGuestLoginHint": "Login kalau mau melampirkan gambar pendukung",
+  "feedbackDescriptionLabel": "Kritik atau saran",
+  "feedbackDescriptionHint": "Tulis ide, saran perbaikan, atau hal yang kamu harapkan di SambasKu",
+  "feedbackSubmit": "Kirim Masukan",
+  "feedbackSubmitting": "Mengirim...",
+  "feedbackThanks": "Terima kasih, masukan kamu sudah kami terima"
 }

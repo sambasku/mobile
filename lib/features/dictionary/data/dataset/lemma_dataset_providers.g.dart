@@ -290,8 +290,14 @@ final class LemmaInstalledMetaProvider
 String _$lemmaInstalledMetaHash() =>
     r'f94df1500302aa365f94f35cc0cd14c108682b03';
 
+/// keepAlive + offline dibaca saat update: autoDispose / rebuild akan
+/// menutup Dio di tengah fetch (ref.read langsung menjadwalkan dispose).
+
 @ProviderFor(lemmaDatasetUpdater)
 final lemmaDatasetUpdaterProvider = LemmaDatasetUpdaterProvider._();
+
+/// keepAlive + offline dibaca saat update: autoDispose / rebuild akan
+/// menutup Dio di tengah fetch (ref.read langsung menjadwalkan dispose).
 
 final class LemmaDatasetUpdaterProvider
     extends
@@ -301,13 +307,15 @@ final class LemmaDatasetUpdaterProvider
           LemmaDatasetUpdater
         >
     with $Provider<LemmaDatasetUpdater> {
+  /// keepAlive + offline dibaca saat update: autoDispose / rebuild akan
+  /// menutup Dio di tengah fetch (ref.read langsung menjadwalkan dispose).
   LemmaDatasetUpdaterProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'lemmaDatasetUpdaterProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -336,4 +344,4 @@ final class LemmaDatasetUpdaterProvider
 }
 
 String _$lemmaDatasetUpdaterHash() =>
-    r'1cab299e14def0b0b95f066f581d9d66266db8b8';
+    r'f790eb82edbc453f343332050083c652203c76b4';

@@ -108,7 +108,11 @@ class WeeklyLeaderboardStatusCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(FLucideIcons.timer, size: 16, color: theme.colors.primary),
+                  Icon(
+                    FLucideIcons.timer,
+                    size: 16,
+                    color: theme.colors.primary,
+                  ),
                   const Gap(8),
                   Expanded(
                     child: Column(
@@ -265,11 +269,7 @@ List<Widget> weeklyLeaderboardEntryChildren({
       FTileGroup(
         children: [
           for (final entry in entries.where((e) => e.rank > 3))
-            leaderboardEntryTile(
-              context: context,
-              entry: entry,
-              l10n: l10n,
-            ),
+            leaderboardEntryTile(context: context, entry: entry, l10n: l10n),
         ],
       ),
     ],
@@ -286,6 +286,9 @@ class WeeklyLeaderboardEntryList extends StatelessWidget {
     this.header,
     required this.emptyMessage,
     this.trailing,
+    this.shrinkWrap = false,
+    this.physics = const AlwaysScrollableScrollPhysics(),
+    this.padding = const EdgeInsets.fromLTRB(0, 12, 0, 24),
   });
 
   final List<LeaderboardEntry> entries;
@@ -294,17 +297,18 @@ class WeeklyLeaderboardEntryList extends StatelessWidget {
   final Widget? header;
   final String emptyMessage;
   final List<Widget>? trailing;
+  final bool shrinkWrap;
+  final ScrollPhysics physics;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
     return ListView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(0, 12, 0, 24),
+      shrinkWrap: shrinkWrap,
+      physics: physics,
+      padding: padding,
       children: [
-        if (header != null) ...[
-          header!,
-          const Gap(12),
-        ],
+        if (header != null) ...[header!, const Gap(12)],
         ...weeklyLeaderboardEntryChildren(
           context: context,
           entries: entries,

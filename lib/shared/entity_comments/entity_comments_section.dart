@@ -31,6 +31,7 @@ import '../utils/public_account_name.dart';
 import '../utils/thread_reply_draft.dart';
 import '../widgets/image_crop_page.dart';
 import '../widgets/record_thread_audio_sheet.dart';
+import '../widgets/slide_fade_in.dart';
 import '../widgets/thread_audio_player.dart';
 import '../widgets/thread_comment_image.dart';
 import '../widgets/thread_edit_sheets.dart';
@@ -208,6 +209,32 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
   String? _replyParentId;
   ThreadReplyDraft? _replyDraft;
   String? _replyChipHandle;
+  bool _initialLoaded = false;
+  final Set<String> _seenIds = <String>{};
+  final Set<String> _justAddedIds = <String>{};
+
+  void _syncSeenIds(List<EntityComment> items, {required bool isLoadingMore}) {
+    if (!_initialLoaded) {
+      for (final c in items) {
+        _seenIds.add(c.id);
+        for (final r in c.replies) {
+          _seenIds.add(r.id);
+        }
+      }
+      _initialLoaded = true;
+      return;
+    }
+    for (final c in items) {
+      if (_seenIds.add(c.id) && !isLoadingMore) {
+        _justAddedIds.add(c.id);
+      }
+      for (final r in c.replies) {
+        if (_seenIds.add(r.id) && !isLoadingMore) {
+          _justAddedIds.add(r.id);
+        }
+      }
+    }
+  }
 
   EntityCommentListKey get _key =>
       EntityCommentListKey(widget.target, widget.entityId);
@@ -912,15 +939,26 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
                         ),
                       ),
                     )
-                  else
-                    ...state.items.map(
-                      (comment) => _buildThreadTile(
-                        context,
-                        comment: comment,
-                        myUserId: myUserId,
-                        isAuth: isAuth,
-                      ),
-                    ),
+                  else ...[
+                    ...() {
+                      _syncSeenIds(
+                        state.items,
+                        isLoadingMore: state.isLoadingMore,
+                      );
+                      return state.items.map(
+                        (comment) => SlideFadeIn(
+                          key: ValueKey('entity-comment-${comment.id}'),
+                          animate: _justAddedIds.contains(comment.id),
+                          child: _buildThreadTile(
+                            context,
+                            comment: comment,
+                            myUserId: myUserId,
+                            isAuth: isAuth,
+                          ),
+                        ),
+                      );
+                    }(),
+                  ],
                   if (state.hasMore)
                     Padding(
                       padding: const EdgeInsets.only(top: 8),

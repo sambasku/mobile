@@ -5,10 +5,16 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/back_to_top_button.dart';
+import '../../../../shared/widgets/cover_hero.dart';
+import '../../../../shared/widgets/profile_hero_shell.dart';
+import '../../../../shared/widgets/profile_identity_header.dart';
+import '../../../user_profile/presentation/widgets/profile_activity_section.dart'
+    show OverlapAboveBox, ProfileBarClearanceHeader;
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/presentation/utils/open_verifier_contribute.dart';
 import '../../../dictionary/dictionary_router.dart';
@@ -20,6 +26,31 @@ import '../widgets/periksa_kata_card_shell.dart';
 import '../widgets/periksa_meaning_blurb.dart';
 import '../widgets/periksa_vote_rail.dart';
 import '../widgets/periksa_vote_split_panel.dart';
+
+List<Widget> _periksaKataCoverSlivers(
+  BuildContext context,
+  AppLocalizations l10n,
+) {
+  final barOffset =
+      MediaQuery.paddingOf(context).top + ProfileHeroShell.barHeight;
+  return [
+    SliverPersistentHeader(
+      pinned: true,
+      delegate: ProfileBarClearanceHeader(height: barOffset),
+    ),
+    SliverToBoxAdapter(
+      child: OverlapAboveBox(
+        overlap: barOffset,
+        child: CoverHero(
+          asset: 'assets/images/periksa_kata_hero.webp',
+          title: l10n.feedContributePeriksaKata,
+          subtitle: l10n.periksaKataHeroSubtitle,
+          semanticLabel: l10n.periksaKataGuideHeroSemantics,
+        ),
+      ),
+    ),
+  ];
+}
 
 /// Feed Periksa Kata: makna published belum verified.
 ///
@@ -57,35 +88,71 @@ class _PeriksaKataPageState extends ConsumerState<PeriksaKataPage> {
     final l10n = AppLocalizations.of(context);
     final auth = ref.watch(authStatusProvider);
 
+    Widget loginScroll() {
+      return CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          ..._periksaKataCoverSlivers(context, l10n),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: _LoginGate(l10n: l10n),
+          ),
+        ],
+      );
+    }
+
     return FScaffold(
-      childPad: true,
-      header: FHeader.nested(
-        title: Text(l10n.feedContributePeriksaKata),
-        prefixes: [FHeaderAction.back(onPress: () => context.pop())],
-        suffixes: [
-          FHeaderAction(
-            icon: const Icon(FLucideIcons.bookPlus,
-                size: kHeaderActionIconSize),
-            semanticsLabel: l10n.activityVoteDeckSuggestWord,
+      childPad: false,
+      child: ProfileHeroShell(
+        showBack: true,
+        onBack: () => context.pop(),
+        backLabel: l10n.commonBack,
+        coverHeight: ProfileIdentityHeader.coverHeightOf(
+          ProfileHeaderVariant.compact,
+          MediaQuery.sizeOf(context).width,
+        ),
+        title: l10n.feedContributePeriksaKata,
+        compactActions: true,
+        actions: [
+          ProfileHeroAction(
+            icon: FLucideIcons.circleHelp,
+            tooltip: l10n.periksaKataGuideOpenTooltip,
+            onPress: () => context.push(PeriksaKataRouter.guide.path),
+          ),
+          ProfileHeroAction(
+            icon: FLucideIcons.bookPlus,
+            tooltip: l10n.activityVoteDeckSuggestWord,
             onPress: () => pushVerifierContribute(
               context,
               analyticsFrom: 'periksa_kata',
               contributeFrom: 'periksa_kata',
             ),
           ),
-          FHeaderAction(
-            icon: const Icon(FLucideIcons.clipboardList,
-                size: kHeaderActionIconSize),
+          ProfileHeroAction(
+            icon: FLucideIcons.clipboardList,
+            tooltip: l10n.periksaKataHistoryTitle,
             onPress: () => context.push(PeriksaKataRouter.history.path),
           ),
         ],
-      ),
-      child: auth.when(
-        loading: () => const Center(child: FCircularProgress()),
-        error: (_, _) => _LoginGate(l10n: l10n),
-        data: (status) => status.isAuth
-            ? _FeedBody(onSearchChanged: _onSearchChanged, onRefresh: _refresh)
-            : _LoginGate(l10n: l10n),
+        scrollView: auth.when(
+          loading: () => CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              ..._periksaKataCoverSlivers(context, l10n),
+              const SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(child: FCircularProgress()),
+              ),
+            ],
+          ),
+          error: (_, _) => loginScroll(),
+          data: (status) => status.isAuth
+              ? _FeedBody(
+                  onSearchChanged: _onSearchChanged,
+                  onRefresh: _refresh,
+                )
+              : loginScroll(),
+        ),
       ),
     );
   }
@@ -141,127 +208,243 @@ class _FeedBody extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final async = ref.watch(periksaKataFeedControllerProvider);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        FTextField(
-          control: FTextFieldControl.managed(
-            onChange: (value) => onSearchChanged(value.text),
+    final leading = <Widget>[
+      ..._periksaKataCoverSlivers(context, l10n),
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+          child: FTextField(
+            control: FTextFieldControl.managed(
+              onChange: (value) => onSearchChanged(value.text),
+            ),
+            hint: l10n.periksaKataSearchHint,
+            textInputAction: TextInputAction.search,
+            clearable: (value) => value.text.isNotEmpty,
+            prefixBuilder: (context, style, variants) =>
+                FTextField.prefixIconBuilder(
+                  context,
+                  style,
+                  variants,
+                  const Icon(FLucideIcons.search),
+                ),
           ),
-          hint: l10n.periksaKataSearchHint,
-          textInputAction: TextInputAction.search,
-          clearable: (value) => value.text.isNotEmpty,
-          prefixBuilder: (context, style, variants) =>
-              FTextField.prefixIconBuilder(
-                context,
-                style,
-                variants,
-                const Icon(FLucideIcons.search),
-              ),
         ),
-        const Gap(2),
-        Expanded(
-          child: RefreshIndicator(
-            onRefresh: onRefresh,
-            child: async.when(
-              loading: () => Skeletonizer(
-                child: CustomScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  slivers: [
-                    SliverPadding(
-                      padding: EdgeInsets.zero,
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) => const Padding(
-                            padding: EdgeInsets.only(bottom: 8),
-                            child: Bone(
-                              width: double.infinity,
-                              height: 88,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12),
-                              ),
-                            ),
-                          ),
-                          childCount: 4,
-                        ),
+      ),
+      const SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(12, 2, 12, 0),
+          child: _GuideBanner(),
+        ),
+      ),
+    ];
+
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: async.when(
+        loading: () => Skeletonizer(
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              ...leading,
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => const Padding(
+                      padding: EdgeInsets.only(bottom: 8),
+                      child: Bone(
+                        width: double.infinity,
+                        height: 88,
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
                     ),
-                    const SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: SizedBox.shrink(),
-                    ),
-                  ],
+                    childCount: 4,
+                  ),
                 ),
               ),
-              error: (err, _) => CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: [
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              err.toString(),
-                              textAlign: TextAlign.center,
-                              style: theme.typography.body.sm.copyWith(
-                                color: theme.colors.mutedForeground,
-                              ),
-                            ),
-                            const Gap(16),
-                            FButton(
-                              variant: FButtonVariant.outline,
-                              onPress: onRefresh,
-                              child: Text(l10n.commonRetry),
-                            ),
-                          ],
+              const SliverFillRemaining(
+                hasScrollBody: false,
+                child: SizedBox.shrink(),
+              ),
+            ],
+          ),
+        ),
+        error: (err, _) => CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            ...leading,
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        err.toString(),
+                        textAlign: TextAlign.center,
+                        style: theme.typography.body.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
+                      ),
+                      const Gap(16),
+                      FButton(
+                        variant: FButtonVariant.outline,
+                        onPress: onRefresh,
+                        child: Text(l10n.commonRetry),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        data: (state) {
+          if (state.items.isEmpty) {
+            return CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                ...leading,
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Text(
+                        state.q.isEmpty
+                            ? l10n.periksaKataEmpty
+                            : l10n.periksaKataSearchEmpty,
+                        textAlign: TextAlign.center,
+                        style: theme.typography.body.sm.copyWith(
+                          color: theme.colors.mutedForeground,
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
-              data: (state) {
-                if (state.items.isEmpty) {
-                  return CustomScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    slivers: [
-                      SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24),
-                            child: Text(
-                              state.q.isEmpty
-                                  ? l10n.periksaKataEmpty
-                                  : l10n.periksaKataSearchEmpty,
-                              textAlign: TextAlign.center,
-                              style: theme.typography.body.sm.copyWith(
-                                color: theme.colors.mutedForeground,
+                ),
+              ],
+            );
+          }
+          return _FeedList(
+            items: state.items,
+            hasMore: state.hasMore,
+            sessionVotes: state.sessionVotes,
+            priorVoteIds: state.priorVoteIds,
+            leadingSlivers: leading,
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Banner di atas feed: arahkan ke panduan & simulasi voting.
+/// Sekali ditutup tidak muncul lagi (SharedPreferences).
+class _GuideBanner extends StatefulWidget {
+  const _GuideBanner();
+
+  static const prefsKey = 'periksa_kata_guide_banner_dismissed';
+
+  @override
+  State<_GuideBanner> createState() => _GuideBannerState();
+}
+
+class _GuideBannerState extends State<_GuideBanner> {
+  bool _visible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    if (!(prefs.getBool(_GuideBanner.prefsKey) ?? false)) {
+      setState(() => _visible = true);
+    }
+  }
+
+  Future<void> _dismiss() async {
+    setState(() => _visible = false);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_GuideBanner.prefsKey, true);
+  }
+
+  /// Aksen teal (bukan `primary`: palet zinc membuat primary hampir hitam
+  /// sehingga tint-nya terlihat abu-abu).
+  static const _accent = Color(0xFF0F766E);
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_visible) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: _accent.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: _accent.withValues(alpha: 0.28)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: FTappable(
+              onPress: () => context.push(PeriksaKataRouter.guide.path),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 7, 4, 7),
+                child: Row(
+                  children: [
+                    const Icon(
+                      FLucideIcons.circleHelp,
+                      size: 16,
+                      color: _accent,
+                    ),
+                    const Gap(8),
+                    Expanded(
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: l10n.periksaKataGuideBannerAction,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: theme.colors.foreground,
                               ),
                             ),
-                          ),
+                            TextSpan(
+                              text: '  ${l10n.periksaKataGuideBannerText}',
+                            ),
+                          ],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.typography.body.xs.copyWith(
+                          color: theme.colors.mutedForeground,
                         ),
                       ),
-                    ],
-                  );
-                }
-
-                return _FeedList(
-                  items: state.items,
-                  hasMore: state.hasMore,
-                  sessionVotes: state.sessionVotes,
-                  priorVoteIds: state.priorVoteIds,
-                );
-              },
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ],
+          Semantics(
+            label: l10n.periksaKataGuideBannerDismiss,
+            button: true,
+            child: FTappable(
+              onPress: _dismiss,
+              child: const Padding(
+                padding: EdgeInsets.all(8),
+                child: Icon(FLucideIcons.x, size: 14),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -272,12 +455,14 @@ class _FeedList extends ConsumerStatefulWidget {
     required this.hasMore,
     required this.sessionVotes,
     required this.priorVoteIds,
+    this.leadingSlivers = const [],
   });
 
   final List<VoteDeckItem> items;
   final bool hasMore;
   final Map<String, int> sessionVotes;
   final Set<String> priorVoteIds;
+  final List<Widget> leadingSlivers;
 
   @override
   ConsumerState<_FeedList> createState() => _FeedListState();
@@ -318,25 +503,32 @@ class _FeedListState extends ConsumerState<_FeedList> {
   Widget build(BuildContext context) {
     // CustomScrollView + SliverFillRemaining: area kosong di bawah kartu
     // pendek tetap bagian scrollable → pull-to-refresh bisa di-trigger.
-    return CustomScrollView(
+    return ScrollWithBackToTop(
       controller: _scroll,
-      physics: const AlwaysScrollableScrollPhysics(),
-      slivers: [
-        SliverList(
-          delegate: SliverChildBuilderDelegate((context, index) {
-            final item = widget.items[index];
-            return _PeriksaKataCard(
-              item: item,
-              sessionVote: widget.sessionVotes[item.id],
-              isPriorVote: widget.priorVoteIds.contains(item.id),
-            );
-          }, childCount: widget.items.length),
-        ),
-        const SliverFillRemaining(
-          hasScrollBody: false,
-          child: SizedBox.shrink(),
-        ),
-      ],
+      child: CustomScrollView(
+        controller: _scroll,
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          ...widget.leadingSlivers,
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final item = widget.items[index];
+                return _PeriksaKataCard(
+                  item: item,
+                  sessionVote: widget.sessionVotes[item.id],
+                  isPriorVote: widget.priorVoteIds.contains(item.id),
+                );
+              }, childCount: widget.items.length),
+            ),
+          ),
+          const SliverFillRemaining(
+            hasScrollBody: false,
+            child: SizedBox.shrink(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -542,4 +734,3 @@ class _PeriksaKataCard extends ConsumerWidget {
     return null;
   }
 }
-

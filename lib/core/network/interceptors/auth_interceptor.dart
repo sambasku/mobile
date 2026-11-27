@@ -66,6 +66,10 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    if (_isExternalRequest(options)) {
+      handler.next(options);
+      return;
+    }
     try {
       final token = await _tokenStorage.getAccessToken();
       // Token kosong/whitespace = tidak ada token. Tanpa cek ini header
@@ -127,6 +131,25 @@ class AuthInterceptor extends Interceptor {
 
   /// Path publik yang berada di bawah prefiks login-only (pengecualian).
   static const _publicPaths = <String>{'/api/v1/votes/counts'};
+
+  /// Jangan bocorkan Bearer JWT SambasKu ke host pihak ketiga (mis. GitHub,
+  /// CDN) saat ada pemanggil yang memakai URL absolut lewat dioProvider.
+  bool _isExternalRequest(RequestOptions options) {
+    final uri = Uri.tryParse(options.path);
+    if (uri == null ||
+        (uri.scheme != 'http' && uri.scheme != 'https') ||
+        uri.host.isEmpty) {
+      return false;
+    }
+    final targetHost = uri.host.toLowerCase();
+    for (final tier in _hostResolver.tiers) {
+      final apiHost = Uri.tryParse(tier.host)?.host.toLowerCase();
+      if (apiHost != null && apiHost == targetHost) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   bool _isAuthRequired(RequestOptions options) {
     final path = options.path.split('?').first;
@@ -193,6 +216,7 @@ class AuthInterceptor extends Interceptor {
 
   bool _shouldSkipAuthRefresh(RequestOptions options) {
     if (options.extra[kSkipAuthRefreshExtra] == true) return true;
+    if (_isExternalRequest(options)) return true;
     final path = options.path;
     return path.contains('/auth/login') ||
         path.contains('/auth/google') ||

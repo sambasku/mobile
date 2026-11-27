@@ -5,11 +5,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/features/auth/presentation/models/auth_status_state.dart';
 import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status_providers.dart';
 import 'package:sambasku_mobile/features/activity/presentation/widgets/activity_feed_tile.dart';
+import 'package:sambasku_mobile/features/jinye/data/jinye_providers.dart';
+import 'package:sambasku_mobile/features/jinye/domain/jinye_models.dart';
+import 'package:sambasku_mobile/features/jinye/presentation/widgets/jinye_profile_preview.dart';
 import 'package:sambasku_mobile/features/user_profile/domain/entities/public_profile.dart';
+import 'package:sambasku_mobile/shared/widgets/profile_identity_header.dart';
 import 'package:sambasku_mobile/features/user_profile/presentation/pages/public_profile_page.dart';
 import 'package:sambasku_mobile/features/user_profile/presentation/models/public_activity_category_state.dart';
 import 'package:sambasku_mobile/features/user_profile/presentation/providers/user_profile_providers.dart';
-import 'package:sambasku_mobile/shared/widgets/small_button.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
@@ -55,7 +58,11 @@ final _activity = [
 
 final _categoryPage = PublicActivityCategoryState(items: _activity);
 
-Future<void> _pump(WidgetTester tester, {String? sessionUsername}) async {
+Future<void> _pump(
+  WidgetTester tester, {
+  String? sessionUsername,
+  JinyeItem? latestJinye,
+}) async {
   // Surface ponsel: cover ikut rasio asset (lebar/aspect). Default 800px
   // membuat cover ~414px; chip/feed aktivitas di bawah fold.
   // view.physicalSize (bukan setSurfaceSize) supaya MediaQuery ikut 390.
@@ -69,6 +76,8 @@ Future<void> _pump(WidgetTester tester, {String? sessionUsername}) async {
       overrides: [
         authStatusProvider.overrideWith(() => _FakeAuthStatus(sessionUsername)),
         publicProfileProvider('budi').overrideWith((ref) async => _profile),
+        latestJinyeByUsernameProvider('budi')
+            .overrideWith((ref) async => latestJinye),
         publicActivityProvider('budi').overrideWith((ref) async => _activity),
         // Chip Perbaikan/Komentar baca family kind - override dua kind aktif.
         for (final kind in ['contribution', 'comment'])
@@ -79,11 +88,11 @@ Future<void> _pump(WidgetTester tester, {String? sessionUsername}) async {
       ],
       child: MaterialApp(
         localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+          ...AppLocalizations.localizationsDelegates,
+          ...FLocalizations.localizationsDelegates,
+        ],
         supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+        locale: const Locale('id'),
         builder: (context, child) =>
             FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
         home: const PublicProfilePage(username: 'budi'),
@@ -219,14 +228,12 @@ void main() {
   });
 
   testWidgets(
-    'profil sendiri: tombol Edit kecil di body, CTA tile disembunyikan',
+    'profil sendiri: ikon Edit di samping nama, CTA tile disembunyikan',
     (tester) async {
       await _pump(tester, sessionUsername: 'budi');
 
-      // Layout publik tetap lama: tombol Edit kecil di sisi kanan identitas.
-      // Ikon edit di app bar hanya milik tab Profil.
-      expect(find.byType(SmallButton), findsOneWidget);
-      expect(find.bySemanticsLabel('Edit profil'), findsNothing);
+      expect(find.byIcon(FLucideIcons.pencil), findsOneWidget);
+      expect(find.bySemanticsLabel('Edit profil'), findsOneWidget);
       expect(find.byIcon(FLucideIcons.chevronRight), findsNothing);
       expect(find.text('Lihat arti'), findsNothing);
       // Body tetap dirender (header identitas + cover membuat aktivitas
@@ -237,6 +244,35 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
       expect(find.textContaining('bagus nih'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'Jinye tampil sebagai status line di area profil tanpa bubble overlay avatar',
+    (tester) async {
+      await _pump(
+        tester,
+        latestJinye: JinyeItem(
+          id: '01JINYE00000000000000001',
+          userId: 'u1',
+          username: 'budi',
+          body: 'Kopi pagi di Sambas',
+          status: 'published',
+          createdAt: DateTime.utc(2026, 10, 1, 8),
+        ),
+      );
+
+      final header = tester.widget<ProfileIdentityHeader>(
+        find.byType(ProfileIdentityHeader),
+      );
+      expect(
+        header.avatarOverlay,
+        isNull,
+        reason: 'bubble Jinye tidak boleh menimpa border avatar',
+      );
+      expect(find.byType(JinyeProfilePreview), findsNothing);
+      expect(find.byType(JinyeProfileStatusLine), findsOneWidget);
+      expect(find.text('Kopi pagi di Sambas'), findsOneWidget);
     },
   );
 }

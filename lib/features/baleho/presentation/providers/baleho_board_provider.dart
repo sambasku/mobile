@@ -9,7 +9,7 @@ final balehoApiProvider = Provider<BalehoApi>(
   (ref) => BalehoApi(ref.watch(dioProvider)),
 );
 
-/// Slot tetap slide 2 (Ruang komunitas): hanya Peringkat Mingguan.
+/// Slot tetap slide 2: peringkat 4x1.
 class BalehoSlide2Labels {
   const BalehoSlide2Labels({
     required this.weeklyTitle,
@@ -46,10 +46,8 @@ List<BalehoPlacement> balehoSlide2Curated(BalehoSlide2Labels labels) {
   return [_weeklyLeaderboardTile(labels)];
 }
 
-/// Rect curated slide 2 - filter overlap API (hanya banner 4x1 atas).
-const _kSlide2Rects = <(int col, int row, int w, int h)>[
-  (0, 0, 4, 1),
-];
+/// Rect curated slide 2 - banner peringkat 4x1.
+const _kSlide2Rects = <(int col, int row, int w, int h)>[(0, 0, 4, 1)];
 
 bool balehoOverlapsSlide2Curated(BalehoPlacement p) {
   for (final (col, row, w, h) in _kSlide2Rects) {
@@ -80,20 +78,22 @@ BalehoBoard balehoBoardWithSlide2Fixed(
 }
 
 /// Board dari API. Gagal jaringan/migrate → board kosong.
-final balehoBoardProvider =
-    FutureProvider.autoDispose.family<BalehoBoard, int>((ref, slide) async {
-  final api = ref.watch(balehoApiProvider);
-  try {
-    return await api.fetchBoard(slide);
-  } on DioException {
-    return BalehoBoard.empty(slide);
-  } catch (_) {
-    return BalehoBoard.empty(slide);
-  }
-});
+final balehoBoardProvider = FutureProvider.autoDispose.family<BalehoBoard, int>(
+  (ref, slide) async {
+    final api = ref.watch(balehoApiProvider);
+    try {
+      return await api.fetchBoard(slide);
+    } on DioException {
+      return BalehoBoard.empty(slide);
+    } catch (_) {
+      return BalehoBoard.empty(slide);
+    }
+  },
+);
 
 /// Tarif IDR per sel 1x1 per hari (app_settings, default 3000).
-final balehoPricePerCellPerDayProvider =
-    FutureProvider.autoDispose<int>((ref) async {
+final balehoPricePerCellPerDayProvider = FutureProvider.autoDispose<int>((
+  ref,
+) async {
   return ref.watch(balehoApiProvider).fetchPricePerCellPerDay();
 });

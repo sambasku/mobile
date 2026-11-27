@@ -643,7 +643,8 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       FTextField(
         control: FTextFieldControl.managed(controller: _notes),
         enabled: !_busy,
-        label: Text(AppLocalizations.of(context).reviewCorrectWordNotes),
+        label: Text(AppLocalizations.of(context).suggestNotesLabel),
+        hint: AppLocalizations.of(context).suggestNotesHint,
       ),
       const Gap(12),
       Text(AppLocalizations.of(context).reviewCorrectRegister),

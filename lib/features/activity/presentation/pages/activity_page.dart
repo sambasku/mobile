@@ -30,8 +30,7 @@ class ActivityPage extends ConsumerStatefulWidget {
 class _ActivityPageState extends ConsumerState<ActivityPage> {
   bool _guideChecked = false;
 
-  /// Sama Home (widget yang sama): kotak 48 1:1 + gap 6 + slot label 28.
-  static const _hubBlock = 8 + ActionChipsRow.height + 8;
+  static const _hPad = EdgeInsets.symmetric(horizontal: 12);
 
   Future<void> _refresh() async {
     await Future.wait([
@@ -62,57 +61,61 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
 
     return Column(
       children: [
-        FHeader(
-          title: const BrandWordmark(),
-          suffixes: [
-            if (isVerifier)
+        Padding(
+          padding: _hPad,
+          child: FHeader(
+            title: const BrandWordmark(),
+            suffixes: [
+              if (isVerifier)
+                FHeaderAction(
+                  icon: const Icon(
+                    FLucideIcons.bookPlus,
+                    size: kHeaderActionIconSize,
+                  ),
+                  semanticsLabel: l10n.activityVoteDeckSuggestWord,
+                  onPress: _openSuggestWordFromDeck,
+                ),
               FHeaderAction(
                 icon: const Icon(
-                  FLucideIcons.bookPlus,
+                  FLucideIcons.refreshCw,
                   size: kHeaderActionIconSize,
                 ),
-                semanticsLabel: l10n.activityVoteDeckSuggestWord,
-                onPress: _openSuggestWordFromDeck,
+                onPress: _refresh,
               ),
-            FHeaderAction(
-              icon: const Icon(
-                FLucideIcons.refreshCw,
-                size: kHeaderActionIconSize,
-              ),
-              onPress: _refresh,
-            ),
-            const ThemeToggleHeaderAction(),
-          ],
+              const ThemeToggleHeaderAction(),
+            ],
+          ),
         ),
+        const ActionChipsRow(from: 'kontribusi'),
+        const Gap(8),
         Expanded(
-          child: RefreshIndicator(
-            onRefresh: _refresh,
-            child: LayoutBuilder(
-              builder: (context, constraints) => SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: ConstrainedBox(
-                  // Minimal setinggi viewport agar pull-to-refresh tetap
-                  // jalan meski konten tidak meluap.
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Gap(8),
-                      const ActionChipsRow(
-                        padding: EdgeInsets.zero,
-                        from: 'kontribusi',
-                      ),
-                      const Gap(8),
-                      // Deck mengisi sisa viewport minus baris aksi hub.
-                      SizedBox(
-                        height: (constraints.maxHeight - _hubBlock).clamp(
-                          200.0,
-                          double.infinity,
+          child: Padding(
+            padding: _hPad,
+            child: RefreshIndicator(
+              onRefresh: _refresh,
+              child: LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: ConstrainedBox(
+                    // Minimal setinggi viewport agar pull-to-refresh tetap
+                    // jalan meski konten tidak meluap.
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Deck mengisi sisa viewport di bawah baris aksi hub.
+                        SizedBox(
+                          height: (constraints.maxHeight - 8).clamp(
+                            200.0,
+                            double.infinity,
+                          ),
+                          child: _VoteDeckHost(),
                         ),
-                        child: _VoteDeckHost(),
-                      ),
-                      const Gap(8),
-                    ],
+                        const Gap(8),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -18,6 +18,7 @@ import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/utils/thread_reply_draft.dart';
 import '../../../../shared/widgets/thread_edit_sheets.dart';
+import '../../../../shared/widgets/slide_fade_in.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../data/discussion_providers.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -54,6 +55,24 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
   ThreadReplyDraft? _replyDraft;
   String? _replyChipHandle;
   String? _stagingStickerId;
+  bool _repliesHydrated = false;
+  final Set<String> _seenReplyIds = <String>{};
+  final Set<String> _justAddedReplyIds = <String>{};
+
+  void _syncSeenReplies(List<DiscussionReply> replies) {
+    if (!_repliesHydrated) {
+      for (final r in replies) {
+        _seenReplyIds.add(r.id);
+      }
+      _repliesHydrated = true;
+      return;
+    }
+    for (final r in replies) {
+      if (_seenReplyIds.add(r.id)) {
+        _justAddedReplyIds.add(r.id);
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -988,9 +1007,15 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                             color: theme.colors.mutedForeground,
                           ),
                         )
-                      else
-                        for (final reply in replies)
-                          ThreadMessageRow(
+                      else ...[
+                        ...() {
+                          _syncSeenReplies(replies);
+                          return [
+                            for (final reply in replies)
+                              SlideFadeIn(
+                                key: ValueKey('discussion-reply-${reply.id}'),
+                                animate: _justAddedReplyIds.contains(reply.id),
+                                child: ThreadMessageRow(
                             username: reply.username,
                             displayName: reply.displayName,
                             avatarUrl: reply.avatarUrl,
@@ -1088,7 +1113,11 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                                     ],
                                   )
                                 : null,
-                          ),
+                              ),
+                            ),
+                          ];
+                        }(),
+                      ],
                     ],
                   ),
                 ),
