@@ -254,8 +254,9 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
     }
     setState(() => _busyGesture = true);
     // Fling cepat bisa commit tanpa pernah lewat ambang: getar di sini juga.
-    // Medium di semua jalur commit - konsisten dengan haptic ambang drag.
-    HapticFeedback.mediumImpact();
+    // Kalau ambang sudah lewat saat drag, getarnya sudah dibunyikan di
+    // _onPanUpdate - jangan dobel supaya tepat satu getar medium per keputusan.
+    if (!_hapticFired) HapticFeedback.mediumImpact();
 
     final target = switch (direction) {
       SwipeDecisionDirection.positive => Offset(_width * 1.35, 0),
@@ -584,7 +585,14 @@ class _SwipeIconOverlay extends StatelessWidget {
     // ikon/teks kontras di atas isi kartu (deck vote + mulai tinjauan).
     return Positioned.fill(
       child: IgnorePointer(
-        child: Center(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Scrim tipis: meredupkan isi kartu di belakang ikon + label.
+            ColoredBox(
+              color: theme.colors.background.withValues(alpha: 0.35 * t),
+            ),
+            Center(
           child: Opacity(
             opacity: opacity,
             child: Transform.scale(
@@ -639,6 +647,8 @@ class _SwipeIconOverlay extends StatelessWidget {
               ),
             ),
           ),
+        ),
+          ],
         ),
       ),
     );

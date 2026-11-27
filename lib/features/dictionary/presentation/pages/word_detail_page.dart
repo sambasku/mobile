@@ -843,19 +843,59 @@ class _DetailBody extends HookConsumerWidget {
 
                       if (detail.meanings.isNotEmpty) ...[
                         const Gap(20),
-                        ...detail.meanings.asMap().entries.map(
-                          (e) => _MeaningBlock(
-                            index: e.key + 1,
+                        _SectionLabel(
+                          detail.meanings.length > 1
+                              ? AppLocalizations.of(
+                                  context,
+                                ).dictMeaningsSectionCount(
+                                  detail.meanings.length,
+                                )
+                              : AppLocalizations.of(
+                                  context,
+                                ).dictMeaningsSection,
+                        ),
+                        const Gap(10),
+                        for (var i = 0; i < detail.meanings.length; i++) ...[
+                          if (i > 0)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 14),
+                              child: FDivider(
+                                style: FDividerStyleDelta.delta(
+                                  padding: EdgeInsetsGeometryDelta.value(
+                                    EdgeInsets.zero,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          _MeaningBlock(
+                            index: i + 1,
                             showIndex: detail.meanings.length > 1,
                             lemma: detail.lemma,
-                            meaning: e.value,
+                            meaning: detail.meanings[i],
                             wordId: wordId,
                             languageId: detail.languageId,
                             meaningCount: detail.meanings.length,
                             showPerMeaningBy: showPerMeaningBy,
                             contributor: showPerMeaningBy
-                                ? (e.value.createdBy ?? detail.createdBy)
+                                ? (detail.meanings[i].createdBy ??
+                                      detail.createdBy)
                                 : null,
+                          ),
+                        ],
+                      ],
+                      if (!_lemmaUsesLocalCorpus(ref)) ...[
+                        const Gap(4),
+                        FButton(
+                          variant: FButtonVariant.outline,
+                          prefix: const Icon(FLucideIcons.plus, size: 16),
+                          onPress: () => _openSuggestEdit(
+                            context,
+                            ref,
+                            wordId,
+                            category: SuggestCategory.addMeaning.code,
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context).dictAddMeaningCta,
                           ),
                         ),
                       ],
@@ -1763,11 +1803,12 @@ class _MeaningBlock extends ConsumerWidget {
             const Gap(6),
             ...meaning.translations.map(
               (t) => Padding(
-                padding: const EdgeInsets.only(bottom: 2),
+                padding: const EdgeInsets.only(bottom: 4),
                 child: Text(
                   '→ ${t.text}',
-                  style: theme.typography.body.sm.copyWith(
+                  style: theme.typography.body.md.copyWith(
                     fontWeight: FontWeight.w600,
+                    height: 1.4,
                   ),
                 ),
               ),
@@ -1779,35 +1820,52 @@ class _MeaningBlock extends ConsumerWidget {
               final translation = e.targetSentence?.trim();
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      e.sourceSentence,
-                      style: theme.typography.body.sm.copyWith(
-                        fontStyle: FontStyle.italic,
-                        height: 1.35,
-                      ),
-                    ),
-                    if (translation != null && translation.isNotEmpty)
-                      Text(
-                        translation,
-                        style: theme.typography.body.sm.copyWith(
-                          color: theme.colors.mutedForeground,
-                          height: 1.35,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: theme.colors.muted.withValues(alpha: 0.35),
+                      border: Border(
+                        left: BorderSide(
+                          color: theme.colors.primary.withValues(alpha: 0.45),
+                          width: 3,
                         ),
                       ),
-                    const Gap(6),
-                    PronunciationSection(
-                      wordId: wordId,
-                      languageId: languageId,
-                      audios: e.audios,
-                      exampleId: e.id,
-                      compact: true,
-                      sectionLabel: l10n.dictExampleAudio,
-                      spokenText: e.sourceSentence,
                     ),
-                  ],
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          e.sourceSentence,
+                          style: theme.typography.body.sm.copyWith(
+                            fontStyle: FontStyle.italic,
+                            height: 1.4,
+                          ),
+                        ),
+                        if (translation != null && translation.isNotEmpty) ...[
+                          const Gap(2),
+                          Text(
+                            translation,
+                            style: theme.typography.body.sm.copyWith(
+                              color: theme.colors.mutedForeground,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                        const Gap(6),
+                        PronunciationSection(
+                          wordId: wordId,
+                          languageId: languageId,
+                          audios: e.audios,
+                          exampleId: e.id,
+                          compact: true,
+                          sectionLabel: l10n.dictExampleAudio,
+                          spokenText: e.sourceSentence,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               );
             }),

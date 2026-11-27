@@ -1,5 +1,4 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../entity_comments/entity_comment.dart';
@@ -58,19 +57,6 @@ Future<void> handleUgcCommentLemmaWordTap(
       onLinked?.call();
     },
   );
-  if (!context.mounted || result == null) return;
-  if (result == 'login') {
-    context.push('/login');
-    return;
-  }
-  const contributePrefix = 'contribute:';
-  if (result.startsWith(contributePrefix)) {
-    final lemma =
-        Uri.decodeComponent(result.substring(contributePrefix.length));
-    context.push(
-      '/contribute?lemma=${Uri.encodeQueryComponent(lemma)}',
-    );
-    return;
-  }
-  context.push('/words/$result');
+  if (!context.mounted) return;
+  handleJinyeWordMeaningSheetResult(context, result);
 }

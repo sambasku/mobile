@@ -2301,7 +2301,7 @@
   "@hotTopicsTabCheck": {
     "description": "Tab Sorotan: makna yang dapat downvote"
   },
-"hotTopicsTabHits": "Terpopuler",
+  "hotTopicsTabHits": "Terpopuler",
   "@hotTopicsTabHits": {
     "description": "Tab Sorotan: kata paling sering dibuka"
   },
@@ -2311,7 +2311,6 @@
   "@hotTopicsTabEmptyViewedBody": {
     "description": "Empty state tab Terpopuler (word_views)"
   },
-
   "hotTopicsTabProposedBlurb": "Usulan kata menunggu peninjauan",
   "@hotTopicsTabProposedBlurb": {},
   "hotTopicsTabSearchedBlurb": "Dicari warga dan belum ada di kamus",
@@ -2337,14 +2336,20 @@
   "hotTopicsVerifiedMeta": "diverifikasi {when}",
   "@hotTopicsVerifiedMeta": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "hotTopicsCommentedMeta": "{count} komentar · {when}",
   "@hotTopicsCommentedMeta": {
     "placeholders": {
-      "count": { "type": "String" },
-      "when": { "type": "String" }
+      "count": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
     }
   },
   "hotTopicsTabEmptyCheckBody": "Belum ada makna yang dapat downvote dari warga.",
@@ -7356,5 +7361,42 @@
         "type": "String"
       }
     }
-  }
+  },
+  "stickerTabFavorites": "Favorit",
+  "stickerTabMine": "Milikku",
+  "stickerFavoritesEmpty": "Belum ada stiker favorit. Ketuk stiker di chat atau komentar untuk menambahkannya.",
+  "stickerFavoritesLoginHint": "Masuk dulu untuk menyimpan dan melihat stiker favorit kamu.",
+  "stickerMineEmpty": "Belum ada stiker buatan kamu. Buat stiker sendiri dari galeri.",
+  "stickerMineLoginHint": "Masuk dulu untuk membuat dan mengelola stiker buatan kamu.",
+  "stickerAddToFavorites": "Tambah ke favorit",
+  "stickerRemoveFromFavorites": "Hapus dari favorit",
+  "stickerAddedToFavorites": "Stiker ditambahkan ke favorit",
+  "stickerRemovedFromFavorites": "Stiker dihapus dari favorit",
+  "stickerFavoriteLimitReached": "Favorit stiker kamu sudah penuh (maksimal 50). Hapus beberapa dulu ya.",
+  "stickerFavoriteActionFailed": "Gagal memperbarui favorit stiker. Coba lagi ya.",
+  "stickerSendNow": "Kirim stiker ini",
+  "stickerCreateButton": "Buat stiker",
+  "stickerCreateTitle": "Buat stiker sendiri",
+  "stickerCreateSubtitle": "Hanya tampil di deck kamu. Pengguna lain bisa memfavoritkannya saat kamu kirim.",
+  "stickerCreatePickImage": "Pilih gambar atau GIF",
+  "stickerCreateChangeImage": "Ganti gambar",
+  "stickerCreateNameLabel": "Nama stiker (opsional)",
+  "stickerCreateNameHint": "Contoh: Kopi pagi",
+  "stickerCreateSubmit": "Simpan stiker",
+  "stickerCreateSubmitting": "Menyimpan...",
+  "stickerCreateSuccess": "Stiker kamu berhasil dibuat",
+  "stickerCreateImageRequired": "Pilih gambar atau GIF dulu ya",
+  "stickerCreateGifTooLarge": "Ukuran GIF maksimal 2 MB",
+  "stickerCreateLimitReached": "Custom stiker kamu sudah penuh (maksimal 20). Hapus stiker lama dulu ya.",
+  "stickerCreateFailed": "Gagal membuat stiker. Coba lagi ya.",
+  "stickerDeleteMineTitle": "Hapus stiker ini?",
+  "stickerDeleteMineBody": "Stiker akan dihapus dari deck kamu dan tidak bisa dikirim lagi.",
+  "stickerDeleteMineConfirm": "Hapus stiker",
+  "stickerDeleteMineSuccess": "Stiker berhasil dihapus",
+  "stickerDeleteMineFailed": "Gagal menghapus stiker. Coba lagi ya.",
+  "stickerCustomBadge": "Custom",
+  "stickerLoginAction": "Masuk",
+  "dictAddMeaningCta": "Tambah makna baru",
+  "dictMeaningsSection": "Makna",
+  "dictMeaningsSectionCount": "Makna ({count})"
 }

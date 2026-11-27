@@ -3436,7 +3436,7 @@
   "@hotTopicsTabCheck": {
     "description": "Tab Sorotan: makna yang dapat downvote"
   },
-"hotTopicsTabHits": "Terpopuler",
+  "hotTopicsTabHits": "Terpopuler",
   "@hotTopicsTabHits": {
     "description": "Tab Sorotan: kata paling sering dibuka"
   },
@@ -3446,7 +3446,6 @@
   "@hotTopicsTabEmptyViewedBody": {
     "description": "Empty state tab Terpopuler (word_views)"
   },
-
   "hotTopicsTabProposedBlurb": "Usulan kata menunggu peninjauan",
   "@hotTopicsTabProposedBlurb": {},
   "hotTopicsTabSearchedBlurb": "Dicari warga dan belum ada di kamus",
@@ -3472,14 +3471,20 @@
   "hotTopicsVerifiedMeta": "diverifikasi {when}",
   "@hotTopicsVerifiedMeta": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "hotTopicsCommentedMeta": "{count} komentar · {when}",
   "@hotTopicsCommentedMeta": {
     "placeholders": {
-      "count": { "type": "String" },
-      "when": { "type": "String" }
+      "count": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
     }
   },
   "hotTopicsTabEmptyCheckBody": "Belum ada makna yang dapat downvote dari warga.",
@@ -11151,6 +11156,159 @@
     "placeholders": {
       "lemma": {
         "type": "String"
+      }
+    }
+  },
+  "stickerTabFavorites": "Favorit",
+  "@stickerTabFavorites": {
+    "description": "Label tab/shortcut stiker favorit di deck stiker"
+  },
+  "stickerTabMine": "Milikku",
+  "@stickerTabMine": {
+    "description": "Label tab custom stiker milik user di deck stiker"
+  },
+  "stickerFavoritesEmpty": "Belum ada stiker favorit. Ketuk stiker di chat atau komentar untuk menambahkannya.",
+  "@stickerFavoritesEmpty": {
+    "description": "Empty state tab favorit stiker"
+  },
+  "stickerFavoritesLoginHint": "Masuk dulu untuk menyimpan dan melihat stiker favorit kamu.",
+  "@stickerFavoritesLoginHint": {
+    "description": "Pesan saat guest membuka tab favorit stiker"
+  },
+  "stickerMineEmpty": "Belum ada stiker buatan kamu. Buat stiker sendiri dari galeri.",
+  "@stickerMineEmpty": {
+    "description": "Empty state tab custom stiker milik user"
+  },
+  "stickerMineLoginHint": "Masuk dulu untuk membuat dan mengelola stiker buatan kamu.",
+  "@stickerMineLoginHint": {
+    "description": "Pesan saat guest membuka tab stiker milikku"
+  },
+  "stickerAddToFavorites": "Tambah ke favorit",
+  "@stickerAddToFavorites": {
+    "description": "Tombol menambah stiker ke favorit"
+  },
+  "stickerRemoveFromFavorites": "Hapus dari favorit",
+  "@stickerRemoveFromFavorites": {
+    "description": "Tombol menghapus stiker dari favorit"
+  },
+  "stickerAddedToFavorites": "Stiker ditambahkan ke favorit",
+  "@stickerAddedToFavorites": {
+    "description": "Toast sukses tambah stiker favorit"
+  },
+  "stickerRemovedFromFavorites": "Stiker dihapus dari favorit",
+  "@stickerRemovedFromFavorites": {
+    "description": "Toast sukses hapus stiker favorit"
+  },
+  "stickerFavoriteLimitReached": "Favorit stiker kamu sudah penuh (maksimal 50). Hapus beberapa dulu ya.",
+  "@stickerFavoriteLimitReached": {
+    "description": "Pesan saat kuota favorit stiker penuh"
+  },
+  "stickerFavoriteActionFailed": "Gagal memperbarui favorit stiker. Coba lagi ya.",
+  "@stickerFavoriteActionFailed": {
+    "description": "Pesan error umum saat toggle favorit stiker"
+  },
+  "stickerSendNow": "Kirim stiker ini",
+  "@stickerSendNow": {
+    "description": "Tombol kirim stiker langsung dari detail sheet"
+  },
+  "stickerCreateButton": "Buat stiker",
+  "@stickerCreateButton": {
+    "description": "Tombol membuka sheet buat custom stiker"
+  },
+  "stickerCreateTitle": "Buat stiker sendiri",
+  "@stickerCreateTitle": {
+    "description": "Judul sheet buat custom stiker"
+  },
+  "stickerCreateSubtitle": "Hanya tampil di deck kamu. Pengguna lain bisa memfavoritkannya saat kamu kirim.",
+  "@stickerCreateSubtitle": {
+    "description": "Subjudul penjelasan privasi custom stiker"
+  },
+  "stickerCreatePickImage": "Pilih gambar atau GIF",
+  "@stickerCreatePickImage": {
+    "description": "Tombol memilih file gambar/GIF dari galeri"
+  },
+  "stickerCreateChangeImage": "Ganti gambar",
+  "@stickerCreateChangeImage": {
+    "description": "Tombol mengganti gambar stiker yang sudah dipilih"
+  },
+  "stickerCreateNameLabel": "Nama stiker (opsional)",
+  "@stickerCreateNameLabel": {
+    "description": "Label field nama custom stiker"
+  },
+  "stickerCreateNameHint": "Contoh: Kopi pagi",
+  "@stickerCreateNameHint": {
+    "description": "Hint field nama custom stiker"
+  },
+  "stickerCreateSubmit": "Simpan stiker",
+  "@stickerCreateSubmit": {
+    "description": "CTA simpan custom stiker"
+  },
+  "stickerCreateSubmitting": "Menyimpan...",
+  "@stickerCreateSubmitting": {
+    "description": "Label CTA saat custom stiker sedang diunggah"
+  },
+  "stickerCreateSuccess": "Stiker kamu berhasil dibuat",
+  "@stickerCreateSuccess": {
+    "description": "Toast sukses membuat custom stiker"
+  },
+  "stickerCreateImageRequired": "Pilih gambar atau GIF dulu ya",
+  "@stickerCreateImageRequired": {
+    "description": "Validasi saat user belum memilih gambar"
+  },
+  "stickerCreateGifTooLarge": "Ukuran GIF maksimal 2 MB",
+  "@stickerCreateGifTooLarge": {
+    "description": "Validasi saat ukuran file GIF melebihi 2 MB"
+  },
+  "stickerCreateLimitReached": "Custom stiker kamu sudah penuh (maksimal 20). Hapus stiker lama dulu ya.",
+  "@stickerCreateLimitReached": {
+    "description": "Pesan saat kuota custom stiker penuh"
+  },
+  "stickerCreateFailed": "Gagal membuat stiker. Coba lagi ya.",
+  "@stickerCreateFailed": {
+    "description": "Pesan error umum saat membuat custom stiker"
+  },
+  "stickerDeleteMineTitle": "Hapus stiker ini?",
+  "@stickerDeleteMineTitle": {
+    "description": "Judul konfirmasi hapus custom stiker"
+  },
+  "stickerDeleteMineBody": "Stiker akan dihapus dari deck kamu dan tidak bisa dikirim lagi.",
+  "@stickerDeleteMineBody": {
+    "description": "Isi konfirmasi hapus custom stiker"
+  },
+  "stickerDeleteMineConfirm": "Hapus stiker",
+  "@stickerDeleteMineConfirm": {
+    "description": "Tombol konfirmasi hapus custom stiker"
+  },
+  "stickerDeleteMineSuccess": "Stiker berhasil dihapus",
+  "@stickerDeleteMineSuccess": {
+    "description": "Toast sukses hapus custom stiker"
+  },
+  "stickerDeleteMineFailed": "Gagal menghapus stiker. Coba lagi ya.",
+  "@stickerDeleteMineFailed": {
+    "description": "Pesan error gagal hapus custom stiker"
+  },
+  "stickerCustomBadge": "Custom",
+  "@stickerCustomBadge": {
+    "description": "Badge penanda stiker buatan user"
+  },
+  "stickerLoginAction": "Masuk",
+  "@stickerLoginAction": {
+    "description": "Tombol masuk pada empty state stiker untuk guest"
+  },
+  "dictAddMeaningCta": "Tambah makna baru",
+  "@dictAddMeaningCta": {
+    "description": "Tombol shortcut untuk mengusulkan makna baru pada lemma yang sudah ada"
+  },
+  "dictMeaningsSection": "Makna",
+  "@dictMeaningsSection": {
+    "description": "Label seksi daftar makna tunggal pada detail lemma"
+  },
+  "dictMeaningsSectionCount": "Makna ({count})",
+  "@dictMeaningsSectionCount": {
+    "description": "Label seksi daftar multi-makna pada detail lemma",
+    "placeholders": {
+      "count": {
+        "type": "int"
       }
     }
   }

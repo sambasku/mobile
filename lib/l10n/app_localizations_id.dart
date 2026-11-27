@@ -14060,6 +14060,128 @@ class AppLocalizationsId extends AppLocalizations {
   String lemmaMergeHoldHint(String lemma) {
     return 'Tahan untuk gabung: $lemma';
   }
+
+  @override
+  String get stickerTabFavorites => 'Favorit';
+
+  @override
+  String get stickerTabMine => 'Milikku';
+
+  @override
+  String get stickerFavoritesEmpty =>
+      'Belum ada stiker favorit. Ketuk stiker di chat atau komentar untuk menambahkannya.';
+
+  @override
+  String get stickerFavoritesLoginHint =>
+      'Masuk dulu untuk menyimpan dan melihat stiker favorit kamu.';
+
+  @override
+  String get stickerMineEmpty =>
+      'Belum ada stiker buatan kamu. Buat stiker sendiri dari galeri.';
+
+  @override
+  String get stickerMineLoginHint =>
+      'Masuk dulu untuk membuat dan mengelola stiker buatan kamu.';
+
+  @override
+  String get stickerAddToFavorites => 'Tambah ke favorit';
+
+  @override
+  String get stickerRemoveFromFavorites => 'Hapus dari favorit';
+
+  @override
+  String get stickerAddedToFavorites => 'Stiker ditambahkan ke favorit';
+
+  @override
+  String get stickerRemovedFromFavorites => 'Stiker dihapus dari favorit';
+
+  @override
+  String get stickerFavoriteLimitReached =>
+      'Favorit stiker kamu sudah penuh (maksimal 50). Hapus beberapa dulu ya.';
+
+  @override
+  String get stickerFavoriteActionFailed =>
+      'Gagal memperbarui favorit stiker. Coba lagi ya.';
+
+  @override
+  String get stickerSendNow => 'Kirim stiker ini';
+
+  @override
+  String get stickerCreateButton => 'Buat stiker';
+
+  @override
+  String get stickerCreateTitle => 'Buat stiker sendiri';
+
+  @override
+  String get stickerCreateSubtitle =>
+      'Hanya tampil di deck kamu. Pengguna lain bisa memfavoritkannya saat kamu kirim.';
+
+  @override
+  String get stickerCreatePickImage => 'Pilih gambar atau GIF';
+
+  @override
+  String get stickerCreateChangeImage => 'Ganti gambar';
+
+  @override
+  String get stickerCreateNameLabel => 'Nama stiker (opsional)';
+
+  @override
+  String get stickerCreateNameHint => 'Contoh: Kopi pagi';
+
+  @override
+  String get stickerCreateSubmit => 'Simpan stiker';
+
+  @override
+  String get stickerCreateSubmitting => 'Menyimpan...';
+
+  @override
+  String get stickerCreateSuccess => 'Stiker kamu berhasil dibuat';
+
+  @override
+  String get stickerCreateImageRequired => 'Pilih gambar atau GIF dulu ya';
+
+  @override
+  String get stickerCreateGifTooLarge => 'Ukuran GIF maksimal 2 MB';
+
+  @override
+  String get stickerCreateLimitReached =>
+      'Custom stiker kamu sudah penuh (maksimal 20). Hapus stiker lama dulu ya.';
+
+  @override
+  String get stickerCreateFailed => 'Gagal membuat stiker. Coba lagi ya.';
+
+  @override
+  String get stickerDeleteMineTitle => 'Hapus stiker ini?';
+
+  @override
+  String get stickerDeleteMineBody =>
+      'Stiker akan dihapus dari deck kamu dan tidak bisa dikirim lagi.';
+
+  @override
+  String get stickerDeleteMineConfirm => 'Hapus stiker';
+
+  @override
+  String get stickerDeleteMineSuccess => 'Stiker berhasil dihapus';
+
+  @override
+  String get stickerDeleteMineFailed => 'Gagal menghapus stiker. Coba lagi ya.';
+
+  @override
+  String get stickerCustomBadge => 'Custom';
+
+  @override
+  String get stickerLoginAction => 'Masuk';
+
+  @override
+  String get dictAddMeaningCta => 'Tambah makna baru';
+
+  @override
+  String get dictMeaningsSection => 'Makna';
+
+  @override
+  String dictMeaningsSectionCount(int count) {
+    return 'Makna ($count)';
+  }
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -28032,5 +28154,127 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String lemmaMergeHoldHint(String lemma) {
     return 'Tahan untuk gabung: $lemma';
+  }
+
+  @override
+  String get stickerTabFavorites => 'Favorit';
+
+  @override
+  String get stickerTabMine => 'Milikku';
+
+  @override
+  String get stickerFavoritesEmpty =>
+      'Belum ada stiker favorit. Ketuk stiker di chat atau komentar untuk menambahkannya.';
+
+  @override
+  String get stickerFavoritesLoginHint =>
+      'Masuk dulu untuk menyimpan dan melihat stiker favorit kamu.';
+
+  @override
+  String get stickerMineEmpty =>
+      'Belum ada stiker buatan kamu. Buat stiker sendiri dari galeri.';
+
+  @override
+  String get stickerMineLoginHint =>
+      'Masuk dulu untuk membuat dan mengelola stiker buatan kamu.';
+
+  @override
+  String get stickerAddToFavorites => 'Tambah ke favorit';
+
+  @override
+  String get stickerRemoveFromFavorites => 'Hapus dari favorit';
+
+  @override
+  String get stickerAddedToFavorites => 'Stiker ditambahkan ke favorit';
+
+  @override
+  String get stickerRemovedFromFavorites => 'Stiker dihapus dari favorit';
+
+  @override
+  String get stickerFavoriteLimitReached =>
+      'Favorit stiker kamu sudah penuh (maksimal 50). Hapus beberapa dulu ya.';
+
+  @override
+  String get stickerFavoriteActionFailed =>
+      'Gagal memperbarui favorit stiker. Coba lagi ya.';
+
+  @override
+  String get stickerSendNow => 'Kirim stiker ini';
+
+  @override
+  String get stickerCreateButton => 'Buat stiker';
+
+  @override
+  String get stickerCreateTitle => 'Buat stiker sendiri';
+
+  @override
+  String get stickerCreateSubtitle =>
+      'Hanya tampil di deck kamu. Pengguna lain bisa memfavoritkannya saat kamu kirim.';
+
+  @override
+  String get stickerCreatePickImage => 'Pilih gambar atau GIF';
+
+  @override
+  String get stickerCreateChangeImage => 'Ganti gambar';
+
+  @override
+  String get stickerCreateNameLabel => 'Nama stiker (opsional)';
+
+  @override
+  String get stickerCreateNameHint => 'Contoh: Kopi pagi';
+
+  @override
+  String get stickerCreateSubmit => 'Simpan stiker';
+
+  @override
+  String get stickerCreateSubmitting => 'Menyimpan...';
+
+  @override
+  String get stickerCreateSuccess => 'Stiker kamu berhasil dibuat';
+
+  @override
+  String get stickerCreateImageRequired => 'Pilih gambar atau GIF dulu ya';
+
+  @override
+  String get stickerCreateGifTooLarge => 'Ukuran GIF maksimal 2 MB';
+
+  @override
+  String get stickerCreateLimitReached =>
+      'Custom stiker kamu sudah penuh (maksimal 20). Hapus stiker lama dulu ya.';
+
+  @override
+  String get stickerCreateFailed => 'Gagal membuat stiker. Coba lagi ya.';
+
+  @override
+  String get stickerDeleteMineTitle => 'Hapus stiker ini?';
+
+  @override
+  String get stickerDeleteMineBody =>
+      'Stiker akan dihapus dari deck kamu dan tidak bisa dikirim lagi.';
+
+  @override
+  String get stickerDeleteMineConfirm => 'Hapus stiker';
+
+  @override
+  String get stickerDeleteMineSuccess => 'Stiker berhasil dihapus';
+
+  @override
+  String get stickerDeleteMineFailed => 'Gagal menghapus stiker. Coba lagi ya.';
+
+  @override
+  String get stickerCustomBadge => 'Custom';
+
+  @override
+  String get stickerLoginAction => 'Masuk';
+
+  @override
+  String get dictAddMeaningCta => 'Tambah makna baru';
+
+  @override
+  String get dictMeaningsSection => 'Makna';
+
+  @override
+  String dictMeaningsSectionCount(int count) {
+    return 'Makna ($count)';
   }
 }

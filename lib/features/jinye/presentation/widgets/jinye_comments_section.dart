@@ -841,21 +841,8 @@ Future<void> _showCommentWordMeaning(
       ref.invalidate(jinyeDetailProvider(jinyeId));
     },
   );
-  if (!context.mounted || result == null) return;
-  if (result == 'login') {
-    context.push('/login');
-    return;
-  }
-  const contributePrefix = 'contribute:';
-  if (result.startsWith(contributePrefix)) {
-    final lemma =
-        Uri.decodeComponent(result.substring(contributePrefix.length));
-    context.push(
-      '/contribute?lemma=${Uri.encodeQueryComponent(lemma)}',
-    );
-    return;
-  }
-  context.push('/words/$result');
+  if (!context.mounted) return;
+  handleJinyeWordMeaningSheetResult(context, result);
 }
 
 Future<void> _showCommentLemmaLinkActions(

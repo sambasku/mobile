@@ -24704,6 +24704,228 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tahan untuk gabung: {lemma}'**
   String lemmaMergeHoldHint(String lemma);
+
+  /// Label tab/shortcut stiker favorit di deck stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Favorit'**
+  String get stickerTabFavorites;
+
+  /// Label tab custom stiker milik user di deck stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Milikku'**
+  String get stickerTabMine;
+
+  /// Empty state tab favorit stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada stiker favorit. Ketuk stiker di chat atau komentar untuk menambahkannya.'**
+  String get stickerFavoritesEmpty;
+
+  /// Pesan saat guest membuka tab favorit stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk menyimpan dan melihat stiker favorit kamu.'**
+  String get stickerFavoritesLoginHint;
+
+  /// Empty state tab custom stiker milik user
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada stiker buatan kamu. Buat stiker sendiri dari galeri.'**
+  String get stickerMineEmpty;
+
+  /// Pesan saat guest membuka tab stiker milikku
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk membuat dan mengelola stiker buatan kamu.'**
+  String get stickerMineLoginHint;
+
+  /// Tombol menambah stiker ke favorit
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah ke favorit'**
+  String get stickerAddToFavorites;
+
+  /// Tombol menghapus stiker dari favorit
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus dari favorit'**
+  String get stickerRemoveFromFavorites;
+
+  /// Toast sukses tambah stiker favorit
+  ///
+  /// In id, this message translates to:
+  /// **'Stiker ditambahkan ke favorit'**
+  String get stickerAddedToFavorites;
+
+  /// Toast sukses hapus stiker favorit
+  ///
+  /// In id, this message translates to:
+  /// **'Stiker dihapus dari favorit'**
+  String get stickerRemovedFromFavorites;
+
+  /// Pesan saat kuota favorit stiker penuh
+  ///
+  /// In id, this message translates to:
+  /// **'Favorit stiker kamu sudah penuh (maksimal 50). Hapus beberapa dulu ya.'**
+  String get stickerFavoriteLimitReached;
+
+  /// Pesan error umum saat toggle favorit stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memperbarui favorit stiker. Coba lagi ya.'**
+  String get stickerFavoriteActionFailed;
+
+  /// Tombol kirim stiker langsung dari detail sheet
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim stiker ini'**
+  String get stickerSendNow;
+
+  /// Tombol membuka sheet buat custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Buat stiker'**
+  String get stickerCreateButton;
+
+  /// Judul sheet buat custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Buat stiker sendiri'**
+  String get stickerCreateTitle;
+
+  /// Subjudul penjelasan privasi custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya tampil di deck kamu. Pengguna lain bisa memfavoritkannya saat kamu kirim.'**
+  String get stickerCreateSubtitle;
+
+  /// Tombol memilih file gambar/GIF dari galeri
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih gambar atau GIF'**
+  String get stickerCreatePickImage;
+
+  /// Tombol mengganti gambar stiker yang sudah dipilih
+  ///
+  /// In id, this message translates to:
+  /// **'Ganti gambar'**
+  String get stickerCreateChangeImage;
+
+  /// Label field nama custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Nama stiker (opsional)'**
+  String get stickerCreateNameLabel;
+
+  /// Hint field nama custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: Kopi pagi'**
+  String get stickerCreateNameHint;
+
+  /// CTA simpan custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan stiker'**
+  String get stickerCreateSubmit;
+
+  /// Label CTA saat custom stiker sedang diunggah
+  ///
+  /// In id, this message translates to:
+  /// **'Menyimpan...'**
+  String get stickerCreateSubmitting;
+
+  /// Toast sukses membuat custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Stiker kamu berhasil dibuat'**
+  String get stickerCreateSuccess;
+
+  /// Validasi saat user belum memilih gambar
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih gambar atau GIF dulu ya'**
+  String get stickerCreateImageRequired;
+
+  /// Validasi saat ukuran file GIF melebihi 2 MB
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran GIF maksimal 2 MB'**
+  String get stickerCreateGifTooLarge;
+
+  /// Pesan saat kuota custom stiker penuh
+  ///
+  /// In id, this message translates to:
+  /// **'Custom stiker kamu sudah penuh (maksimal 20). Hapus stiker lama dulu ya.'**
+  String get stickerCreateLimitReached;
+
+  /// Pesan error umum saat membuat custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membuat stiker. Coba lagi ya.'**
+  String get stickerCreateFailed;
+
+  /// Judul konfirmasi hapus custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus stiker ini?'**
+  String get stickerDeleteMineTitle;
+
+  /// Isi konfirmasi hapus custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Stiker akan dihapus dari deck kamu dan tidak bisa dikirim lagi.'**
+  String get stickerDeleteMineBody;
+
+  /// Tombol konfirmasi hapus custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus stiker'**
+  String get stickerDeleteMineConfirm;
+
+  /// Toast sukses hapus custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Stiker berhasil dihapus'**
+  String get stickerDeleteMineSuccess;
+
+  /// Pesan error gagal hapus custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menghapus stiker. Coba lagi ya.'**
+  String get stickerDeleteMineFailed;
+
+  /// Badge penanda stiker buatan user
+  ///
+  /// In id, this message translates to:
+  /// **'Custom'**
+  String get stickerCustomBadge;
+
+  /// Tombol masuk pada empty state stiker untuk guest
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk'**
+  String get stickerLoginAction;
+
+  /// Tombol shortcut untuk mengusulkan makna baru pada lemma yang sudah ada
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah makna baru'**
+  String get dictAddMeaningCta;
+
+  /// Label seksi daftar makna tunggal pada detail lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Makna'**
+  String get dictMeaningsSection;
+
+  /// Label seksi daftar multi-makna pada detail lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Makna ({count})'**
+  String dictMeaningsSectionCount(int count);
 }
 
 class _AppLocalizationsDelegate

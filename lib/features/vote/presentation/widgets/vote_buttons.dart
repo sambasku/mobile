@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/format_number.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -66,7 +67,8 @@ class _VoteButtonsState extends State<VoteButtons> {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final l10n = AppLocalizations.of(context);
-    final enabled = theme.colors.primary;
+    // Hijau = upvote, merah = downvote; idle abu. Dipakai di semua permukaan
+    // vote (pantun, makna, komentar, diskusi, jinye) supaya arah beda jelas.
     final idle = theme.colors.mutedForeground;
 
     // ponytail: FittedBox scaleDown = kebal overflow apa pun penyebabnya
@@ -83,7 +85,7 @@ class _VoteButtonsState extends State<VoteButtons> {
               icon: FLucideIcons.arrowBigDown,
               count: widget.downvotes,
               active: widget.myVote == -1,
-              activeColor: enabled,
+              activeColor: theme.colors.destructive,
               idleColor: idle,
               compact: widget.compact,
               disabled: _disabled,
@@ -96,7 +98,7 @@ class _VoteButtonsState extends State<VoteButtons> {
             icon: FLucideIcons.arrowBigUp,
             count: widget.upvotes,
             active: widget.myVote == 1,
-            activeColor: enabled,
+            activeColor: theme.colors.success,
             idleColor: idle,
             compact: widget.compact,
             disabled: _disabled,

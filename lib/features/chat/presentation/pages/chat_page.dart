@@ -367,7 +367,8 @@ class ChatPage extends HookConsumerWidget {
       prev,
       next,
     ) {
-      if (prev == null || next <= prev) return;
+      // Abaikan initial hydration (0 -> N) agar tidak memicu jump/glitch saat masuk.
+      if (prev == null || prev == 0 || next <= prev) return;
       final delta = next - prev;
       if (pinnedBottom.value) {
         SchedulerBinding.instance.addPostFrameCallback((_) {

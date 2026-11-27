@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -9,10 +10,44 @@ import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../dictionary/domain/providers/dictionary_domain_providers.dart';
 import '../../../dictionary/domain/usecases/search_words_use_case.dart';
+import '../../../suggest_edit/domain/suggest_category.dart';
 import '../../data/jinye_providers.dart';
 import '../../domain/jinye_models.dart';
 import 'jinye_link_lemma_sheet.dart';
 import 'jinye_word_picker_sheet.dart';
+
+/// Prefix hasil sheet untuk usul kata baru (`/contribute?lemma=...`).
+const jinyeSheetContributePrefix = 'contribute:';
+
+/// Prefix hasil sheet untuk tambah makna baru
+/// (`/suggest-edit/:wordId?category=add_meaning`).
+const jinyeSheetAddMeaningPrefix = 'add_meaning:';
+
+/// Tangani hasil pop dari [showJinyeWordMeaningSheet] setelah sheet tertutup.
+///
+/// Menjaga pola pop-result lalu push (tanpa race pop+push di navigator root).
+void handleJinyeWordMeaningSheetResult(BuildContext context, String? result) {
+  if (!context.mounted || result == null) return;
+  if (result == 'login') {
+    context.push('/login');
+    return;
+  }
+  if (result.startsWith(jinyeSheetContributePrefix)) {
+    final lemma = Uri.decodeComponent(
+      result.substring(jinyeSheetContributePrefix.length),
+    );
+    context.push('/contribute?lemma=${Uri.encodeQueryComponent(lemma)}');
+    return;
+  }
+  if (result.startsWith(jinyeSheetAddMeaningPrefix)) {
+    final wordId = result.substring(jinyeSheetAddMeaningPrefix.length);
+    context.push(
+      '/suggest-edit/$wordId?category=${SuggestCategory.addMeaning.code}',
+    );
+    return;
+  }
+  context.push('/words/$result');
+}
 
 /// Strip tanda baca di ujung token untuk lookup lemma.
 String jinyeLookupToken(String raw) {
@@ -190,7 +225,17 @@ class _JinyeWordMeaningSheetState
     }
     final q = jinyeLookupToken(widget.span.text);
     if (q.isEmpty) return;
-    Navigator.of(context).pop('contribute:${Uri.encodeComponent(q)}');
+    Navigator.of(context).pop('$jinyeSheetContributePrefix${Uri.encodeComponent(q)}');
+  }
+
+  void _onAddMeaning(String wordId) {
+    final l10n = AppLocalizations.of(context);
+    if (!widget.isAuth) {
+      showFToast(context: context, title: Text(l10n.jinyeWordMeaningLoginFirst));
+      Navigator.of(context).pop('login');
+      return;
+    }
+    Navigator.of(context).pop('$jinyeSheetAddMeaningPrefix$wordId');
   }
 
   Future<void> _onHubungkan() async {
@@ -296,47 +341,110 @@ class _JinyeWordMeaningSheetState
             ),
             const Gap(8),
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (linked)
-                    FButton(
-                      onPress: () =>
-                          Navigator.of(context).pop(widget.link!.wordId),
-                      child: Text(l10n.jinyeWordMeaningOpenLemma),
-                    )
-                  else if (!_loading && _error == null && _word == null) ...[
-                    // Lemma belum di kamus → usul kata baru (prefill token).
-                    FButton(
-                      onPress: _onProposeNewLemma,
-                      child: Text(l10n.dictProposeThisWord),
-                    ),
-                    const Gap(8),
-                    FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: _linking ? null : _onHubungkan,
-                      prefix: _linking ? const FCircularProgress() : null,
-                      child: Text(l10n.jinyeWordMeaningLinkAction),
-                    ),
-                  ] else
-                    FButton(
-                      onPress: _linking ? null : _onHubungkan,
-                      prefix: _linking ? const FCircularProgress() : null,
-                      child: Text(l10n.jinyeWordMeaningLinkAction),
-                    ),
-                  const Gap(8),
-                  FButton(
-                    variant: FButtonVariant.outline,
-                    onPress: () => Navigator.of(context).pop(),
-                    child: Text(l10n.commonCancel),
-                  ),
-                ],
-              ),
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+              child: _buildActions(l10n, linked: linked),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildActions(AppLocalizations l10n, {required bool linked}) {
+    final cancelButton = FButton(
+      size: FButtonSizeVariant.sm,
+      mainAxisSize: MainAxisSize.min,
+      variant: FButtonVariant.ghost,
+      onPress: () => Navigator.of(context).pop(),
+      child: Text(l10n.commonCancel),
+    );
+    final linkButton = FButton(
+      size: FButtonSizeVariant.sm,
+      mainAxisSize: MainAxisSize.min,
+      variant: FButtonVariant.outline,
+      onPress: _linking ? null : _onHubungkan,
+      prefix: _linking
+          ? const FCircularProgress(size: .sm)
+          : const Icon(FLucideIcons.link, size: 14),
+      child: Text(l10n.jinyeWordMeaningLinkAction),
+    );
+
+    if (linked) {
+      final wordId = widget.link!.wordId;
+      return Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          FButton(
+            size: FButtonSizeVariant.sm,
+            mainAxisSize: MainAxisSize.min,
+            prefix: const Icon(FLucideIcons.externalLink, size: 14),
+            onPress: () => Navigator.of(context).pop(wordId),
+            child: Text(l10n.jinyeWordMeaningOpenLemma),
+          ),
+          FButton(
+            size: FButtonSizeVariant.sm,
+            mainAxisSize: MainAxisSize.min,
+            variant: FButtonVariant.outline,
+            prefix: const Icon(FLucideIcons.plus, size: 14),
+            onPress: () => _onAddMeaning(wordId),
+            child: Text(l10n.suggestCategoryAddMeaning),
+          ),
+          cancelButton,
+        ],
+      );
+    }
+
+    if (!_loading && _error == null && _word != null) {
+      final wordId = _word!.id;
+      return Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          FButton(
+            size: FButtonSizeVariant.sm,
+            mainAxisSize: MainAxisSize.min,
+            prefix: const Icon(FLucideIcons.externalLink, size: 14),
+            onPress: () => Navigator.of(context).pop(wordId),
+            child: Text(l10n.jinyeWordMeaningOpenLemma),
+          ),
+          FButton(
+            size: FButtonSizeVariant.sm,
+            mainAxisSize: MainAxisSize.min,
+            variant: FButtonVariant.outline,
+            prefix: const Icon(FLucideIcons.plus, size: 14),
+            onPress: () => _onAddMeaning(wordId),
+            child: Text(l10n.suggestCategoryAddMeaning),
+          ),
+          linkButton,
+          cancelButton,
+        ],
+      );
+    }
+
+    if (!_loading && _error == null && _word == null) {
+      // Lemma belum di kamus -> usul kata baru (prefill token).
+      return Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          FButton(
+            size: FButtonSizeVariant.sm,
+            mainAxisSize: MainAxisSize.min,
+            prefix: const Icon(FLucideIcons.plus, size: 14),
+            onPress: _onProposeNewLemma,
+            child: Text(l10n.dictProposeThisWord),
+          ),
+          linkButton,
+          cancelButton,
+        ],
+      );
+    }
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [linkButton, cancelButton],
     );
   }
 

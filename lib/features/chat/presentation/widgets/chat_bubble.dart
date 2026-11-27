@@ -68,11 +68,16 @@ class ChatBubble extends StatelessWidget {
     final showMeta =
         message.pending || (showTime && timeLabel.isNotEmpty) || showEdited;
     final frameBubble = highlighted || replyingTo;
-    // Player sudah punya kotak sendiri. Bubble luar = container dobel.
+    // Player & stiker tanpa reply tampil bare tanpa kotak bubble luar.
     final bareVoice =
         !message.isDeleted &&
         message.kind == ChatMessageKind.voiceNote &&
         (message.audioUrl?.trim().isNotEmpty ?? false);
+    final bareSticker =
+        !message.isDeleted &&
+        message.kind == ChatMessageKind.sticker &&
+        message.replyToId == null;
+    final bareContainer = bareVoice || bareSticker;
     final bubbleBody = Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
@@ -187,7 +192,7 @@ class ChatBubble extends StatelessWidget {
                             ),
                           )
                         : const BoxDecoration(),
-                    child: bareVoice
+                    child: bareContainer
                         ? bubbleBody
                         : DecoratedBox(
                             decoration: BoxDecoration(
@@ -365,7 +370,11 @@ class _BubbleBody extends StatelessWidget {
 
     switch (message.kind) {
       case ChatMessageKind.sticker:
-        return ChatStickerView(stickerId: message.stickerId ?? '', size: 96);
+        return ChatStickerView(
+          stickerId: message.stickerId ?? '',
+          size: 110,
+          tappable: !message.pending && !message.isDeleted,
+        );
       case ChatMessageKind.voiceNote:
         final url = message.audioUrl?.trim() ?? '';
         if (url.isEmpty) {

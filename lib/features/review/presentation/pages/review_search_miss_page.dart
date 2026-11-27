@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -276,7 +277,7 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
                 semanticsLabel: AppLocalizations.of(context).commonSkip,
-                onPress: () => _decide(item, SwipeDecisionDirection.skip),
+                onPress: () => _decideFromButton(item, SwipeDecisionDirection.skip),
                 child: const Icon(FLucideIcons.skipForward),
               ),
             ),
@@ -288,7 +289,7 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
                 semanticsLabel: AppLocalizations.of(
                   context,
                 ).reviewSearchMissDismiss,
-                onPress: () => _decide(item, SwipeDecisionDirection.negative),
+                onPress: () => _decideFromButton(item, SwipeDecisionDirection.negative),
                 child: Icon(FLucideIcons.x, color: theme.colors.destructive),
               ),
             ),
@@ -315,7 +316,7 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
                 // Sudah tayang → tombol nonaktif (swipe kanan = lewati, #137).
                 onPress: item.isVisible
                     ? null
-                    : () => _decide(item, SwipeDecisionDirection.positive),
+                    : () => _decideFromButton(item, SwipeDecisionDirection.positive),
                 child: Icon(FLucideIcons.eye, color: theme.colors.success),
               ),
             ),
@@ -365,6 +366,15 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
         }
       });
     });
+  }
+
+  // Tombol keputusan (bukan swipe): swipe sudah getar di SwipeDecisionCard.
+  void _decideFromButton(
+    ReviewSearchMiss item,
+    SwipeDecisionDirection direction,
+  ) {
+    HapticFeedback.mediumImpact();
+    _decide(item, direction);
   }
 
   void _onFailure(ReviewSearchMiss item, ReviewFailure failure) {
