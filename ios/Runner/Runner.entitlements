@@ -5,7 +5,6 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:sambasku.com</string>
-		<string>applinks:sambasku-web-staging.iamutaki.com</string>
 	</array>
 </dict>
 </plist>

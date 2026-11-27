@@ -14173,7 +14173,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get stickerLoginAction => 'Masuk';
 
   @override
-  String get dictAddMeaningCta => 'Tambah makna baru';
+  String get dictAddMeaningCta => 'Usulkan makna baru';
 
   @override
   String get dictMeaningsSection => 'Makna';
@@ -28329,7 +28329,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get stickerLoginAction => 'Masuk';
 
   @override
-  String get dictAddMeaningCta => 'Tambah makna baru';
+  String get dictAddMeaningCta => 'Usulkan makna baru';
 
   @override
   String get dictMeaningsSection => 'Makna';

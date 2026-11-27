@@ -26,7 +26,17 @@ class GoogleSignInAdapter implements GoogleSignInPort {
     final sw = Stopwatch()..start();
     try {
       if (!_initialized) {
-        await GoogleSignIn.instance.initialize(serverClientId: serverClientId);
+        // iOS butuh clientId (plugin tidak membaca dari plist tanpa itu).
+        // Android dicocokkan lewat package + SHA-1, jadi tetap null.
+        final isIos = defaultTargetPlatform == TargetPlatform.iOS;
+        final iosClientId = isIos ? Env.googleIosClientId : null;
+        if (isIos && iosClientId == null) {
+          throw StateError(l10n.authGoogleUnavailable);
+        }
+        await GoogleSignIn.instance.initialize(
+          clientId: iosClientId,
+          serverClientId: serverClientId,
+        );
         _initialized = true;
       }
 

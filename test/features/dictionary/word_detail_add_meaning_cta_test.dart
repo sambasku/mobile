@@ -163,7 +163,7 @@ void main() {
     isVerified: true,
   );
 
-  testWidgets('satu makna: label MAKNA + CTA Tambah makna baru menuju add_meaning', (
+  testWidgets('satu makna: label MAKNA + CTA Usulkan makna baru menuju add_meaning', (
     tester,
   ) async {
     final pushed = <String>[];
@@ -173,9 +173,9 @@ void main() {
     expect(find.text('MAKNA'), findsOneWidget);
     expect(find.text('→ apam'), findsOneWidget);
     expect(find.text('Makan apam pagi hari.'), findsOneWidget);
-    expect(find.text('Tambah makna baru'), findsOneWidget);
+    expect(find.text('Usulkan makna baru'), findsOneWidget);
 
-    await tester.tap(find.text('Tambah makna baru'));
+    await tester.tap(find.text('Usulkan makna baru'));
     await tester.pumpAndSettle();
 
     expect(pushed, ['/suggest-edit/$_wordId?category=add_meaning']);
@@ -197,13 +197,13 @@ void main() {
     expect(find.byType(FDivider), findsAtLeastNWidgets(1));
   });
 
-  testWidgets('guest tap CTA Tambah makna baru diarahkan ke login', (
+  testWidgets('guest tap CTA Usulkan makna baru diarahkan ke login', (
     tester,
   ) async {
     final pushed = <String>[];
     await _pump(tester, meanings: const [m1], isAuth: false, pushedRoutes: pushed);
 
-    await tester.tap(find.text('Tambah makna baru'));
+    await tester.tap(find.text('Usulkan makna baru'));
     await tester.pumpAndSettle();
 
     expect(pushed, ['/login']);

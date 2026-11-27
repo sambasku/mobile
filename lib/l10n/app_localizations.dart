@@ -24912,7 +24912,7 @@ abstract class AppLocalizations {
   /// Tombol shortcut untuk mengusulkan makna baru pada lemma yang sudah ada
   ///
   /// In id, this message translates to:
-  /// **'Tambah makna baru'**
+  /// **'Usulkan makna baru'**
   String get dictAddMeaningCta;
 
   /// Label seksi daftar makna tunggal pada detail lemma

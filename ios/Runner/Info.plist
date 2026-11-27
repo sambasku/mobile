@@ -42,9 +42,20 @@
 					<string>sambasku-staging</string>
 				</array>
 			</dict>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLName</key>
+				<string>com.iamutaki.sambasku.google</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.497143924506-irkhbpsceva3imn6bss7qobdflehdrhc</string>
+					<string>com.googleusercontent.apps.497143924506-ll24s7q1h84jhi8b0bf9s7jsesf7ca1e</string>
+				</array>
+			</dict>
 		</array>
-		<!-- Google Sign-In: tambah GIDClientID + URL scheme reversed iOS client ID.
-	     Jangan timpa scheme sambasku di atas (reset password). -->
+		<!-- Google Sign-In: reversed client ID staging dan production (tidak rahasia).
+		     clientId dikirim dari Dart per flavor, bukan GIDClientID di plist. -->
 		<!-- GitHub OAuth: HTTPS di web → custom scheme sambasku / sambasku-staging. -->
 		<!-- Facebook Login: isi FacebookAppID + FacebookClientToken + URL scheme
 	     fb{APP_ID} (array terpisah, jangan timpa sambasku).
@@ -118,9 +129,11 @@
 		<key>NSPhotoLibraryAddUsageDescription</key>
 		<string>Akses galeri digunakan untuk menyimpan kartu share SambasKu (foto atau video).</string>
 		<key>NSCameraUsageDescription</key>
-		<string>Akses kamera digunakan untuk mengambil foto yang diperlukan di dalam aplikasi.</string>
+		<string>SambasKu memakai kamera untuk mengambil foto yang kamu unggah dan latar kartu share.</string>
 		<key>NSMicrophoneUsageDescription</key>
-		<string>SambasKu memakai mikrofon hanya untuk merekam pelafalan kata atau contoh kalimat yang Anda kirim untuk ditinjau.</string>
+		<string>SambasKu memakai mikrofon untuk merekam pelafalan kata atau contoh kalimat yang kamu kirim untuk ditinjau, dan untuk bicara di ruang suara.</string>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 		<key>UIBackgroundModes</key>
 		<array>
 			<string>remote-notification</string>

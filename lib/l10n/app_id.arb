@@ -11295,7 +11295,7 @@
   "@stickerLoginAction": {
     "description": "Tombol masuk pada empty state stiker untuk guest"
   },
-  "dictAddMeaningCta": "Tambah makna baru",
+  "dictAddMeaningCta": "Usulkan makna baru",
   "@dictAddMeaningCta": {
     "description": "Tombol shortcut untuk mengusulkan makna baru pada lemma yang sudah ada"
   },
