@@ -6,7 +6,9 @@ import 'package:dio/dio.dart';
 import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'sticker_detail_sheet.dart';
 import 'sticker_models.dart';
+import 'sticker_repository.dart';
 
 /// Render stiker dari URL katalog.
 /// GIF di **area baca** (viewport) auto-gerak; di luar viewport diam (hemat CPU).
@@ -33,17 +35,22 @@ class CatalogStickerView extends StatelessWidget {
 }
 
 /// Unknown id / fetch gagal: tampilkan slug, jangan crash.
+/// Default tappable untuk membuka bottom sheet detail + favorit stiker.
 class StickerIdView extends StatelessWidget {
   const StickerIdView({
     super.key,
     required this.stickerId,
     this.sticker,
     this.size = 96,
+    this.enableDetailSheet = true,
+    this.onTap,
   });
 
   final String stickerId;
   final CatalogSticker? sticker;
   final double size;
+  final bool enableDetailSheet;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +58,17 @@ class StickerIdView extends StatelessWidget {
     if (s == null) {
       return _Placeholder(id: stickerId, size: size);
     }
-    return CatalogStickerView(sticker: s, size: size);
+    final view = CatalogStickerView(sticker: s, size: size);
+    final handler = onTap ??
+        (enableDetailSheet
+            ? () => showStickerDetailSheet(context, s)
+            : null);
+    if (handler == null) return view;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: handler,
+      child: view,
+    );
   }
 }
 
@@ -67,7 +84,7 @@ class _Placeholder extends StatelessWidget {
       width: size,
       height: size,
       child: Center(
-        child: Text(id, style: TextStyle(fontSize: size * 0.28)),
+        child: Text(id, style: TextStyle(fontSize: size * 0.22)),
       ),
     );
   }
@@ -88,7 +105,8 @@ class _ViewportAwareGif extends StatefulWidget {
 }
 
 class _ViewportAwareGifState extends State<_ViewportAwareGif> {
-  var _visible = false;
+  // Default true agar frame pertama di ListView.builder tidak berkedip kotak kosong.
+  var _visible = true;
   ScrollPosition? _position;
 
   @override
@@ -135,7 +153,6 @@ class _ViewportAwareGifState extends State<_ViewportAwareGif> {
   @override
   Widget build(BuildContext context) {
     // Di luar area baca: frame diam. Di dalam: GIF auto-loop (Image.network).
-    // playOnce: tap untuk replay sekali via overlay gesture (gate).
     if (!_visible) {
       return _StaticNetworkFrame(url: widget.url, size: widget.size);
     }
@@ -168,24 +185,32 @@ class _StaticNetworkFrame extends StatefulWidget {
 class _StaticNetworkFrameState extends State<_StaticNetworkFrame> {
   ui.Image? _frame;
   var _disposed = false;
+  var _targetPx = 96;
 
   @override
-  void initState() {
-    super.initState();
-    unawaited(_loadFirstFrame());
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    final nextPx = (widget.size * dpr).round().clamp(64, 512);
+    if (_frame == null || nextPx != _targetPx) {
+      _targetPx = nextPx;
+      unawaited(_loadFirstFrame(nextPx));
+    }
   }
 
   @override
   void didUpdateWidget(covariant _StaticNetworkFrame oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.url != widget.url || oldWidget.size != widget.size) {
-      unawaited(_loadFirstFrame());
+      final dpr = MediaQuery.devicePixelRatioOf(context);
+      _targetPx = (widget.size * dpr).round().clamp(64, 512);
+      unawaited(_loadFirstFrame(_targetPx));
     }
   }
 
-  Future<void> _loadFirstFrame() async {
+  Future<void> _loadFirstFrame(int targetPx) async {
     try {
-      final res = await Dio().get<List<int>>(
+      final res = await StickerRepository.mediaDio.get<List<int>>(
         widget.url,
         options: Options(responseType: ResponseType.bytes),
       );
@@ -198,8 +223,8 @@ class _StaticNetworkFrameState extends State<_StaticNetworkFrame> {
       }
       final codec = await ui.instantiateImageCodec(
         Uint8List.fromList(bytes),
-        targetWidth: widget.size.round(),
-        targetHeight: widget.size.round(),
+        targetWidth: targetPx,
+        targetHeight: targetPx,
       );
       final info = await codec.getNextFrame();
       codec.dispose();

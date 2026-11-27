@@ -17,6 +17,7 @@ class Achievement {
     required this.rewardType,
     required this.isActive,
     this.badgeUrl,
+    this.badgeAssetKind = 'image',
     this.family,
     this.level,
     this.userAchievementId,
@@ -37,6 +38,7 @@ class Achievement {
   /// profile_border | badge | sticker
   final String rewardType;
   final String? badgeUrl;
+  final String badgeAssetKind;
   final String? family;
   final int? level;
   final bool isActive;
@@ -62,8 +64,13 @@ class Achievement {
 
 /// Border siap pakai untuk overlay avatar.
 class ActiveBorder {
-  const ActiveBorder({required this.awardId, required this.imageUrl});
+  const ActiveBorder({
+    required this.awardId,
+    required this.assetUrl,
+    this.assetKind = 'image',
+  });
 
   final String awardId;
-  final String imageUrl;
+  final String assetUrl;
+  final String assetKind;
 }

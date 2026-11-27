@@ -35,6 +35,28 @@ enum SuggestCategory {
       this == changeMeaning || this == changeWordClass || this == addExample;
 }
 
+/// Kategori usulan yang bisa dikoreksi dari layar tinjau mobile. Kategori
+/// lain (relasi, varian, kelompok, foto) tetap Setujui/Tolak di mobile.
+const _reviewCorrectableCategories = [
+  SuggestCategory.changeMeaning,
+  SuggestCategory.changeWordClass,
+  SuggestCategory.changeWordType,
+  SuggestCategory.addMeaning,
+  SuggestCategory.changeExample,
+  SuggestCategory.changePronunciation,
+  SuggestCategory.lemmaNotes,
+  SuggestCategory.changeCategories,
+  SuggestCategory.changeUsageLabels,
+];
+
+/// Kategori dari `reason_code` usulan kalau bisa dikoreksi di mobile.
+SuggestCategory? reviewCorrectableCategory(String reasonCode) {
+  for (final c in _reviewCorrectableCategories) {
+    if (c.code == reasonCode) return c;
+  }
+  return null;
+}
+
 /// Sembunyikan kategori yang tidak punya sasaran di kata ini.
 List<SuggestCategory> availableSuggestCategories({
   required bool hasMeaning,

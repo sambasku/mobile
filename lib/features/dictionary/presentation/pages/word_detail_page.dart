@@ -20,8 +20,10 @@ import '../../../review/presentation/providers/review_submit_queue.dart';
 import '../../../review/presentation/widgets/reject_reason_sheet.dart';
 import '../../../bookmark/presentation/providers/bookmark_providers.dart';
 import '../../../bookmark/presentation/widgets/bookmark_button.dart';
-import '../../../comment/presentation/widgets/word_comments_section.dart';
+import '../../../../shared/entity_comments/entity_comment.dart';
+import '../../../../shared/entity_comments/entity_comments_section.dart';
 import '../../../comment/presentation/providers/comment_providers.dart';
+import '../../../jinye/jinye_router.dart';
 import '../../../jinye/presentation/widgets/jinye_used_in_word_section.dart';
 import '../../../karya/presentation/widgets/karya_used_in_word_section.dart';
 import '../../../../core/services/analytics_service.dart';
@@ -105,14 +107,15 @@ class WordDetailPage extends HookConsumerWidget {
     final hasFocus =
         focusMeaningId != null && focusMeaningId.isNotEmpty;
     final needsCommunity = hasFocus || includeUnverified;
-    final async = needsCommunity
-        ? ref.watch(
-            wordDetailCommunityProvider((
-              id: wordId,
-              meaningId: hasFocus ? focusMeaningId : null,
-              includeUnverified: includeUnverified,
-            )),
+    final communityQuery = needsCommunity
+        ? (
+            id: wordId,
+            meaningId: hasFocus ? focusMeaningId : null,
+            includeUnverified: includeUnverified,
           )
+        : null;
+    final async = communityQuery != null
+        ? ref.watch(wordDetailCommunityProvider(communityQuery))
         : ref.watch(wordDetailProvider(wordId));
     final theme = context.theme;
     final recordedView = useRef<String?>(null);
@@ -229,7 +232,11 @@ class WordDetailPage extends HookConsumerWidget {
                     const Gap(16),
                     FButton(
                       variant: FButtonVariant.outline,
-                      onPress: () => ref.invalidate(wordDetailProvider(wordId)),
+                      onPress: () => communityQuery != null
+                          ? ref.invalidate(
+                              wordDetailCommunityProvider(communityQuery),
+                            )
+                          : ref.invalidate(wordDetailProvider(wordId)),
                       child: Text(AppLocalizations.of(context).commonRetry),
                     ),
                   ],
@@ -252,6 +259,7 @@ class WordDetailPage extends HookConsumerWidget {
               detail: shown,
               wordId: detail.id,
               focusMeaningId: focusMeaningId,
+              communityQuery: communityQuery,
             );
           },
         ),
@@ -303,17 +311,28 @@ Future<void> shareWordPublicLink(
 
 /// Pull-to-refresh: hard miss L1 detail dulu, lalu invalidate family
 /// (+ vote/bookmark/komentar) dan tunggu fetch supaya indikator selesai.
-Future<void> _refreshWordDetail(WidgetRef ref, String wordId) async {
+Future<void> _refreshWordDetail(
+  WidgetRef ref,
+  String wordId, {
+  WordDetailQuery? communityQuery,
+}) async {
   final key = wordId.trim();
-  if (looksLikeUlid(key)) {
-    await ref.read(getWordByIdUseCaseProvider)(key, forceRefresh: true);
-  } else {
-    await ref.read(getWordByLemmaUseCaseProvider)(key, forceRefresh: true);
+  if (communityQuery == null) {
+    if (looksLikeUlid(key)) {
+      await ref.read(getWordByIdUseCaseProvider)(key, forceRefresh: true);
+    } else {
+      await ref.read(getWordByLemmaUseCaseProvider)(key, forceRefresh: true);
+    }
   }
   ref.invalidate(wordDetailProvider(wordId));
+  if (communityQuery != null) {
+    ref.invalidate(wordDetailCommunityProvider(communityQuery));
+  }
   ref.invalidate(bookmarkToggleControllerProvider(wordId));
   ref.invalidate(commentListControllerProvider(wordId));
-  final detailFuture = ref.read(wordDetailProvider(wordId).future);
+  final detailFuture = communityQuery != null
+      ? ref.read(wordDetailCommunityProvider(communityQuery).future)
+      : ref.read(wordDetailProvider(wordId).future);
   final commentsFuture = ref.read(commentListControllerProvider(wordId).future);
   final detail = await detailFuture;
   await commentsFuture;
@@ -405,6 +424,7 @@ Future<void> _refreshDetailAfterDecision(WidgetRef ref, String wordId) async {
     await ref.read(getWordByLemmaUseCaseProvider)(key, forceRefresh: true);
   }
   ref.invalidate(wordDetailProvider(wordId));
+  ref.invalidate(wordDetailCommunityProvider);
   await ref.read(wordDetailProvider(wordId).future);
 }
 
@@ -553,11 +573,13 @@ class _DetailBody extends HookConsumerWidget {
     required this.detail,
     required this.wordId,
     this.focusMeaningId,
+    this.communityQuery,
   });
 
   final WordDetail detail;
   final String wordId;
   final String? focusMeaningId;
+  final WordDetailQuery? communityQuery;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -676,7 +698,11 @@ class _DetailBody extends HookConsumerWidget {
       children: [
         Expanded(
           child: RefreshIndicator(
-            onRefresh: () => _refreshWordDetail(ref, wordId),
+            onRefresh: () => _refreshWordDetail(
+              ref,
+              wordId,
+              communityQuery: communityQuery,
+            ),
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
@@ -725,14 +751,6 @@ class _DetailBody extends HookConsumerWidget {
                                     color: theme.colors.mutedForeground,
                                   ),
                                 ),
-                                const Gap(12),
-                                PronunciationSection(
-                                  wordId: wordId,
-                                  languageId: detail.languageId,
-                                  audios: detail.audios,
-                                  spokenText: detail.lemma,
-                                  compact: true,
-                                ),
                               ],
                             ),
                           ),
@@ -747,8 +765,27 @@ class _DetailBody extends HookConsumerWidget {
                               onReportImage: () =>
                                   reportImageViolence(primaryImage),
                             ),
+                          ] else if (!_lemmaUsesLocalCorpus(ref)) ...[
+                            const Gap(16),
+                            _EmptyLemmaImageSlot(
+                              onPress: () => _openSuggestEdit(
+                                context,
+                                ref,
+                                wordId,
+                                category: SuggestCategory.addPhoto.code,
+                                autoPickPhoto: true,
+                              ),
+                            ),
                           ],
                         ],
+                      ),
+                      const Gap(12),
+                      PronunciationSection(
+                        wordId: wordId,
+                        languageId: detail.languageId,
+                        audios: detail.audios,
+                        spokenText: detail.lemma,
+                        compact: true,
                       ),
                       if (primaryImage case final img?
                           when !img.isPendingReview &&
@@ -757,6 +794,24 @@ class _DetailBody extends HookConsumerWidget {
                         ImageCredit(
                           attribution: img.attribution!,
                           fontSize: 11,
+                        ),
+                      ],
+                      if (primaryImage case final img?
+                          when !img.isPendingReview &&
+                              img.sourceJinyeId != null) ...[
+                        const Gap(8),
+                        GestureDetector(
+                          onTap: () => context.push(
+                            JinyeRouter.detailPath(img.sourceJinyeId!),
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context)
+                                .jinyePromoteImageSourceLabel,
+                            style: theme.typography.body.xs.copyWith(
+                              color: theme.colors.mutedForeground,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
                         ),
                       ],
 
@@ -800,19 +855,59 @@ class _DetailBody extends HookConsumerWidget {
 
                       if (detail.meanings.isNotEmpty) ...[
                         const Gap(20),
-                        ...detail.meanings.asMap().entries.map(
-                          (e) => _MeaningBlock(
-                            index: e.key + 1,
+                        _SectionLabel(
+                          detail.meanings.length > 1
+                              ? AppLocalizations.of(
+                                  context,
+                                ).dictMeaningsSectionCount(
+                                  detail.meanings.length,
+                                )
+                              : AppLocalizations.of(
+                                  context,
+                                ).dictMeaningsSection,
+                        ),
+                        const Gap(10),
+                        for (var i = 0; i < detail.meanings.length; i++) ...[
+                          if (i > 0)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 14),
+                              child: FDivider(
+                                style: FDividerStyleDelta.delta(
+                                  padding: EdgeInsetsGeometryDelta.value(
+                                    EdgeInsets.zero,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          _MeaningBlock(
+                            index: i + 1,
                             showIndex: detail.meanings.length > 1,
                             lemma: detail.lemma,
-                            meaning: e.value,
+                            meaning: detail.meanings[i],
                             wordId: wordId,
                             languageId: detail.languageId,
                             meaningCount: detail.meanings.length,
                             showPerMeaningBy: showPerMeaningBy,
                             contributor: showPerMeaningBy
-                                ? (e.value.createdBy ?? detail.createdBy)
+                                ? (detail.meanings[i].createdBy ??
+                                      detail.createdBy)
                                 : null,
+                          ),
+                        ],
+                      ],
+                      if (!_lemmaUsesLocalCorpus(ref)) ...[
+                        const Gap(4),
+                        FButton(
+                          variant: FButtonVariant.outline,
+                          prefix: const Icon(FLucideIcons.plus, size: 16),
+                          onPress: () => _openSuggestEdit(
+                            context,
+                            ref,
+                            wordId,
+                            category: SuggestCategory.addMeaning.code,
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context).dictAddMeaningCta,
                           ),
                         ),
                       ],
@@ -952,7 +1047,7 @@ class _DetailBody extends HookConsumerWidget {
           ),
         ),
         if (!_lemmaUsesLocalCorpus(ref))
-          WordCommentEntryBar(wordId: wordId)
+          EntityCommentEntryBar(target: EntityCommentTarget.word, entityId: wordId)
         else
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
@@ -1039,6 +1134,108 @@ class _DetailBody extends HookConsumerWidget {
 }
 
 /// Thumbnail 72px di kanan lemma. Tap buka gallery; badge jumlah bila >1 foto.
+/// Placeholder default di kanan header lemma saat kata belum punya foto.
+/// Memberi petunjuk visual langsung agar user bisa tap untuk menambahkan foto.
+class _EmptyLemmaImageSlot extends StatelessWidget {
+  const _EmptyLemmaImageSlot({required this.onPress});
+
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      button: true,
+      label: l10n.suggestCategoryAddPhoto,
+      child: FTappable(
+        onPress: onPress,
+        child: SizedBox(
+          width: 72,
+          height: 72,
+          child: CustomPaint(
+            painter: _DashedRRectBorderPainter(
+              color: theme.colors.mutedForeground.withValues(alpha: 0.45),
+              radius: 12,
+            ),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: theme.colors.secondary.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      FLucideIcons.imagePlus,
+                      size: 20,
+                      color: theme.colors.mutedForeground,
+                    ),
+                    const Gap(4),
+                    Text(
+                      l10n.suggestCategoryAddPhoto,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.body.xs.copyWith(
+                        fontSize: 10,
+                        height: 1.15,
+                        color: theme.colors.mutedForeground,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DashedRRectBorderPainter extends CustomPainter {
+  const _DashedRRectBorderPainter({
+    required this.color,
+    required this.radius,
+  });
+
+  final Color color;
+  final double radius;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+    final path = Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          Offset.zero & size,
+          Radius.circular(radius),
+        ),
+      );
+    const dashLength = 4.0;
+    const gapLength = 3.0;
+    for (final metric in path.computeMetrics()) {
+      var distance = 0.0;
+      while (distance < metric.length) {
+        final next = (distance + dashLength).clamp(0.0, metric.length);
+        canvas.drawPath(metric.extractPath(distance, next), paint);
+        distance += dashLength + gapLength;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedRRectBorderPainter oldDelegate) =>
+      oldDelegate.color != color || oldDelegate.radius != radius;
+}
+
 class _LemmaImageThumb extends StatelessWidget {
   const _LemmaImageThumb({
     required this.image,
@@ -1182,6 +1379,7 @@ Future<void> _openSuggestEdit(
   String wordId, {
   String? meaningId,
   String? category,
+  bool autoPickPhoto = false,
 }) async {
   final auth = await ref.read(authStatusProvider.future);
   if (!context.mounted) return;
@@ -1196,6 +1394,7 @@ Future<void> _openSuggestEdit(
   final q = <String>[
     if (category != null && category.isNotEmpty) 'category=$category',
     if (meaningId != null && meaningId.isNotEmpty) 'meaning=$meaningId',
+    if (autoPickPhoto) 'autoPick=1',
   ];
   final path = q.isEmpty
       ? '/suggest-edit/$wordId'
@@ -1203,6 +1402,7 @@ Future<void> _openSuggestEdit(
   await context.push(path);
   if (context.mounted) {
     ref.invalidate(wordDetailProvider(wordId));
+    ref.invalidate(wordDetailCommunityProvider);
   }
 }
 
@@ -1719,11 +1919,12 @@ class _MeaningBlock extends ConsumerWidget {
             const Gap(6),
             ...meaning.translations.map(
               (t) => Padding(
-                padding: const EdgeInsets.only(bottom: 2),
+                padding: const EdgeInsets.only(bottom: 4),
                 child: Text(
                   '→ ${t.text}',
-                  style: theme.typography.body.sm.copyWith(
+                  style: theme.typography.body.md.copyWith(
                     fontWeight: FontWeight.w600,
+                    height: 1.4,
                   ),
                 ),
               ),
@@ -1735,35 +1936,52 @@ class _MeaningBlock extends ConsumerWidget {
               final translation = e.targetSentence?.trim();
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      e.sourceSentence,
-                      style: theme.typography.body.sm.copyWith(
-                        fontStyle: FontStyle.italic,
-                        height: 1.35,
-                      ),
-                    ),
-                    if (translation != null && translation.isNotEmpty)
-                      Text(
-                        translation,
-                        style: theme.typography.body.sm.copyWith(
-                          color: theme.colors.mutedForeground,
-                          height: 1.35,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: theme.colors.muted.withValues(alpha: 0.35),
+                      border: Border(
+                        left: BorderSide(
+                          color: theme.colors.primary.withValues(alpha: 0.45),
+                          width: 3,
                         ),
                       ),
-                    const Gap(6),
-                    PronunciationSection(
-                      wordId: wordId,
-                      languageId: languageId,
-                      audios: e.audios,
-                      exampleId: e.id,
-                      compact: true,
-                      sectionLabel: l10n.dictExampleAudio,
-                      spokenText: e.sourceSentence,
                     ),
-                  ],
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          e.sourceSentence,
+                          style: theme.typography.body.sm.copyWith(
+                            fontStyle: FontStyle.italic,
+                            height: 1.4,
+                          ),
+                        ),
+                        if (translation != null && translation.isNotEmpty) ...[
+                          const Gap(2),
+                          Text(
+                            translation,
+                            style: theme.typography.body.sm.copyWith(
+                              color: theme.colors.mutedForeground,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                        const Gap(6),
+                        PronunciationSection(
+                          wordId: wordId,
+                          languageId: languageId,
+                          audios: e.audios,
+                          exampleId: e.id,
+                          compact: true,
+                          sectionLabel: l10n.dictExampleAudio,
+                          spokenText: e.sourceSentence,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               );
             }),

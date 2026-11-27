@@ -50,52 +50,62 @@ class EncyclopediaArticleHero extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
-                      end: Alignment(0, -0.35),
+                      end: Alignment.bottomCenter,
                       colors: [Color(0x73000000), Colors.transparent],
-                    ),
-                  ),
-                ),
-              ),
-              const IgnorePointer(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment(0, 0.35),
-                      colors: [Color(0xE6000000), Colors.transparent],
+                      stops: [0.0, 0.48],
                     ),
                   ),
                 ),
               ),
               Positioned(
-                left: 16,
-                right: 16,
-                bottom: 16,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      title,
-                      style: theme.typography.display.md.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                        height: 1.2,
-                      ),
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: DecoratedBox(
+                  decoration: const BoxDecoration(
+                    // Scrim ikut tinggi teks, fade pendek di atasnya.
+                    // Bukan gradasi tetap yang menutup separuh hero.
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Color(0xB3000000),
+                        Color(0x73000000),
+                        Colors.transparent,
+                      ],
+                      stops: [0.0, 0.72, 1.0],
                     ),
-                    if (trimmedExcerpt != null && trimmedExcerpt.isNotEmpty) ...[
-                      const Gap(8),
-                      Text(
-                        trimmedExcerpt,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.body.sm.copyWith(
-                          color: Colors.white.withValues(alpha: 0.92),
-                          height: 1.4,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          title,
+                          style: theme.typography.display.md.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            height: 1.2,
+                          ),
                         ),
-                      ),
-                    ],
-                  ],
+                        if (trimmedExcerpt != null &&
+                            trimmedExcerpt.isNotEmpty) ...[
+                          const Gap(8),
+                          Text(
+                            trimmedExcerpt,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.typography.body.sm.copyWith(
+                              color: Colors.white.withValues(alpha: 0.92),
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],

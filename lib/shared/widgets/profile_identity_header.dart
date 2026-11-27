@@ -5,6 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../core/models/speaker_status.dart';
 import '../../core/utils/display_image_url.dart';
+import '../utils/profile_border_asset.dart';
 import 'avatar_border_overlay.dart';
 import 'profile_stat_inline.dart';
 import 'public_account_name.dart';
@@ -32,9 +33,12 @@ class ProfileIdentityHeader extends StatelessWidget {
     super.key,
     required this.variant,
     required this.displayName,
+    this.nameTrailing,
     this.username,
     this.avatarUrl,
+    this.avatarAsset,
     this.borderUrl,
+    this.borderAssetKind = ProfileBorderAssetKind.image,
     this.bio,
     this.speakerStatus,
     this.isVerifier = false,
@@ -43,7 +47,9 @@ class ProfileIdentityHeader extends StatelessWidget {
     this.joinedLabel,
     this.actions = const [],
     this.coverUrl,
+    this.coverAsset,
     this.onAvatarTap,
+    this.onNameTap,
     this.avatarOverlay,
     this.footer,
     this.horizontalPadding = 16,
@@ -52,12 +58,19 @@ class ProfileIdentityHeader extends StatelessWidget {
   final ProfileHeaderVariant variant;
   final String displayName;
 
+  /// Aksi ringkas (mis. ikon edit) tepat di sebelah kanan [displayName].
+  final Widget? nameTrailing;
+
   /// Handle tanpa `@`. Null/kosong = baris handle tidak dirender.
   final String? username;
   final String? avatarUrl;
 
+  /// Aset lokal avatar (proto): dipakai bila [avatarUrl] kosong.
+  final String? avatarAsset;
+
   /// URL aset bingkai profil aktif (achievement `profile_border`).
   final String? borderUrl;
+  final ProfileBorderAssetKind borderAssetKind;
   final String? bio;
 
   /// Chip penutur/pembelajar (#258). Null = disembunyikan.
@@ -76,9 +89,15 @@ class ProfileIdentityHeader extends StatelessWidget {
 
   /// Cover profil (URL jaringan). Null/kosong = pakai [defaultCoverAsset]
   /// sesuai [variant]; gagal load = gradien tema.
-  // ponytail: sambungkan ke kolom cover_url saat fitur custom cover tersedia.
   final String? coverUrl;
+
+  /// Aset lokal cover (proto / offline): dipakai bila [coverUrl] kosong.
+  /// Null = [defaultCoverAsset] varian.
+  final String? coverAsset;
   final VoidCallback? onAvatarTap;
+
+  /// Ketuk nama tampilan (mis. buka profil publik dari tab Profil).
+  final VoidCallback? onNameTap;
 
   /// Chip/badge di kanan atas frame avatar + border (mis. preview Jinye).
   final Widget? avatarOverlay;
@@ -86,8 +105,8 @@ class ProfileIdentityHeader extends StatelessWidget {
   /// Cover lokal default: tab Profil (hero) vs profil publik (compact).
   static String defaultCoverAsset(ProfileHeaderVariant variant) =>
       variant == ProfileHeaderVariant.hero
-          ? 'assets/images/profile_cover_tab.webp'
-          : 'assets/images/profile_cover_public.webp';
+      ? 'assets/images/profile_cover_tab.webp'
+      : 'assets/images/profile_cover_public.webp';
 
   /// Konten tambahan di bawah identitas (mis. ringkasan lencana).
   final Widget? footer;
@@ -124,7 +143,11 @@ class ProfileIdentityHeader extends StatelessWidget {
   // AvatarBorderOverlay menggambar cincin di dalam kotak frame yang lebih
   // besar dari fotonya; tinggi art harus ikut frame supaya cincin tidak
   // terpotong tepi atas cover.
-  double get _avatarExtent => AvatarBorderOverlay.extent(_avatarSize);
+  double get _avatarExtent => AvatarBorderOverlay.extent(
+    _avatarSize,
+    borderUrl: borderUrl,
+    borderAssetKind: borderAssetKind,
+  );
 
   /// Lebar max overlay di kanan bahu avatar (selaras Jinye bubble 260).
   /// Parent Stack harus selebar ini - kalau tidak, tap di bagian yang
@@ -171,7 +194,7 @@ class ProfileIdentityHeader extends StatelessWidget {
                 height: coverHeight,
                 child: _ProfileCover(
                   url: coverUrl,
-                  asset: defaultCoverAsset(variant),
+                  asset: coverAsset ?? defaultCoverAsset(variant),
                 ),
               ),
               Positioned(
@@ -209,6 +232,7 @@ class ProfileIdentityHeader extends StatelessWidget {
                                     child: AvatarBorderOverlay(
                                       size: _avatarSize,
                                       borderUrl: borderUrl,
+                                      borderAssetKind: borderAssetKind,
                                       child: UserAvatar(
                                         name: displayName,
                                         imageUrl: avatarUrl,
@@ -252,15 +276,40 @@ class ProfileIdentityHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: verticalAlign,
             children: [
-              PublicAccountName(
-                label: displayName,
-                isVerifier: isVerifier,
-                badgeSize: 16,
-                style: theme.typography.body.lg.copyWith(
-                  fontWeight: FontWeight.w700,
-                  height: 1.2,
+              if (nameTrailing == null)
+                _wrapNameTap(
+                  PublicAccountName(
+                    label: displayName,
+                    isVerifier: isVerifier,
+                    badgeSize: 16,
+                    style: theme.typography.body.lg.copyWith(
+                      fontWeight: FontWeight.w700,
+                      height: 1.2,
+                    ),
+                  ),
+                )
+              else
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: _wrapNameTap(
+                        PublicAccountName(
+                          label: displayName,
+                          isVerifier: isVerifier,
+                          badgeSize: 16,
+                          style: theme.typography.body.lg.copyWith(
+                            fontWeight: FontWeight.w700,
+                            height: 1.2,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Gap(4),
+                    nameTrailing!,
+                  ],
                 ),
-              ),
               if (handle != null && handle.isNotEmpty) ...[
                 const Gap(1),
                 Text(
@@ -313,6 +362,11 @@ class ProfileIdentityHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _wrapNameTap(Widget child) {
+    if (onNameTap == null) return child;
+    return FTappable(onPress: onNameTap, child: child);
   }
 }
 

@@ -5,15 +5,18 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
 import '../../../../core/models/external_link.dart';
 import '../../../../l10n/app_localizations.dart';
 
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/image_placeholder_256.dart';
+import '../../../../shared/widgets/public_browse_list_divider.dart';
 import '../../data/datasources/about_api_datasource.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../providers/about_api_providers.dart';
+import 'oss_licenses_page.dart';
 
 /// Halaman About: identitas app + blok info & fitur (murni info app).
 /// Daftar Sponsor/Tim pindah ke halaman Komunitas (Phase 5).
@@ -70,16 +73,21 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
               const Gap(16),
-              _AboutBlock(
-                title: l10n.aboutWhatTitle,
-                body: l10n.aboutWhatBody,
-              ),
+              _AboutBlock(title: l10n.aboutWhatTitle, body: l10n.aboutWhatBody),
               const Gap(16),
               _AboutLinkBlock(
                 title: l10n.aboutSourceTitle,
                 body: l10n.aboutSourceBody,
                 actionLabel: l10n.aboutSourceAction,
                 onPress: () => launchExternalUrl(AboutPage.githubUri),
+              ),
+              const Gap(16),
+              _AboutLinkBlock(
+                title: l10n.aboutOssTitle,
+                body: l10n.aboutOssBody,
+                actionLabel: l10n.aboutOssAction,
+                icon: FLucideIcons.bookOpen,
+                onPress: () => context.push(OssLicensesPage.path),
               ),
             ],
           );
@@ -89,10 +97,12 @@ class AboutPage extends StatelessWidget {
   }
 }
 
-/// Halaman khusus dengan dua tab: Sponsor & Mitra, dan Tim Kami.
-/// Isi datanya tidak ditampilkan di halaman Tentang supaya tidak duplikat.
+/// Halaman Sponsor ATAU Tim (tanpa tab atas).
+/// Dipilih lewat [showTeam]: true = Tim Kami (+ chip), false = Sponsor & Mitra.
 class SponsorshipTeamPage extends StatelessWidget {
-  const SponsorshipTeamPage({super.key});
+  const SponsorshipTeamPage({super.key, this.showTeam = false});
+
+  final bool showTeam;
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +110,7 @@ class SponsorshipTeamPage extends StatelessWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: Text(l10n.aboutSponsorshipTitle),
+        title: Text(showTeam ? l10n.aboutTabTeam : l10n.aboutSponsorshipTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -108,70 +118,146 @@ class SponsorshipTeamPage extends StatelessWidget {
           ),
         ],
       ),
-      child: FTabs(
-        expands: true,
+      child: showTeam ? const _TeamTab() : const _SponsorsTab(),
+    );
+  }
+}
+
+class _SponsorsTab extends ConsumerWidget {
+  const _SponsorsTab();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(aboutSponsorshipsProvider);
+        await ref.read(aboutSponsorshipsProvider.future);
+      },
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
         children: [
-          FTabEntry.entry(
-            label: Text(l10n.aboutTabSponsors),
-            child: const _SponsorsTab(),
-          ),
-          FTabEntry.entry(label: Text(l10n.aboutTabTeam), child: const _TeamTab()),
+          _AboutBlock(title: l10n.aboutSupportTitle, body: l10n.aboutSupportBody),
+          const Gap(16),
+          const _SponsorsSection(),
         ],
       ),
     );
   }
 }
 
-class _SponsorsTab extends StatelessWidget {
-  const _SponsorsTab();
+enum _TeamChip { tim, verifikator, kontributor }
+
+/// Tab Tim: chip filter Tim | Verifikator | Kontributor (pola chip aktivitas).
+/// Data Tim = users.is_team lewat GET /about/team.
+class _TeamTab extends ConsumerStatefulWidget {
+  const _TeamTab();
+
+  @override
+  ConsumerState<_TeamTab> createState() => _TeamTabState();
+}
+
+class _TeamTabState extends ConsumerState<_TeamTab> {
+  var _chip = _TeamChip.tim;
+
+  Future<void> _refresh() async {
+    switch (_chip) {
+      case _TeamChip.tim:
+        ref.invalidate(aboutTeamProvider);
+        await ref.read(aboutTeamProvider.future);
+      case _TeamChip.verifikator:
+        ref.invalidate(aboutVerifiersProvider);
+        await ref.read(aboutVerifiersProvider.future);
+      case _TeamChip.kontributor:
+        ref.invalidate(aboutContributorsProvider);
+        await ref.read(aboutContributorsProvider.future);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
+    final (title, body) = switch (_chip) {
+      _TeamChip.tim => (l10n.aboutTabTeam, l10n.aboutTeamSectionBody),
+      _TeamChip.verifikator => (
+        l10n.aboutVerifiersTitle,
+        l10n.aboutVerifiersSectionBody,
+      ),
+      _TeamChip.kontributor => (
+        l10n.aboutContributorsTitle,
+        l10n.aboutContributorsSectionBody,
+      ),
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _AboutBlock(
-          title: l10n.aboutSupportTitle,
-          body: l10n.aboutSupportBody,
+        const Gap(8),
+        _TeamFilterChips(
+          selected: _chip,
+          onSelect: (c) => setState(() => _chip = c),
         ),
-        const Gap(16),
-        const _SponsorsSection(),
+        const Gap(8),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: _refresh,
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
+              children: [
+                _AboutBlock(title: title, body: body),
+                const Gap(12),
+                switch (_chip) {
+                  _TeamChip.tim => const _TeamCoreSection(),
+                  _TeamChip.verifikator => const _VerifiersSection(),
+                  _TeamChip.kontributor => const _ContributorsFlatSection(),
+                },
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
 }
 
-class _TeamTab extends StatelessWidget {
-  const _TeamTab();
+class _TeamFilterChips extends StatelessWidget {
+  const _TeamFilterChips({required this.selected, required this.onSelect});
+
+  final _TeamChip selected;
+  final ValueChanged<_TeamChip> onSelect;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
-      children: [
-        _AboutBlock(
-          title: l10n.aboutTogetherTitle,
-          body: l10n.aboutTogetherBody,
-        ),
-        const Gap(16),
-        const _TeamCoreSection(),
-        const Gap(16),
-        _AboutBlock(
-          title: l10n.aboutContributorsTitle,
-          body: l10n.aboutContributorsBody,
-        ),
-        const Gap(8),
-        const _ContributorsFlatSection(),
-        const Gap(16),
-        _AboutBlock(
-          title: l10n.aboutVerifiersTitle,
-          body: l10n.aboutVerifiersBody,
-        ),
-        const Gap(8),
-        const _VerifiersSection(),
-      ],
+    final labels = {
+      _TeamChip.tim: l10n.aboutChipTeam,
+      _TeamChip.verifikator: l10n.aboutChipVerifiers,
+      _TeamChip.kontributor: l10n.aboutChipContributors,
+    };
+    // Scaffold childPad sudah inset horizontal - jangan dobel 12.
+    return SizedBox(
+      height: 32,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        itemCount: labels.length,
+        separatorBuilder: (_, _) => const Gap(6),
+        itemBuilder: (context, i) {
+          final chip = labels.keys.elementAt(i);
+          final isSelected = chip == selected;
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => onSelect(chip),
+            child: FBadge(
+              variant: isSelected
+                  ? FBadgeVariant.primary
+                  : FBadgeVariant.secondary,
+              child: Text(labels[chip]!),
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -188,36 +274,35 @@ class _TeamCoreSection extends ConsumerWidget {
     if (async.isLoading && members == null) {
       return const _SectionSkeleton(tileCount: 3);
     }
-    if (members == null || members.isEmpty) return const SizedBox.shrink();
+    if (members == null || members.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+        child: Text(
+          l10n.aboutTeamChipEmpty,
+          style: context.theme.typography.body.sm.copyWith(
+            color: context.theme.colors.mutedForeground,
+          ),
+        ),
+      );
+    }
 
-    final theme = context.theme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.aboutTeamCoreTitle,
-          style: theme.typography.body.sm.copyWith(
-            fontWeight: FontWeight.w700,
-            color: theme.colors.foreground,
-          ),
-        ),
-        const Gap(4),
-        for (final member in members) ...[
-          _PersonAvatarTile(
-            username: member.username,
-            displayName: member.displayName,
-            avatarUrl: member.avatarUrl,
-            subtitle: member.teamAs,
-            note: member.teamNote,
-          ),
-          const Gap(8),
+        for (var i = 0; i < members.length; i++) ...[
+          _TeamMemberTile(member: members[i]),
+          if (i < members.length - 1) ...[
+            const Gap(8),
+            const PublicBrowseListDivider(),
+            const Gap(8),
+          ],
         ],
       ],
     );
   }
 }
 
-/// Kontributor: nama flat + load more.
+/// Warga: nama saja + paginasi server.
 class _ContributorsFlatSection extends ConsumerWidget {
   const _ContributorsFlatSection();
 
@@ -229,13 +314,23 @@ class _ContributorsFlatSection extends ConsumerWidget {
     if (async.isLoading && state == null) {
       return const _SectionSkeleton(tileCount: 4);
     }
-    if (state == null || state.items.isEmpty) return const SizedBox.shrink();
+    if (state == null || state.items.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+        child: Text(
+          l10n.aboutTeamChipEmpty,
+          style: context.theme.typography.body.sm.copyWith(
+            color: context.theme.colors.mutedForeground,
+          ),
+        ),
+      );
+    }
 
     final theme = context.theme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final item in state.items) ...[
+        for (final item in state.items)
           Material(
             color: Colors.transparent,
             child: InkWell(
@@ -246,29 +341,17 @@ class _ContributorsFlatSection extends ConsumerWidget {
                 displayName: item.displayName,
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        item.displayName,
-                        style: theme.typography.body.sm.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: theme.colors.foreground,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      FLucideIcons.chevronRight,
-                      size: 16,
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ],
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  item.displayName,
+                  style: theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: theme.colors.foreground,
+                  ),
                 ),
               ),
             ),
           ),
-        ],
         if (state.hasMore) ...[
           const Gap(8),
           FButton(
@@ -285,31 +368,131 @@ class _ContributorsFlatSection extends ConsumerWidget {
   }
 }
 
-/// Verifikator: avatar + nama (apresiasi).
+/// Verifikator: satu baris kompak (avatar, nama, chevron) + paginasi server.
 class _VerifiersSection extends ConsumerWidget {
   const _VerifiersSection();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final async = ref.watch(aboutVerifiersProvider);
-    final items = async.value;
-    if (async.isLoading && items == null) {
+    final state = async.value;
+    if (async.isLoading && state == null) {
       return const _SectionSkeleton(tileCount: 3);
     }
-    if (items == null || items.isEmpty) return const SizedBox.shrink();
+    if (state == null || state.items.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+        child: Text(
+          l10n.aboutTeamChipEmpty,
+          style: context.theme.typography.body.sm.copyWith(
+            color: context.theme.colors.mutedForeground,
+          ),
+        ),
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final v in items) ...[
-          _PersonAvatarTile(
-            username: v.username,
-            displayName: v.displayName,
-            avatarUrl: v.avatarUrl,
-          ),
+        for (var i = 0; i < state.items.length; i++) ...[
+          _CompactVerifierTile(verifier: state.items[i]),
+          if (i < state.items.length - 1) ...[
+            const Gap(6),
+            const PublicBrowseListDivider(),
+            const Gap(6),
+          ],
+        ],
+        if (state.hasMore) ...[
           const Gap(8),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: state.loadingMore
+                ? null
+                : () => ref.read(aboutVerifiersProvider.notifier).loadMore(),
+            prefix: state.loadingMore ? const FCircularProgress() : null,
+            child: Text(l10n.aboutContributorsLoadMore),
+          ),
         ],
       ],
+    );
+  }
+}
+
+class _CompactVerifierTile extends StatelessWidget {
+  const _CompactVerifierTile({required this.verifier});
+
+  final AboutVerifier verifier;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => UserProfileRouter.open(
+          context,
+          verifier.username,
+          displayName: verifier.displayName,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipOval(
+                child: SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: verifier.avatarUrl == null
+                      ? const ImagePlaceholder256()
+                      : CachedNetworkImageWithFallback(
+                          imageUrl: verifier.avatarUrl!,
+                          fallback: const ImagePlaceholder256(),
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
+              const Gap(10),
+              Expanded(
+                child: Text(
+                  verifier.displayName,
+                  style: theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: theme.colors.foreground,
+                  ),
+                ),
+              ),
+              Icon(
+                FLucideIcons.chevronRight,
+                size: 16,
+                color: theme.colors.mutedForeground,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class _TeamMemberTile extends StatelessWidget {
+  const _TeamMemberTile({required this.member});
+
+  final AboutTeamMember member;
+
+  @override
+  Widget build(BuildContext context) {
+    final role = member.teamAs?.trim();
+    final noteLines = member.teamNoteLines;
+    return _PersonAvatarTile(
+      username: member.username,
+      displayName: member.displayName,
+      avatarUrl: member.avatarUrl,
+      roleLine: (role != null && role.isNotEmpty) ? role : null,
+      noteLines: noteLines,
     );
   }
 }
@@ -319,15 +502,15 @@ class _PersonAvatarTile extends StatelessWidget {
     required this.username,
     required this.displayName,
     this.avatarUrl,
-    this.subtitle,
-    this.note,
+    this.roleLine,
+    this.noteLines = const [],
   });
 
   final String username;
   final String displayName;
   final String? avatarUrl;
-  final String? subtitle;
-  final String? note;
+  final String? roleLine;
+  final List<String> noteLines;
 
   @override
   Widget build(BuildContext context) {
@@ -362,24 +545,29 @@ class _PersonAvatarTile extends StatelessWidget {
                   color: theme.colors.foreground,
                 ),
               ),
-              if (subtitle case final s? when s.isNotEmpty)
-                Text(
-                  s,
-                  style: theme.typography.body.xs.copyWith(
-                    color: theme.colors.mutedForeground,
-                    height: 1.4,
-                  ),
-                ),
-              if (note case final n? when n.isNotEmpty) ...[
+              if (roleLine case final role? when role.isNotEmpty) ...[
                 const Gap(2),
                 Text(
-                  n,
-                  style: theme.typography.body.sm.copyWith(
-                    color: theme.colors.mutedForeground,
+                  role,
+                  style: theme.typography.body.xs.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: theme.colors.primary,
                     height: 1.4,
                   ),
                 ),
               ],
+              if (noteLines.isNotEmpty)
+                for (final line in noteLines) ...[
+                  const Gap(2),
+                  Text(
+                    line,
+                    style: theme.typography.body.xs.copyWith(
+                      color: theme.colors.mutedForeground,
+                      fontStyle: FontStyle.italic,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
             ],
           ),
         ),
@@ -390,11 +578,8 @@ class _PersonAvatarTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
-        onTap: () => UserProfileRouter.open(
-          context,
-          username,
-          displayName: displayName,
-        ),
+        onTap: () =>
+            UserProfileRouter.open(context, username, displayName: displayName),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: Row(
@@ -697,12 +882,14 @@ class _AboutLinkBlock extends StatelessWidget {
     required this.body,
     required this.actionLabel,
     required this.onPress,
+    this.icon = FLucideIcons.externalLink,
   });
 
   final String title;
   final String body;
   final String actionLabel;
   final VoidCallback onPress;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -729,7 +916,7 @@ class _AboutLinkBlock extends StatelessWidget {
         FButton(
           variant: FButtonVariant.outline,
           onPress: onPress,
-          prefix: const Icon(FLucideIcons.externalLink, size: 14),
+          prefix: Icon(icon, size: 14),
           child: Text(actionLabel),
         ),
       ],

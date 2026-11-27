@@ -30,6 +30,7 @@ class ContributeImagesField extends ConsumerWidget {
     required this.images,
     required this.onChanged,
     this.allowLocalPick = true,
+    this.openPickerOnMount = false,
   });
 
   final bool enabled;
@@ -37,6 +38,7 @@ class ContributeImagesField extends ConsumerWidget {
   final bool allowLocalPick;
   final List<AttachmentImageSlot> images;
   final ValueChanged<List<AttachmentImageSlot>> onChanged;
+  final bool openPickerOnMount;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,6 +46,7 @@ class ContributeImagesField extends ConsumerWidget {
     return AttachmentImagesField(
       enabled: enabled,
       allowLocalPick: allowLocalPick,
+      openPickerOnMount: openPickerOnMount,
       maxImages: 3,
       maxSizeMb: 5,
       images: images,

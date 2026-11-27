@@ -79,13 +79,40 @@ class LeaderboardApi {
     }
   }
 
-  /// Snapshot minggu lalu dari CDN. 404 → null (kosong).
+  /// Snapshot minggu lalu dari API (sudah tanpa user yang di-exclude).
+  /// API 404 → null (kosong). API gagal lain → cadangan file CDN beku.
   /// [cdnWeeklyTemplate] = contoh `meta.cdn.weekly` dari minggu berjalan
   /// supaya staging pakai `coem/staging-leaderboard`, bukan prod.
   Future<LeaderboardWeekSnapshot?> fetchHistoryWeek(
     String weekId, {
     String? cdnWeeklyTemplate,
   }) async {
+    try {
+      final res = await _dio.get<dynamic>(
+        '/api/v1/leaderboard',
+        queryParameters: {'period': 'week', 'week_id': weekId},
+        options: Options(receiveTimeout: const Duration(seconds: 12)),
+      );
+      final data = _rootMap(res.data)['data'];
+      final entries = <LeaderboardEntry>[];
+      if (data is List) {
+        for (final raw in data) {
+          if (raw is Map) {
+            entries.add(
+              LeaderboardEntry.fromJson(Map<String, dynamic>.from(raw)),
+            );
+          }
+        }
+      }
+      return LeaderboardWeekSnapshot(
+        weekId: weekId,
+        entries: entries,
+        finalized: true,
+      );
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) return null;
+    }
+
     final url = weeklyLeaderboardCdnUrl(
       weekId,
       templateWeeklyUrl: cdnWeeklyTemplate,
@@ -148,6 +175,25 @@ class LeaderboardApi {
       );
     } on DioException catch (e) {
       throw _fromDio(e, codeFallback: 'LEADERBOARD_LOAD_FAILED');
+    }
+  }
+
+  /// Bagikan posisi minggu berjalan ke feed. Server menolak di luar 1-25
+  /// dengan `LEADERBOARD_NOT_IN_TOP`. Return peringkat yang dibagikan.
+  Future<int> shareMyRank() async {
+    try {
+      final res = await _dio.post<dynamic>('/api/v1/leaderboard/me/share');
+      final data = _rootMap(res.data)['data'];
+      final rank = data is Map ? (data['rank'] as num?)?.toInt() : null;
+      if (rank == null) {
+        throw LeaderboardApiException(
+          'LEADERBOARD_SHARE_FAILED',
+          code: 'LEADERBOARD_SHARE_FAILED',
+        );
+      }
+      return rank;
+    } on DioException catch (e) {
+      throw _fromDio(e, codeFallback: 'LEADERBOARD_SHARE_FAILED');
     }
   }
 

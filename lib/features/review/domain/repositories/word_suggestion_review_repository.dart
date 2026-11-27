@@ -18,4 +18,11 @@ abstract class WordSuggestionReviewRepository {
     String id, {
     required String comment,
   });
+
+  /// Koreksi usulan lalu terapkan (`corrected_changes` = bentuk wire usulan).
+  Future<Either<ReviewFailure, Unit>> correct(
+    String id, {
+    required Map<String, dynamic> correctedChanges,
+    String? comment,
+  });
 }

@@ -146,13 +146,13 @@ class BalehoPlacementHistoryItem {
     final dailyRaw = json['daily'];
     final daily = dailyRaw is List
         ? dailyRaw
-            .whereType<Map>()
-            .map(
-              (e) => BalehoPlacementDailyBucket.fromJson(
-                Map<String, dynamic>.from(e),
-              ),
-            )
-            .toList()
+              .whereType<Map>()
+              .map(
+                (e) => BalehoPlacementDailyBucket.fromJson(
+                  Map<String, dynamic>.from(e),
+                ),
+              )
+              .toList()
         : const <BalehoPlacementDailyBucket>[];
     return BalehoPlacementHistoryItem(
       id: '${json['id']}',
@@ -164,7 +164,8 @@ class BalehoPlacementHistoryItem {
       status: '${json['status'] ?? ''}',
       title: json['title'] as String?,
       mediaUrl: json['media_url'] as String?,
-      createdAt: DateTime.tryParse('${json['created_at'] ?? ''}') ??
+      createdAt:
+          DateTime.tryParse('${json['created_at'] ?? ''}') ??
           DateTime.fromMillisecondsSinceEpoch(0),
       endsAt: json['ends_at'] == null
           ? null
@@ -175,8 +176,7 @@ class BalehoPlacementHistoryItem {
       actionSuccess: (json['action_success'] as num?)?.toInt() ?? 0,
       actionFail: (json['action_fail'] as num?)?.toInt() ?? 0,
       ctrPercent: (json['ctr_percent'] as num?)?.toDouble() ?? 0,
-      actionRatePercent:
-          (json['action_rate_percent'] as num?)?.toDouble() ?? 0,
+      actionRatePercent: (json['action_rate_percent'] as num?)?.toDouble() ?? 0,
       successRatePercent:
           (json['success_rate_percent'] as num?)?.toDouble() ?? 0,
       quotedAmount: (json['quoted_amount'] as num?)?.toInt(),
@@ -207,14 +207,14 @@ class BalehoFrameDraft {
   final String actionPayload;
 
   Map<String, dynamic> toJson() => {
-        'media_type': mediaType,
-        if (mediaUrl != null && mediaUrl!.isNotEmpty) 'media_url': mediaUrl,
-        if (title != null && title!.isNotEmpty) 'title': title,
-        if (body != null && body!.isNotEmpty) 'body': body,
-        if (ctaLabel != null && ctaLabel!.isNotEmpty) 'cta_label': ctaLabel,
-        'action_type': actionType,
-        'action_payload': actionPayload,
-      };
+    'media_type': mediaType,
+    if (mediaUrl != null && mediaUrl!.isNotEmpty) 'media_url': mediaUrl,
+    if (title != null && title!.isNotEmpty) 'title': title,
+    if (body != null && body!.isNotEmpty) 'body': body,
+    if (ctaLabel != null && ctaLabel!.isNotEmpty) 'cta_label': ctaLabel,
+    'action_type': actionType,
+    'action_payload': actionPayload,
+  };
 }
 
 class BalehoApi {
@@ -321,9 +321,7 @@ class BalehoApi {
       return [
         for (final raw in items)
           if (raw is Map)
-            BalehoPlacementHistoryItem.fromJson(
-              Map<String, dynamic>.from(raw),
-            ),
+            BalehoPlacementHistoryItem.fromJson(Map<String, dynamic>.from(raw)),
       ];
     } on DioException catch (e) {
       throw _fromDio(e, codeFallback: 'BALEHO_HISTORY_FAILED');
@@ -360,8 +358,8 @@ class BalehoApi {
     final mediaType = lower.endsWith('.png')
         ? DioMediaType('image', 'png')
         : lower.endsWith('.webp')
-            ? DioMediaType('image', 'webp')
-            : DioMediaType('image', 'jpeg');
+        ? DioMediaType('image', 'webp')
+        : DioMediaType('image', 'jpeg');
     final form = FormData.fromMap({
       'file': await MultipartFile.fromFile(
         file.path,

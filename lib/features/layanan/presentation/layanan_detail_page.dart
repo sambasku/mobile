@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/external_link.dart';
 import '../../../core/widgets/image_preview.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/profile/profile_covers_provider.dart';
 import '../../../shared/widgets/contributor_appreciation.dart';
 import '../../../shared/widgets/profile_hero_shell.dart';
 import '../../../shared/widgets/profile_identity_header.dart';
@@ -95,6 +96,7 @@ class _LayananDetailBodyState extends ConsumerState<_LayananDetailBody> {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final width = MediaQuery.sizeOf(context).width;
+    final coverUrl = ref.watch(profileCoversProvider).value?.layananUrl;
     final logoUrl = (item.logoUrl ?? '').trim();
     final hasLogo = logoUrl.isNotEmpty;
     final address = (item.addressText ?? '').trim();
@@ -132,6 +134,7 @@ class _LayananDetailBodyState extends ConsumerState<_LayananDetailBody> {
                 variant: ProfileHeaderVariant.compact,
                 displayName: item.name,
                 avatarUrl: hasLogo ? logoUrl : null,
+                coverUrl: coverUrl,
                 bio: bio,
                 onAvatarTap: hasLogo
                     ? () => showImagePreview(context, urls: [logoUrl])
@@ -222,6 +225,13 @@ FTileGroup(
                               ),
                             );
                           },
+                        ),
+                        FTile(
+                          prefix: const Icon(FLucideIcons.history, size: 18),
+                          title: Text(l10n.historyTitle),
+                          subtitle: Text(l10n.layananHistoryBody),
+                          suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+                          onPress: () => context.push(LayananRouter.historyPath(item.slug)),
                         ),
                       ],
                     ),

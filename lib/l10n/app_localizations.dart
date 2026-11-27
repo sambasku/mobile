@@ -187,6 +187,12 @@ abstract class AppLocalizations {
   /// **'Sedang belajar'**
   String get onboardingSpeakerLearner;
 
+  /// Toast onboarding jika lanjut tanpa memilih status penutur
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dulu penutur asli atau sedang belajar.'**
+  String get onboardingSpeakerPickRequired;
+
   /// Chip profil: penutur asli
   ///
   /// In id, this message translates to:
@@ -316,7 +322,7 @@ abstract class AppLocalizations {
   /// Catatan kecil di bawah dot indicator Baleho
   ///
   /// In id, this message translates to:
-  /// **'Area Media Promosi · Ruang publikasi dan promosi SambasKu.'**
+  /// **'Ruang publikasi dan promosi SambasKu'**
   String get balehoFooterPromoNote;
 
   /// Judul ajakan di atas grid slide promo Baleho
@@ -337,10 +343,64 @@ abstract class AppLocalizations {
   /// **'Tarif: 1x1 / hari / slide = Rp {amount}'**
   String balehoPricingUnitLine(String amount);
 
+  /// Label kecil di atas nominal tarif pada bottom sheet promo Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai dari'**
+  String get balehoPricingStartFrom;
+
+  /// Format nominal rupiah pada kartu tarif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Rp {amount}'**
+  String balehoPricingCurrencyValue(String amount);
+
+  /// Satuan tarif di samping nominal harga Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'/ sel 1x1 / hari / slide'**
+  String get balehoPricingPerUnit;
+
+  /// Poin penjelasan ukuran fleksibel di bottom sheet tarif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih 1 sel atau tarik beberapa sel sesuai kebutuhan kamu'**
+  String get balehoPricingPointSize;
+
+  /// Contoh estimasi 7 hari di bottom sheet tarif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: 1x1 selama 7 hari = Rp {amount}'**
+  String balehoPricingPointExample(String amount);
+
+  /// Lencana kecil pada kartu tarif di bottom sheet promo Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Tarif transparan'**
+  String get balehoPricingBadge;
+
+  /// Judul kecil di atas strip simulasi durasi di kartu tarif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Simulasi 1 sel (1x1)'**
+  String get balehoPricingEstimateHeading;
+
+  /// Label singkat durasi hari pada simulasi tarif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'{days} hari'**
+  String balehoPricingDaysShort(int days);
+
+  /// Poin jangkauan tayang di bottom sheet tarif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Pesanan akan ditayangkan setelah proses verifikasi dan pembayaran selesai.'**
+  String get balehoPricingPointReach;
+
   /// Estimasi satu baris (legacy); UI book pakai rincian
   ///
   /// In id, this message translates to:
-  /// **'Estimasi: Rp {amount} ({cells} sel x {days} hari x {slides} slide)'**
+  /// **'Estimasi: Rp {amount} ({cells} sel × {days} hari × {slides} slide)'**
   String balehoQuoteEstimate(String amount, int cells, int days, int slides);
 
   /// Placeholder saat tarif Baleho masih di-fetch
@@ -418,7 +478,7 @@ abstract class AppLocalizations {
   /// Penjelasan singkat rumus quote Baleho
   ///
   /// In id, this message translates to:
-  /// **'Hitungan: jumlah sel x hari x tarif x slide'**
+  /// **'Biaya dihitung dari ukuran sel, durasi, dan jumlah slide'**
   String get balehoQuoteFormulaHint;
 
   /// Total estimasi di atas tombol kirim form Baleho
@@ -430,7 +490,7 @@ abstract class AppLocalizations {
   /// Ringkas faktor hitungan di atas tombol submit Baleho
   ///
   /// In id, this message translates to:
-  /// **'{cells} sel x {days} hari x {slides} slide'**
+  /// **'{cells} sel × {days} hari × {slides} slide'**
   String balehoQuoteFooterBreakdown(int cells, int days, int slides);
 
   /// Label aksesibilitas tombol info caption promo Baleho
@@ -451,6 +511,12 @@ abstract class AppLocalizations {
   /// **'Peringkat Mingguan'**
   String get balehoWeeklyLeaderboardTitle;
 
+  /// Label aksesibilitas ilustrasi hero peringkat mingguan
+  ///
+  /// In id, this message translates to:
+  /// **'Ilustrasi warga di podium peringkat mingguan'**
+  String get balehoWeeklyLeaderboardHeroSemantics;
+
   /// Subtitle kompetitif tile peringkat mingguan Baleho
   ///
   /// In id, this message translates to:
@@ -462,6 +528,60 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.'**
   String get balehoWeeklyLeaderboardComingSoonBody;
+
+  /// Label kartu jumlah kosakata di slide 2 Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Total kata'**
+  String get balehoKosakataTotal;
+
+  /// Label kartu kata yang sudah diverifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Diverifikasi'**
+  String get balehoKosakataVerified;
+
+  /// Label kartu kata yang menunggu review
+  ///
+  /// In id, this message translates to:
+  /// **'Antrian'**
+  String get balehoKosakataQueue;
+
+  /// Label kartu kata yang ditolak
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get balehoKosakataRejected;
+
+  /// Label pendek total kata di sel 1x1 Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Kata'**
+  String get balehoKosakataTotalShort;
+
+  /// Label pendek kata diverifikasi di sel 1x1 Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Verif'**
+  String get balehoKosakataVerifiedShort;
+
+  /// Label pendek antrian di sel 1x1 Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Antri'**
+  String get balehoKosakataQueueShort;
+
+  /// Label pendek kata ditolak di sel 1x1 Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak'**
+  String get balehoKosakataRejectedShort;
+
+  /// Judul blok statistik kosakata 2x1 di slide 2 Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Kosakata'**
+  String get balehoKosakataStatsTitle;
 
   /// Tab papan peringkat minggu berjalan
   ///
@@ -527,16 +647,16 @@ abstract class AppLocalizations {
   ///
   /// In id, this message translates to:
   /// **'{score} poin'**
-  String balehoLeaderboardScoreCombined(int score);
+  String balehoLeaderboardScoreCombined(String score);
 
   /// Rincian skor papan peringkat mingguan (usul, bonus acc, verif)
   ///
   /// In id, this message translates to:
   /// **'+{submitted} usul · +{approved} acc · +{verif} verif'**
   String balehoLeaderboardScoreBreakdown(
-    int submitted,
-    int approved,
-    int verif,
+    String submitted,
+    String approved,
+    String verif,
   );
 
   /// Empty state minggu berjalan
@@ -610,6 +730,192 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat minggu sebelumnya'**
   String get balehoLeaderboardHistoryLoadMore;
+
+  /// Judul halaman penjelasan poin papan peringkat
+  ///
+  /// In id, this message translates to:
+  /// **'Cara dapat poin'**
+  String get balehoPointsGuideTitle;
+
+  /// Judul di atas ilustrasi halaman cara dapat poin
+  ///
+  /// In id, this message translates to:
+  /// **'Bantu kamus, kumpulkan poin'**
+  String get balehoPointsGuideHeroTitle;
+
+  /// Subjudul di atas ilustrasi halaman cara dapat poin
+  ///
+  /// In id, this message translates to:
+  /// **'Empat cara poin masuk tiap minggu.'**
+  String get balehoPointsGuideHeroBody;
+
+  /// Label aksesibilitas ilustrasi hero cara dapat poin
+  ///
+  /// In id, this message translates to:
+  /// **'Ilustrasi warga mengumpulkan poin kontribusi'**
+  String get balehoPointsGuideHeroSemantics;
+
+  /// Subtitle kartu pintu masuk halaman cara dapat poin
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat tabel poin dan aturan biar peringkat adil'**
+  String get balehoPointsGuideEntrySubtitle;
+
+  /// Semantics ikon info di header papan peringkat
+  ///
+  /// In id, this message translates to:
+  /// **'Buka cara dapat poin'**
+  String get balehoPointsGuideOpenSemantics;
+
+  /// Paragraf pembuka halaman cara dapat poin
+  ///
+  /// In id, this message translates to:
+  /// **'Semua kontributor dihitung dengan aturan yang sama. Ini rincian poin yang kamu kumpulkan tiap minggu.'**
+  String get balehoPointsGuideIntro;
+
+  /// Judul section tabel poin
+  ///
+  /// In id, this message translates to:
+  /// **'Tabel poin'**
+  String get balehoPointsGuideTableTitle;
+
+  /// Baris tabel poin: usul kata baru. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul kata baru'**
+  String get balehoPointsGuideCreateTitle;
+
+  /// Keterangan kapan poin usul kata baru dihitung
+  ///
+  /// In id, this message translates to:
+  /// **'Dihitung saat usulan dikirim'**
+  String get balehoPointsGuideCreateWhen;
+
+  /// Baris tabel poin: usul perbaikan kata. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul perbaikan kata'**
+  String get balehoPointsGuideEditTitle;
+
+  /// Keterangan kapan poin usul perbaikan dihitung
+  ///
+  /// In id, this message translates to:
+  /// **'Dihitung saat usulan dikirim'**
+  String get balehoPointsGuideEditWhen;
+
+  /// Baris tabel poin: bonus usulan diterima. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kamu diterima'**
+  String get balehoPointsGuideApprovedTitle;
+
+  /// Keterangan kapan bonus usulan diterima dihitung
+  ///
+  /// In id, this message translates to:
+  /// **'Bonus saat usulan disetujui atau dikoreksi verifikator'**
+  String get balehoPointsGuideApprovedWhen;
+
+  /// Baris tabel poin: verifikasi. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts.
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikasi usul kata orang lain'**
+  String get balehoPointsGuideVerifyTitle;
+
+  /// Keterangan kapan poin verifikasi dihitung
+  ///
+  /// In id, this message translates to:
+  /// **'Khusus verifikator, dihitung tiap keputusan terima atau tolak'**
+  String get balehoPointsGuideVerifyWhen;
+
+  /// Nilai poin di tabel poin
+  ///
+  /// In id, this message translates to:
+  /// **'+{points}'**
+  String balehoPointsGuidePoints(int points);
+
+  /// Judul section aturan keadilan peringkat
+  ///
+  /// In id, this message translates to:
+  /// **'Biar adil'**
+  String get balehoPointsGuideFairTitle;
+
+  /// Aturan adil: usulan ditolak
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan yang ditolak tidak dapat poin. Kalau usulan ditolak, poin usulnya ikut dicabut.'**
+  String get balehoPointsGuideRuleRejected;
+
+  /// Aturan adil: bonus diterima. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts.
+  ///
+  /// In id, this message translates to:
+  /// **'Bonus +2 cuma diberikan kalau usulan disetujui atau dikoreksi.'**
+  String get balehoPointsGuideRuleBonus;
+
+  /// Aturan adil: verifikasi diri sendiri
+  ///
+  /// In id, this message translates to:
+  /// **'Memverifikasi usulan sendiri tidak dapat poin.'**
+  String get balehoPointsGuideRuleSelfVerify;
+
+  /// Aturan adil: akun dikecualikan
+  ///
+  /// In id, this message translates to:
+  /// **'Akun sistem dan akun yang dikecualikan admin tidak ikut peringkat.'**
+  String get balehoPointsGuideRuleExcluded;
+
+  /// Aturan adil: reset mingguan
+  ///
+  /// In id, this message translates to:
+  /// **'Skor di-reset tiap Senin 00:00 WIB. Minggu yang sudah lewat dibekukan di tab Riwayat.'**
+  String get balehoPointsGuideRuleReset;
+
+  /// Aturan adil: batas bagikan posisi
+  ///
+  /// In id, this message translates to:
+  /// **'Peringkat 1-25 bisa membagikan posisinya ke feed.'**
+  String get balehoPointsGuideRuleShare;
+
+  /// Judul section contoh hitungan poin
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh hitungan'**
+  String get balehoPointsGuideExampleTitle;
+
+  /// Tombol bagikan posisi papan peringkat ke feed
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan posisiku ke feed'**
+  String get balehoLeaderboardShareCta;
+
+  /// Label tombol saat proses bagikan posisi
+  ///
+  /// In id, this message translates to:
+  /// **'Membagikan...'**
+  String get balehoLeaderboardShareBusy;
+
+  /// Toast sukses bagikan posisi
+  ///
+  /// In id, this message translates to:
+  /// **'Posisi #{rank} kamu sudah dibagikan ke feed'**
+  String balehoLeaderboardShareSuccess(int rank);
+
+  /// Error bagikan posisi: di luar 1-25
+  ///
+  /// In id, this message translates to:
+  /// **'Posisi kamu belum masuk peringkat 1-25 minggu ini. Terus berkontribusi, lalu coba lagi.'**
+  String get balehoLeaderboardShareNotInTop;
+
+  /// Error umum bagikan posisi
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membagikan posisi. Coba lagi sebentar lagi.'**
+  String get balehoLeaderboardShareFailed;
+
+  /// Error bagikan posisi tanpa login
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk membagikan posisimu ke feed.'**
+  String get balehoLeaderboardShareLoginRequired;
 
   /// No description provided for @balehoSlotAvailable.
   ///
@@ -770,6 +1076,60 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Username yang mengajakmu'**
   String get balehoReferralHint;
+
+  /// Penjelasan singkat field kode teman di form pesan Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Orang yang mengajak kamu memakai SambasKu sebagai media promosi.'**
+  String get balehoReferralDescription;
+
+  /// Judul tile pemilih kode teman saat belum ada username terpilih
+  ///
+  /// In id, this message translates to:
+  /// **'Cari username teman'**
+  String get balehoReferralPickTitle;
+
+  /// Subjudul tile kode teman saat username sudah terpilih
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk ganti'**
+  String get balehoReferralSelectedHint;
+
+  /// Label aksesibilitas tombol hapus kode teman
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus kode teman'**
+  String get balehoReferralClearSemantics;
+
+  /// Judul bottom sheet pencarian username teman Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Cari teman'**
+  String get balehoReferralSearchTitle;
+
+  /// Placeholder input cari username teman di bottom sheet
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik username...'**
+  String get balehoReferralSearchHint;
+
+  /// Teks awal saat input pencarian teman masih kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik username orang yang mengajak kamu.'**
+  String get balehoReferralSearchPrompt;
+
+  /// Pesan saat pencarian username teman tidak ada hasil
+  ///
+  /// In id, this message translates to:
+  /// **'Username tidak ditemukan.'**
+  String get balehoReferralSearchEmpty;
+
+  /// Pesan saat pencarian username teman gagal memuat
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat pencarian. Coba lagi ya.'**
+  String get balehoReferralSearchFailed;
 
   /// Label field durasi tayang
   ///
@@ -1407,11 +1767,29 @@ abstract class AppLocalizations {
   /// **'Pilih area kosong di papan, lalu aktifkan ulang creative lama.'**
   String get balehoHistoryRebookHint;
 
+  /// Judul panel dilihat, tap baleho, dan tap CTA di detail pesanan
+  ///
+  /// In id, this message translates to:
+  /// **'Performa'**
+  String get balehoHistoryPerfTitle;
+
   /// Judul ringkasan biaya di detail pesanan Baleho
   ///
   /// In id, this message translates to:
   /// **'Biaya'**
   String get balehoHistoryStatsTitle;
+
+  /// Judul grafik tayang harian di detail pesanan Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'7 hari terakhir'**
+  String get balehoHistoryDailyTitle;
+
+  /// Placeholder grafik harian bila data belum ada di detail Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada data harian.'**
+  String get balehoHistoryDailyEmpty;
 
   /// Placeholder bila quoted/CPC belum tersedia di detail Baleho
   ///
@@ -1422,19 +1800,19 @@ abstract class AppLocalizations {
   /// Label hitungan impression Baleho
   ///
   /// In id, this message translates to:
-  /// **'Tayang'**
+  /// **'Dilihat'**
   String get balehoHistoryStatImpressions;
 
   /// Label hitungan tap membuka sheet detail
   ///
   /// In id, this message translates to:
-  /// **'Buka detail'**
+  /// **'Open'**
   String get balehoHistoryStatTaps;
 
   /// Label hitungan klik CTA di sheet Baleho
   ///
   /// In id, this message translates to:
-  /// **'Klik tombol'**
+  /// **'Tap CTA'**
   String get balehoHistoryStatActions;
 
   /// CTR tap/impresi di riwayat Baleho
@@ -1968,7 +2346,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutTagline.
   ///
   /// In id, this message translates to:
-  /// **'Kamus Digital Sambas-Indonesia'**
+  /// **'Platform digital bahasa dan budaya Sambas'**
   String get aboutTagline;
 
   /// Baris versi app
@@ -2004,7 +2382,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutWhatBody.
   ///
   /// In id, this message translates to:
-  /// **'Kamus digital Melayu Sambas-Indonesia yang dirawat bersama warga. Kamu bisa mencari arti kata, membaca contoh kalimat, menyimpan kata, mengusulkan kata baru, dan membagikan kartu kata. Usulan dari akun yang sudah masuk langsung tayang dengan label Menunggu pengecekan, lalu diperiksa verifikator.'**
+  /// **'Platform digital untuk belajar bahasa dan budaya Sambas. Kamu bisa mengenal dan mengeksplorasi Sambas lewat kosakata, tempat, kuliner, acara, komunitas, dan konten yang dirawat bersama warga.'**
   String get aboutWhatBody;
 
   /// No description provided for @aboutSponsorTitle.
@@ -2016,7 +2394,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutSponsorBody.
   ///
   /// In id, this message translates to:
-  /// **'Para pendukung operasional dan orang-orang yang merawat kamus ini.'**
+  /// **'Para pendukung operasional dan orang-orang yang merawat platform ini.'**
   String get aboutSponsorBody;
 
   /// No description provided for @aboutSponsorAction.
@@ -2034,7 +2412,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutSourceBody.
   ///
   /// In id, this message translates to:
-  /// **'SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten kamus dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.'**
+  /// **'SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.'**
   String get aboutSourceBody;
 
   /// No description provided for @aboutSourceAction.
@@ -2042,6 +2420,48 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Buka di GitHub'**
   String get aboutSourceAction;
+
+  /// Judul blok daftar pustaka open source di halaman Tentang
+  ///
+  /// In id, this message translates to:
+  /// **'Pustaka sumber terbuka'**
+  String get aboutOssTitle;
+
+  /// No description provided for @aboutOssBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar pustaka langsung di pubspec.yaml beserta lisensi sumber terbukanya.'**
+  String get aboutOssBody;
+
+  /// No description provided for @aboutOssAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat daftar pustaka'**
+  String get aboutOssAction;
+
+  /// No description provided for @aboutOssListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pustaka sumber terbuka'**
+  String get aboutOssListTitle;
+
+  /// No description provided for @aboutOssEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar pustaka belum tersedia.'**
+  String get aboutOssEmpty;
+
+  /// No description provided for @aboutOssLoading.
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat daftar pustaka'**
+  String get aboutOssLoading;
+
+  /// No description provided for @aboutOssUnknown.
+  ///
+  /// In id, this message translates to:
+  /// **'Lisensi sumber terbuka'**
+  String get aboutOssUnknown;
 
   /// No description provided for @aboutSponsorshipTitle.
   ///
@@ -2060,6 +2480,48 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tim Kami'**
   String get aboutTabTeam;
+
+  /// Chip filter Tim di halaman Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Tim'**
+  String get aboutChipTeam;
+
+  /// Chip filter Verifikator di halaman Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikator'**
+  String get aboutChipVerifiers;
+
+  /// Chip filter Warga di halaman Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Warga'**
+  String get aboutChipContributors;
+
+  /// Empty state chip Tim/Verifikator/Kontributor
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada data di sini.'**
+  String get aboutTeamChipEmpty;
+
+  /// Subtitle chip Tim di halaman Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Anggota yang merawat SambasKu - produk, data, dan komunitas.'**
+  String get aboutTeamSectionBody;
+
+  /// Subtitle chip Verifikator di halaman Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Memeriksa usulan warga supaya konten tetap akurat dan layak tayang.'**
+  String get aboutVerifiersSectionBody;
+
+  /// Subtitle chip Warga di halaman Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Mengusulkan kata, perbaikan, dan rekaman suara. Entri tayang setelah diverifikasi.'**
+  String get aboutContributorsSectionBody;
 
   /// No description provided for @aboutSupportTitle.
   ///
@@ -2082,19 +2544,19 @@ abstract class AppLocalizations {
   /// No description provided for @aboutTogetherBody.
   ///
   /// In id, this message translates to:
-  /// **'Kamus ini dirawat orang-orang yang mengusulkan kata, memeriksa entri, dan merekam pelafalan.'**
+  /// **'Platform ini dirawat orang-orang yang mengusulkan konten, memeriksa entri, dan merekam pelafalan.'**
   String get aboutTogetherBody;
 
   /// No description provided for @aboutContributorsTitle.
   ///
   /// In id, this message translates to:
-  /// **'Kontributor'**
+  /// **'Warga'**
   String get aboutContributorsTitle;
 
   /// No description provided for @aboutContributorsBody.
   ///
   /// In id, this message translates to:
-  /// **'Mengirim kata baru atau perbaikan, dan merekam cara mengucapkan kata agar bisa didengar. Entri tayang setelah verifikasi.'**
+  /// **'Mengusulkan kata, perbaikan, dan merekam cara mengucapkan supaya bisa didengar. Entri tayang setelah verifikasi.'**
   String get aboutContributorsBody;
 
   /// No description provided for @aboutVerifiersTitle.
@@ -2106,7 +2568,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutVerifiersBody.
   ///
   /// In id, this message translates to:
-  /// **'Memeriksa usulan sebelum masuk kamus.'**
+  /// **'Memeriksa usulan sebelum tayang.'**
   String get aboutVerifiersBody;
 
   /// No description provided for @aboutSponsorsSectionTitle.
@@ -3720,7 +4182,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryChangeExampleDesc.
   ///
   /// In id, this message translates to:
-  /// **'Perbaiki typo atau arti contoh yang sudah ada'**
+  /// **'Perbaiki typo atau arti contoh'**
   String get suggestCategoryChangeExampleDesc;
 
   /// Kategori usulan: perbaiki notasi pelafalan yang sudah tayang
@@ -3732,7 +4194,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryChangePronunciationDesc.
   ///
   /// In id, this message translates to:
-  /// **'Perbaiki notasi IPA yang sudah ada'**
+  /// **'Perbaiki notasi IPA'**
   String get suggestCategoryChangePronunciationDesc;
 
   /// Caption daftar pelafalan di form Ubah pelafalan
@@ -3810,7 +4272,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryVariantOfDesc.
   ///
   /// In id, this message translates to:
-  /// **'Kata ini entri sendiri, variasi dari lemma lain (bukan ejaan)'**
+  /// **'Entri sendiri, variasi dari lemma lain'**
   String get suggestCategoryVariantOfDesc;
 
   /// No description provided for @suggestCategoryNonstandardOf.
@@ -3822,7 +4284,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryNonstandardOfDesc.
   ///
   /// In id, this message translates to:
-  /// **'Kata ini entri sendiri, bentuk tidak baku dari lemma baku'**
+  /// **'Entri sendiri, bentuk tidak baku dari lemma baku'**
   String get suggestCategoryNonstandardOfDesc;
 
   /// No description provided for @suggestCategoryDerivedFrom.
@@ -3834,7 +4296,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryDerivedFromDesc.
   ///
   /// In id, this message translates to:
-  /// **'Kata ini diturunkan dari akar kata (isi akarnya)'**
+  /// **'Diturunkan dari kata akar'**
   String get suggestCategoryDerivedFromDesc;
 
   /// No description provided for @suggestCategoryMeaningGroup.
@@ -3846,7 +4308,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryMeaningGroupDesc.
   ///
   /// In id, this message translates to:
-  /// **'Gabungkan kata bermakna sama dalam satu kelompok'**
+  /// **'Kelompokkan kata yang bermakna sama'**
   String get suggestCategoryMeaningGroupDesc;
 
   /// No description provided for @suggestCategorySpellingVariant.
@@ -3858,19 +4320,19 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategorySpellingVariantDesc.
   ///
   /// In id, this message translates to:
-  /// **'Ejaan lain tanpa entri sendiri (tetap di lemma ini)'**
+  /// **'Ejaan lain, tetap di lemma ini'**
   String get suggestCategorySpellingVariantDesc;
 
   /// Kategori usulan: tag topik lemma (chip)
   ///
   /// In id, this message translates to:
-  /// **'Ubah kategori topik'**
+  /// **'Ubah kategori'**
   String get suggestCategoryChangeCategories;
 
   /// No description provided for @suggestCategoryChangeCategoriesDesc.
   ///
   /// In id, this message translates to:
-  /// **'Tambah atau lepas kategori topik di lemma ini'**
+  /// **'Tambah atau hapus kategori topik'**
   String get suggestCategoryChangeCategoriesDesc;
 
   /// Kategori usulan: ubah usage_labels pada kata existing
@@ -3882,7 +4344,7 @@ abstract class AppLocalizations {
   /// Subjudul tile usul perubahan untuk usage_labels
   ///
   /// In id, this message translates to:
-  /// **'Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.'**
+  /// **'Tandai kata kasar, seksual, atau diskriminatif. Memengaruhi beranda dan daftar A-Z.'**
   String get suggestCategoryChangeUsageLabelsDesc;
 
   /// Info di form usul perubahan untuk usage_labels
@@ -3942,7 +4404,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestPreSubmitVerifierBanner.
   ///
   /// In id, this message translates to:
-  /// **'Ubah yang perlu saja. Perubahan langsung diterapkan, tanpa antrean.'**
+  /// **'Ubah seperlunya. Perubahan langsung tayang.'**
   String get suggestPreSubmitVerifierBanner;
 
   /// No description provided for @suggestPreSubmitVerifierCta.
@@ -3960,7 +4422,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestPreSubmitContributorBanner.
   ///
   /// In id, this message translates to:
-  /// **'Ubah yang perlu saja. Admin mereview sebelum tayang.'**
+  /// **'Ubah seperlunya. Admin meninjau sebelum tayang.'**
   String get suggestPreSubmitContributorBanner;
 
   /// No description provided for @suggestPreSubmitContributorCta.
@@ -4676,6 +5138,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Jenis kata'**
   String get historyFieldWordType;
+
+  /// No description provided for @historyFieldWordClass.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelas kata'**
+  String get historyFieldWordClass;
 
   /// No description provided for @historyFieldLanguage.
   ///
@@ -6699,12 +7167,6 @@ abstract class AppLocalizations {
   /// **'Halus dan Kasar tidak bisa dipilih bersamaan'**
   String get reviewCorrectPolitenessConflict;
 
-  /// No description provided for @reviewCorrectWordNotes.
-  ///
-  /// In id, this message translates to:
-  /// **'Catatan kata'**
-  String get reviewCorrectWordNotes;
-
   /// No description provided for @reviewCorrectRegister.
   ///
   /// In id, this message translates to:
@@ -6950,6 +7412,30 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Gagal menolak usulan'**
   String get reviewRepoSuggestionRejectFailed;
+
+  /// No description provided for @reviewSuggestionCorrectButton.
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi'**
+  String get reviewSuggestionCorrectButton;
+
+  /// No description provided for @reviewSuggestionCorrectCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan koreksi'**
+  String get reviewSuggestionCorrectCta;
+
+  /// No description provided for @reviewSuggestionCorrectedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi disimpan dan diterapkan'**
+  String get reviewSuggestionCorrectedToast;
+
+  /// No description provided for @reviewRepoSuggestionCorrectFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan koreksi usulan'**
+  String get reviewRepoSuggestionCorrectFailed;
 
   /// Fallback error list usulan eksplorasi admin
   ///
@@ -7654,26 +8140,38 @@ abstract class AppLocalizations {
   /// Label chip cari di beranda (bukan hint field list)
   ///
   /// In id, this message translates to:
-  /// **'Cari'**
+  /// **'Cari\nKata'**
   String get dictSearchChip;
 
   /// No description provided for @dictAZ.
   ///
   /// In id, this message translates to:
-  /// **'A-Z'**
+  /// **'Indeks\nA-Z'**
   String get dictAZ;
 
   /// Label chip usul kata di beranda (pendek)
   ///
   /// In id, this message translates to:
-  /// **'Usul'**
+  /// **'Tambah\nKata'**
   String get dictProposeChip;
 
   /// Label chip ruang diskusi di beranda (pendek)
   ///
   /// In id, this message translates to:
-  /// **'Diskusi'**
+  /// **'Ruang\nDiskusi'**
   String get dictDiscussionChip;
+
+  /// Semantics chip Diskusi di beranda saat ada chat baru (titik)
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi, ada chat baru'**
+  String get dictDiscussionUnreadSemantics;
+
+  /// Semantics chip Diskusi di beranda saat ada reply atau mention ke akun sendiri
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi, {count} pesan untukmu'**
+  String dictDiscussionMentionSemantics(int count);
 
   /// No description provided for @dictProposeWord.
   ///
@@ -8470,7 +8968,7 @@ abstract class AppLocalizations {
   /// Tab Hot: search miss 24 jam
   ///
   /// In id, this message translates to:
-  /// **'Dicari'**
+  /// **'Dicari warga'**
   String get hotTopicsTabSearched;
 
   /// Tab Sorotan: usulan kata pending
@@ -8482,7 +8980,7 @@ abstract class AppLocalizations {
   /// Tab Sorotan: kata hits / banyak dilihat (word_views)
   ///
   /// In id, this message translates to:
-  /// **'Hits'**
+  /// **'Terpopuler'**
   String get hotTopicsTabNearThreshold;
 
   /// Judul empty state tab Sorotan
@@ -8494,7 +8992,7 @@ abstract class AppLocalizations {
   /// Subtitle empty tab Dicari
   ///
   /// In id, this message translates to:
-  /// **'Belum ada pencarian kosong yang menonjol hari ini.'**
+  /// **'Belum ada kata yang dicari warga tapi belum ada di kamus.'**
   String get hotTopicsTabEmptySearchedBody;
 
   /// Subtitle empty tab Usulan
@@ -8506,19 +9004,103 @@ abstract class AppLocalizations {
   /// Subtitle empty tab Hits
   ///
   /// In id, this message translates to:
-  /// **'Belum ada hits dalam 2 hari terakhir.'**
+  /// **'Belum ada kata terpopuler dalam 2 hari terakhir.'**
   String get hotTopicsTabEmptyNearBody;
 
   /// Tab Sorotan: makna yang dapat downvote
   ///
   /// In id, this message translates to:
-  /// **'Cek'**
+  /// **'Perlu dicek'**
   String get hotTopicsTabCheck;
+
+  /// Tab Sorotan: kata paling sering dibuka
+  ///
+  /// In id, this message translates to:
+  /// **'Terpopuler'**
+  String get hotTopicsTabHits;
+
+  /// No description provided for @hotTopicsTabHitsBlurb.
+  ///
+  /// In id, this message translates to:
+  /// **'Halaman kata yang paling sering dibuka warga'**
+  String get hotTopicsTabHitsBlurb;
+
+  /// Empty state tab Terpopuler (word_views)
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kata terpopuler dalam 2 hari terakhir.'**
+  String get hotTopicsTabEmptyViewedBody;
+
+  /// No description provided for @hotTopicsTabProposedBlurb.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kata menunggu peninjauan'**
+  String get hotTopicsTabProposedBlurb;
+
+  /// No description provided for @hotTopicsTabSearchedBlurb.
+  ///
+  /// In id, this message translates to:
+  /// **'Dicari warga dan belum ada di kamus'**
+  String get hotTopicsTabSearchedBlurb;
+
+  /// No description provided for @hotTopicsTabCheckBlurb.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna yang dapat downvote dari warga'**
+  String get hotTopicsTabCheckBlurb;
+
+  /// Tab Sorotan: 10 kata baru diverifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Baru'**
+  String get hotTopicsTabVerified;
+
+  /// No description provided for @hotTopicsTabVerifiedBlurb.
+  ///
+  /// In id, this message translates to:
+  /// **'Baru diverifikasi - 10 terbaru'**
+  String get hotTopicsTabVerifiedBlurb;
+
+  /// No description provided for @hotTopicsTabEmptyVerifiedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kata yang baru diverifikasi.'**
+  String get hotTopicsTabEmptyVerifiedBody;
+
+  /// Tab Sorotan: lemma yang baru dikomentari
+  ///
+  /// In id, this message translates to:
+  /// **'Dikomentari'**
+  String get hotTopicsTabCommented;
+
+  /// No description provided for @hotTopicsTabCommentedBlurb.
+  ///
+  /// In id, this message translates to:
+  /// **'Lemma yang baru dikomentari'**
+  String get hotTopicsTabCommentedBlurb;
+
+  /// No description provided for @hotTopicsTabEmptyCommentedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada lemma yang baru dikomentari.'**
+  String get hotTopicsTabEmptyCommentedBody;
+
+  /// No description provided for @hotTopicsVerifiedMeta.
+  ///
+  /// In id, this message translates to:
+  /// **'diverifikasi {when}'**
+  String hotTopicsVerifiedMeta(String when);
+
+  /// No description provided for @hotTopicsCommentedMeta.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} komentar · {when}'**
+  String hotTopicsCommentedMeta(String count, String when);
 
   /// Subtitle empty tab Cek
   ///
   /// In id, this message translates to:
-  /// **'Belum ada makna yang perlu dicek hari ini.'**
+  /// **'Belum ada makna yang dapat downvote dari warga.'**
   String get hotTopicsTabEmptyCheckBody;
 
   /// Hint saat tab Hot memakai backfill di luar 24 jam
@@ -9727,6 +10309,12 @@ abstract class AppLocalizations {
   /// **'Acara'**
   String get feedKindEvent;
 
+  /// No description provided for @feedKindKarya.
+  ///
+  /// In id, this message translates to:
+  /// **'Karya'**
+  String get feedKindKarya;
+
   /// Label jenis aktivitas: usaha terbit
   ///
   /// In id, this message translates to:
@@ -9847,6 +10435,18 @@ abstract class AppLocalizations {
   /// **'Lihat kartu'**
   String get feedCtaSeeCard;
 
+  /// Label jenis feed: bagikan posisi papan peringkat
+  ///
+  /// In id, this message translates to:
+  /// **'Peringkat'**
+  String get feedKindLeaderboard;
+
+  /// CTA feed: buka papan peringkat mingguan
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat peringkat'**
+  String get feedCtaSeeLeaderboard;
+
   /// Ajakan membuka usulan
   ///
   /// In id, this message translates to:
@@ -9876,6 +10476,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat acara'**
   String get feedCtaSeeEvent;
+
+  /// No description provided for @feedCtaSeeKarya.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat karya'**
+  String get feedCtaSeeKarya;
 
   /// Ajakan membuka usaha
   ///
@@ -10074,6 +10680,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Periksa kata'**
   String get feedContributePeriksaKata;
+
+  /// Subjudul di band kaca hero halaman Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Bantu pastikan makna di kamus sudah tepat.'**
+  String get periksaKataHeroSubtitle;
 
   /// Placeholder body /periksa-kata sebelum Phase 4
   ///
@@ -11137,6 +11749,12 @@ abstract class AppLocalizations {
   /// **'Balasan Jinye'**
   String get notificationTypeJinyeComment;
 
+  /// Label jenis notifikasi disebut (@mention) di chat
+  ///
+  /// In id, this message translates to:
+  /// **'Sebutan di chat'**
+  String get notificationTypeChatMention;
+
   /// Label UI M3 (notification/komentar/usulan/vote)
   ///
   /// In id, this message translates to:
@@ -11166,6 +11784,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Vote'**
   String get notificationTypeVote;
+
+  /// Label jenis notifikasi clap artikel ensiklopedia
+  ///
+  /// In id, this message translates to:
+  /// **'Clap'**
+  String get notificationTypeClap;
 
   /// Label UI M3 (notification/komentar/usulan/vote)
   ///
@@ -13303,6 +13927,12 @@ abstract class AppLocalizations {
   /// **'Tonton'**
   String get karyaAccessKindWatch;
 
+  /// Label kind access_links trailer (film saja)
+  ///
+  /// In id, this message translates to:
+  /// **'Trailer'**
+  String get karyaAccessKindTrailer;
+
   /// No description provided for @karyaAccessKindBuy.
   ///
   /// In id, this message translates to:
@@ -14083,6 +14713,24 @@ abstract class AppLocalizations {
   /// **'Contoh 2019'**
   String get karyaFormYearHint;
 
+  /// Semantics / aksi hapus satu baris kaitan Sambas di form edit karya
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus kaitan Sambas'**
+  String get karyaFormRemoveSambas;
+
+  /// Semantics / aksi hapus satu baris kredit di form edit karya
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus kredit'**
+  String get karyaFormRemoveCredit;
+
+  /// Semantics / aksi hapus satu baris tautan akses di form edit karya
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus tautan akses'**
+  String get karyaFormRemoveAccess;
+
   /// No description provided for @karyaFormAddSambas.
   ///
   /// In id, this message translates to:
@@ -14142,6 +14790,54 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tautan sumber asli (https)'**
   String get karyaFormAccessUrlHint;
+
+  /// Label field upload cover lagu di form usulan karya
+  ///
+  /// In id, this message translates to:
+  /// **'Cover lagu'**
+  String get karyaFormCoverMusic;
+
+  /// Label field upload poster film di form usulan karya
+  ///
+  /// In id, this message translates to:
+  /// **'Poster film'**
+  String get karyaFormCoverFilm;
+
+  /// Hint upload cover lagu
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional - tampil di daftar dan detail lagu'**
+  String get karyaFormCoverHintMusic;
+
+  /// Hint upload poster film
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional - tampil di daftar dan detail film'**
+  String get karyaFormCoverHintFilm;
+
+  /// Label field URL trailer di form usul film
+  ///
+  /// In id, this message translates to:
+  /// **'URL trailer'**
+  String get karyaFormTrailerUrl;
+
+  /// Hint field URL trailer film
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional - tautan https trailer (YouTube, dll)'**
+  String get karyaFormTrailerUrlHint;
+
+  /// Toast saat cover masih diunggah
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu upload cover selesai'**
+  String get karyaFormWaitUpload;
+
+  /// Toast saat cover gagal upload masih ada di form
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus cover yang gagal diunggah dulu'**
+  String get karyaFormRemoveFailedPhoto;
 
   /// No description provided for @karyaFormAddAccess.
   ///
@@ -14220,6 +14916,72 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lainnya'**
   String get karyaCreditRoleOther;
+
+  /// Jenis rilis musik: single
+  ///
+  /// In id, this message translates to:
+  /// **'Single'**
+  String get karyaMusicReleaseSingle;
+
+  /// Jenis rilis musik: trek album
+  ///
+  /// In id, this message translates to:
+  /// **'Lagu album'**
+  String get karyaMusicReleaseAlbumTrack;
+
+  /// Jenis rilis musik selain single/album
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get karyaMusicReleaseOther;
+
+  /// Badge bahwa lagu adalah cover
+  ///
+  /// In id, this message translates to:
+  /// **'Cover'**
+  String get karyaMusicIsCoverBadge;
+
+  /// Empty state saat karya musik tanpa tautan akses
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tautan dengar'**
+  String get karyaMusicListenEmpty;
+
+  /// Jenis film: feature
+  ///
+  /// In id, this message translates to:
+  /// **'Film panjang'**
+  String get karyaFilmTypeFeature;
+
+  /// Jenis film: short
+  ///
+  /// In id, this message translates to:
+  /// **'Film pendek'**
+  String get karyaFilmTypeShort;
+
+  /// Jenis film: documentary
+  ///
+  /// In id, this message translates to:
+  /// **'Dokumenter'**
+  String get karyaFilmTypeDocumentary;
+
+  /// Jenis film selain feature/short/dokumenter
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get karyaFilmTypeOther;
+
+  /// Durasi film dalam menit
+  ///
+  /// In id, this message translates to:
+  /// **'{minutes} mnt'**
+  String karyaFilmRuntimeMinutes(int minutes);
+
+  /// Empty state saat karya film tanpa tautan akses
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tautan tonton'**
+  String get karyaFilmWatchEmpty;
 
   /// No description provided for @exploreCategoryAcara.
   ///
@@ -15222,6 +15984,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.'**
   String get regionDesaComingSoon;
+
+  /// Teks halaman detail kecamatan saat konten belum tersedia
+  ///
+  /// In id, this message translates to:
+  /// **'Info kecamatan ini sedang kami siapkan. Nanti kamu bisa lihat isinya di sini ya.'**
+  String get regionKecamatanComingSoon;
 
   /// No description provided for @regionAgendaDesa.
   ///
@@ -16552,7 +17320,7 @@ abstract class AppLocalizations {
   /// No description provided for @wilayahKecamatanProfile.
   ///
   /// In id, this message translates to:
-  /// **'Profil kecamatan'**
+  /// **'Lihat Kecamatan'**
   String get wilayahKecamatanProfile;
 
   /// No description provided for @wilayahScrollDown.
@@ -17742,6 +18510,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Permintaan terkirim, menunggu pengecekan'**
   String get discussionSentPending;
+
+  /// Toast setelah create diskusi auto-publish (#338)
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi tayang'**
+  String get discussionSentPublished;
 
   /// No description provided for @discussionStorageUnavailable.
   ///
@@ -20765,6 +21539,12 @@ abstract class AppLocalizations {
   /// **'Berbalas pantun bersama warga sambas'**
   String get pantunListSubtitle;
 
+  /// Label aksesibilitas gambar hero halaman pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Ilustrasi warga berbalas pantun di tepi sungai'**
+  String get pantunHeroSemantics;
+
   /// No description provided for @pantunComingSoon.
   ///
   /// In id, this message translates to:
@@ -21419,6 +22199,12 @@ abstract class AppLocalizations {
   /// **'Suntingan dikirim - menunggu tinjauan lagi'**
   String get discussionEditQueued;
 
+  /// Toast setelah edit OP tetap published (#338)
+  ///
+  /// In id, this message translates to:
+  /// **'Suntingan tersimpan - diskusi tetap tayang'**
+  String get discussionEditPublished;
+
   /// Judul sheet riwayat edit OP
   ///
   /// In id, this message translates to:
@@ -21581,6 +22367,24 @@ abstract class AppLocalizations {
   /// **'Jiku'**
   String get jinyeProfileJikuLabel;
 
+  /// Semantics baris jiku di profil sendiri
+  ///
+  /// In id, this message translates to:
+  /// **'Jiku, ketuk untuk opsi'**
+  String get jinyeProfileJikuActionsSemantics;
+
+  /// Sheet jiku profil sendiri - buka detail
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat jiku'**
+  String get jinyeSheetViewJiku;
+
+  /// Sheet jiku profil sendiri - sunting teks
+  ///
+  /// In id, this message translates to:
+  /// **'Edit jiku'**
+  String get jinyeSheetEditJiku;
+
   /// CTA sheet profil - fokus reply (legacy)
   ///
   /// In id, this message translates to:
@@ -21596,25 +22400,25 @@ abstract class AppLocalizations {
   /// CTA sheet profil sendiri - buka compose Jinye baru
   ///
   /// In id, this message translates to:
-  /// **'Buat jinye baru'**
+  /// **'Jiku baru'**
   String get jinyeSheetCreateNew;
 
-  /// CTA sheet profil sendiri - arsipkan status agar hilang dari bubble
+  /// CTA sheet profil sendiri - arsipkan jiku agar hilang dari profil
   ///
   /// In id, this message translates to:
-  /// **'Kosongkan jinye'**
+  /// **'Kosongkan jiku'**
   String get jinyeSheetClear;
 
-  /// Judul konfirmasi kosongkan Jinye di profil
+  /// Judul konfirmasi kosongkan jiku di profil
   ///
   /// In id, this message translates to:
-  /// **'Kosongkan jinye?'**
+  /// **'Kosongkan jiku?'**
   String get jinyeSheetClearConfirmTitle;
 
-  /// Isi konfirmasi kosongkan Jinye di profil
+  /// Isi konfirmasi kosongkan jiku di profil
   ///
   /// In id, this message translates to:
-  /// **'Status di profil kamu hilang. Jinye tetap tersimpan di arsip.'**
+  /// **'Jiku di profil kamu hilang. Jinye tetap tersimpan di arsip.'**
   String get jinyeSheetClearConfirmBody;
 
   /// Tombol konfirmasi destruktif kosongkan Jinye
@@ -21626,7 +22430,7 @@ abstract class AppLocalizations {
   /// Toast sukses setelah kosongkan Jinye dari profil
   ///
   /// In id, this message translates to:
-  /// **'Jinye dikosongkan'**
+  /// **'Jiku dikosongkan'**
   String get jinyeClearedSuccess;
 
   /// Empty state diskusi Jinye Phase 1
@@ -22163,6 +22967,48 @@ abstract class AppLocalizations {
   /// **'Gagal mengajukan jadi contoh'**
   String get jinyePromoteFailed;
 
+  /// CTA promote foto Jinye jadi foto lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Jadikan foto lemma'**
+  String get jinyePromoteImageAction;
+
+  /// Judul sheet pilih foto Jinye untuk jadi foto lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih foto'**
+  String get jinyePromoteImagePickTitle;
+
+  /// Tombol lanjut setelah pilih foto Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut pilih lemma'**
+  String get jinyePromoteImagePickConfirm;
+
+  /// Toast promote foto oleh user biasa (pending review)
+  ///
+  /// In id, this message translates to:
+  /// **'Foto terkirim, menunggu dicek verifikator ya'**
+  String get jinyePromoteImagePending;
+
+  /// Toast promote foto oleh verifikator (langsung tayang)
+  ///
+  /// In id, this message translates to:
+  /// **'Foto sudah jadi foto lemma'**
+  String get jinyePromoteImageDone;
+
+  /// Error promote foto
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengajukan jadi foto lemma'**
+  String get jinyePromoteImageFailed;
+
+  /// Label atribusi foto lemma hasil promote Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Foto dari Jinye'**
+  String get jinyePromoteImageSourceLabel;
+
   /// CTA usul terjemahan Jinye
   ///
   /// In id, this message translates to:
@@ -22463,23 +23309,41 @@ abstract class AppLocalizations {
   /// **'Penyelenggara'**
   String get eventDetailOrganizerLabel;
 
-  /// No description provided for @eventGoingAction.
+  /// CTA tandai kehadiran sebelum tanggal acara
   ///
   /// In id, this message translates to:
-  /// **'Aku hadir'**
-  String get eventGoingAction;
+  /// **'Berencana hadir'**
+  String get eventGoingActionPlan;
 
-  /// No description provided for @eventGoingCancel.
+  /// CTA batal rencana hadir sebelum tanggal acara
+  ///
+  /// In id, this message translates to:
+  /// **'Batal rencana'**
+  String get eventGoingCancelPlan;
+
+  /// Jumlah orang yang berencana hadir sebelum tanggal acara
+  ///
+  /// In id, this message translates to:
+  /// **'{count} orang berencana hadir'**
+  String eventGoingCountPlan(int count);
+
+  /// CTA tandai hadir pada hari acara dan sesudahnya
+  ///
+  /// In id, this message translates to:
+  /// **'Hadir'**
+  String get eventGoingActionAttend;
+
+  /// CTA batal hadir pada hari acara dan sesudahnya
   ///
   /// In id, this message translates to:
   /// **'Batal hadir'**
-  String get eventGoingCancel;
+  String get eventGoingCancelAttend;
 
-  /// No description provided for @eventGoingCount.
+  /// Jumlah orang hadir pada hari acara dan sesudahnya
   ///
   /// In id, this message translates to:
   /// **'{count} orang hadir'**
-  String eventGoingCount(int count);
+  String eventGoingCountAttend(int count);
 
   /// CTA tandai pernah singgah di wisata
   ///
@@ -22588,6 +23452,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tulis komentar tentang acara ini'**
   String get eventCommentHint;
+
+  /// No description provided for @karyaCommentsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar'**
+  String get karyaCommentsTitle;
+
+  /// No description provided for @karyaCommentsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komentar. Jadi yang pertama ya.'**
+  String get karyaCommentsEmpty;
+
+  /// No description provided for @karyaCommentHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis komentar'**
+  String get karyaCommentHint;
 
   /// No description provided for @eventMorePhotos.
   ///
@@ -23437,7 +24319,7 @@ abstract class AppLocalizations {
   ///
   /// In id, this message translates to:
   /// **'+{points} poin minggu ini'**
-  String expHistoryWeeklyPoints(int points);
+  String expHistoryWeeklyPoints(String points);
 
   /// Nilai EXP pada akhir minggu penutupan
   ///
@@ -23504,6 +24386,1050 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tap kata di balasan untuk tautkan ke kamus.'**
   String get discussionReplyLemmaHint;
+
+  /// Chip filter komunitas: semua kategori
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get communityCategoryAll;
+
+  /// Chip filter komunitas kategori seni
+  ///
+  /// In id, this message translates to:
+  /// **'Seni & Budaya'**
+  String get communityCategorySeni;
+
+  /// Chip filter komunitas kategori bahasa
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa'**
+  String get communityCategoryBahasa;
+
+  /// Chip filter komunitas kategori pendidikan
+  ///
+  /// In id, this message translates to:
+  /// **'Pendidikan'**
+  String get communityCategoryPendidikan;
+
+  /// Chip filter komunitas kategori usaha mikro
+  ///
+  /// In id, this message translates to:
+  /// **'UKM'**
+  String get communityCategoryUkm;
+
+  /// Chip filter komunitas kategori lainnya
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get communityCategoryLain;
+
+  /// Hint textfield cari komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Cari nama komunitas…'**
+  String get communitySearchHint;
+
+  /// Empty state daftar komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komunitas terdaftar'**
+  String get communityOrgEmpty;
+
+  /// Hint empty list komunitas tanpa filter
+  ///
+  /// In id, this message translates to:
+  /// **'Punya komunitas atau tahu komunitas di Sambas? Boleh kamu usulkan.'**
+  String get communityOrgEmptyHint;
+
+  /// Judul empty list komunitas saat search/filter
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komunitas yang cocok'**
+  String get communityOrgEmptyQuery;
+
+  /// Hint empty list komunitas saat search/filter
+  ///
+  /// In id, this message translates to:
+  /// **'Coba kata atau kategori lain ya.'**
+  String get communityOrgEmptyQueryHint;
+
+  /// Subtitle error load daftar komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa koneksi lalu coba lagi.'**
+  String get communityLoadFailedBody;
+
+  /// Tombol hubungi komunitas di bottom sheet
+  ///
+  /// In id, this message translates to:
+  /// **'Hubungi'**
+  String get communityOrgContact;
+
+  /// Judul form usul komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usul Komunitas'**
+  String get communityContributeTitle;
+
+  /// Label field nama komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Nama Komunitas'**
+  String get communityContributeName;
+
+  /// Hint field nama komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'cth: Komunitas Melayu Sambas'**
+  String get communityContributeNameHint;
+
+  /// Validasi nama kosong atau terlalu pendek
+  ///
+  /// In id, this message translates to:
+  /// **'Nama komunitas minimal 2 huruf ya'**
+  String get communityContributeNameRequired;
+
+  /// Hint area logo placeholder
+  ///
+  /// In id, this message translates to:
+  /// **'Logo (opsional, menyusul)'**
+  String get communityContributeLogoHint;
+
+  /// Catatan alur review usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Usulanmu akan ditinjau tim sebelum tampil di daftar komunitas.'**
+  String get communityContributeNote;
+
+  /// Tombol kirim usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim Usulan'**
+  String get communityContributeSubmit;
+
+  /// Judul halaman usulan komunitas milik user
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan Saya'**
+  String get communityProposalsTitle;
+
+  /// Gate login halaman usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk lihat usulan komunitasmu'**
+  String get communityProposalsLoginGate;
+
+  /// Judul empty state usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan komunitas'**
+  String get communityProposalsEmpty;
+
+  /// Hint empty state usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan yang kamu kirim akan tampil di sini setelah ditinjau.'**
+  String get communityProposalsEmptyHint;
+
+  /// CTA empty state ke form usul komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usul Komunitas'**
+  String get communityProposalsEmptyCta;
+
+  /// Toast sukses submit usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan terkirim, terima kasih!'**
+  String get communityContributeSuccess;
+
+  /// Badge mitra resmi di detail komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Mitra Resmi'**
+  String get communityBadgeOfficialPartner;
+
+  /// Label tile kategori di detail komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get communityDetailCategory;
+
+  /// Label tile kecamatan di detail komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Kecamatan'**
+  String get communityDetailDistrict;
+
+  /// Subtitle hero halaman listing komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Komunitas, organisasi, dan perkumpulan di Sambas'**
+  String get communityListSubtitle;
+
+  /// Label kecil baris top 2 komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Sorotan'**
+  String get communityFeaturedSection;
+
+  /// Label field kategori usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get communityContributeCategory;
+
+  /// Label field deskripsi komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Deskripsi'**
+  String get communityContributeDesc;
+
+  /// Hint field deskripsi komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Ceritakan singkat tentang komunitas ini'**
+  String get communityContributeDescHint;
+
+  /// Validasi deskripsi kosong/terlalu pendek
+  ///
+  /// In id, this message translates to:
+  /// **'Deskripsi minimal 10 huruf ya'**
+  String get communityContributeDescRequired;
+
+  /// Label tap untuk pilih logo
+  ///
+  /// In id, this message translates to:
+  /// **'Ganti Logo'**
+  String get communityContributePickLogo;
+
+  /// Pesan gagal memuat daftar/detail komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Komunitas belum bisa dimuat. Coba lagi ya'**
+  String get communityLoadFailed;
+
+  /// Fallback gagal submit komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan komunitas belum bisa disimpan. Coba lagi ya'**
+  String get communitySaveFailed;
+
+  /// Fallback gagal upload logo komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Logo belum bisa diunggah. Coba pilih gambar lain ya'**
+  String get communityUploadLogoFailed;
+
+  /// Judul sheet gagal submit usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan belum terkirim'**
+  String get communityContributeFailed;
+
+  /// Label CTA saat submit usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim usulan'**
+  String get communityContributeSubmitting;
+
+  /// Gate login form usul komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk mengusulkan komunitas'**
+  String get communityContributeLoginGate;
+
+  /// Pesan gagal memuat usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan komunitasmu belum bisa dimuat. Coba lagi ya'**
+  String get communityProposalsLoadFailed;
+
+  /// Judul sheet konfirmasi batal usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan usulan ini?'**
+  String get communityProposalCancelTitle;
+
+  /// Isi sheet konfirmasi batal usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan yang dibatalkan tidak akan masuk antrean tinjauan tim.'**
+  String get communityProposalCancelBody;
+
+  /// Aksi batal usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan'**
+  String get communityProposalCancelAction;
+
+  /// Opsi untuk tidak membatalkan usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Biarkan tetap antre'**
+  String get communityProposalCancelKeepTitle;
+
+  /// Tombol batal aksi pembatalan usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak jadi'**
+  String get communityProposalCancelKeepAction;
+
+  /// Judul sheet gagal membatalkan usulan komunitas
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan belum bisa dibatalkan'**
+  String get communityProposalCancelFailed;
+
+  /// Label status usulan komunitas pending
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get communityProposalStatusPending;
+
+  /// Label status usulan komunitas approved
+  ///
+  /// In id, this message translates to:
+  /// **'Disetujui'**
+  String get communityProposalStatusApproved;
+
+  /// Label status usulan komunitas rejected
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get communityProposalStatusRejected;
+
+  /// Label status usulan komunitas cancelled
+  ///
+  /// In id, this message translates to:
+  /// **'Dibatalkan'**
+  String get communityProposalStatusCancelled;
+
+  /// Pembuka section contoh hitungan poin
+  ///
+  /// In id, this message translates to:
+  /// **'Ini simulasi sederhana: kamu bantu lengkapi kamus selama satu minggu.'**
+  String get balehoPointsGuideExampleIntro;
+
+  /// Langkah 1: usul kata. Selaraskan angka dengan konstanta LEADERBOARD_* di api.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu mengusulkan 1 kata baru'**
+  String get balehoPointsGuideExampleLine1;
+
+  /// Detail langkah 1
+  ///
+  /// In id, this message translates to:
+  /// **'Begitu dikirim, poin usul langsung masuk.'**
+  String get balehoPointsGuideExampleLine1Detail;
+
+  /// Langkah 2: usulan diterima. Selaraskan angka dengan konstanta LEADERBOARD_* di api.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kata itu disetujui verifikator'**
+  String get balehoPointsGuideExampleLine2;
+
+  /// Detail langkah 2
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu dapat bonus karena usulan kamu lolos.'**
+  String get balehoPointsGuideExampleLine2Detail;
+
+  /// Langkah 3: usul perbaikan. Selaraskan angka dengan konstanta LEADERBOARD_* di api.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu mengusulkan 1 perbaikan makna kata'**
+  String get balehoPointsGuideExampleLine3;
+
+  /// Detail langkah 3
+  ///
+  /// In id, this message translates to:
+  /// **'Poin usul perbaikan masuk saat dikirim.'**
+  String get balehoPointsGuideExampleLine3Detail;
+
+  /// Langkah 4: verifikasi. Selaraskan angka dengan konstanta LEADERBOARD_* di api.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu memverifikasi 2 usulan orang lain'**
+  String get balehoPointsGuideExampleLine4;
+
+  /// Detail langkah 4
+  ///
+  /// In id, this message translates to:
+  /// **'Setiap keputusan verifikasi = 2 poin (bukan usulan sendiri).'**
+  String get balehoPointsGuideExampleLine4Detail;
+
+  /// Ringkasan subtotal usul pada contoh simulasi.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari usul kamu (kata baru, bonus, perbaikan): {subtotal} poin'**
+  String balehoPointsGuideExampleSubtotalWords(String subtotal);
+
+  /// Ringkasan subtotal verifikasi pada contoh.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari verifikasi: {subtotal} poin ({count} × 2)'**
+  String balehoPointsGuideExampleSubtotalVerify(String subtotal, int count);
+
+  /// Label baris total contoh
+  ///
+  /// In id, this message translates to:
+  /// **'Total poin minggu ini'**
+  String get balehoPointsGuideExampleTotalLabel;
+
+  /// Total poin pada contoh simulasi.
+  ///
+  /// In id, this message translates to:
+  /// **'{total} poin'**
+  String balehoPointsGuideExampleTotal(String total);
+
+  /// Keluar mode gabung kata
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get lemmaMergeCancel;
+
+  /// Lanjut ke pilih lemma utama
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut'**
+  String get lemmaMergeContinue;
+
+  /// Jumlah kata terpilih untuk digabung
+  ///
+  /// In id, this message translates to:
+  /// **'{count} terpilih'**
+  String lemmaMergeSelectedCount(int count);
+
+  /// Judul sheet gabung lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Gabung kata'**
+  String get lemmaMergeSheetTitle;
+
+  /// Petunjuk pilih penjaga
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih lemma utama. Sisanya jadi variasi penulisan.'**
+  String get lemmaMergePickPrimary;
+
+  /// Hint alasan gabung
+  ///
+  /// In id, this message translates to:
+  /// **'Kenapa ini satu kata?'**
+  String get lemmaMergeReasonHint;
+
+  /// Validasi alasan gabung
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan min 10 karakter'**
+  String get lemmaMergeReasonTooShort;
+
+  /// CTA kirim usulan gabung
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim'**
+  String get lemmaMergeSubmit;
+
+  /// Gabung kata butuh login
+  ///
+  /// In id, this message translates to:
+  /// **'Login dulu untuk gabung kata.'**
+  String get lemmaMergeNeedLogin;
+
+  /// Semantics long-press gabung
+  ///
+  /// In id, this message translates to:
+  /// **'Tahan untuk gabung: {lemma}'**
+  String lemmaMergeHoldHint(String lemma);
+
+  /// Label tab/shortcut stiker favorit di deck stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Favorit'**
+  String get stickerTabFavorites;
+
+  /// Label tab custom stiker milik user di deck stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Milikku'**
+  String get stickerTabMine;
+
+  /// Empty state tab favorit stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada stiker favorit. Ketuk stiker di chat atau komentar untuk menambahkannya.'**
+  String get stickerFavoritesEmpty;
+
+  /// Pesan saat guest membuka tab favorit stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk menyimpan dan melihat stiker favorit kamu.'**
+  String get stickerFavoritesLoginHint;
+
+  /// Empty state tab custom stiker milik user
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada stiker buatan kamu. Buat stiker sendiri dari galeri.'**
+  String get stickerMineEmpty;
+
+  /// Pesan saat guest membuka tab stiker milikku
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk membuat dan mengelola stiker buatan kamu.'**
+  String get stickerMineLoginHint;
+
+  /// Tombol menambah stiker ke favorit
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah ke favorit'**
+  String get stickerAddToFavorites;
+
+  /// Tombol menghapus stiker dari favorit
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus dari favorit'**
+  String get stickerRemoveFromFavorites;
+
+  /// Toast sukses tambah stiker favorit
+  ///
+  /// In id, this message translates to:
+  /// **'Stiker ditambahkan ke favorit'**
+  String get stickerAddedToFavorites;
+
+  /// Toast sukses hapus stiker favorit
+  ///
+  /// In id, this message translates to:
+  /// **'Stiker dihapus dari favorit'**
+  String get stickerRemovedFromFavorites;
+
+  /// Pesan saat kuota favorit stiker penuh
+  ///
+  /// In id, this message translates to:
+  /// **'Favorit stiker kamu sudah penuh (maksimal 50). Hapus beberapa dulu ya.'**
+  String get stickerFavoriteLimitReached;
+
+  /// Pesan error umum saat toggle favorit stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memperbarui favorit stiker. Coba lagi ya.'**
+  String get stickerFavoriteActionFailed;
+
+  /// Tombol kirim stiker langsung dari detail sheet
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim stiker ini'**
+  String get stickerSendNow;
+
+  /// Tombol membuka sheet buat custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Buat stiker'**
+  String get stickerCreateButton;
+
+  /// Judul sheet buat custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Buat stiker sendiri'**
+  String get stickerCreateTitle;
+
+  /// Subjudul penjelasan privasi custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya tampil di deck kamu. Pengguna lain bisa memfavoritkannya saat kamu kirim.'**
+  String get stickerCreateSubtitle;
+
+  /// Tombol memilih file gambar/GIF dari galeri
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih gambar atau GIF'**
+  String get stickerCreatePickImage;
+
+  /// Tombol mengganti gambar stiker yang sudah dipilih
+  ///
+  /// In id, this message translates to:
+  /// **'Ganti gambar'**
+  String get stickerCreateChangeImage;
+
+  /// Label field nama custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Nama stiker (opsional)'**
+  String get stickerCreateNameLabel;
+
+  /// Hint field nama custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: Kopi pagi'**
+  String get stickerCreateNameHint;
+
+  /// CTA simpan custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan stiker'**
+  String get stickerCreateSubmit;
+
+  /// Label CTA saat custom stiker sedang diunggah
+  ///
+  /// In id, this message translates to:
+  /// **'Menyimpan...'**
+  String get stickerCreateSubmitting;
+
+  /// Toast sukses membuat custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Stiker kamu berhasil dibuat'**
+  String get stickerCreateSuccess;
+
+  /// Validasi saat user belum memilih gambar
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih gambar atau GIF dulu ya'**
+  String get stickerCreateImageRequired;
+
+  /// Validasi saat ukuran file GIF melebihi 2 MB
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran GIF maksimal 2 MB'**
+  String get stickerCreateGifTooLarge;
+
+  /// Pesan saat kuota custom stiker penuh
+  ///
+  /// In id, this message translates to:
+  /// **'Custom stiker kamu sudah penuh (maksimal 20). Hapus stiker lama dulu ya.'**
+  String get stickerCreateLimitReached;
+
+  /// Pesan error umum saat membuat custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membuat stiker. Coba lagi ya.'**
+  String get stickerCreateFailed;
+
+  /// Judul konfirmasi hapus custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus stiker ini?'**
+  String get stickerDeleteMineTitle;
+
+  /// Isi konfirmasi hapus custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Stiker akan dihapus dari deck kamu dan tidak bisa dikirim lagi.'**
+  String get stickerDeleteMineBody;
+
+  /// Tombol konfirmasi hapus custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus stiker'**
+  String get stickerDeleteMineConfirm;
+
+  /// Toast sukses hapus custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Stiker berhasil dihapus'**
+  String get stickerDeleteMineSuccess;
+
+  /// Pesan error gagal hapus custom stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menghapus stiker. Coba lagi ya.'**
+  String get stickerDeleteMineFailed;
+
+  /// Badge penanda stiker buatan user
+  ///
+  /// In id, this message translates to:
+  /// **'Custom'**
+  String get stickerCustomBadge;
+
+  /// Tombol masuk pada empty state stiker untuk guest
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk'**
+  String get stickerLoginAction;
+
+  /// Tombol shortcut untuk mengusulkan makna baru pada lemma yang sudah ada
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan makna baru'**
+  String get dictAddMeaningCta;
+
+  /// Label seksi daftar makna tunggal pada detail lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Makna'**
+  String get dictMeaningsSection;
+
+  /// Label seksi daftar multi-makna pada detail lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Makna ({count})'**
+  String dictMeaningsSectionCount(int count);
+
+  /// No description provided for @historyLoadMore.
+  ///
+  /// In id, this message translates to:
+  /// **'Muat lebih banyak'**
+  String get historyLoadMore;
+
+  /// No description provided for @historyShowMoreChanges.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat {count} perubahan lain'**
+  String historyShowMoreChanges(int count);
+
+  /// No description provided for @historyShowLess.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan lebih sedikit'**
+  String get historyShowLess;
+
+  /// No description provided for @historySuggestedBy.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan dari {name}'**
+  String historySuggestedBy(String name);
+
+  /// No description provided for @historyReasonLine.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan: {reason}'**
+  String historyReasonLine(String reason);
+
+  /// No description provided for @historyReviewerNoteLine.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan reviewer: {note}'**
+  String historyReviewerNoteLine(String note);
+
+  /// No description provided for @historyEntityNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Data tidak ditemukan'**
+  String get historyEntityNotFound;
+
+  /// No description provided for @historyEmptyHintEntity.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan yang terjadi mulai sekarang akan muncul di sini.'**
+  String get historyEmptyHintEntity;
+
+  /// No description provided for @placeHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data wisata ini.'**
+  String get placeHistoryBody;
+
+  /// No description provided for @cuisineHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data kuliner ini.'**
+  String get cuisineHistoryBody;
+
+  /// No description provided for @usahaHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data usaha ini.'**
+  String get usahaHistoryBody;
+
+  /// No description provided for @eventHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data acara ini.'**
+  String get eventHistoryBody;
+
+  /// No description provided for @karyaHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data karya ini.'**
+  String get karyaHistoryBody;
+
+  /// No description provided for @layananHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data layanan ini.'**
+  String get layananHistoryBody;
+
+  /// No description provided for @communityHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data komunitas ini.'**
+  String get communityHistoryBody;
+
+  /// Tooltip ikon panduan di header Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Panduan Periksa Kata'**
+  String get periksaKataGuideOpenTooltip;
+
+  /// Judul halaman panduan
+  ///
+  /// In id, this message translates to:
+  /// **'Cara kerja Periksa Kata'**
+  String get periksaKataGuideTitle;
+
+  /// Judul hero halaman panduan Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Jaga mutu kamus bersama'**
+  String get periksaKataGuideHeroTitle;
+
+  /// Subjudul hero halaman panduan Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Cara kerja Periksa Kata dan simulasi Voting Warga.'**
+  String get periksaKataGuideHeroBody;
+
+  /// Semantics label gambar hero
+  ///
+  /// In id, this message translates to:
+  /// **'Ilustrasi warga memeriksa makna bersama'**
+  String get periksaKataGuideHeroSemantics;
+
+  /// Judul seksi langkah di halaman panduan
+  ///
+  /// In id, this message translates to:
+  /// **'Cara memeriksa kata'**
+  String get periksaKataGuideStepsTitle;
+
+  /// Langkah 1 judul
+  ///
+  /// In id, this message translates to:
+  /// **'Baca makna secara utuh'**
+  String get periksaKataGuideStep1Title;
+
+  /// Langkah 1 isi
+  ///
+  /// In id, this message translates to:
+  /// **'Cek lemma, terjemahan, dan definisinya. Ketuk kartu untuk melihat detail kata.'**
+  String get periksaKataGuideStep1Body;
+
+  /// Langkah 2 judul
+  ///
+  /// In id, this message translates to:
+  /// **'Beri voting'**
+  String get periksaKataGuideStep2Title;
+
+  /// Langkah 2 isi
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih Sudah pas atau Perlu dicek ulang. Satu akun satu voting - ketuk lagi untuk batal.'**
+  String get periksaKataGuideStep2Body;
+
+  /// Langkah 3 judul
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati jika ragu'**
+  String get periksaKataGuideStep3Title;
+
+  /// Langkah 3 isi
+  ///
+  /// In id, this message translates to:
+  /// **'Geser kartu ke kiri untuk melewati tanpa memilih.'**
+  String get periksaKataGuideStep3Body;
+
+  /// Judul seksi ambang keputusan
+  ///
+  /// In id, this message translates to:
+  /// **'Aturan keputusan'**
+  String get periksaKataGuideRulesTitle;
+
+  /// Aturan terverifikasi judul
+  ///
+  /// In id, this message translates to:
+  /// **'Terverifikasi otomatis'**
+  String get periksaKataGuideRuleVerifyTitle;
+
+  /// Aturan terverifikasi isi
+  ///
+  /// In id, this message translates to:
+  /// **'Selisih voting Sudah pas minimal +5 dari sedikitnya 5 pemilih.'**
+  String get periksaKataGuideRuleVerifyBody;
+
+  /// Aturan ditolak judul
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak otomatis'**
+  String get periksaKataGuideRuleRejectTitle;
+
+  /// Aturan ditolak isi
+  ///
+  /// In id, this message translates to:
+  /// **'Selisih voting Perlu dicek ulang minimal -5 dari sedikitnya 5 pemilih.'**
+  String get periksaKataGuideRuleRejectBody;
+
+  /// Aturan menunggu judul
+  ///
+  /// In id, this message translates to:
+  /// **'Tetap menunggu'**
+  String get periksaKataGuideRuleWaitTitle;
+
+  /// Aturan menunggu isi
+  ///
+  /// In id, this message translates to:
+  /// **'Pemilih < 5 atau selisih -4 sampai +4. Voting terbanyak tampil teratas agar cepat selesai.'**
+  String get periksaKataGuideRuleWaitBody;
+
+  /// Judul seksi simulasi
+  ///
+  /// In id, this message translates to:
+  /// **'Simulasi Voting Warga'**
+  String get periksaKataGuideSimTitle;
+
+  /// Penjelasan simulasi
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk kartu atau tombol di bawah untuk lihat perubahan status di ambang +5 / -5. Tidak mengubah data asli.'**
+  String get periksaKataGuideSimBody;
+
+  /// Tombol simulasi setuju
+  ///
+  /// In id, this message translates to:
+  /// **'+1 Sudah pas'**
+  String get periksaKataGuideSimAgree;
+
+  /// Tombol simulasi tidak setuju
+  ///
+  /// In id, this message translates to:
+  /// **'+1 Perlu dicek ulang'**
+  String get periksaKataGuideSimDisagree;
+
+  /// Tombol reset simulasi
+  ///
+  /// In id, this message translates to:
+  /// **'Ulangi simulasi'**
+  String get periksaKataGuideSimReset;
+
+  /// Status simulasi terverifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Terverifikasi otomatis'**
+  String get periksaKataGuideSimVerified;
+
+  /// Status simulasi ditolak
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak otomatis'**
+  String get periksaKataGuideSimRejected;
+
+  /// Status simulasi menunggu
+  ///
+  /// In id, this message translates to:
+  /// **'Masih menunggu. {voters} pemilih, selisih {net}. Ambang +{threshold} atau -{threshold}.'**
+  String periksaKataGuideSimWaiting(int voters, int threshold, int net);
+
+  /// Subjudul banner panduan di feed Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Pahami cara kerja & coba simulasi voting'**
+  String get periksaKataGuideBannerText;
+
+  /// Judul CTA banner panduan di feed Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat panduan'**
+  String get periksaKataGuideBannerAction;
+
+  /// Tombol tutup banner panduan
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup'**
+  String get periksaKataGuideBannerDismiss;
+
+  /// Lemma contoh kartu simulasi panduan
+  ///
+  /// In id, this message translates to:
+  /// **'lestari'**
+  String get periksaKataGuideSampleLemma;
+
+  /// Terjemahan contoh kartu simulasi panduan
+  ///
+  /// In id, this message translates to:
+  /// **'sustainable'**
+  String get periksaKataGuideSampleTranslation;
+
+  /// Definisi contoh kartu simulasi panduan
+  ///
+  /// In id, this message translates to:
+  /// **'tetap terjaga dan bisa bertahan lama'**
+  String get periksaKataGuideSampleDefinition;
+
+  /// Paragraf pengantar redaksi di halaman panduan Periksa Kata
+  ///
+  /// In id, this message translates to:
+  /// **'Setiap kosakata atau makna dari usulan warga akan masuk ke area voting terlebih dahulu sebelum terverifikasi. Lewat voting bersama, makna yang tepat segera disahkan dan yang keliru cepat tersaring.'**
+  String get periksaKataGuideIntro;
+
+  /// Judul kartu CTA kritik dan saran di halaman Eksplorasi
+  ///
+  /// In id, this message translates to:
+  /// **'Punya kritik atau saran?'**
+  String get exploreFeedbackCtaTitle;
+
+  /// Subjudul kartu CTA kritik dan saran di halaman Eksplorasi
+  ///
+  /// In id, this message translates to:
+  /// **'Bantu kami membuat pengalaman menggunakan SambasKu jadi lebih nyaman untukmu!'**
+  String get exploreFeedbackCtaSubtitle;
+
+  /// Judul halaman kirim kritik dan saran
+  ///
+  /// In id, this message translates to:
+  /// **'Kritik & Saran'**
+  String get feedbackTitle;
+
+  /// Label aksesibilitas ilustrasi hero di halaman Kritik & Saran
+  ///
+  /// In id, this message translates to:
+  /// **'Ilustrasi kirim kritik dan saran untuk SambasKu'**
+  String get feedbackHeroSemantics;
+
+  /// Teks pengantar singkat di bawah ilustrasi halaman Kritik & Saran
+  ///
+  /// In id, this message translates to:
+  /// **'Punya ide fitur, masukan, atau hal yang kurang pas? Ceritakan di sini ya.'**
+  String get feedbackIntro;
+
+  /// Info pengiriman anonim untuk pengguna yang belum login di halaman Kritik & Saran
+  ///
+  /// In id, this message translates to:
+  /// **'Masukan kamu dikirim sebagai Anonim'**
+  String get feedbackGuestAnonymous;
+
+  /// Petunjuk login agar bisa melampirkan gambar di halaman Kritik & Saran
+  ///
+  /// In id, this message translates to:
+  /// **'Login kalau mau melampirkan gambar pendukung'**
+  String get feedbackGuestLoginHint;
+
+  /// Label kolom teks utama di halaman Kritik & Saran
+  ///
+  /// In id, this message translates to:
+  /// **'Kritik atau saran'**
+  String get feedbackDescriptionLabel;
+
+  /// Hint kolom teks utama di halaman Kritik & Saran
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis ide, saran perbaikan, atau hal yang kamu harapkan di SambasKu'**
+  String get feedbackDescriptionHint;
+
+  /// Label tombol kirim di halaman Kritik & Saran
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim Masukan'**
+  String get feedbackSubmit;
+
+  /// Label tombol saat proses kirim berlangsung di halaman Kritik & Saran
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get feedbackSubmitting;
+
+  /// Toast sukses setelah kirim kritik dan saran
+  ///
+  /// In id, this message translates to:
+  /// **'Terima kasih, masukan kamu sudah kami terima'**
+  String get feedbackThanks;
 }
 
 class _AppLocalizationsDelegate

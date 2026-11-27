@@ -23,6 +23,8 @@ class HotTopicsRepository {
       throw StateError('Data hot-topics tidak valid');
     }
     return HotTopicsBundle(
+      verified: _parseVerified(data['verified']),
+      commented: _parseCommented(data['commented']),
       searched: _parseSearched(data['searched']),
       proposed: _parseProposed(data['proposed']),
       viewed: _parseViewed(data['viewed']),
@@ -116,6 +118,51 @@ class HotTopicsRepository {
             lemma: row['lemma'] as String? ?? '',
             downvotes: (row['downvotes'] as num?)?.toInt() ?? 0,
             definitionPreview: preview is String ? preview : null,
+            inWindow: row['in_window'] == true,
+          ),
+        );
+      }
+    }
+    return HotTopicTab(items: items, meta: _meta(map['meta']));
+  }
+
+  HotTopicTab _parseVerified(Object? raw) {
+    final map = raw is Map ? raw : const {};
+    final list = map['items'];
+    final items = <HotTopicItem>[];
+    if (list is List) {
+      for (final row in list) {
+        if (row is! Map) continue;
+        final at = DateTime.tryParse(row['verified_at'] as String? ?? '');
+        if (at == null) continue;
+        items.add(
+          HotVerifiedItem(
+            wordId: row['word_id'] as String? ?? '',
+            lemma: row['lemma'] as String? ?? '',
+            verifiedAt: at,
+            inWindow: row['in_window'] == true,
+          ),
+        );
+      }
+    }
+    return HotTopicTab(items: items, meta: _meta(map['meta']));
+  }
+
+  HotTopicTab _parseCommented(Object? raw) {
+    final map = raw is Map ? raw : const {};
+    final list = map['items'];
+    final items = <HotTopicItem>[];
+    if (list is List) {
+      for (final row in list) {
+        if (row is! Map) continue;
+        final at = DateTime.tryParse(row['last_commented_at'] as String? ?? '');
+        if (at == null) continue;
+        items.add(
+          HotCommentedItem(
+            wordId: row['word_id'] as String? ?? '',
+            lemma: row['lemma'] as String? ?? '',
+            commentCount: (row['comment_count'] as num?)?.toInt() ?? 0,
+            lastCommentedAt: at,
             inWindow: row['in_window'] == true,
           ),
         );

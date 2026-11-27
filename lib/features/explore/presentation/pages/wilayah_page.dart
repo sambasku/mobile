@@ -73,6 +73,8 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
   MapLibreMapController? _controller;
   bool _kecLayersAdded = false;
   bool _desaLayersAdded = false;
+  bool _desaSyncInFlight = false;
+  String? _desaSyncedForKec;
   bool _styleReady = false;
 
   /// Ring luar per id kecamatan, dari geojson (cache setelah parse).
@@ -90,6 +92,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
 
   /// Hasil decode ADM4 (file besar): decode sekali, load & sync berbagi.
   Map<String, dynamic>? _adm4Cache;
+  Future<Map<String, dynamic>?>? _adm4Future;
 
   /// Asset ADM4 pernah gagal decode/korup: jangan retry tiap build
   /// (decode 67K per frame = jank loop). Hardening #106.
@@ -141,6 +144,10 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
     super.initState();
     _selectedKecId = widget.initialKecSlug;
     _loadKecamatanGeoJson();
+    final initial = widget.initialKecSlug;
+    if (initial != null) {
+      unawaited(_loadDesaGeoJson(initial));
+    }
   }
 
   Future<void> _loadKecamatanGeoJson() async {
@@ -167,10 +174,10 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
     _kecLayersAdded = true;
     try {
       final raw = await rootBundle.loadString('assets/data/regions.geojson');
-      await controller.addGeoJsonSource(
-        _kecSourceId,
+      final geojson = RegionGeometry.sanitizeFeatureCollection(
         jsonDecode(raw) as Map<String, dynamic>,
       );
+      await controller.addGeoJsonSource(_kecSourceId, geojson);
       await controller.addFillLayer(
         _kecSourceId,
         _kecFillLayerId,
@@ -188,7 +195,8 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
       );
       await _addKecLabelLayer();
       await _applyKecColors();
-    } catch (_) {
+    } catch (e, st) {
+      debugPrint('WilayahPage _maybeAddKecLayers error: $e\n$st');
       _kecLayersAdded = false;
     }
   }
@@ -228,12 +236,14 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
   Future<void> _loadDesaGeoJson(String kecSlug) async {
     // Sudah selesai untuk kecamatan ini (layer ada, atau memang 0 desa).
     if (_desaShownForKec == kecSlug &&
-        (_desaLayersAdded || _desaRings.isEmpty)) {
+        ((_desaLayersAdded && _desaSyncedForKec == kecSlug) ||
+            _desaRings.isEmpty)) {
       return;
     }
-    // Rings sudah di-cache, tinggal sync (mis. style baru siap / retry).
+    // Rings sudah di-cache, tinggal sync (mis. style baru siap / remount).
     if (_desaShownForKec == kecSlug && _desaRings.isNotEmpty) {
-      if (_styleReady && !_desaLayersAdded) {
+      if (_styleReady &&
+          (!_desaLayersAdded || _desaSyncedForKec != kecSlug)) {
         await _syncDesaLayers(kecSlug, _desaLoadToken);
       }
       return;
@@ -264,9 +274,11 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
   /// Buang layer desa + batalkan request in-flight (saat unselect kecamatan).
   Future<void> _clearDesaLayers() async {
     _desaLoadToken++;
+    if (_desaSyncInFlight) return;
     final controller = _controller;
     if (controller == null || !_desaLayersAdded) {
       _desaLayersAdded = false;
+      _desaSyncedForKec = null;
       return;
     }
     try {
@@ -278,6 +290,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
       await controller.removeSource(_desaSourceId);
     } catch (_) {}
     _desaLayersAdded = false;
+    _desaSyncedForKec = null;
   }
 
   /// Fokus kamera ke centroid ring kecamatan (offline, tanpa katalog API).
@@ -298,11 +311,15 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
     );
   }
 
-  /// Decode ADM4 sekali - dipakai _loadDesaGeoJson & _syncDesaLayers.
-  Future<Map<String, dynamic>?> _loadAdm4() async {
-    if (_adm4Failed) return null;
+  /// Decode ADM4 sekali (single-flight) - dipakai _loadDesaGeoJson & _syncDesaLayers.
+  Future<Map<String, dynamic>?> _loadAdm4() {
+    if (_adm4Failed) return Future.value(null);
     final cached = _adm4Cache;
-    if (cached != null) return cached;
+    if (cached != null) return Future.value(cached);
+    return _adm4Future ??= _decodeAdm4();
+  }
+
+  Future<Map<String, dynamic>?> _decodeAdm4() async {
     try {
       final raw = await rootBundle.loadString(
         'assets/data/regions-adm4.geojson',
@@ -318,6 +335,8 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
       // jalan tanpa polygon, tanpa decode ulang per build.
       _adm4Failed = true;
       return null;
+    } finally {
+      _adm4Future = null;
     }
   }
 
@@ -326,6 +345,11 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
   Future<void> _syncDesaLayers(String kecSlug, int token) async {
     final controller = _controller;
     if (controller == null || !_styleReady) return;
+    // Serialisasi native remove/add source agar tidak tumpang-tindih
+    // (duplicate source -> hapus layer -> retry loop / glitch kedap-kedip).
+    if (_desaSyncInFlight) return;
+    if (_desaLayersAdded && _desaSyncedForKec == kecSlug) return;
+    _desaSyncInFlight = true;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     try {
       // Hapus layer lama dulu (layer harus dibuang sebelum source).
@@ -339,6 +363,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
           await controller.removeSource(_desaSourceId);
         } catch (_) {}
         _desaLayersAdded = false;
+        _desaSyncedForKec = null;
       }
 
       // Ganti request terjadi saat menunggu remove: berhenti - layer lama
@@ -358,10 +383,11 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
       }).toList();
       if (filteredFeats.isEmpty) return;
 
-      await controller.addGeoJsonSource(_desaSourceId, {
+      final desaGeoJson = RegionGeometry.sanitizeFeatureCollection({
         'type': 'FeatureCollection',
         'features': filteredFeats,
       });
+      await controller.addGeoJsonSource(_desaSourceId, desaGeoJson);
       await controller.addFillLayer(
         _desaSourceId,
         _desaFillLayerId,
@@ -378,6 +404,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
       // Fill+line cukup untuk "desa tampil". Label terpisah: gagal font/
       // symbol tidak boleh menghapus polygon (pola sama _addKecLabelLayer).
       _desaLayersAdded = true;
+      _desaSyncedForKec = kecSlug;
       try {
         await controller.addSymbolLayer(
           _desaSourceId,
@@ -395,7 +422,8 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
         );
       } catch (_) {}
       await _applyDesaSelection();
-    } catch (_) {
+    } catch (e, st) {
+      debugPrint('WilayahPage _syncDesaLayers error: $e\n$st');
       // Gagal di tengah: buang layer setengah jadi supaya state selalu
       // konsisten dengan peta (#106). Lepas _desaShownForKec supaya
       // tap/build bisa retry (bukan stuck selamanya).
@@ -408,10 +436,21 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
         await controller.removeSource(_desaSourceId);
       } catch (_) {}
       _desaLayersAdded = false;
-      if (token == _desaLoadToken &&
-          _desaShownForKec == kecSlug &&
-          mounted) {
-        setState(() => _desaShownForKec = null);
+      _desaSyncedForKec = null;
+      if (token == _desaLoadToken && _desaShownForKec == kecSlug) {
+        _desaShownForKec = null;
+      }
+    } finally {
+      _desaSyncInFlight = false;
+      if (mounted && _styleReady) {
+        final latestKec = _desaShownForKec;
+        if (latestKec == null && _desaLayersAdded) {
+          unawaited(_clearDesaLayers());
+        } else if (latestKec != null &&
+            _desaRings.isNotEmpty &&
+            (!_desaLayersAdded || _desaSyncedForKec != latestKec)) {
+          unawaited(_syncDesaLayers(latestKec, _desaLoadToken));
+        }
       }
     }
   }
@@ -571,21 +610,6 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
               .where((r) => r.parentId == selected.id)
               .toList();
 
-    // Load / ganti desa polygons saat kecamatan berubah.
-    // Pakai slug dari tap/geojson (`_selectedKecId`), bukan `selected` API -
-    // katalog soft-fail / belum siap tidak boleh menahan render ADM4.
-    final kecSlug = _selectedKecId;
-    if (kecSlug != null && _desaShownForKec != kecSlug) {
-      unawaited(_loadDesaGeoJson(kecSlug));
-    } else if (kecSlug != null &&
-        _desaShownForKec == kecSlug &&
-        !_desaLayersAdded &&
-        _desaRings.isNotEmpty &&
-        _styleReady) {
-      // Retry sync setelah style siap / setelah gagal sync sebelumnya.
-      unawaited(_loadDesaGeoJson(kecSlug));
-    }
-
     return FScaffold(
       childPad: false,
       child: Stack(
@@ -609,15 +633,16 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
                 _styleReady = false;
                 _kecLayersAdded = false;
                 _desaLayersAdded = false;
+                _desaSyncedForKec = null;
                 _maybeAddKecLayers();
               },
               onStyleLoaded: () {
                 _styleReady = true;
                 _maybeAddKecLayers();
                 // Desa yang tadi terbuka ikut di-add ulang di instance baru.
-                final kec = _desaShownForKec;
-                if (kec != null && _desaRings.isNotEmpty) {
-                  unawaited(_syncDesaLayers(kec, _desaLoadToken));
+                final kec = _selectedKecId;
+                if (kec != null) {
+                  unawaited(_loadDesaGeoJson(kec));
                 }
               },
               onMapClick: _onTap,

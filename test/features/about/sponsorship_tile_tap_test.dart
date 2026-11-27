@@ -48,7 +48,9 @@ void main() {
       ProviderScope(
         overrides: [
           aboutTeamProvider.overrideWith((ref) async => team),
-          aboutVerifiersProvider.overrideWith((ref) async => verifiers),
+          aboutVerifiersProvider.overrideWith(
+            () => _FakeVerifiers(verifiers),
+          ),
           aboutSponsorshipsProvider.overrideWith((ref) async => sponsorships),
           aboutContributorsProvider.overrideWith(
             () => _FakeContributors(contributors),
@@ -70,7 +72,23 @@ void main() {
     );
   }
 
-  GoRouter router() => GoRouter(
+  GoRouter teamRouter() => GoRouter(
+    initialLocation: '/about/sponsorship?tab=team',
+    routes: [
+      GoRoute(
+        path: '/about/sponsorship',
+        builder: (_, _) => const SponsorshipTeamPage(showTeam: true),
+      ),
+      GoRoute(
+        path: '/users/:username',
+        name: 'UserProfileRouter.profile',
+        builder: (context, state) =>
+            Text('PROFILE:${state.pathParameters['username']}'),
+      ),
+    ],
+  );
+
+  GoRouter sponsorRouter() => GoRouter(
     initialLocation: '/about/sponsorship',
     routes: [
       GoRoute(
@@ -86,19 +104,28 @@ void main() {
     ],
   );
 
+  Future<void> pumpFrames(WidgetTester tester) async {
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+    }
+  }
+
   testWidgets('tap inti tim -> profil', (tester) async {
     tester.view.physicalSize = const Size(800, 2000);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await pumpSponsorshipPage(tester, router: router(), team: const [_team]);
-    await tester.tap(find.text('Tim Kami').last);
-    for (var i = 0; i < 10; i++) {
-      await tester.pump(const Duration(milliseconds: 50));
-    }
+    await pumpSponsorshipPage(
+      tester,
+      router: teamRouter(),
+      team: const [_team],
+    );
+    await pumpFrames(tester);
 
     expect(find.text('Ibnul Mutaki'), findsOneWidget);
+    expect(find.text('maintainer'), findsOneWidget);
+    expect(find.text('Penggagas'), findsOneWidget);
     await tester.tap(find.text('Ibnul Mutaki'));
     await tester.pumpAndSettle();
     expect(find.text('PROFILE:ibnulmutaki'), findsOneWidget);
@@ -112,13 +139,13 @@ void main() {
 
     await pumpSponsorshipPage(
       tester,
-      router: router(),
+      router: teamRouter(),
       contributors: const [_contributor],
     );
-    await tester.tap(find.text('Tim Kami').last);
-    for (var i = 0; i < 10; i++) {
-      await tester.pump(const Duration(milliseconds: 50));
-    }
+    await pumpFrames(tester);
+
+    await tester.tap(find.text('Warga'));
+    await pumpFrames(tester);
 
     expect(find.text('Ali'), findsOneWidget);
     await tester.tap(find.text('Ali'));
@@ -134,13 +161,13 @@ void main() {
 
     await pumpSponsorshipPage(
       tester,
-      router: router(),
+      router: teamRouter(),
       verifiers: const [_verifier],
     );
-    await tester.tap(find.text('Tim Kami').last);
-    for (var i = 0; i < 10; i++) {
-      await tester.pump(const Duration(milliseconds: 50));
-    }
+    await pumpFrames(tester);
+
+    await tester.tap(find.text('Verifikator'));
+    await pumpFrames(tester);
 
     expect(find.text('Fatimah'), findsOneWidget);
     await tester.tap(find.text('Fatimah'));
@@ -182,12 +209,10 @@ void main() {
 
       await pumpSponsorshipPage(
         tester,
-        router: router(),
+        router: sponsorRouter(),
         sponsorships: const [_sponsorWithUrl],
       );
-      for (var i = 0; i < 10; i++) {
-        await tester.pump(const Duration(milliseconds: 50));
-      }
+      await pumpFrames(tester);
 
       expect(find.byIcon(FLucideIcons.globe), findsOneWidget);
       await tester.tap(find.byIcon(FLucideIcons.globe));
@@ -207,5 +232,16 @@ class _FakeContributors extends AboutContributors {
   @override
   Future<AboutContributorsState?> build() async {
     return AboutContributorsState(items: items, hasMore: false);
+  }
+}
+
+class _FakeVerifiers extends AboutVerifiers {
+  _FakeVerifiers(this.items);
+
+  final List<AboutVerifier> items;
+
+  @override
+  Future<AboutVerifiersState?> build() async {
+    return AboutVerifiersState(items: items, hasMore: false);
   }
 }

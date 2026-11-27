@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart' hide State;
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,6 +12,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/form_draft_reset_sheet.dart';
+import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../../../shared/widgets/pasteable_url_field.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -83,12 +86,14 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
   final _title = TextEditingController();
   final _year = TextEditingController();
   final _description = TextEditingController();
+  final _trailerUrl = TextEditingController();
   String? _kind;
   final _credits = <_CreditDraft>[_CreditDraft()];
   final _sambas = <_SambasDraft>[_SambasDraft()];
   final _access = <_AccessDraft>[];
   var _busy = false;
   var _prefilled = false;
+  List<AttachmentImageSlot> _cover = const [];
 
   Timer? _kreatorDebounce;
   var _kreatorLoading = false;
@@ -107,11 +112,14 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
     _title.text,
     _year.text,
     _description.text,
+    _trailerUrl.text,
     _kind,
     for (final c in _credits)
       '${c.name.text}|${c.role}|${c.kreatorId}',
     for (final s in _sambas) '${s.note.text}|${s.type}',
     for (final a in _access) '${a.label.text}|${a.url.text}|${a.kind}',
+    for (final image in _cover)
+      '${image.id}|${image.localPath}|${image.uploaded?.url}',
   ].join('\u0001');
 
   @override
@@ -119,6 +127,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
     title: _title.text,
     year: _year.text,
     description: _description.text,
+    trailerUrl: _trailerUrl.text,
     kind: _kind,
     credits: [
       for (final c in _credits)
@@ -140,6 +149,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
           kind: a.kind,
         ),
     ],
+    cover: draftAttachmentSlots(_cover),
   );
 
   void _disposeDynamicRows() {
@@ -168,6 +178,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
     _title.text = draft.title;
     _year.text = draft.year;
     _description.text = draft.description;
+    _trailerUrl.text = draft.trailerUrl;
     _kind = draft.kind;
     _disposeDynamicRows();
     _credits.addAll(
@@ -201,6 +212,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
         return d;
       }),
     );
+    _cover = draft.cover;
     _attachCreateCreditListener();
     if (_isEdit && draft.hasContent) {
       _prefilled = true;
@@ -213,6 +225,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
     _title.clear();
     _year.clear();
     _description.clear();
+    _trailerUrl.clear();
     if (_credits.isNotEmpty) {
       _credits.first.name.removeListener(_onCreditNameChanged);
     }
@@ -227,6 +240,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
     }
     _credits.add(credit);
     _sambas.add(_SambasDraft());
+    _cover = const [];
     _prefilled = false;
     _kreatorHints = const [];
     _kreatorLoading = false;
@@ -249,7 +263,9 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
       _title.clear();
       _year.clear();
       _description.clear();
+      _trailerUrl.clear();
       _kind = null;
+      _cover = const [];
       _prefilled = false;
       final slug = widget.slug;
       if (slug != null && slug.isNotEmpty) {
@@ -300,6 +316,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
       _credits.first.name.removeListener(_onCreditNameChanged);
     }
     _title.dispose();
+    _trailerUrl.dispose();
     _year.dispose();
     _description.dispose();
     for (final row in _credits) {
@@ -395,10 +412,12 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
         }),
       );
     if (_sambas.isEmpty) _sambas.add(_SambasDraft());
+    final trailer = entry.accessLinks.where((l) => l.kind == 'trailer').toList();
+    _trailerUrl.text = trailer.isNotEmpty ? trailer.first.url : '';
     _access
       ..clear()
       ..addAll(
-        entry.accessLinks.map((l) {
+        entry.accessLinks.where((l) => l.kind != 'trailer').map((l) {
           final d = _AccessDraft()
             ..kind = l.kind
             ..label.text = l.label
@@ -406,6 +425,20 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
           return d;
         }),
       );
+    final existingCover = (entry.coverUrl ?? '').trim();
+    _cover = existingCover.isEmpty
+        ? const []
+        : [
+            AttachmentImageSlot(
+              id: 'cover-existing',
+              localPath: '',
+              uploaded: AttachmentUploadedImage(
+                url: existingCover,
+                providerFileId: existingCover,
+                isPrimary: true,
+              ),
+            ),
+          ];
     sealDraftBaseline();
   }
 
@@ -417,7 +450,28 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
 
   void _addSambas() => setState(() => _sambas.add(_SambasDraft()));
 
+  void _removeSambas(int index) {
+    if (index < 0 || index >= _sambas.length || _sambas.length <= 1) return;
+    setState(() {
+      _sambas.removeAt(index).dispose();
+    });
+  }
+
+  void _removeCredit(int index) {
+    if (index < 0 || index >= _credits.length || _credits.length <= 1) return;
+    setState(() {
+      _credits.removeAt(index).dispose();
+    });
+  }
+
   void _addAccess() => setState(() => _access.add(_AccessDraft()));
+
+  void _removeAccess(int index) {
+    if (index < 0 || index >= _access.length) return;
+    setState(() {
+      _access.removeAt(index).dispose();
+    });
+  }
 
   String? _clientValidateNew({
     required AppLocalizations l10n,
@@ -455,6 +509,104 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
     return null;
   }
 
+
+  String? _readyCoverUrl() {
+    if (_cover.isEmpty) return null;
+    final slot = _cover.first;
+    if (!slot.isReady) return null;
+    return slot.uploaded?.url;
+  }
+
+  bool _coverBlocksSubmit(AppLocalizations l10n) {
+    if (_cover.any((s) => s.uploading)) {
+      showFToast(context: context, title: Text(l10n.karyaFormWaitUpload));
+      return true;
+    }
+    if (_cover.any((s) => s.error)) {
+      showFToast(
+        context: context,
+        title: Text(l10n.karyaFormRemoveFailedPhoto),
+        variant: FToastVariant.destructive,
+      );
+      return true;
+    }
+    return false;
+  }
+
+  Future<Either<AttachmentUploadFailure, AttachmentUploadedImage>> _uploadCover(
+    File file, {
+    required bool isPrimary,
+  }) async {
+    try {
+      final url = await ref.read(karyaApiProvider).uploadCover(file);
+      return Either.right(
+        AttachmentUploadedImage(
+          url: url,
+          providerFileId: url,
+          isPrimary: true,
+        ),
+      );
+    } on KaryaException catch (e) {
+      return Either.left(AttachmentUploadFailure(e.message));
+    }
+  }
+
+  List<Widget> _coverField(AppLocalizations l10n) {
+    final isFilm = _kind == 'film';
+    return [
+      Text(
+        isFilm ? l10n.karyaFormCoverFilm : l10n.karyaFormCoverMusic,
+        style: context.theme.typography.body.sm.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      const Gap(4),
+      Text(
+        isFilm ? l10n.karyaFormCoverHintFilm : l10n.karyaFormCoverHintMusic,
+        style: context.theme.typography.body.sm.copyWith(
+          color: context.theme.colors.mutedForeground,
+        ),
+      ),
+      const Gap(8),
+      AttachmentImagesField(
+        enabled: !_busy,
+        maxImages: 1,
+        maxSizeMb: 5,
+        images: _cover,
+        onChanged: (next) => setState(() => _cover = next),
+        upload: _uploadCover,
+      ),
+    ];
+  }
+
+
+  Map<String, dynamic>? _trailerAccessRow() {
+    final url = _trailerUrl.text.trim();
+    if (url.isEmpty) return null;
+    return {
+      'kind': 'trailer',
+      'label': 'Trailer',
+      'url': url,
+      'is_primary': false,
+    };
+  }
+
+  /// Gabung trailer form cepat ke daftar akses edit; trailer dari field
+  /// menggantikan entry kind trailer lama (satu trailer utama).
+  List<Map<String, dynamic>> _accessRowsWithTrailer(
+    List<Map<String, dynamic>> rows,
+  ) {
+    final trailer = _trailerAccessRow();
+    // Field kosong: biarkan baris kind trailer dari daftar tautan.
+    if (trailer == null) return rows;
+    final withoutTrailer = [
+      for (final row in rows)
+        if (row['kind'] != 'trailer') row,
+    ];
+    // Field terisi: ganti semua trailer lama; jangan rebut primary tonton.
+    return [...withoutTrailer, trailer];
+  }
+
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
     final kind = _kind;
@@ -473,9 +625,11 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
         await showAppErrorSheet(context, message: clientError);
         return;
       }
+      if (_coverBlocksSubmit(l10n)) return;
       final safeKind = kind!;
       setState(() => _busy = true);
       try {
+        final trailer = safeKind == 'film' ? _trailerAccessRow() : null;
         final payload = karyaPayloadWire(
           title: title,
           kind: safeKind,
@@ -487,6 +641,8 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
                 'kreator_id': credit.kreatorId!,
             },
           ],
+          coverUrl: _readyCoverUrl(),
+          accessLinks: trailer == null ? const [] : [trailer],
         );
         await ref.read(karyaApiProvider).submit({
           'kind': 'new',
@@ -549,6 +705,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
       await showAppErrorSheet(context, message: clientError);
       return;
     }
+    if (_coverBlocksSubmit(l10n)) return;
     final safeKind = kind!;
     setState(() => _busy = true);
     try {
@@ -558,8 +715,14 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
         kind: safeKind,
         sambasConnections: sambasRows,
         credits: creditRows,
-        accessLinks: accessRows,
+        accessLinks: safeKind == 'film'
+            ? _accessRowsWithTrailer(accessRows)
+            : [
+                for (final row in accessRows)
+                  if (row['kind'] != 'trailer') row,
+              ],
         description: _description.text.trim(),
+        coverUrl: _readyCoverUrl(),
       );
       await ref.read(karyaApiProvider).submit({
         'kind': 'edit',
@@ -629,6 +792,11 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
   List<OptionPickerItem<String>> _accessKinds(AppLocalizations l10n) => [
         OptionPickerItem(value: 'listen', label: l10n.karyaAccessKindListen),
         OptionPickerItem(value: 'watch', label: l10n.karyaAccessKindWatch),
+        if (_kind == 'film')
+          OptionPickerItem(
+            value: 'trailer',
+            label: l10n.karyaAccessKindTrailer,
+          ),
         OptionPickerItem(value: 'buy', label: l10n.karyaAccessKindBuy),
         OptionPickerItem(value: 'read', label: l10n.karyaAccessKindRead),
         OptionPickerItem(value: 'stream', label: l10n.karyaAccessKindStream),
@@ -742,6 +910,16 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
         ),
       ),
       const Gap(12),
+      ..._coverField(l10n),
+      if (_kind == 'film') ...[
+        const Gap(12),
+        PasteableUrlField(
+          controller: _trailerUrl,
+          label: Text(l10n.karyaFormTrailerUrl),
+          description: Text(l10n.karyaFormTrailerUrlHint),
+        ),
+      ],
+      const Gap(12),
       FTextField(
         control: FTextFieldControl.managed(controller: credit.name),
         label: Text(personLabel),
@@ -778,6 +956,16 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
         description: Text(l10n.karyaFormTitleHint),
       ),
       const Gap(12),
+      ..._coverField(l10n),
+      if (_kind == 'film') ...[
+        const Gap(12),
+        PasteableUrlField(
+          controller: _trailerUrl,
+          label: Text(l10n.karyaFormTrailerUrl),
+          description: Text(l10n.karyaFormTrailerUrlHint),
+        ),
+      ],
+      const Gap(12),
       FTextField(
         control: FTextFieldControl.managed(controller: _year),
         label: Text(l10n.karyaYear),
@@ -787,7 +975,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
       const Gap(12),
       Text(
         l10n.karyaSambasSection,
-        style: context.theme.typography.body.md.copyWith(
+        style: context.theme.typography.body.sm.copyWith(
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -818,6 +1006,19 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
       ),
       for (var i = 0; i < _sambas.length; i++) ...[
         const Gap(8),
+        if (_sambas.length > 1) ...[
+          Align(
+            alignment: Alignment.centerRight,
+            child: FButton.icon(
+              onPress: () => _removeSambas(i),
+              child: Icon(
+                FLucideIcons.trash,
+                semanticLabel: l10n.karyaFormRemoveSambas,
+              ),
+            ),
+          ),
+          const Gap(4),
+        ],
         FTextField(
           control: FTextFieldControl.managed(controller: _sambas[i].note),
           label: Text(l10n.karyaSambasNote),
@@ -828,7 +1029,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
       const Gap(12),
       Text(
         l10n.karyaCredits,
-        style: context.theme.typography.body.md.copyWith(
+        style: context.theme.typography.body.sm.copyWith(
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -868,6 +1069,19 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
       ),
       for (var i = 0; i < _credits.length; i++) ...[
         const Gap(8),
+        if (_credits.length > 1) ...[
+          Align(
+            alignment: Alignment.centerRight,
+            child: FButton.icon(
+              onPress: () => _removeCredit(i),
+              child: Icon(
+                FLucideIcons.trash,
+                semanticLabel: l10n.karyaFormRemoveCredit,
+              ),
+            ),
+          ),
+          const Gap(4),
+        ],
         FTextField(
           control: FTextFieldControl.managed(controller: _credits[i].name),
           label: Text(l10n.karyaFormCreditName),
@@ -877,7 +1091,7 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
       const Gap(12),
       Text(
         l10n.karyaAccess,
-        style: context.theme.typography.body.md.copyWith(
+        style: context.theme.typography.body.sm.copyWith(
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -908,6 +1122,17 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage>
       ),
       for (var i = 0; i < _access.length; i++) ...[
         const Gap(8),
+        Align(
+          alignment: Alignment.centerRight,
+          child: FButton.icon(
+            onPress: () => _removeAccess(i),
+            child: Icon(
+              FLucideIcons.trash,
+              semanticLabel: l10n.karyaFormRemoveAccess,
+            ),
+          ),
+        ),
+        const Gap(4),
         FTextField(
           control: FTextFieldControl.managed(controller: _access[i].label),
           label: Text(l10n.karyaFormAccessLabel),
@@ -960,24 +1185,30 @@ class _KaryaDraft {
     required this.title,
     required this.year,
     required this.description,
+    required this.trailerUrl,
     required this.kind,
     required this.credits,
     required this.sambas,
     required this.access,
+    this.cover = const [],
   });
 
   final String title;
   final String year;
   final String description;
+  final String trailerUrl;
   final String? kind;
   final List<_KaryaCreditRowDraft> credits;
   final List<_KaryaSambasRowDraft> sambas;
   final List<_KaryaAccessRowDraft> access;
+  final List<AttachmentImageSlot> cover;
 
   bool get hasContent {
     if (title.trim().isNotEmpty ||
         year.trim().isNotEmpty ||
-        description.trim().isNotEmpty) {
+        description.trim().isNotEmpty ||
+        trailerUrl.trim().isNotEmpty ||
+        cover.isNotEmpty) {
       return true;
     }
     final creditFilled = credits.any((c) => c.name.trim().isNotEmpty);

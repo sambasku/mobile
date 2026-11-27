@@ -10,15 +10,26 @@ import '../../l10n/app_localizations.dart';
 ///
 /// `onRetry` opsional: kalau diisi, sheet menampilkan "Coba lagi" di samping
 /// "Mengerti" supaya user tidak perlu menutup sheet lalu menekan tombol lain.
+///
+/// Satu sheet aktif per app (#316): panggilan berikutnya menunggu sheet yang
+/// sama selesai, bukan menumpuk modal.
+Future<void>? _activeAppErrorSheet;
+
 Future<void> showAppErrorSheet(
   BuildContext context, {
   required String message,
   String? title,
   VoidCallback? onRetry,
 }) {
+  final inFlight = _activeAppErrorSheet;
+  if (inFlight != null) {
+    return inFlight;
+  }
+
   // useRootNavigator: barrier menutup seluruh layar (termasuk bottom nav
   // shell). Tanpa ini, sheet dari tab nested hanya dim di area navigator tab.
-  return showModalBottomSheet<void>(
+  late final Future<void> future;
+  future = showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -86,5 +97,11 @@ Future<void> showAppErrorSheet(
         ),
       );
     },
-  );
+  ).whenComplete(() {
+    if (identical(_activeAppErrorSheet, future)) {
+      _activeAppErrorSheet = null;
+    }
+  });
+  _activeAppErrorSheet = future;
+  return future;
 }

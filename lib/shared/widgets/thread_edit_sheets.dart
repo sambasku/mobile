@@ -123,69 +123,105 @@ Future<String?> showThreadTextEditSheet(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
-    builder: (sheetContext) {
-      final controller = TextEditingController(text: initialBody);
-      var submitting = false;
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                  child: Text(
-                    title,
-                    style: context.theme.typography.body.md.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: FTextField(
-                    control: FTextFieldControl.managed(controller: controller),
-                    enabled: !submitting,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 6,
-                    minLines: 3,
-                  ),
-                ),
-                const Gap(12),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: FButton(
-                    onPress: submitting
-                        ? null
-                        : () async {
-                            setState(() => submitting = true);
-                            final err = await onSave(controller.text.trim());
-                            if (!sheetContext.mounted) return;
-                            if (err == null) {
-                              Navigator.of(sheetContext).pop(controller.text);
-                              return;
-                            }
-                            setState(() => submitting = false);
-                            await showAppErrorSheet(
-                              sheetContext,
-                              message: err,
-                            );
-                          },
-                    prefix: submitting
-                        ? const FCircularProgress(size: .sm)
-                        : null,
-                    child: Text(saveLabel),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      );
-    },
+    builder: (_) => _ThreadTextEditSheetBody(
+      title: title,
+      initialBody: initialBody,
+      saveLabel: saveLabel,
+      onSave: onSave,
+    ),
   );
+}
+
+class _ThreadTextEditSheetBody extends StatefulWidget {
+  const _ThreadTextEditSheetBody({
+    required this.title,
+    required this.initialBody,
+    required this.saveLabel,
+    required this.onSave,
+  });
+
+  final String title;
+  final String initialBody;
+  final String saveLabel;
+  final Future<String?> Function(String body) onSave;
+
+  @override
+  State<_ThreadTextEditSheetBody> createState() =>
+      _ThreadTextEditSheetBodyState();
+}
+
+class _ThreadTextEditSheetBodyState extends State<_ThreadTextEditSheetBody> {
+  late final TextEditingController _controller;
+  var _submitting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialBody);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    setState(() => _submitting = true);
+    final err = await widget.onSave(_controller.text.trim());
+    if (!mounted) return;
+    if (err == null) {
+      Navigator.of(context).pop(_controller.text);
+      return;
+    }
+    setState(() => _submitting = false);
+    await showAppErrorSheet(context, message: err);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: bottomInset),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Text(
+                widget.title,
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: FTextField(
+                control: FTextFieldControl.managed(controller: _controller),
+                enabled: !_submitting,
+                keyboardType: TextInputType.multiline,
+                maxLines: 6,
+                minLines: 3,
+              ),
+            ),
+            const Gap(12),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: FButton(
+                onPress: _submitting ? null : _submit,
+                prefix: _submitting
+                    ? const FCircularProgress(size: .sm)
+                    : null,
+                child: Text(widget.saveLabel),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

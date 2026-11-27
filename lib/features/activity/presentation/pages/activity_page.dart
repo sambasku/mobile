@@ -1,7 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/router/app_router.dart';
@@ -10,15 +9,14 @@ import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/presentation/utils/open_verifier_contribute.dart';
-import '../../../search_miss/search_miss_router.dart';
-import '../../../vote/periksa_kata_router.dart';
+import '../../../dictionary/presentation/widgets/action_chips_row.dart';
 import '../../../vote/presentation/providers/vote_deck_providers.dart';
 import '../../../vote/presentation/widgets/vote_deck_section.dart';
 import '../providers/contribution_guide_providers.dart';
 import '../widgets/contribution_guide_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Tab KONTRIBUSI: baris aksi pola Home (`_HomeActionChips`) + deck nilai kata.
+/// Tab KONTRIBUSI: baris aksi yang sama dengan Home (`ActionChipsRow`) + deck nilai kata.
 ///
 /// Deck sengaja **di luar** scroll view supaya swipe-atas (lewati) tidak
 /// bentrok dengan `CustomScrollView` / pull-to-refresh.
@@ -32,8 +30,7 @@ class ActivityPage extends ConsumerStatefulWidget {
 class _ActivityPageState extends ConsumerState<ActivityPage> {
   bool _guideChecked = false;
 
-  /// Sama Home: kotak 48 1:1 + gap 6 + slot label 28.
-  static const _hubBlock = 8 + _ContributeHubChips.height + 8;
+  static const _hPad = EdgeInsets.symmetric(horizontal: 12);
 
   Future<void> _refresh() async {
     await Future.wait([
@@ -60,59 +57,65 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
 
     final l10n = AppLocalizations.of(context);
     final role = ref.watch(authStatusProvider).value?.role;
-    final isVerifier =
-        role == 'admin' || role == 'root' || role == 'reviewer';
+    final isVerifier = role == 'admin' || role == 'root' || role == 'reviewer';
 
     return Column(
       children: [
-        FHeader(
-          title: const BrandWordmark(),
-          suffixes: [
-            if (isVerifier)
+        Padding(
+          padding: _hPad,
+          child: FHeader(
+            title: const BrandWordmark(),
+            suffixes: [
+              if (isVerifier)
+                FHeaderAction(
+                  icon: const Icon(
+                    FLucideIcons.bookPlus,
+                    size: kHeaderActionIconSize,
+                  ),
+                  semanticsLabel: l10n.activityVoteDeckSuggestWord,
+                  onPress: _openSuggestWordFromDeck,
+                ),
               FHeaderAction(
                 icon: const Icon(
-                  FLucideIcons.bookPlus,
+                  FLucideIcons.refreshCw,
                   size: kHeaderActionIconSize,
                 ),
-                semanticsLabel: l10n.activityVoteDeckSuggestWord,
-                onPress: _openSuggestWordFromDeck,
+                onPress: _refresh,
               ),
-            FHeaderAction(
-              icon: const Icon(
-                FLucideIcons.refreshCw,
-                size: kHeaderActionIconSize,
-              ),
-              onPress: _refresh,
-            ),
-            const ThemeToggleHeaderAction(),
-          ],
+              const ThemeToggleHeaderAction(),
+            ],
+          ),
         ),
+        const ActionChipsRow(from: 'kontribusi'),
+        const Gap(8),
         Expanded(
-          child: RefreshIndicator(
-            onRefresh: _refresh,
-            child: LayoutBuilder(
-              builder: (context, constraints) => SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: ConstrainedBox(
-                  // Minimal setinggi viewport agar pull-to-refresh tetap
-                  // jalan meski konten tidak meluap.
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Gap(8),
-                      const _ContributeHubChips(),
-                      const Gap(8),
-                      // Deck mengisi sisa viewport minus baris aksi hub.
-                      SizedBox(
-                        height: (constraints.maxHeight - _hubBlock).clamp(
-                          200.0,
-                          double.infinity,
+          child: Padding(
+            padding: _hPad,
+            child: RefreshIndicator(
+              onRefresh: _refresh,
+              child: LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: ConstrainedBox(
+                    // Minimal setinggi viewport agar pull-to-refresh tetap
+                    // jalan meski konten tidak meluap.
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Deck mengisi sisa viewport di bawah baris aksi hub.
+                        SizedBox(
+                          height: (constraints.maxHeight - 8).clamp(
+                            200.0,
+                            double.infinity,
+                          ),
+                          child: _VoteDeckHost(),
                         ),
-                        child: _VoteDeckHost(),
-                      ),
-                      const Gap(8),
-                    ],
+                        const Gap(8),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -140,118 +143,6 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     AppRouter.router.routerDelegate.notifyListeners();
     ref.invalidate(contributionGuideUnreadProvider);
-  }
-}
-
-/// Satu baris tile aksi Kontribusi - styling identik Home (`_HomeActionChips`):
-/// kotak 1:1 48px, border, ikon 18, label 10px, scroll horizontal Gap(8).
-/// Tambah item di list di bawah; baris otomatis scroll bila menu banyak.
-class _ContributeHubChips extends StatelessWidget {
-  const _ContributeHubChips();
-
-  static const double _tileSize = 48;
-  static const double _labelSlot = 28;
-  static const double height = _tileSize + 6 + _labelSlot;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final items = <_ContributeHubChip>[
-      _ContributeHubChip(
-        icon: FLucideIcons.searchX,
-        label: l10n.feedContributeSearchMiss,
-        onPress: () => context.push(SearchMissRouter.list.path),
-      ),
-      _ContributeHubChip(
-        icon: FLucideIcons.clipboardCheck,
-        label: l10n.feedContributePeriksaKata,
-        onPress: () => context.push(PeriksaKataRouter.check.path),
-      ),
-    ];
-
-    // Shell tab sudah Padding horizontal 12 - jangan dobel (Home pad di dalam
-    // ListView karena carousel full-bleed).
-    return SizedBox(
-      height: height,
-      child: ListView.separated(
-        key: const ValueKey('contribute_hub_chips'),
-        scrollDirection: Axis.horizontal,
-        itemCount: items.length,
-        separatorBuilder: (_, _) => const Gap(8),
-        itemBuilder: (context, i) => _ContributeHubTile(item: items[i]),
-      ),
-    );
-  }
-}
-
-class _ContributeHubChip {
-  const _ContributeHubChip({
-    required this.icon,
-    required this.label,
-    required this.onPress,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onPress;
-}
-
-class _ContributeHubTile extends StatelessWidget {
-  const _ContributeHubTile({required this.item});
-
-  final _ContributeHubChip item;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    const size = _ContributeHubChips._tileSize;
-    return Semantics(
-      button: true,
-      label: item.label,
-      child: FTappable(
-        onPress: item.onPress,
-        // Lebar = ukuran kotak: jarak antar kotak = separator saja (8px).
-        child: SizedBox(
-          width: size,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: size,
-                height: size,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: theme.colors.secondary,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: theme.colors.border),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      item.icon,
-                      size: 18,
-                      color: theme.colors.foreground,
-                    ),
-                  ),
-                ),
-              ),
-              const Gap(6),
-              Text(
-                item.label,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: theme.typography.body.xs.copyWith(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  height: 1.1,
-                  color: theme.colors.foreground,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
 

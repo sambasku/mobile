@@ -156,19 +156,15 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     _exitToQueue(refresh: false);
   }
 
-  void _openSuggestWord({String? lemma}) {
+  void _openSuggestWord() {
     pushVerifierContribute(
       context,
       analyticsFrom: 'review_session_deck',
       contributeFrom: 'review_session',
-      initialLemma: lemma,
     );
   }
 
-  List<Widget> _suggestWordHeaderSuffixes(
-    BuildContext context, {
-    String? lemma,
-  }) {
+  List<Widget> _suggestWordHeaderSuffixes(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return [
       FHeaderAction(
@@ -177,7 +173,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
           size: kHeaderActionIconSize,
         ),
         semanticsLabel: l10n.activityVoteDeckSuggestWord,
-        onPress: () => _openSuggestWord(lemma: lemma),
+        onPress: _openSuggestWord,
       ),
     ];
   }
@@ -519,10 +515,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
         header: FHeader.nested(
           title: Text(title),
           prefixes: [FHeaderAction.back(onPress: _onBack)],
-          suffixes: _suggestWordHeaderSuffixes(
-            context,
-            lemma: detailAsync.asData?.value.contribution.wordLemma,
-          ),
+          suffixes: _suggestWordHeaderSuffixes(context),
         ),
         footer: pending && !_correctMode
             ? detailAsync.maybeWhen(

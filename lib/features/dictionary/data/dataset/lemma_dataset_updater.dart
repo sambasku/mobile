@@ -42,15 +42,17 @@ class LemmaDatasetUpdater {
   LemmaDatasetUpdater({
     required this.dio,
     required this.opener,
-    this.isOnline = true,
+    this.isOnline = _alwaysOnline,
     this.onBeforeSwap,
     this.onAfterSwap,
     this.packageInfoLoader,
   });
 
+  static bool _alwaysOnline() => true;
+
   final Dio dio;
   final LemmaDatabaseOpener opener;
-  final bool isOnline;
+  final bool Function() isOnline;
   final Future<void> Function()? onBeforeSwap;
   final Future<void> Function()? onAfterSwap;
   final Future<PackageInfo> Function()? packageInfoLoader;
@@ -64,18 +66,21 @@ class LemmaDatasetUpdater {
     }
     _busy = true;
     try {
-      if (!isOnline) {
+      if (!isOnline()) {
         return const LemmaDatasetUpdateResult(
           LemmaDatasetUpdateOutcome.offline,
         );
       }
 
       final localVersion = await _resolveLocalVersion();
-      final active = await _fetchActiveJson();
-      if (active == null) {
+      final LemmaReleaseMeta active;
+      try {
+        active = await _fetchActiveJson();
+      } catch (e) {
         return LemmaDatasetUpdateResult(
           LemmaDatasetUpdateOutcome.invalidPointer,
           localReleaseVersion: localVersion,
+          message: 'active_json:$e',
         );
       }
 
@@ -291,25 +296,23 @@ class LemmaDatasetUpdater {
     return localVersion;
   }
 
-  Future<LemmaReleaseMeta?> _fetchActiveJson() async {
-    try {
-      final resp = await dio.get<dynamic>(
-        LemmaDatasetConstants.activeJsonUrl,
-        options: Options(
-          responseType: ResponseType.plain,
-          receiveTimeout: LemmaDatasetConstants.activeJsonTimeout,
-          sendTimeout: LemmaDatasetConstants.activeJsonTimeout,
-          connectTimeout: LemmaDatasetConstants.activeJsonTimeout,
-        ),
-      );
-      final raw = resp.data;
-      final text = raw is String ? raw : raw?.toString();
-      if (text == null || text.isEmpty) return null;
-      final json = jsonDecode(text) as Map<String, dynamic>;
-      return LemmaReleaseMeta.fromActiveJson(json);
-    } catch (_) {
-      return null;
+  Future<LemmaReleaseMeta> _fetchActiveJson() async {
+    final resp = await dio.get<dynamic>(
+      LemmaDatasetConstants.activeJsonUrl,
+      options: Options(
+        responseType: ResponseType.plain,
+        receiveTimeout: LemmaDatasetConstants.activeJsonTimeout,
+        sendTimeout: LemmaDatasetConstants.activeJsonTimeout,
+        connectTimeout: LemmaDatasetConstants.activeJsonTimeout,
+      ),
+    );
+    final raw = resp.data;
+    final text = raw is String ? raw : raw?.toString();
+    if (text == null || text.isEmpty) {
+      throw const FormatException('empty body');
     }
+    final json = jsonDecode(text) as Map<String, dynamic>;
+    return LemmaReleaseMeta.fromActiveJson(json);
   }
 
   bool _hostAllowed(String url) {

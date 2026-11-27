@@ -33,6 +33,16 @@ abstract final class Env {
   static const String? googleWebClientIdProduction =
       _Env.googleWebClientIdProduction;
 
+  /// iOS OAuth client ID per env (bundle ID iOS, project GCP yang sama).
+  /// Dipakai sebagai `clientId` di iOS saja; Android tidak memakai ini.
+  @EnviedField(varName: 'GOOGLE_IOS_CLIENT_ID_STAGING', optional: true)
+  static const String? googleIosClientIdStaging =
+      _Env.googleIosClientIdStaging;
+
+  @EnviedField(varName: 'GOOGLE_IOS_CLIENT_ID_PRODUCTION', optional: true)
+  static const String? googleIosClientIdProduction =
+      _Env.googleIosClientIdProduction;
+
   /// Facebook App ID per env (sama dengan API `FACEBOOK_APP_ID`).
   /// Dipakai untuk menampilkan tombol; App Secret tidak pernah di app.
   @EnviedField(varName: 'FACEBOOK_APP_ID_STAGING', optional: true)
@@ -105,6 +115,15 @@ abstract final class Env {
     }
     return _nonEmpty(googleWebClientIdProduction) ??
         _nonEmpty(googleWebClientIdStaging);
+  }
+
+  /// iOS client ID mengikuti flavor yang sama dengan [googleWebClientId].
+  static String? get googleIosClientId {
+    if (F.isStaging || apiHostProduction == null) {
+      return _nonEmpty(googleIosClientIdStaging);
+    }
+    return _nonEmpty(googleIosClientIdProduction) ??
+        _nonEmpty(googleIosClientIdStaging);
   }
 
   /// App ID Facebook mengikuti backend yang sedang dihubungi (`apiHost`).

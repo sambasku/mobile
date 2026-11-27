@@ -30,6 +30,20 @@ class AboutTeamMember {
       teamNote: json['team_note'] is String ? json['team_note'] as String : null,
     );
   }
+
+  /// Baris kontribusi (max 5) dari `team_note` multiline API.
+  List<String> get teamNoteLines => parseTeamNoteLines(teamNote);
+}
+
+const _maxTeamNoteLines = 5;
+
+List<String> parseTeamNoteLines(String? raw) {
+  if (raw == null) return const [];
+  final lines = raw
+      .split(RegExp(r'\r?\n'))
+      .map((line) => line.trim())
+      .where((line) => line.isNotEmpty);
+  return lines.take(_maxTeamNoteLines).toList(growable: false);
 }
 
 /// Nama flat kontributor (role contributor).
@@ -58,6 +72,18 @@ class AboutContributorsPage {
   });
 
   final List<AboutContributorName> items;
+  final String? nextCursor;
+  final bool hasMore;
+}
+
+class AboutVerifiersPage {
+  const AboutVerifiersPage({
+    required this.items,
+    required this.nextCursor,
+    required this.hasMore,
+  });
+
+  final List<AboutVerifier> items;
   final String? nextCursor;
   final bool hasMore;
 }
@@ -173,9 +199,40 @@ class AboutApiDatasource {
     return _parseItems(resp.data, 'items', AboutSponsorship.fromJson);
   }
 
-  Future<List<AboutVerifier>> fetchVerifiers() async {
-    final resp = await _dio.get<dynamic>('/api/v1/users/verifiers');
-    return _parseItems(resp.data, 'items', AboutVerifier.fromJson);
+  Future<AboutVerifiersPage> fetchVerifiers({
+    int limit = 50,
+    String? cursor,
+  }) async {
+    final resp = await _dio.get<dynamic>(
+      '/api/v1/users/verifiers',
+      queryParameters: {
+        'limit': limit,
+        'cursor': ?cursor,
+      },
+    );
+    final body = resp.data;
+    if (body is! Map) {
+      throw const FormatException('Body verifiers bukan object');
+    }
+    final data = body['data'];
+    if (data is! Map) {
+      throw const FormatException('Field data tidak valid');
+    }
+    final rawList = data['items'];
+    final items = <AboutVerifier>[];
+    if (rawList is List) {
+      for (final item in rawList) {
+        if (item is! Map) continue;
+        final parsed = AboutVerifier.fromJson(Map<String, dynamic>.from(item));
+        if (parsed != null) items.add(parsed);
+      }
+    }
+    final next = data['next_cursor'];
+    return AboutVerifiersPage(
+      items: items,
+      nextCursor: next is String ? next : null,
+      hasMore: data['has_more'] == true,
+    );
   }
 
   Future<AboutContributorsPage> fetchContributors({

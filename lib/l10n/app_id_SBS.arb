@@ -80,6 +80,10 @@
   "@onboardingSpeakerLearner": {
     "description": "Pilihan onboarding: pembelajar"
   },
+  "onboardingSpeakerPickRequired": "Pilih dulu penutur asli atau sedang belajar.",
+  "@onboardingSpeakerPickRequired": {
+    "description": "Toast onboarding jika lanjut tanpa memilih status penutur"
+  },
   "profileSpeakerNative": "Penutur Sambas",
   "@profileSpeakerNative": {
     "description": "Chip profil: penutur asli"
@@ -119,7 +123,7 @@
   },
   "balehoPromoSlide": "Promosi",
   "balehoInternalSlide": "Di aplikasi",
-  "balehoFooterPromoNote": "Area Media Promosi · Ruang publikasi dan promosi SambasKu.",
+  "balehoFooterPromoNote": "Ruang publikasi dan promosi SambasKu",
   "@balehoFooterPromoNote": {
     "description": "Catatan kecil di bawah dot indicator Baleho"
   },
@@ -132,7 +136,16 @@
     "description": "Isi bottom sheet info ajakan promo Baleho"
   },
   "balehoPricingUnitLine": "Tarif: 1x1 / hari / slide = Rp {amount}",
-  "balehoQuoteEstimate": "Estimasi: Rp {amount} ({cells} sel x {days} hari x {slides} slide)",
+  "balehoPricingStartFrom": "Mulai dari",
+  "balehoPricingCurrencyValue": "Rp {amount}",
+  "balehoPricingPerUnit": "/ sel 1x1 / hari / slide",
+  "balehoPricingPointSize": "Pilih 1 sel atau tarik beberapa sel sesuai kebutuhan kamu",
+  "balehoPricingPointExample": "Contoh: 1x1 selama 7 hari = Rp {amount}",
+  "balehoPricingBadge": "Tarif transparan",
+  "balehoPricingEstimateHeading": "Simulasi 1 sel (1x1)",
+  "balehoPricingDaysShort": "{days} hari",
+  "balehoPricingPointReach": "Pesanan akan ditayangkan setelah proses verifikasi dan pembayaran selesai.",
+  "balehoQuoteEstimate": "Estimasi: Rp {amount} ({cells} sel × {days} hari × {slides} slide)",
   "balehoQuoteEstimateLoading": "Menghitung estimasi…",
   "balehoQuoteSectionTitle": "Estimasi biaya",
   "balehoQuoteUnitLabel": "Tarif dasar",
@@ -145,9 +158,9 @@
   "balehoQuoteSlidesValue": "{slides} slide",
   "balehoQuoteTotalLabel": "Total estimasi",
   "balehoQuoteTotalValue": "Rp {amount}",
-  "balehoQuoteFormulaHint": "Hitungan: jumlah sel x hari x tarif x slide",
+  "balehoQuoteFormulaHint": "Biaya dihitung dari ukuran sel, durasi, dan jumlah slide",
   "balehoQuoteFooterTotal": "Estimasi Rp {amount}",
-  "balehoQuoteFooterBreakdown": "{cells} sel x {days} hari x {slides} slide",
+  "balehoQuoteFooterBreakdown": "{cells} sel × {days} hari × {slides} slide",
   "balehoSlidePromoInfoSemantics": "Info ingin tampil di sini",
   "@balehoSlidePromoInfoSemantics": {
     "description": "Label aksesibilitas tombol info caption promo Baleho"
@@ -157,6 +170,7 @@
     "description": "Keterangan singkat di atas grid slide 2 Baleho"
   },
   "balehoWeeklyLeaderboardTitle": "Peringkat Mingguan",
+  "balehoWeeklyLeaderboardHeroSemantics": "Ilustrasi warga di podium peringkat mingguan",
   "@balehoWeeklyLeaderboardTitle": {
     "description": "Judul slot tetap 4x1 di slide 2 Baleho"
   },
@@ -167,6 +181,42 @@
   "balehoWeeklyLeaderboardComingSoonBody": "Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.",
   "@balehoWeeklyLeaderboardComingSoonBody": {
     "description": "Body halaman coming soon papan peringkat"
+  },
+  "balehoKosakataTotal": "Total kata",
+  "@balehoKosakataTotal": {
+    "description": "Label kartu jumlah kosakata di slide 2 Baleho"
+  },
+  "balehoKosakataVerified": "Diverifikasi",
+  "@balehoKosakataVerified": {
+    "description": "Label kartu kata yang sudah diverifikasi"
+  },
+  "balehoKosakataQueue": "Antrian",
+  "@balehoKosakataQueue": {
+    "description": "Label kartu kata yang menunggu review"
+  },
+  "balehoKosakataRejected": "Ditolak",
+  "@balehoKosakataRejected": {
+    "description": "Label kartu kata yang ditolak"
+  },
+  "balehoKosakataTotalShort": "Kata",
+  "@balehoKosakataTotalShort": {
+    "description": "Label pendek total kata di sel 1x1 Baleho"
+  },
+  "balehoKosakataVerifiedShort": "Verif",
+  "@balehoKosakataVerifiedShort": {
+    "description": "Label pendek kata diverifikasi di sel 1x1 Baleho"
+  },
+  "balehoKosakataQueueShort": "Antri",
+  "@balehoKosakataQueueShort": {
+    "description": "Label pendek antrian di sel 1x1 Baleho"
+  },
+  "balehoKosakataRejectedShort": "Tolak",
+  "@balehoKosakataRejectedShort": {
+    "description": "Label pendek kata ditolak di sel 1x1 Baleho"
+  },
+  "balehoKosakataStatsTitle": "Kosakata",
+  "@balehoKosakataStatsTitle": {
+    "description": "Judul blok statistik kosakata 2x1 di slide 2 Baleho"
   },
   "balehoLeaderboardTabCurrent": "Minggu ini",
   "@balehoLeaderboardTabCurrent": {
@@ -246,7 +296,7 @@
   "@balehoLeaderboardScoreCombined": {
     "placeholders": {
       "score": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -254,13 +304,13 @@
   "@balehoLeaderboardScoreBreakdown": {
     "placeholders": {
       "submitted": {
-        "type": "int"
+        "type": "String"
       },
       "approved": {
-        "type": "int"
+        "type": "String"
       },
       "verif": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -316,6 +366,140 @@
   "balehoLeaderboardHistoryLoadMore": "Lihat minggu sebelumnya",
   "@balehoLeaderboardHistoryLoadMore": {
     "description": "Tombol paginasi daftar minggu riwayat"
+  },
+  "balehoPointsGuideTitle": "Cara dapat poin",
+  "@balehoPointsGuideTitle": {
+    "description": "Judul halaman penjelasan poin papan peringkat"
+  },
+  "balehoPointsGuideHeroTitle": "Bantu kamus, kumpulkan poin",
+  "@balehoPointsGuideHeroTitle": {
+    "description": "Judul di atas ilustrasi halaman cara dapat poin"
+  },
+  "balehoPointsGuideHeroBody": "Empat cara poin masuk tiap minggu.",
+  "@balehoPointsGuideHeroBody": {
+    "description": "Subjudul di atas ilustrasi halaman cara dapat poin"
+  },
+  "balehoPointsGuideHeroSemantics": "Ilustrasi warga mengumpulkan poin kontribusi",
+  "@balehoPointsGuideHeroSemantics": {
+    "description": "Label aksesibilitas ilustrasi hero cara dapat poin"
+  },
+  "balehoPointsGuideEntrySubtitle": "Lihat tabel poin dan aturan biar peringkat adil",
+  "@balehoPointsGuideEntrySubtitle": {
+    "description": "Subtitle kartu pintu masuk halaman cara dapat poin"
+  },
+  "balehoPointsGuideOpenSemantics": "Buka cara dapat poin",
+  "@balehoPointsGuideOpenSemantics": {
+    "description": "Semantics ikon info di header papan peringkat"
+  },
+  "balehoPointsGuideIntro": "Semua kontributor dihitung dengan aturan yang sama. Ini rincian poin yang kamu kumpulkan tiap minggu.",
+  "@balehoPointsGuideIntro": {
+    "description": "Paragraf pembuka halaman cara dapat poin"
+  },
+  "balehoPointsGuideTableTitle": "Tabel poin",
+  "@balehoPointsGuideTableTitle": {
+    "description": "Judul section tabel poin"
+  },
+  "balehoPointsGuideCreateTitle": "Usul kata baru",
+  "@balehoPointsGuideCreateTitle": {
+    "description": "Baris tabel poin: usul kata baru. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts."
+  },
+  "balehoPointsGuideCreateWhen": "Dihitung saat usulan dikirim",
+  "@balehoPointsGuideCreateWhen": {
+    "description": "Keterangan kapan poin usul kata baru dihitung"
+  },
+  "balehoPointsGuideEditTitle": "Usul perbaikan kata",
+  "@balehoPointsGuideEditTitle": {
+    "description": "Baris tabel poin: usul perbaikan kata. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts."
+  },
+  "balehoPointsGuideEditWhen": "Dihitung saat usulan dikirim",
+  "@balehoPointsGuideEditWhen": {
+    "description": "Keterangan kapan poin usul perbaikan dihitung"
+  },
+  "balehoPointsGuideApprovedTitle": "Usulan kamu diterima",
+  "@balehoPointsGuideApprovedTitle": {
+    "description": "Baris tabel poin: bonus usulan diterima. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts."
+  },
+  "balehoPointsGuideApprovedWhen": "Bonus saat usulan disetujui atau dikoreksi verifikator",
+  "@balehoPointsGuideApprovedWhen": {
+    "description": "Keterangan kapan bonus usulan diterima dihitung"
+  },
+  "balehoPointsGuideVerifyTitle": "Verifikasi usul kata orang lain",
+  "@balehoPointsGuideVerifyTitle": {
+    "description": "Baris tabel poin: verifikasi. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts."
+  },
+  "balehoPointsGuideVerifyWhen": "Khusus verifikator, dihitung tiap keputusan terima atau tolak",
+  "@balehoPointsGuideVerifyWhen": {
+    "description": "Keterangan kapan poin verifikasi dihitung"
+  },
+  "balehoPointsGuidePoints": "+{points}",
+  "@balehoPointsGuidePoints": {
+    "description": "Nilai poin di tabel poin",
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoPointsGuideFairTitle": "Biar adil",
+  "@balehoPointsGuideFairTitle": {
+    "description": "Judul section aturan keadilan peringkat"
+  },
+  "balehoPointsGuideRuleRejected": "Usulan yang ditolak tidak dapat poin. Kalau usulan ditolak, poin usulnya ikut dicabut.",
+  "@balehoPointsGuideRuleRejected": {
+    "description": "Aturan adil: usulan ditolak"
+  },
+  "balehoPointsGuideRuleBonus": "Bonus +2 cuma diberikan kalau usulan disetujui atau dikoreksi.",
+  "@balehoPointsGuideRuleBonus": {
+    "description": "Aturan adil: bonus diterima. Selaraskan dengan konstanta LEADERBOARD_* di api/src/modules/leaderboard/domain/utils/iso-week.ts."
+  },
+  "balehoPointsGuideRuleSelfVerify": "Memverifikasi usulan sendiri tidak dapat poin.",
+  "@balehoPointsGuideRuleSelfVerify": {
+    "description": "Aturan adil: verifikasi diri sendiri"
+  },
+  "balehoPointsGuideRuleExcluded": "Akun sistem dan akun yang dikecualikan admin tidak ikut peringkat.",
+  "@balehoPointsGuideRuleExcluded": {
+    "description": "Aturan adil: akun dikecualikan"
+  },
+  "balehoPointsGuideRuleReset": "Skor di-reset tiap Senin 00:00 WIB. Minggu yang sudah lewat dibekukan di tab Riwayat.",
+  "@balehoPointsGuideRuleReset": {
+    "description": "Aturan adil: reset mingguan"
+  },
+  "balehoPointsGuideRuleShare": "Peringkat 1-25 bisa membagikan posisinya ke feed.",
+  "@balehoPointsGuideRuleShare": {
+    "description": "Aturan adil: batas bagikan posisi"
+  },
+  "balehoPointsGuideExampleTitle": "Contoh hitungan",
+  "@balehoPointsGuideExampleTitle": {
+    "description": "Judul section contoh hitungan poin"
+  },
+  "balehoLeaderboardShareCta": "Bagikan posisiku ke feed",
+  "@balehoLeaderboardShareCta": {
+    "description": "Tombol bagikan posisi papan peringkat ke feed"
+  },
+  "balehoLeaderboardShareBusy": "Membagikan...",
+  "@balehoLeaderboardShareBusy": {
+    "description": "Label tombol saat proses bagikan posisi"
+  },
+  "balehoLeaderboardShareSuccess": "Posisi #{rank} kamu sudah dibagikan ke feed",
+  "@balehoLeaderboardShareSuccess": {
+    "description": "Toast sukses bagikan posisi",
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoLeaderboardShareNotInTop": "Posisi kamu belum masuk peringkat 1-25 minggu ini. Terus berkontribusi, lalu coba lagi.",
+  "@balehoLeaderboardShareNotInTop": {
+    "description": "Error bagikan posisi: di luar 1-25"
+  },
+  "balehoLeaderboardShareFailed": "Gagal membagikan posisi. Coba lagi sebentar lagi.",
+  "@balehoLeaderboardShareFailed": {
+    "description": "Error umum bagikan posisi"
+  },
+  "balehoLeaderboardShareLoginRequired": "Masuk dulu untuk membagikan posisimu ke feed.",
+  "@balehoLeaderboardShareLoginRequired": {
+    "description": "Error bagikan posisi tanpa login"
   },
   "balehoSlotAvailable": "Tersedia",
   "balehoSlotHeld": "Dipesan",
@@ -420,6 +604,15 @@
   },
   "balehoReferralLabel": "Kode teman (opsional)",
   "balehoReferralHint": "Username yang mengajakmu",
+  "balehoReferralDescription": "Orang yang mengajak kamu memakai SambasKu sebagai media promosi.",
+  "balehoReferralPickTitle": "Cari username teman",
+  "balehoReferralSelectedHint": "Ketuk untuk ganti",
+  "balehoReferralClearSemantics": "Hapus kode teman",
+  "balehoReferralSearchTitle": "Cari teman",
+  "balehoReferralSearchHint": "Ketik username...",
+  "balehoReferralSearchPrompt": "Ketik username orang yang mengajak kamu.",
+  "balehoReferralSearchEmpty": "Username tidak ditemukan.",
+  "balehoReferralSearchFailed": "Gagal memuat pencarian. Coba lagi ya.",
   "balehoDaysLabel": "Berapa hari tayang?",
   "@balehoDaysLabel": {
     "description": "Label field durasi tayang"
@@ -712,23 +905,29 @@
   "balehoHistoryEndingSoonHint": "Berakhir dalam 24 jam. Setelah selesai, pesan lagi dari sini ya.",
   "balehoHistoryRebookCta": "Pesan lagi",
   "balehoHistoryRebookHint": "Pilih area kosong di papan, lalu aktifkan ulang creative lama.",
+  "balehoHistoryPerfTitle": "Performa",
+  "@balehoHistoryPerfTitle": {
+    "description": "Judul panel dilihat, tap baleho, dan tap CTA di detail pesanan"
+  },
   "balehoHistoryStatsTitle": "Biaya",
   "@balehoHistoryStatsTitle": {
     "description": "Judul ringkasan biaya di detail pesanan Baleho"
   },
+  "balehoHistoryDailyTitle": "7 hari terakhir",
+  "balehoHistoryDailyEmpty": "Belum ada data harian.",
   "balehoHistoryCostEmpty": "Belum ada ringkasan biaya untuk pesanan ini.",
   "@balehoHistoryCostEmpty": {
     "description": "Placeholder bila quoted/CPC belum tersedia di detail Baleho"
   },
-  "balehoHistoryStatImpressions": "Tayang",
+  "balehoHistoryStatImpressions": "Dilihat",
   "@balehoHistoryStatImpressions": {
     "description": "Label hitungan impression Baleho"
   },
-  "balehoHistoryStatTaps": "Buka detail",
+  "balehoHistoryStatTaps": "Open",
   "@balehoHistoryStatTaps": {
     "description": "Label hitungan tap membuka sheet detail"
   },
-  "balehoHistoryStatActions": "Klik tombol",
+  "balehoHistoryStatActions": "Tap CTA",
   "@balehoHistoryStatActions": {
     "description": "Label hitungan klik CTA di sheet Baleho"
   },
@@ -892,30 +1091,44 @@
   },
   "routerNotFound": "Halaman tidak ditemukan: {error}",
   "aboutTitle": "Tentang",
-  "aboutTagline": "Kamus Digital Sambas-Indonesia",
+  "aboutTagline": "Platform digital bahasa dan budaya Sambas",
   "aboutVersion": "Versi {version}",
   "splashTagline": "Kamus, Bahasa & Budaya (v{version})",
   "splashTaglinePending": "Kamus, Bahasa & Budaya",
   "splashSupportedBy": "Didukung oleh",
   "aboutWhatTitle": "Apa itu SambasKu?",
-  "aboutWhatBody": "Kamus digital Melayu Sambas-Indonesia yang dirawat bersama warga. Kamu bisa mencari arti kata, membaca contoh kalimat, menyimpan kata, mengusulkan kata baru, dan membagikan kartu kata. Usulan dari akun yang sudah masuk langsung tayang dengan label Menunggu pengecekan, lalu diperiksa verifikator.",
+  "aboutWhatBody": "Platform digital untuk belajar bahasa dan budaya Sambas. Kamu bisa mengenal dan mengeksplorasi Sambas lewat kosakata, tempat, kuliner, acara, komunitas, dan konten yang dirawat bersama warga.",
   "aboutSponsorTitle": "Sponsor & Tim Kami",
-  "aboutSponsorBody": "Para pendukung operasional dan orang-orang yang merawat kamus ini.",
+  "aboutSponsorBody": "Para pendukung operasional dan orang-orang yang merawat platform ini.",
   "aboutSponsorAction": "Lihat Sponsor & Tim Kami",
   "aboutSourceTitle": "Kode Sumber & Organisasi",
-  "aboutSourceBody": "SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten kamus dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.",
+  "aboutSourceBody": "SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.",
   "aboutSourceAction": "Buka di GitHub",
+  "aboutOssTitle": "Pustaka sumber terbuka",
+  "aboutOssBody": "Daftar pustaka langsung di pubspec.yaml beserta lisensi sumber terbukanya.",
+  "aboutOssAction": "Lihat daftar pustaka",
+  "aboutOssListTitle": "Pustaka sumber terbuka",
+  "aboutOssEmpty": "Daftar pustaka belum tersedia.",
+  "aboutOssLoading": "Memuat daftar pustaka",
+  "aboutOssUnknown": "Lisensi sumber terbuka",
   "aboutSponsorshipTitle": "Sponsor & Tim Kami",
   "aboutTabSponsors": "Sponsor & Mitra",
   "aboutTabTeam": "Tim Kami",
+  "aboutChipTeam": "Tim",
+  "aboutChipVerifiers": "Verifikator",
+  "aboutChipContributors": "Warga",
+  "aboutTeamChipEmpty": "Belum ada data di sini.",
+  "aboutTeamSectionBody": "Anggota yang merawat SambasKu - produk, data, dan komunitas.",
+  "aboutVerifiersSectionBody": "Memeriksa usulan warga supaya konten tetap akurat dan layak tayang.",
+  "aboutContributorsSectionBody": "Mengusulkan kata, perbaikan, dan rekaman suara. Entri tayang setelah diverifikasi.",
   "aboutSupportTitle": "Ingin ikut mendukung?",
   "aboutSupportBody": "Dukungan bisa lewat GitHub Sponsors atau Saweria. Detail kerja sama ada di profil organisasi kami di GitHub.",
   "aboutTogetherTitle": "Bersama warga Sambas",
-  "aboutTogetherBody": "Kamus ini dirawat orang-orang yang mengusulkan kata, memeriksa entri, dan merekam pelafalan.",
-  "aboutContributorsTitle": "Kontributor",
-  "aboutContributorsBody": "Mengirim kata baru atau perbaikan, dan merekam cara mengucapkan kata agar bisa didengar. Entri tayang setelah verifikasi.",
+  "aboutTogetherBody": "Platform ini dirawat orang-orang yang mengusulkan konten, memeriksa entri, dan merekam pelafalan.",
+  "aboutContributorsTitle": "Warga",
+  "aboutContributorsBody": "Mengusulkan kata, perbaikan, dan merekam cara mengucapkan supaya bisa didengar. Entri tayang setelah verifikasi.",
   "aboutVerifiersTitle": "Verifikator",
-  "aboutVerifiersBody": "Memeriksa usulan sebelum masuk kamus.",
+  "aboutVerifiersBody": "Memeriksa usulan sebelum tayang.",
   "aboutSponsorsSectionTitle": "Sponsor & Mitra",
   "aboutSponsorsTooltip": "Sponsor: pemberi dana atau barang untuk biaya operasional (domain, server, honorarium). Mitra: rekan kerja sama yang berkontribusi dana, tenaga, materi, atau data. Nama semua pendukung kami cantumkan sebagai apresiasi atas dukungannya.",
   "aboutTeamCoreTitle": "Inti Tim",
@@ -1196,12 +1409,12 @@
   "@suggestCategoryChangeExample": {
     "description": "Kategori usulan #244: perbaiki contoh kalimat yang sudah tayang"
   },
-  "suggestCategoryChangeExampleDesc": "Perbaiki typo atau arti contoh yang sudah ada",
+  "suggestCategoryChangeExampleDesc": "Perbaiki typo atau arti contoh",
   "suggestCategoryChangePronunciation": "Ubah pelafalan",
   "@suggestCategoryChangePronunciation": {
     "description": "Kategori usulan: perbaiki notasi pelafalan yang sudah tayang"
   },
-  "suggestCategoryChangePronunciationDesc": "Perbaiki notasi IPA yang sudah ada",
+  "suggestCategoryChangePronunciationDesc": "Perbaiki notasi IPA",
   "suggestPickPronunciation": "Pilih pelafalan yang mau diperbaiki",
   "@suggestPickPronunciation": {
     "description": "Caption daftar pelafalan di form Ubah pelafalan"
@@ -1240,25 +1453,25 @@
   "suggestCategoryAntonym": "Antonim",
   "suggestCategoryAntonymDesc": "Kata yang artinya berlawanan",
   "suggestCategoryVariantOf": "Variasi bentuk",
-  "suggestCategoryVariantOfDesc": "Kata ini entri sendiri, variasi dari lemma lain (bukan ejaan)",
+  "suggestCategoryVariantOfDesc": "Entri sendiri, variasi dari lemma lain",
   "suggestCategoryNonstandardOf": "Bentuk tidak baku",
-  "suggestCategoryNonstandardOfDesc": "Kata ini entri sendiri, bentuk tidak baku dari lemma baku",
+  "suggestCategoryNonstandardOfDesc": "Entri sendiri, bentuk tidak baku dari lemma baku",
   "suggestCategoryDerivedFrom": "Kata turunan",
-  "suggestCategoryDerivedFromDesc": "Kata ini diturunkan dari akar kata (isi akarnya)",
+  "suggestCategoryDerivedFromDesc": "Diturunkan dari kata akar",
   "suggestCategoryMeaningGroup": "Kelompok makna",
-  "suggestCategoryMeaningGroupDesc": "Gabungkan kata bermakna sama dalam satu kelompok",
+  "suggestCategoryMeaningGroupDesc": "Kelompokkan kata yang bermakna sama",
   "suggestCategorySpellingVariant": "Variasi penulisan",
-  "suggestCategorySpellingVariantDesc": "Ejaan lain tanpa entri sendiri (tetap di lemma ini)",
-  "suggestCategoryChangeCategories": "Ubah kategori topik",
+  "suggestCategorySpellingVariantDesc": "Ejaan lain, tetap di lemma ini",
+  "suggestCategoryChangeCategories": "Ubah kategori",
   "@suggestCategoryChangeCategories": {
     "description": "Kategori usulan: tag topik lemma (chip)"
   },
-  "suggestCategoryChangeCategoriesDesc": "Tambah atau lepas kategori topik di lemma ini",
+  "suggestCategoryChangeCategoriesDesc": "Tambah atau hapus kategori topik",
   "suggestCategoryChangeUsageLabels": "Label register & peringatan",
   "@suggestCategoryChangeUsageLabels": {
     "description": "Kategori usulan: ubah usage_labels pada kata existing"
   },
-  "suggestCategoryChangeUsageLabelsDesc": "Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.",
+  "suggestCategoryChangeUsageLabelsDesc": "Tandai kata kasar, seksual, atau diskriminatif. Memengaruhi beranda dan daftar A-Z.",
   "@suggestCategoryChangeUsageLabelsDesc": {
     "description": "Subjudul tile usul perubahan untuk usage_labels"
   },
@@ -1274,10 +1487,10 @@
   "suggestEntryTileVerifierSubtitle": "Tambah makna, relasi, contoh, pelafalan - langsung terbit",
   "suggestEntryTileContributorTitle": "Usulkan perubahan",
   "suggestEntryTileContributorSubtitle": "Perbaikan kata yang sudah tayang menunggu persetujuan admin",
-  "suggestPreSubmitVerifierBanner": "Ubah yang perlu saja. Perubahan langsung diterapkan, tanpa antrean.",
+  "suggestPreSubmitVerifierBanner": "Ubah seperlunya. Perubahan langsung tayang.",
   "suggestPreSubmitVerifierCta": "Simpan perubahan",
   "suggestPreSubmitVerifierCtaBusy": "Menyimpan...",
-  "suggestPreSubmitContributorBanner": "Ubah yang perlu saja. Admin mereview sebelum tayang.",
+  "suggestPreSubmitContributorBanner": "Ubah seperlunya. Admin meninjau sebelum tayang.",
   "suggestPreSubmitContributorCta": "Kirim Usulan",
   "suggestPreSubmitContributorCtaBusy": "Mengirim...",
   "suggestSuccessThisWord": "kata ini",
@@ -1420,6 +1633,7 @@
   "historyFieldImage": "Gambar",
   "historyFieldPronunciation": "Pengucapan",
   "historyFieldWordType": "Jenis kata",
+  "historyFieldWordClass": "Kelas kata",
   "historyFieldLanguage": "Bahasa",
   "historyFieldVerificationStatus": "Status verifikasi",
   "historyFieldStatus": "Status",
@@ -1786,7 +2000,6 @@
   "reviewCorrectSavePending": "Simpan, tetap menunggu",
   "reviewCorrectCancel": "Batal koreksi",
   "reviewCorrectPolitenessConflict": "Halus dan Kasar tidak bisa dipilih bersamaan",
-  "reviewCorrectWordNotes": "Catatan kata",
   "reviewCorrectRegister": "Register",
   "reviewCorrectRegisterHint": "Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa bersamaan.",
   "reviewCorrectWarning": "Peringatan",
@@ -1828,6 +2041,10 @@
   "reviewRepoSuggestionLoadFailed": "Gagal memuat detail usulan edit",
   "reviewRepoSuggestionApproveFailed": "Gagal menyetujui usulan",
   "reviewRepoSuggestionRejectFailed": "Gagal menolak usulan",
+  "reviewSuggestionCorrectButton": "Koreksi",
+  "reviewSuggestionCorrectCta": "Simpan koreksi",
+  "reviewSuggestionCorrectedToast": "Koreksi disimpan dan diterapkan",
+  "reviewRepoSuggestionCorrectFailed": "Gagal menyimpan koreksi usulan",
   "reviewExploreLoadFailed": "Gagal memuat usulan eksplorasi",
   "reviewExploreApproveFailed": "Gagal menyetujui usulan eksplorasi",
   "reviewExploreRejectFailed": "Gagal menolak usulan eksplorasi",
@@ -1953,18 +2170,31 @@
   "dictCopiedWord": "Teks kata disalin",
   "dictCopiedMeaning": "Makna disalin",
   "dictSearchHint": "Cari kata Sambas...",
-  "dictSearchChip": "Cari",
+  "dictSearchChip": "Cari\nKata",
   "@dictSearchChip": {
     "description": "Label chip cari di beranda (bukan hint field list)"
   },
-  "dictAZ": "A-Z",
-  "dictProposeChip": "Usul",
+  "dictAZ": "Indeks\nA-Z",
+  "dictProposeChip": "Tambah\nKata",
   "@dictProposeChip": {
     "description": "Label chip usul kata di beranda (pendek)"
   },
-  "dictDiscussionChip": "Diskusi",
+  "dictDiscussionChip": "Ruang\nDiskusi",
   "@dictDiscussionChip": {
     "description": "Label chip ruang diskusi di beranda (pendek)"
+  },
+  "dictDiscussionUnreadSemantics": "Diskusi, ada chat baru",
+  "@dictDiscussionUnreadSemantics": {
+    "description": "Semantics chip Diskusi di beranda saat ada chat baru (titik)"
+  },
+  "dictDiscussionMentionSemantics": "Diskusi, {count} pesan untukmu",
+  "@dictDiscussionMentionSemantics": {
+    "description": "Semantics chip Diskusi di beranda saat ada reply atau mention ke akun sendiri",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "dictProposeWord": "Usul kata baru",
   "dictDiscussion": "Ruang Diskusi",
@@ -2101,14 +2331,14 @@
   "dictNotInDictionary": "Belum ada di kamus. Usulkan supaya bisa dicari orang lain.",
   "dictProposeThisWord": "Usul kata ini",
   "hotTopicsTitle": "Sorotan hari ini",
-  "hotTopicsTabSearched": "Dicari",
+  "hotTopicsTabSearched": "Dicari warga",
   "hotTopicsTabProposed": "Usulan",
-  "hotTopicsTabNearThreshold": "Hits",
+  "hotTopicsTabNearThreshold": "Terpopuler",
   "hotTopicsTabEmpty": "Belum ada data",
   "@hotTopicsTabEmpty": {
     "description": "Judul empty state tab Sorotan"
   },
-  "hotTopicsTabEmptySearchedBody": "Belum ada pencarian kosong yang menonjol hari ini.",
+  "hotTopicsTabEmptySearchedBody": "Belum ada kata yang dicari warga tapi belum ada di kamus.",
   "@hotTopicsTabEmptySearchedBody": {
     "description": "Subtitle empty tab Dicari"
   },
@@ -2116,15 +2346,66 @@
   "@hotTopicsTabEmptyProposedBody": {
     "description": "Subtitle empty tab Usulan"
   },
-  "hotTopicsTabEmptyNearBody": "Belum ada hits dalam 2 hari terakhir.",
+  "hotTopicsTabEmptyNearBody": "Belum ada kata terpopuler dalam 2 hari terakhir.",
   "@hotTopicsTabEmptyNearBody": {
     "description": "Subtitle empty tab Hits"
   },
-  "hotTopicsTabCheck": "Cek",
+  "hotTopicsTabCheck": "Perlu dicek",
   "@hotTopicsTabCheck": {
     "description": "Tab Sorotan: makna yang dapat downvote"
   },
-  "hotTopicsTabEmptyCheckBody": "Belum ada makna yang perlu dicek hari ini.",
+  "hotTopicsTabHits": "Terpopuler",
+  "@hotTopicsTabHits": {
+    "description": "Tab Sorotan: kata paling sering dibuka"
+  },
+  "hotTopicsTabHitsBlurb": "Halaman kata yang paling sering dibuka warga",
+  "@hotTopicsTabHitsBlurb": {},
+  "hotTopicsTabEmptyViewedBody": "Belum ada kata terpopuler dalam 2 hari terakhir.",
+  "@hotTopicsTabEmptyViewedBody": {
+    "description": "Empty state tab Terpopuler (word_views)"
+  },
+  "hotTopicsTabProposedBlurb": "Usulan kata menunggu peninjauan",
+  "@hotTopicsTabProposedBlurb": {},
+  "hotTopicsTabSearchedBlurb": "Dicari warga dan belum ada di kamus",
+  "@hotTopicsTabSearchedBlurb": {},
+  "hotTopicsTabCheckBlurb": "Makna yang dapat downvote dari warga",
+  "@hotTopicsTabCheckBlurb": {},
+  "hotTopicsTabVerified": "Baru",
+  "@hotTopicsTabVerified": {
+    "description": "Tab Sorotan: 10 kata baru diverifikasi"
+  },
+  "hotTopicsTabVerifiedBlurb": "Baru diverifikasi - 10 terbaru",
+  "@hotTopicsTabVerifiedBlurb": {},
+  "hotTopicsTabEmptyVerifiedBody": "Belum ada kata yang baru diverifikasi.",
+  "@hotTopicsTabEmptyVerifiedBody": {},
+  "hotTopicsTabCommented": "Dikomentari",
+  "@hotTopicsTabCommented": {
+    "description": "Tab Sorotan: lemma yang baru dikomentari"
+  },
+  "hotTopicsTabCommentedBlurb": "Lemma yang baru dikomentari",
+  "@hotTopicsTabCommentedBlurb": {},
+  "hotTopicsTabEmptyCommentedBody": "Belum ada lemma yang baru dikomentari.",
+  "@hotTopicsTabEmptyCommentedBody": {},
+  "hotTopicsVerifiedMeta": "diverifikasi {when}",
+  "@hotTopicsVerifiedMeta": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "hotTopicsCommentedMeta": "{count} komentar · {when}",
+  "@hotTopicsCommentedMeta": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "hotTopicsTabEmptyCheckBody": "Belum ada makna yang dapat downvote dari warga.",
   "@hotTopicsTabEmptyCheckBody": {
     "description": "Subtitle empty tab Cek"
   },
@@ -2339,6 +2620,8 @@
   "feedKindPlacePhoto": "Foto wisata",
   "feedKindPlace": "Wisata",
   "feedKindEvent": "Acara",
+  "feedKindKarya": "Karya",
+  "@feedKindKarya": {},
   "feedKindUsaha": "Usaha",
   "feedKindLayanan": "Layanan",
   "feedKindCulinary": "Kuliner",
@@ -2359,11 +2642,21 @@
   "feedCtaHelpFill": "Bantu isi",
   "feedCtaSeeProfile": "Lihat profil",
   "feedCtaSeeCard": "Lihat kartu",
+  "feedKindLeaderboard": "Peringkat",
+  "@feedKindLeaderboard": {
+    "description": "Label jenis feed: bagikan posisi papan peringkat"
+  },
+  "feedCtaSeeLeaderboard": "Lihat peringkat",
+  "@feedCtaSeeLeaderboard": {
+    "description": "CTA feed: buka papan peringkat mingguan"
+  },
   "feedCtaSeeSuggestion": "Lihat usulan",
   "feedCtaSeeWord": "Lihat kata",
   "feedCtaReadAnnouncement": "Baca pengumuman",
   "feedCtaSeePlace": "Lihat tempat",
   "feedCtaSeeEvent": "Lihat acara",
+  "feedCtaSeeKarya": "Lihat karya",
+  "@feedCtaSeeKarya": {},
   "feedCtaSeeUsaha": "Lihat usaha",
   "feedCtaSeeLayanan": "Lihat layanan",
   "feedCtaSeeCulinary": "Lihat kuliner",
@@ -2398,6 +2691,7 @@
   "feedContributeSearchMiss": "Dicari warga",
   "feedContributeSearchMissSubtitle": "Kata yang dicari warga tapi belum ketemu. Bantu isi artinya",
   "feedContributePeriksaKata": "Periksa kata",
+  "periksaKataHeroSubtitle": "Bantu pastikan makna di kamus sudah tepat.",
   "feedPeriksaKataStubBody": "Halaman Periksa Kata segera tersedia. Sementara ini kamu masih bisa nilai kata di kartu di bawah.",
   "periksaKataLoginPrompt": "Masuk dulu untuk memeriksa kata",
   "periksaKataSearchHint": "Cari lemma…",
@@ -2567,11 +2861,13 @@
   "notificationTypeDiscussionReply": "Balasan diskusi",
   "notificationTypeDiscussionMention": "Sebutan diskusi",
   "notificationTypeJinyeComment": "Balasan Jinye",
+  "notificationTypeChatMention": "Sebutan di chat",
   "notificationTypePantunReply": "Balasan pantun",
   "notificationTypePantunMention": "Sebutan pantun",
   "notificationTypeCampaign": "Pengumuman",
   "notificationTypeComment": "Komentar",
   "notificationTypeVote": "Vote",
+  "notificationTypeClap": "Clap",
   "notificationTypeExample": "Contoh",
   "notificationTypeAudio": "Pelafalan",
   "notificationTypePlaceApproved": "Wisata disetujui",
@@ -2966,6 +3262,10 @@
   "karyaAccessEmpty": "Belum ada tautan akses",
   "karyaAccessKindListen": "Dengarkan",
   "karyaAccessKindWatch": "Tonton",
+  "karyaAccessKindTrailer": "Trailer",
+  "@karyaAccessKindTrailer": {
+    "description": "Label kind access_links trailer (film saja)"
+  },
   "karyaAccessKindBuy": "Beli",
   "karyaAccessKindRead": "Baca",
   "karyaAccessKindStream": "Streaming",
@@ -3120,6 +3420,18 @@
   "karyaFormTitle": "Judul",
   "karyaFormTitleHint": "Judul lagu atau film",
   "karyaFormYearHint": "Contoh 2019",
+  "karyaFormRemoveSambas": "Hapus kaitan Sambas",
+  "@karyaFormRemoveSambas": {
+    "description": "Semantics / aksi hapus satu baris kaitan Sambas di form edit karya"
+  },
+  "karyaFormRemoveCredit": "Hapus kredit",
+  "@karyaFormRemoveCredit": {
+    "description": "Semantics / aksi hapus satu baris kredit di form edit karya"
+  },
+  "karyaFormRemoveAccess": "Hapus tautan akses",
+  "@karyaFormRemoveAccess": {
+    "description": "Semantics / aksi hapus satu baris tautan akses di form edit karya"
+  },
   "karyaFormAddSambas": "Tambah kaitan Sambas",
   "karyaFormCreditRole": "Peran",
   "karyaFormCreditName": "Nama",
@@ -3130,6 +3442,38 @@
   "karyaFormAccessLabelHint": "Misal Dengarkan di Spotify",
   "karyaFormAccessUrl": "URL",
   "karyaFormAccessUrlHint": "Tautan sumber asli (https)",
+  "karyaFormCoverMusic": "Cover lagu",
+  "@karyaFormCoverMusic": {
+    "description": "Label field upload cover lagu di form usulan karya"
+  },
+  "karyaFormCoverFilm": "Poster film",
+  "@karyaFormCoverFilm": {
+    "description": "Label field upload poster film di form usulan karya"
+  },
+  "karyaFormCoverHintMusic": "Opsional - tampil di daftar dan detail lagu",
+  "@karyaFormCoverHintMusic": {
+    "description": "Hint upload cover lagu"
+  },
+  "karyaFormCoverHintFilm": "Opsional - tampil di daftar dan detail film",
+  "@karyaFormCoverHintFilm": {
+    "description": "Hint upload poster film"
+  },
+  "karyaFormTrailerUrl": "URL trailer",
+  "@karyaFormTrailerUrl": {
+    "description": "Label field URL trailer di form usul film"
+  },
+  "karyaFormTrailerUrlHint": "Opsional - tautan https trailer (YouTube, dll)",
+  "@karyaFormTrailerUrlHint": {
+    "description": "Hint field URL trailer film"
+  },
+  "karyaFormWaitUpload": "Tunggu upload cover selesai",
+  "@karyaFormWaitUpload": {
+    "description": "Toast saat cover masih diunggah"
+  },
+  "karyaFormRemoveFailedPhoto": "Hapus cover yang gagal diunggah dulu",
+  "@karyaFormRemoveFailedPhoto": {
+    "description": "Toast saat cover gagal upload masih ada di form"
+  },
   "karyaFormAddAccess": "Tambah tautan akses",
   "karyaCreditRoleVocal": "Vokal",
   "karyaCreditRoleFeat": "Feat",
@@ -3143,6 +3487,55 @@
   "karyaCreditRoleWriter": "Penulis skenario",
   "karyaCreditRoleCinematographer": "Sinema",
   "karyaCreditRoleOther": "Lainnya",
+  "karyaMusicReleaseSingle": "Single",
+  "@karyaMusicReleaseSingle": {
+    "description": "Jenis rilis musik: single"
+  },
+  "karyaMusicReleaseAlbumTrack": "Lagu album",
+  "@karyaMusicReleaseAlbumTrack": {
+    "description": "Jenis rilis musik: trek album"
+  },
+  "karyaMusicReleaseOther": "Lainnya",
+  "@karyaMusicReleaseOther": {
+    "description": "Jenis rilis musik selain single/album"
+  },
+  "karyaMusicIsCoverBadge": "Cover",
+  "@karyaMusicIsCoverBadge": {
+    "description": "Badge bahwa lagu adalah cover"
+  },
+  "karyaMusicListenEmpty": "Belum ada tautan dengar",
+  "@karyaMusicListenEmpty": {
+    "description": "Empty state saat karya musik tanpa tautan akses"
+  },
+  "karyaFilmTypeFeature": "Film panjang",
+  "@karyaFilmTypeFeature": {
+    "description": "Jenis film: feature"
+  },
+  "karyaFilmTypeShort": "Film pendek",
+  "@karyaFilmTypeShort": {
+    "description": "Jenis film: short"
+  },
+  "karyaFilmTypeDocumentary": "Dokumenter",
+  "@karyaFilmTypeDocumentary": {
+    "description": "Jenis film: documentary"
+  },
+  "karyaFilmTypeOther": "Lainnya",
+  "@karyaFilmTypeOther": {
+    "description": "Jenis film selain feature/short/dokumenter"
+  },
+  "karyaFilmRuntimeMinutes": "{minutes} mnt",
+  "@karyaFilmRuntimeMinutes": {
+    "description": "Durasi film dalam menit",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "karyaFilmWatchEmpty": "Belum ada tautan tonton",
+  "@karyaFilmWatchEmpty": {
+    "description": "Empty state saat karya film tanpa tautan akses"
+  },
   "exploreCategoryAcara": "Acara",
   "exploreCategoryAcaraSubtitle": "Festival, pameran, dan kegiatan",
   "exploreCategoryPantun": "Pantun",
@@ -3383,6 +3776,7 @@
   "regionDesaTitle": "Desa {name}",
   "regionVillageCount": "{count} desa",
   "regionDesaComingSoon": "Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.",
+  "regionKecamatanComingSoon": "Info kecamatan ini sedang kami siapkan. Nanti kamu bisa lihat isinya di sini ya.",
   "regionAgendaDesa": "Agenda di Desa {name}",
   "placeNoCoordinatesTitle": "Lokasi tempat ini belum tersedia",
   "placeNoCoordinatesBody": "Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.",
@@ -3616,7 +4010,7 @@
   "wilayahLoadingVillageList": "Memuat daftar desa...",
   "wilayahSearchVillageCta": "Cari desa",
   "wilayahSeeArea": "Lihat area",
-  "wilayahKecamatanProfile": "Profil kecamatan",
+  "wilayahKecamatanProfile": "Lihat Kecamatan",
   "wilayahScrollDown": "Gulir ke bawah",
   "exploreUploadImageFailed": "Unggah foto gagal",
   "exploreSubmitFailed": "Gagal mengirim. Coba lagi ya.",
@@ -4050,6 +4444,10 @@
   "@discussionSentAudioFailed": {},
   "discussionSentPending": "Permintaan terkirim, menunggu pengecekan",
   "@discussionSentPending": {},
+  "discussionSentPublished": "Diskusi tayang",
+  "@discussionSentPublished": {
+    "description": "Toast setelah create diskusi auto-publish (#338)"
+  },
   "discussionStorageUnavailable": "Penyimpanan gambar belum tersedia",
   "@discussionStorageUnavailable": {},
   "discussionGenericError": "Terjadi kesalahan, coba lagi",
@@ -4359,15 +4757,21 @@
   "@eventScheduleRange": {
     "description": "Rentang jadwal acara tanpa jam pasti di salah satu ujung",
     "placeholders": {
-      "start": {"type": "String"},
-      "end": {"type": "String"}
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
     }
   },
   "eventFormSchedulePreview": "Pratinjau: {schedule}",
   "@eventFormSchedulePreview": {
     "description": "Ringkasan jadwal di form usulan acara",
     "placeholders": {
-      "schedule": {"type": "String"}
+      "schedule": {
+        "type": "String"
+      }
     }
   },
   "eventFormEndTimePlaceholderThroughEndDate": "Opsional - sampai tanggal selesai",
@@ -5459,6 +5863,10 @@
   "@editProfileSaveSuccess": {},
   "pantunListSubtitle": "Berbalas pantun bersama warga sambas",
   "@pantunListSubtitle": {},
+  "pantunHeroSemantics": "Ilustrasi warga berbalas pantun di tepi sungai",
+  "@pantunHeroSemantics": {
+    "description": "Label aksesibilitas gambar hero halaman pantun"
+  },
   "pantunComingSoon": "Segera",
   "@pantunComingSoon": {},
   "pantunRateLimited": "Terlalu banyak permintaan. Coba lagi sebentar.",
@@ -5829,6 +6237,10 @@
   "@discussionEditQueued": {
     "description": "Toast sukses edit OP re-queue pending"
   },
+  "discussionEditPublished": "Suntingan tersimpan - diskusi tetap tayang",
+  "@discussionEditPublished": {
+    "description": "Toast setelah edit OP tetap published (#338)"
+  },
   "discussionEditHistoryTitle": "Riwayat sunting diskusi",
   "@discussionEditHistoryTitle": {
     "description": "Judul sheet riwayat edit OP"
@@ -5892,14 +6304,17 @@
   "jinyePreviewPhotoOnly": "Foto",
   "jinyePreviewEmpty": "Jinye",
   "jinyeProfileJikuLabel": "Jiku",
+  "jinyeProfileJikuActionsSemantics": "Jiku, ketuk untuk opsi",
+  "jinyeSheetViewJiku": "Lihat jiku",
+  "jinyeSheetEditJiku": "Edit jiku",
   "jinyeSheetReply": "Balas",
   "jinyeSheetViewDiscussion": "Lihat diskusi",
-  "jinyeSheetCreateNew": "Buat jinye baru",
-  "jinyeSheetClear": "Kosongkan jinye",
-  "jinyeSheetClearConfirmTitle": "Kosongkan jinye?",
-  "jinyeSheetClearConfirmBody": "Status di profil kamu hilang. Jinye tetap tersimpan di arsip.",
+  "jinyeSheetCreateNew": "Jiku baru",
+  "jinyeSheetClear": "Kosongkan jiku",
+  "jinyeSheetClearConfirmTitle": "Kosongkan jiku?",
+  "jinyeSheetClearConfirmBody": "Jiku di profil kamu hilang. Jinye tetap tersimpan di arsip.",
   "jinyeSheetClearConfirmAction": "Kosongkan",
-  "jinyeClearedSuccess": "Jinye dikosongkan",
+  "jinyeClearedSuccess": "Jiku dikosongkan",
   "jinyeDiscussionEmpty": "Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.",
   "jinyeComposeEntryTooltip": "Buat Jinye",
   "jinyeCreateAudioLabel": "Rekaman suara (opsional)",
@@ -5989,6 +6404,13 @@
   "jinyePromoteTextOnly": "Teks saja",
   "jinyePromoteSuccess": "Usulan contoh terkirim",
   "jinyePromoteFailed": "Gagal mengajukan jadi contoh",
+  "jinyePromoteImageAction": "Jadikan foto lemma",
+  "jinyePromoteImagePickTitle": "Pilih foto",
+  "jinyePromoteImagePickConfirm": "Lanjut pilih lemma",
+  "jinyePromoteImagePending": "Foto terkirim, menunggu dicek verifikator ya",
+  "jinyePromoteImageDone": "Foto sudah jadi foto lemma",
+  "jinyePromoteImageFailed": "Gagal mengajukan jadi foto lemma",
+  "jinyePromoteImageSourceLabel": "Foto dari Jinye",
   "jinyeTranslateAction": "Usul terjemahan",
   "jinyeTranslateTitle": "Terjemahan Indonesia",
   "jinyeTranslateHint": "Tulis arti dalam bahasa Indonesia…",
@@ -6060,12 +6482,35 @@
   "@eventDetailOrganizerLabel": {
     "description": "Label tile penyelenggara di detail acara"
   },
-  "eventGoingAction": "Aku hadir",
-  "@eventGoingAction": {},
-  "eventGoingCancel": "Batal hadir",
-  "@eventGoingCancel": {},
-  "eventGoingCount": "{count} orang hadir",
-  "@eventGoingCount": {
+  "eventGoingActionPlan": "Berencana hadir",
+  "@eventGoingActionPlan": {
+    "description": "CTA tandai kehadiran sebelum tanggal acara"
+  },
+  "eventGoingCancelPlan": "Batal rencana",
+  "@eventGoingCancelPlan": {
+    "description": "CTA batal rencana hadir sebelum tanggal acara"
+  },
+  "eventGoingCountPlan": "{count} orang berencana hadir",
+  "@eventGoingCountPlan": {
+    "description": "Jumlah orang yang berencana hadir sebelum tanggal acara",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "eventGoingActionAttend": "Hadir",
+  "@eventGoingActionAttend": {
+    "description": "CTA tandai hadir pada hari acara dan sesudahnya"
+  },
+  "eventGoingCancelAttend": "Batal hadir",
+  "@eventGoingCancelAttend": {
+    "description": "CTA batal hadir pada hari acara dan sesudahnya"
+  },
+  "eventGoingCountAttend": "{count} orang hadir",
+  "@eventGoingCountAttend": {
+    "description": "Jumlah orang hadir pada hari acara dan sesudahnya",
     "placeholders": {
       "count": {
         "type": "int",
@@ -6131,6 +6576,12 @@
   "@eventCommentsEmpty": {},
   "eventCommentHint": "Tulis komentar tentang acara ini",
   "@eventCommentHint": {},
+  "karyaCommentsTitle": "Komentar",
+  "@karyaCommentsTitle": {},
+  "karyaCommentsEmpty": "Belum ada komentar. Jadi yang pertama ya.",
+  "@karyaCommentsEmpty": {},
+  "karyaCommentHint": "Tulis komentar",
+  "@karyaCommentHint": {},
   "eventMorePhotos": "Lihat lainnya ({count} foto)",
   "@eventMorePhotos": {
     "placeholders": {
@@ -6584,7 +7035,7 @@
     "description": "Total poin yang didapat pada minggu tersebut",
     "placeholders": {
       "points": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -6615,25 +7066,488 @@
   "expHistoryViewAll": "Lihat Riwayat EXP",
   "@expHistoryViewAll": {
     "description": "Tombol aksi membuka layar riwayat EXP dari bottom sheet level"
-  }
-,
+  },
   "balehoBookPhoneLabel": "No. HP / WhatsApp",
-  "@balehoBookPhoneLabel": {"description": "Label kontak konfirmasi pesanan Baleho"},
+  "@balehoBookPhoneLabel": {
+    "description": "Label kontak konfirmasi pesanan Baleho"
+  },
   "balehoBookPhoneHint": "Untuk konfirmasi pembayaran",
-  "@balehoBookPhoneHint": {"description": "Hint kontak Baleho"},
+  "@balehoBookPhoneHint": {
+    "description": "Hint kontak Baleho"
+  },
   "balehoValidationPhone": "Isi nomor HP/WA format internasional 62… atau 60…",
-  "@balehoValidationPhone": {"description": "Validasi nomor Baleho"},
+  "@balehoValidationPhone": {
+    "description": "Validasi nomor Baleho"
+  },
   "balehoStartDateLabel": "Tanggal mulai tayang",
-  "@balehoStartDateLabel": {"description": "Tile jadwal mulai Baleho"},
+  "@balehoStartDateLabel": {
+    "description": "Tile jadwal mulai Baleho"
+  },
   "balehoEndDateLabel": "Tanggal berakhir tayang",
-  "@balehoEndDateLabel": {"description": "Tile jadwal berakhir Baleho"},
+  "@balehoEndDateLabel": {
+    "description": "Tile jadwal berakhir Baleho"
+  },
   "balehoDurationDaysCount": "Durasi: {days} hari",
   "@balehoDurationDaysCount": {
     "description": "Ringkasan durasi setelah pilih tanggal",
-    "placeholders": {"days": {"type": "int"}}
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
   },
   "jinyeCommentLemmaHint": "Setelah kirim, tap kata di komentar untuk tautkan ke kamus.",
-  "@jinyeCommentLemmaHint": {"description": "Hint composer komen Jinye - lemma span"},
+  "@jinyeCommentLemmaHint": {
+    "description": "Hint composer komen Jinye - lemma span"
+  },
   "discussionReplyLemmaHint": "Tap kata di balasan untuk tautkan ke kamus.",
-  "@discussionReplyLemmaHint": {"description": "Hint balasan diskusi - lemma span"}
+  "@discussionReplyLemmaHint": {
+    "description": "Hint balasan diskusi - lemma span"
+  },
+  "communityCategoryAll": "Semua",
+  "@communityCategoryAll": {
+    "description": "Chip filter komunitas: semua kategori"
+  },
+  "communityCategorySeni": "Seni & Budaya",
+  "@communityCategorySeni": {
+    "description": "Chip filter komunitas kategori seni"
+  },
+  "communityCategoryBahasa": "Bahasa",
+  "@communityCategoryBahasa": {
+    "description": "Chip filter komunitas kategori bahasa"
+  },
+  "communityCategoryPendidikan": "Pendidikan",
+  "@communityCategoryPendidikan": {
+    "description": "Chip filter komunitas kategori pendidikan"
+  },
+  "communityCategoryUkm": "UKM",
+  "@communityCategoryUkm": {
+    "description": "Chip filter komunitas kategori usaha mikro"
+  },
+  "communityCategoryLain": "Lainnya",
+  "@communityCategoryLain": {
+    "description": "Chip filter komunitas kategori lainnya"
+  },
+  "communitySearchHint": "Cari nama komunitas…",
+  "@communitySearchHint": {
+    "description": "Hint textfield cari komunitas"
+  },
+  "communityOrgEmpty": "Belum ada komunitas terdaftar",
+  "@communityOrgEmpty": {
+    "description": "Empty state daftar komunitas"
+  },
+  "communityOrgEmptyHint": "Punya komunitas atau tahu komunitas di Sambas? Boleh kamu usulkan.",
+  "communityOrgEmptyQuery": "Belum ada komunitas yang cocok",
+  "communityOrgEmptyQueryHint": "Coba kata atau kategori lain ya.",
+  "communityLoadFailedBody": "Periksa koneksi lalu coba lagi.",
+  "communityOrgContact": "Hubungi",
+  "@communityOrgContact": {
+    "description": "Tombol hubungi komunitas di bottom sheet"
+  },
+  "communityContributeTitle": "Usul Komunitas",
+  "@communityContributeTitle": {
+    "description": "Judul form usul komunitas"
+  },
+  "communityContributeName": "Nama Komunitas",
+  "@communityContributeName": {
+    "description": "Label field nama komunitas"
+  },
+  "communityContributeNameHint": "cth: Komunitas Melayu Sambas",
+  "@communityContributeNameHint": {
+    "description": "Hint field nama komunitas"
+  },
+  "communityContributeNameRequired": "Nama komunitas minimal 2 huruf ya",
+  "@communityContributeNameRequired": {
+    "description": "Validasi nama kosong atau terlalu pendek"
+  },
+  "communityContributeLogoHint": "Logo (opsional, menyusul)",
+  "@communityContributeLogoHint": {
+    "description": "Hint area logo placeholder"
+  },
+  "communityContributeNote": "Usulanmu akan ditinjau tim sebelum tampil di daftar komunitas.",
+  "@communityContributeNote": {
+    "description": "Catatan alur review usulan"
+  },
+  "communityContributeSubmit": "Kirim Usulan",
+  "@communityContributeSubmit": {
+    "description": "Tombol kirim usulan komunitas"
+  },
+  "communityProposalsTitle": "Usulan Saya",
+  "@communityProposalsTitle": {
+    "description": "Judul halaman usulan komunitas milik user"
+  },
+  "communityProposalsLoginGate": "Masuk dulu untuk lihat usulan komunitasmu",
+  "@communityProposalsLoginGate": {
+    "description": "Gate login halaman usulan komunitas"
+  },
+  "communityProposalsEmpty": "Belum ada usulan komunitas",
+  "@communityProposalsEmpty": {
+    "description": "Judul empty state usulan komunitas"
+  },
+  "communityProposalsEmptyHint": "Usulan yang kamu kirim akan tampil di sini setelah ditinjau.",
+  "@communityProposalsEmptyHint": {
+    "description": "Hint empty state usulan komunitas"
+  },
+  "communityProposalsEmptyCta": "Usul Komunitas",
+  "@communityProposalsEmptyCta": {
+    "description": "CTA empty state ke form usul komunitas"
+  },
+  "communityContributeSuccess": "Usulan terkirim, terima kasih!",
+  "@communityContributeSuccess": {
+    "description": "Toast sukses submit usulan"
+  },
+  "communityBadgeOfficialPartner": "Mitra Resmi",
+  "@communityBadgeOfficialPartner": {
+    "description": "Badge mitra resmi di detail komunitas"
+  },
+  "communityDetailCategory": "Kategori",
+  "@communityDetailCategory": {
+    "description": "Label tile kategori di detail komunitas"
+  },
+  "communityDetailDistrict": "Kecamatan",
+  "@communityDetailDistrict": {
+    "description": "Label tile kecamatan di detail komunitas"
+  },
+  "communityListSubtitle": "Komunitas, organisasi, dan perkumpulan di Sambas",
+  "@communityListSubtitle": {
+    "description": "Subtitle hero halaman listing komunitas"
+  },
+  "communityFeaturedSection": "Sorotan",
+  "@communityFeaturedSection": {
+    "description": "Label kecil baris top 2 komunitas"
+  },
+  "communityContributeCategory": "Kategori",
+  "@communityContributeCategory": {
+    "description": "Label field kategori usulan komunitas"
+  },
+  "communityContributeDesc": "Deskripsi",
+  "@communityContributeDesc": {
+    "description": "Label field deskripsi komunitas"
+  },
+  "communityContributeDescHint": "Ceritakan singkat tentang komunitas ini",
+  "@communityContributeDescHint": {
+    "description": "Hint field deskripsi komunitas"
+  },
+  "communityContributeDescRequired": "Deskripsi minimal 10 huruf ya",
+  "@communityContributeDescRequired": {
+    "description": "Validasi deskripsi kosong/terlalu pendek"
+  },
+  "communityContributePickLogo": "Ganti Logo",
+  "@communityContributePickLogo": {
+    "description": "Label tap untuk pilih logo"
+  },
+  "communityLoadFailed": "Komunitas belum bisa dimuat. Coba lagi ya",
+  "@communityLoadFailed": {
+    "description": "Pesan gagal memuat daftar/detail komunitas"
+  },
+  "communitySaveFailed": "Usulan komunitas belum bisa disimpan. Coba lagi ya",
+  "@communitySaveFailed": {
+    "description": "Fallback gagal submit komunitas"
+  },
+  "communityUploadLogoFailed": "Logo belum bisa diunggah. Coba pilih gambar lain ya",
+  "@communityUploadLogoFailed": {
+    "description": "Fallback gagal upload logo komunitas"
+  },
+  "communityContributeFailed": "Usulan belum terkirim",
+  "@communityContributeFailed": {
+    "description": "Judul sheet gagal submit usulan komunitas"
+  },
+  "communityContributeSubmitting": "Mengirim usulan",
+  "@communityContributeSubmitting": {
+    "description": "Label CTA saat submit usulan komunitas"
+  },
+  "communityContributeLoginGate": "Masuk dulu untuk mengusulkan komunitas",
+  "@communityContributeLoginGate": {
+    "description": "Gate login form usul komunitas"
+  },
+  "communityProposalsLoadFailed": "Usulan komunitasmu belum bisa dimuat. Coba lagi ya",
+  "@communityProposalsLoadFailed": {
+    "description": "Pesan gagal memuat usulan komunitas"
+  },
+  "communityProposalCancelTitle": "Batalkan usulan ini?",
+  "@communityProposalCancelTitle": {
+    "description": "Judul sheet konfirmasi batal usulan komunitas"
+  },
+  "communityProposalCancelBody": "Usulan yang dibatalkan tidak akan masuk antrean tinjauan tim.",
+  "@communityProposalCancelBody": {
+    "description": "Isi sheet konfirmasi batal usulan komunitas"
+  },
+  "communityProposalCancelAction": "Batalkan",
+  "@communityProposalCancelAction": {
+    "description": "Aksi batal usulan komunitas"
+  },
+  "communityProposalCancelKeepTitle": "Biarkan tetap antre",
+  "@communityProposalCancelKeepTitle": {
+    "description": "Opsi untuk tidak membatalkan usulan komunitas"
+  },
+  "communityProposalCancelKeepAction": "Tidak jadi",
+  "@communityProposalCancelKeepAction": {
+    "description": "Tombol batal aksi pembatalan usulan komunitas"
+  },
+  "communityProposalCancelFailed": "Usulan belum bisa dibatalkan",
+  "@communityProposalCancelFailed": {
+    "description": "Judul sheet gagal membatalkan usulan komunitas"
+  },
+  "communityProposalStatusPending": "Menunggu",
+  "@communityProposalStatusPending": {
+    "description": "Label status usulan komunitas pending"
+  },
+  "communityProposalStatusApproved": "Disetujui",
+  "@communityProposalStatusApproved": {
+    "description": "Label status usulan komunitas approved"
+  },
+  "communityProposalStatusRejected": "Ditolak",
+  "@communityProposalStatusRejected": {
+    "description": "Label status usulan komunitas rejected"
+  },
+  "communityProposalStatusCancelled": "Dibatalkan",
+  "@communityProposalStatusCancelled": {
+    "description": "Label status usulan komunitas cancelled"
+  },
+  "balehoPointsGuideExampleIntro": "Ini simulasi sederhana: kamu bantu lengkapi kamus selama satu minggu.",
+  "@balehoPointsGuideExampleIntro": {
+    "description": "Pembuka section contoh hitungan poin"
+  },
+  "balehoPointsGuideExampleLine1": "Kamu mengusulkan 1 kata baru",
+  "@balehoPointsGuideExampleLine1": {
+    "description": "Langkah 1: usul kata. Selaraskan angka dengan konstanta LEADERBOARD_* di api."
+  },
+  "balehoPointsGuideExampleLine1Detail": "Begitu dikirim, poin usul langsung masuk.",
+  "@balehoPointsGuideExampleLine1Detail": {
+    "description": "Detail langkah 1"
+  },
+  "balehoPointsGuideExampleLine2": "Usulan kata itu disetujui verifikator",
+  "@balehoPointsGuideExampleLine2": {
+    "description": "Langkah 2: usulan diterima. Selaraskan angka dengan konstanta LEADERBOARD_* di api."
+  },
+  "balehoPointsGuideExampleLine2Detail": "Kamu dapat bonus karena usulan kamu lolos.",
+  "@balehoPointsGuideExampleLine2Detail": {
+    "description": "Detail langkah 2"
+  },
+  "balehoPointsGuideExampleLine3": "Kamu mengusulkan 1 perbaikan makna kata",
+  "@balehoPointsGuideExampleLine3": {
+    "description": "Langkah 3: usul perbaikan. Selaraskan angka dengan konstanta LEADERBOARD_* di api."
+  },
+  "balehoPointsGuideExampleLine3Detail": "Poin usul perbaikan masuk saat dikirim.",
+  "@balehoPointsGuideExampleLine3Detail": {
+    "description": "Detail langkah 3"
+  },
+  "balehoPointsGuideExampleLine4": "Kamu memverifikasi 2 usulan orang lain",
+  "@balehoPointsGuideExampleLine4": {
+    "description": "Langkah 4: verifikasi. Selaraskan angka dengan konstanta LEADERBOARD_* di api."
+  },
+  "balehoPointsGuideExampleLine4Detail": "Setiap keputusan verifikasi = 2 poin (bukan usulan sendiri).",
+  "@balehoPointsGuideExampleLine4Detail": {
+    "description": "Detail langkah 4"
+  },
+  "balehoPointsGuideExampleSubtotalWords": "Dari usul kamu (kata baru, bonus, perbaikan): {subtotal} poin",
+  "@balehoPointsGuideExampleSubtotalWords": {
+    "description": "Ringkasan subtotal usul pada contoh simulasi.",
+    "placeholders": {
+      "subtotal": {
+        "type": "String"
+      }
+    }
+  },
+  "balehoPointsGuideExampleSubtotalVerify": "Dari verifikasi: {subtotal} poin ({count} × 2)",
+  "@balehoPointsGuideExampleSubtotalVerify": {
+    "description": "Ringkasan subtotal verifikasi pada contoh.",
+    "placeholders": {
+      "subtotal": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "balehoPointsGuideExampleTotalLabel": "Total poin minggu ini",
+  "@balehoPointsGuideExampleTotalLabel": {
+    "description": "Label baris total contoh"
+  },
+  "balehoPointsGuideExampleTotal": "{total} poin",
+  "@balehoPointsGuideExampleTotal": {
+    "description": "Total poin pada contoh simulasi.",
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "lemmaMergeCancel": "Batal",
+  "@lemmaMergeCancel": {
+    "description": "Keluar mode gabung kata"
+  },
+  "lemmaMergeContinue": "Lanjut",
+  "@lemmaMergeContinue": {
+    "description": "Lanjut ke pilih lemma utama"
+  },
+  "lemmaMergeSelectedCount": "{count} terpilih",
+  "@lemmaMergeSelectedCount": {
+    "description": "Jumlah kata terpilih untuk digabung",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lemmaMergeSheetTitle": "Gabung kata",
+  "@lemmaMergeSheetTitle": {
+    "description": "Judul sheet gabung lemma"
+  },
+  "lemmaMergePickPrimary": "Pilih lemma utama. Sisanya jadi variasi penulisan.",
+  "@lemmaMergePickPrimary": {
+    "description": "Petunjuk pilih penjaga"
+  },
+  "lemmaMergeReasonHint": "Kenapa ini satu kata?",
+  "@lemmaMergeReasonHint": {
+    "description": "Hint alasan gabung"
+  },
+  "lemmaMergeReasonTooShort": "Alasan min 10 karakter",
+  "@lemmaMergeReasonTooShort": {
+    "description": "Validasi alasan gabung"
+  },
+  "lemmaMergeSubmit": "Kirim",
+  "@lemmaMergeSubmit": {
+    "description": "CTA kirim usulan gabung"
+  },
+  "lemmaMergeNeedLogin": "Login dulu untuk gabung kata.",
+  "@lemmaMergeNeedLogin": {
+    "description": "Gabung kata butuh login"
+  },
+  "lemmaMergeHoldHint": "Tahan untuk gabung: {lemma}",
+  "@lemmaMergeHoldHint": {
+    "description": "Semantics long-press gabung",
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "stickerTabFavorites": "Favorit",
+  "stickerTabMine": "Milikku",
+  "stickerFavoritesEmpty": "Belum ada stiker favorit. Ketuk stiker di chat atau komentar untuk menambahkannya.",
+  "stickerFavoritesLoginHint": "Masuk dulu untuk menyimpan dan melihat stiker favorit kamu.",
+  "stickerMineEmpty": "Belum ada stiker buatan kamu. Buat stiker sendiri dari galeri.",
+  "stickerMineLoginHint": "Masuk dulu untuk membuat dan mengelola stiker buatan kamu.",
+  "stickerAddToFavorites": "Tambah ke favorit",
+  "stickerRemoveFromFavorites": "Hapus dari favorit",
+  "stickerAddedToFavorites": "Stiker ditambahkan ke favorit",
+  "stickerRemovedFromFavorites": "Stiker dihapus dari favorit",
+  "stickerFavoriteLimitReached": "Favorit stiker kamu sudah penuh (maksimal 50). Hapus beberapa dulu ya.",
+  "stickerFavoriteActionFailed": "Gagal memperbarui favorit stiker. Coba lagi ya.",
+  "stickerSendNow": "Kirim stiker ini",
+  "stickerCreateButton": "Buat stiker",
+  "stickerCreateTitle": "Buat stiker sendiri",
+  "stickerCreateSubtitle": "Hanya tampil di deck kamu. Pengguna lain bisa memfavoritkannya saat kamu kirim.",
+  "stickerCreatePickImage": "Pilih gambar atau GIF",
+  "stickerCreateChangeImage": "Ganti gambar",
+  "stickerCreateNameLabel": "Nama stiker (opsional)",
+  "stickerCreateNameHint": "Contoh: Kopi pagi",
+  "stickerCreateSubmit": "Simpan stiker",
+  "stickerCreateSubmitting": "Menyimpan...",
+  "stickerCreateSuccess": "Stiker kamu berhasil dibuat",
+  "stickerCreateImageRequired": "Pilih gambar atau GIF dulu ya",
+  "stickerCreateGifTooLarge": "Ukuran GIF maksimal 2 MB",
+  "stickerCreateLimitReached": "Custom stiker kamu sudah penuh (maksimal 20). Hapus stiker lama dulu ya.",
+  "stickerCreateFailed": "Gagal membuat stiker. Coba lagi ya.",
+  "stickerDeleteMineTitle": "Hapus stiker ini?",
+  "stickerDeleteMineBody": "Stiker akan dihapus dari deck kamu dan tidak bisa dikirim lagi.",
+  "stickerDeleteMineConfirm": "Hapus stiker",
+  "stickerDeleteMineSuccess": "Stiker berhasil dihapus",
+  "stickerDeleteMineFailed": "Gagal menghapus stiker. Coba lagi ya.",
+  "stickerCustomBadge": "Custom",
+  "stickerLoginAction": "Masuk",
+  "dictAddMeaningCta": "Usulkan makna baru",
+  "dictMeaningsSection": "Makna",
+  "dictMeaningsSectionCount": "Makna ({count})",
+  "historyLoadMore": "Muat lebih banyak",
+  "historyShowMoreChanges": "Lihat {count} perubahan lain",
+  "@historyShowMoreChanges": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "historyShowLess": "Tampilkan lebih sedikit",
+  "historySuggestedBy": "Usulan dari {name}",
+  "@historySuggestedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "historyReasonLine": "Alasan: {reason}",
+  "@historyReasonLine": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "historyReviewerNoteLine": "Catatan reviewer: {note}",
+  "@historyReviewerNoteLine": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "historyEntityNotFound": "Data tidak ditemukan",
+  "historyEmptyHintEntity": "Perubahan yang terjadi mulai sekarang akan muncul di sini.",
+  "placeHistoryBody": "Lihat apa saja yang berubah di data wisata ini.",
+  "cuisineHistoryBody": "Lihat apa saja yang berubah di data kuliner ini.",
+  "usahaHistoryBody": "Lihat apa saja yang berubah di data usaha ini.",
+  "eventHistoryBody": "Lihat apa saja yang berubah di data acara ini.",
+  "karyaHistoryBody": "Lihat apa saja yang berubah di data karya ini.",
+  "layananHistoryBody": "Lihat apa saja yang berubah di data layanan ini.",
+  "communityHistoryBody": "Lihat apa saja yang berubah di data komunitas ini.",
+  "periksaKataGuideOpenTooltip": "Panduan Periksa Kata",
+  "periksaKataGuideTitle": "Cara kerja Periksa Kata",
+  "periksaKataGuideHeroTitle": "Jaga mutu kamus bersama",
+  "periksaKataGuideHeroBody": "Cara kerja Periksa Kata dan simulasi Voting Warga.",
+  "periksaKataGuideHeroSemantics": "Ilustrasi warga memeriksa makna bersama",
+  "periksaKataGuideStepsTitle": "Cara memeriksa kata",
+  "periksaKataGuideStep1Title": "Baca makna secara utuh",
+  "periksaKataGuideStep1Body": "Cek lemma, terjemahan, dan definisinya. Ketuk kartu untuk melihat detail kata.",
+  "periksaKataGuideStep2Title": "Beri voting",
+  "periksaKataGuideStep2Body": "Pilih Sudah pas atau Perlu dicek ulang. Satu akun satu voting - ketuk lagi untuk batal.",
+  "periksaKataGuideStep3Title": "Lewati jika ragu",
+  "periksaKataGuideStep3Body": "Geser kartu ke kiri untuk melewati tanpa memilih.",
+  "periksaKataGuideRulesTitle": "Aturan keputusan",
+  "periksaKataGuideRuleVerifyTitle": "Terverifikasi otomatis",
+  "periksaKataGuideRuleVerifyBody": "Selisih voting Sudah pas minimal +5 dari sedikitnya 5 pemilih.",
+  "periksaKataGuideRuleRejectTitle": "Ditolak otomatis",
+  "periksaKataGuideRuleRejectBody": "Selisih voting Perlu dicek ulang minimal -5 dari sedikitnya 5 pemilih.",
+  "periksaKataGuideRuleWaitTitle": "Tetap menunggu",
+  "periksaKataGuideRuleWaitBody": "Pemilih < 5 atau selisih -4 sampai +4. Voting terbanyak tampil teratas agar cepat selesai.",
+  "periksaKataGuideSimTitle": "Simulasi Voting Warga",
+  "periksaKataGuideSimBody": "Ketuk kartu atau tombol di bawah untuk lihat perubahan status di ambang +5 / -5. Tidak mengubah data asli.",
+  "periksaKataGuideSimAgree": "+1 Sudah pas",
+  "periksaKataGuideSimDisagree": "+1 Perlu dicek ulang",
+  "periksaKataGuideSimReset": "Ulangi simulasi",
+  "periksaKataGuideSimVerified": "Terverifikasi otomatis",
+  "periksaKataGuideSimRejected": "Ditolak otomatis",
+  "periksaKataGuideSimWaiting": "Masih menunggu. {voters} pemilih, selisih {net}. Ambang +{threshold} atau -{threshold}.",
+  "periksaKataGuideBannerText": "Pahami cara kerja & coba simulasi voting",
+  "periksaKataGuideBannerAction": "Lihat panduan",
+  "periksaKataGuideBannerDismiss": "Tutup",
+  "periksaKataGuideSampleLemma": "lestari",
+  "periksaKataGuideSampleTranslation": "sustainable",
+  "periksaKataGuideSampleDefinition": "tetap terjaga dan bisa bertahan lama",
+  "periksaKataGuideIntro": "Setiap kosakata atau makna dari usulan warga akan masuk ke area voting terlebih dahulu sebelum terverifikasi. Lewat voting bersama, makna yang tepat segera disahkan dan yang keliru cepat tersaring.",
+  "exploreFeedbackCtaTitle": "Punya kritik atau saran?",
+  "exploreFeedbackCtaSubtitle": "Bantu kami membuat pengalaman menggunakan SambasKu jadi lebih nyaman untukmu!",
+  "feedbackTitle": "Kritik & Saran",
+  "feedbackHeroSemantics": "Ilustrasi kirim kritik dan saran untuk SambasKu",
+  "feedbackIntro": "Punya ide fitur, masukan, atau hal yang kurang pas? Ceritakan di sini ya.",
+  "feedbackGuestAnonymous": "Masukan kamu dikirim sebagai Anonim",
+  "feedbackGuestLoginHint": "Login kalau mau melampirkan gambar pendukung",
+  "feedbackDescriptionLabel": "Kritik atau saran",
+  "feedbackDescriptionHint": "Tulis ide, saran perbaikan, atau hal yang kamu harapkan di SambasKu",
+  "feedbackSubmit": "Kirim Masukan",
+  "feedbackSubmitting": "Mengirim...",
+  "feedbackThanks": "Terima kasih, masukan kamu sudah kami terima"
 }

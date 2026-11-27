@@ -10,11 +10,12 @@ import 'package:sambasku_mobile/l10n/app_localizations.dart';
 Widget _host(Widget child) => MaterialApp(
   theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
   localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+    ...AppLocalizations.localizationsDelegates,
+    ...FLocalizations.localizationsDelegates,
+  ],
   supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+  locale: const Locale('id'),
+  builder: (context, appChild) => MediaQuery.withNoTextScaling(child: appChild!),
   home: FTheme(
     data: foruiPalettes['zinc']!.light.touch,
     child: Scaffold(body: SingleChildScrollView(child: child)),
@@ -49,12 +50,27 @@ void main() {
         ),
       ),
     );
+    final typo = foruiPalettes['zinc']!.light.touch.typography.body;
+    final expected = [
+      typo.xl.fontSize,
+      typo.md.fontSize,
+      typo.sm.fontSize,
+      typo.sm.fontSize,
+      typo.xs.fontSize,
+      typo.sm.fontSize,
+    ];
     final sizes = [
       for (final t in ['A1', 'A2', 'A3', 'A4', 'A5', 'body']) _sizeOf(tester, t)!,
     ];
-    // touch: h1 xl 22, h2 md 18, h3/h4/body sm 16, h5 xs 14.
-    expect(sizes, [22, 18, 16, 16, 14, 16]);
-    expect(sizes.first, lessThan(30), reason: 'h1 lama = xl2 (30px)');
+    for (var i = 0; i < expected.length; i++) {
+      expect(sizes[i], closeTo(expected[i]!, 0.01));
+    }
+    final stockXl2 = FTypography.inherit(
+      colors: foruiPalettes['zinc']!.light.touch.colors,
+      touch: true,
+    ).body.xl2.fontSize;
+    expect(sizes.first, lessThan(stockXl2!),
+        reason: 'h1 bawah skala lama (xl2)');
   });
 
   testWidgets('input kosong atau spasi saja tidak menggambar apa pun', (

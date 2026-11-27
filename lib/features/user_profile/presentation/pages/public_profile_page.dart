@@ -1,3 +1,5 @@
+import '../../../../shared/utils/profile_border_asset.dart';
+
 import 'dart:async';
 import 'dart:io';
 
@@ -20,11 +22,11 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/utils/photo_pick_constants.dart';
 import '../../../../shared/widgets/back_to_top_button.dart';
+import '../../../../shared/profile/profile_covers_provider.dart';
 import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
 import '../../../../shared/widgets/profile_leveling_chip.dart';
 import '../../../../shared/widgets/profile_stat_inline.dart';
-import '../../../../shared/widgets/small_button.dart';
 import '../../../achievement/presentation/providers/achievement_providers.dart';
 import '../../../achievement/presentation/widgets/border_picker_sheet.dart';
 import '../../../achievement/presentation/widgets/profile_achievement_tabs.dart';
@@ -226,8 +228,11 @@ class _ProfileBody extends HookConsumerWidget {
         ? ref.watch(myActiveBorderProvider).asData?.value
         : null;
     final borderUrl = isOwnProfile
-        ? myBorder?.imageUrl
+        ? myBorder?.assetUrl
         : profile.activeBorderUrl;
+    final borderAssetKind = profileBorderAssetKindFromWire(
+      isOwnProfile ? myBorder?.assetKind : profile.activeBorderAssetKind,
+    );
     final canPreviewAvatar =
         !isOwnProfile && avatarSrc != null && avatarSrc.trim().isNotEmpty;
     final uploadingAvatar = useState(false);
@@ -263,63 +268,79 @@ class _ProfileBody extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                      // Header identitas bersama dengan tab Profil: beda
-                      // varian (compact), struktur dan ritme sama.
-                      ProfileIdentityHeader(
-                        variant: ProfileHeaderVariant.compact,
-                        displayName: profile.displayName,
-                        username: profile.username,
-                        avatarUrl: avatarSrc,
-                        borderUrl: borderUrl,
-                        bio: profile.bio,
-                        speakerStatus: profile.speakerStatus,
-                        isVerifier: profile.isVerifier,
-                        leveling: profile.leveling == null
-                            ? null
-                            : ProfileLevelingChip(
-                                leveling: profile.leveling!,
-                                // Compact header rata kiri - jangan center.
-                                alignCenter: false,
-                                username: profile.username,
-                              ),
-                        stats: ProfileStatRow(
-                          words: profile.wordsApproved,
-                          corrections: profile.correctionsApproved,
-                          alignCenter: false,
-                        ),
-                        joinedLabel: joined,
-                        onAvatarTap: isOwnProfile && !uploadingAvatar.value
-                            ? () => _showAvatarActions(
-                                context,
-                                ref,
-                                uploadingAvatar,
-                              )
-                            : canPreviewAvatar
-                            ? () =>
-                                  showImagePreview(context, urls: [avatarSrc])
-                            : null,
-                        actions: [
-                          if (isOwnProfile)
-                            SmallButton(
-                              label: AppLocalizations.of(
-                                context,
-                              ).profileEditAction,
+                    // Header identitas bersama dengan tab Profil: beda
+                    // varian (compact), struktur dan ritme sama.
+                    ProfileIdentityHeader(
+                      variant: ProfileHeaderVariant.compact,
+                      coverUrl: ref
+                          .watch(profileCoversProvider)
+                          .value
+                          ?.publicUrl,
+                      displayName: profile.displayName,
+                      nameTrailing: isOwnProfile
+                          ? FTappable(
                               onPress: () => context.push('/edit-profile'),
+                              child: Semantics(
+                                button: true,
+                                label: AppLocalizations.of(context)
+                                    .profileEditSemantics,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: Icon(
+                                    FLucideIcons.pencil,
+                                    size: 15,
+                                    color: context.theme.colors.mutedForeground,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : null,
+                      username: profile.username,
+                      avatarUrl: avatarSrc,
+                      borderUrl: borderUrl,
+                      borderAssetKind: borderAssetKind,
+                      bio: profile.bio,
+                      speakerStatus: profile.speakerStatus,
+                      isVerifier: profile.isVerifier,
+                      leveling: profile.leveling == null
+                          ? null
+                          : ProfileLevelingChip(
+                              leveling: profile.leveling!,
+                              // Compact header rata kiri - jangan center.
+                              alignCenter: false,
+                              username: profile.username,
                             ),
-                        ],
-                        // Bubble Jinye di bahu avatar (bukan status line /
-                        // quote CTA - itu khusus tab Profil pribadi).
-                        avatarOverlay: JinyeProfilePreview(
-                          username: profile.username,
-                          isOwnProfile: isOwnProfile,
-                        ),
-                        footer: ProfileAchievementTabs(
-                          username: isOwnProfile ? null : profile.username,
-                          showTitle: true,
-                          showAllButton: isOwnProfile,
-                        ),
+                      stats: ProfileStatRow(
+                        words: profile.wordsApproved,
+                        corrections: profile.correctionsApproved,
+                        alignCenter: false,
                       ),
-                      const Gap(8),
+                      joinedLabel: joined,
+                      onAvatarTap: isOwnProfile && !uploadingAvatar.value
+                          ? () => _showAvatarActions(
+                              context,
+                              ref,
+                              uploadingAvatar,
+                            )
+                          : canPreviewAvatar
+                          ? () => showImagePreview(context, urls: [avatarSrc])
+                          : null,
+                      footer: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          JinyeProfileStatusLine(
+                            username: profile.username,
+                            ownerActions: isOwnProfile,
+                          ),
+                          ProfileAchievementTabs(
+                            username: isOwnProfile ? null : profile.username,
+                            showTitle: true,
+                            showAllButton: isOwnProfile,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Gap(8),
                   ],
                 ),
               ),
@@ -444,9 +465,8 @@ class _ProfileBody extends HookConsumerWidget {
         if (cropped == null || !context.mounted) return;
         uploadingAvatar.value = true;
         try {
-          final result = await AvatarUploadService(
-            ref.read(dioProvider),
-          ).upload(cropped);
+          final result = await AvatarUploadService(ref.read(dioProvider))
+              .upload(cropped);
           if (!context.mounted) return;
           await result.match(
             (err) async {
@@ -500,9 +520,7 @@ class _PublicProfileLoadingBody extends StatelessWidget {
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  ProfileIdentityHeaderSkeleton(
-                    footer: _BadgeGridSkeleton(),
-                  ),
+                  ProfileIdentityHeaderSkeleton(footer: _BadgeGridSkeleton()),
                   Gap(8),
                 ],
               ),

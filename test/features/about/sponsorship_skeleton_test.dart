@@ -26,17 +26,10 @@ const _contributor = AboutContributorName(
 
 final _bones = find.byWidgetPredicate((w) => w is Bone);
 
-/// Regresi: tab Sponsor & Mitra dan Tim Kami wajib tampil skeleton saat
-/// loading, bukan kosong lalu lompat (layout shift). FTabs lazy-build,
-/// jadi tiap test buka tab-nya dulu.
+/// Regresi: halaman Sponsor dan Tim Kami wajib tampil skeleton saat loading.
+/// Halaman terpisah lewat [SponsorshipTeamPage.showTeam] (bukan FTabs).
 void main() {
-  Future<void> tapTimKami(WidgetTester tester) async {
-    await tester.tap(find.text('Tim Kami').last);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-  }
-
-  Widget harness(_AboutMode mode) {
+  Widget harness(_AboutMode mode, {required bool showTeam}) {
     return ProviderScope(
       overrides: [
         aboutSponsorshipsProvider.overrideWith((ref) {
@@ -53,12 +46,10 @@ void main() {
             _AboutMode.failed => Future.value(null),
           };
         }),
-        aboutVerifiersProvider.overrideWith((ref) {
-          return switch (mode) {
-            _AboutMode.hang => Completer<List<AboutVerifier>?>().future,
-            _AboutMode.ready => Future.value(const <AboutVerifier>[]),
-            _AboutMode.failed => Future.value(null),
-          };
+        aboutVerifiersProvider.overrideWith(switch (mode) {
+          _AboutMode.hang => _HangVerifiers.new,
+          _AboutMode.ready => _ReadyVerifiers.new,
+          _AboutMode.failed => _FailedVerifiers.new,
         }),
         aboutContributorsProvider.overrideWith(switch (mode) {
           _AboutMode.hang => _HangContributors.new,
@@ -75,7 +66,9 @@ void main() {
         locale: const Locale('id'),
         home: FTheme(
           data: foruiPalettes['zinc']!.light.touch,
-          child: const FToaster(child: SponsorshipTeamPage()),
+          child: FToaster(
+            child: SponsorshipTeamPage(showTeam: showTeam),
+          ),
         ),
       ),
     );
@@ -84,36 +77,39 @@ void main() {
   testWidgets('tab sponsor: skeleton saat loading, bukan kosong', (
     tester,
   ) async {
-    await tester.pumpWidget(harness(_AboutMode.hang));
+    await tester.pumpWidget(harness(_AboutMode.hang, showTeam: false));
     await tester.pump();
 
     expect(_bones, findsWidgets);
   });
 
   testWidgets('tab tim: skeleton saat loading, bukan kosong', (tester) async {
-    await tester.pumpWidget(harness(_AboutMode.hang));
+    await tester.pumpWidget(harness(_AboutMode.hang, showTeam: true));
     await tester.pump();
-    await tapTimKami(tester);
 
     expect(_bones, findsWidgets);
   });
 
   testWidgets('data selesai: konten tampil tanpa skeleton', (tester) async {
-    await tester.pumpWidget(harness(_AboutMode.ready));
+    await tester.pumpWidget(harness(_AboutMode.ready, showTeam: false));
     await tester.pumpAndSettle();
 
     expect(_bones, findsNothing);
     expect(find.text('Mitra A'), findsOneWidget);
-    await tapTimKami(tester);
+
+    await tester.pumpWidget(harness(_AboutMode.ready, showTeam: true));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Warga'));
     await tester.pumpAndSettle();
 
+    expect(_bones, findsNothing);
     expect(find.text('Budi'), findsOneWidget);
   });
 
   testWidgets('gagal fetch: section hilang, halaman tetap utuh', (
     tester,
   ) async {
-    await tester.pumpWidget(harness(_AboutMode.failed));
+    await tester.pumpWidget(harness(_AboutMode.failed, showTeam: false));
     await tester.pumpAndSettle();
 
     expect(_bones, findsNothing);
@@ -139,4 +135,22 @@ class _ReadyContributors extends AboutContributors {
 class _FailedContributors extends AboutContributors {
   @override
   Future<AboutContributorsState?> build() async => null;
+}
+
+class _HangVerifiers extends AboutVerifiers {
+  @override
+  Future<AboutVerifiersState?> build() =>
+      Completer<AboutVerifiersState?>().future;
+}
+
+class _ReadyVerifiers extends AboutVerifiers {
+  @override
+  Future<AboutVerifiersState?> build() async => const AboutVerifiersState(
+        items: [],
+      );
+}
+
+class _FailedVerifiers extends AboutVerifiers {
+  @override
+  Future<AboutVerifiersState?> build() async => null;
 }

@@ -108,6 +108,11 @@ class ActivityKindAvatar extends StatelessWidget {
           icon: FLucideIcons.messageCircle,
           foreground: primary,
         );
+      case FeedActivityKind.leaderboardRank:
+        return _KindAvatarStyle(
+          icon: FLucideIcons.trophy,
+          foreground: primary,
+        );
       case FeedActivityKind.discussion:
         return _KindAvatarStyle(
           icon: FLucideIcons.messagesSquare,
@@ -197,6 +202,11 @@ class ActivityKindAvatar extends StatelessWidget {
       case FeedActivityKind.jinye:
         return _KindAvatarStyle(
           icon: FLucideIcons.messageCircle,
+          foreground: secondary,
+        );
+      case FeedActivityKind.karya:
+        return _KindAvatarStyle(
+          icon: FLucideIcons.clapperboard,
           foreground: secondary,
         );
       case FeedActivityKind.article:

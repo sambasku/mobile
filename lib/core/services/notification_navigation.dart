@@ -12,6 +12,7 @@ import '../../features/discussion/discussion_router.dart';
 import '../../features/entertainment/entertainment_router.dart';
 import '../../features/explore/explore_router.dart';
 import '../../features/event/event_router.dart';
+import '../../features/encyclopedia/encyclopedia_router.dart';
 import '../../features/jinye/jinye_router.dart';
 import '../../features/usaha/usaha_router.dart';
 import '../../features/baleho/baleho_router.dart';
@@ -42,6 +43,11 @@ Future<void> navigateFromNotificationPayload(
 
   if (actionKind == 'word' && actionValue != null && actionValue.isNotEmpty) {
     _go(router, '/words/$actionValue?focus=activity');
+    return;
+  }
+
+  if (actionKind == 'article' && actionValue != null && actionValue.isNotEmpty) {
+    _go(router, EncyclopediaRouter.detailPath(actionValue));
     return;
   }
 
@@ -96,6 +102,12 @@ return;
     return;
   }
 
+  // Mention di chat (#360): buka ruang chat.
+  if (actionKind == 'chat' || type == 'chat_mention') {
+    _go(router, DiscussionRouter.chat.path);
+    return;
+  }
+
   if (actionKind == 'discussion' &&
       actionValue != null &&
       actionValue.isNotEmpty) {
@@ -147,6 +159,19 @@ return;
 
   if (targetKind == 'word' && targetId != null && targetId.isNotEmpty) {
     _go(router, '/words/$targetId?focus=activity');
+    return;
+  }
+
+  if ((targetKind == 'article' || type == 'article_clap') &&
+      targetId != null &&
+      targetId.isNotEmpty) {
+    // Prefer slug dari action_value; fallback target_id bila payload lama.
+    final slug = data['action_value']?.trim();
+    if (slug != null && slug.isNotEmpty) {
+      _go(router, EncyclopediaRouter.detailPath(slug));
+    } else {
+      _go(router, EncyclopediaRouter.list.path);
+    }
     return;
   }
 

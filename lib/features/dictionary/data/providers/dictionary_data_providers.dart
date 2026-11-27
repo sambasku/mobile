@@ -3,6 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/connectivity_provider.dart';
 import '../../../../core/network/network_providers.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../review/domain/review_access.dart';
 import '../../domain/repositories/dictionary_repository.dart';
 import '../dataset/lemma_dataset_providers.dart';
 import '../datasources/dictionary_remote_datasource.dart';
@@ -27,6 +29,13 @@ DictionaryRepository dictionaryRepository(Ref ref) {
     isOffline: () {
       try {
         return ref.read(isOfflineProvider);
+      } catch (_) {
+        return false;
+      }
+    },
+    isVerifier: () {
+      try {
+        return isVerifierRole(ref.read(authStatusProvider).value?.role);
       } catch (_) {
         return false;
       }

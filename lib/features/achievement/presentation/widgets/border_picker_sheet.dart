@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../../../core/utils/display_image_url.dart';
+import '../../../../shared/utils/profile_border_asset.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../domain/entities/achievement.dart';
 import '../../domain/failures/achievement_failure.dart';
@@ -242,7 +242,8 @@ class _BorderCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final url = displayImageUrl(border.badgeUrl, width: 256) ?? border.badgeUrl;
+    final url = border.badgeUrl;
+    final kind = profileBorderAssetKindFromWire(border.badgeAssetKind);
     return Semantics(
       button: true,
       label: border.title,
@@ -272,15 +273,10 @@ class _BorderCell extends StatelessWidget {
                         size: 32,
                         color: theme.colors.mutedForeground,
                       )
-                    : Image.network(
-                        url,
-                        fit: BoxFit.contain,
-                        gaplessPlayback: true,
-                        errorBuilder: (_, _, _) => Icon(
-                          FLucideIcons.frame,
-                          size: 32,
-                          color: theme.colors.mutedForeground,
-                        ),
+                    : ProfileBorderAssetLayer(
+                        url: url,
+                        assetKind: kind,
+                        resizeWidth: 256,
                       ),
               ),
               const Gap(4),

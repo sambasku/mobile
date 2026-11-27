@@ -1,10 +1,11 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -23,14 +24,11 @@ import '../../../activity/presentation/providers/announcement_detail_provider.da
 import '../../../activity/presentation/widgets/activity_feed_tile.dart';
 import '../../../activity/presentation/widgets/pinned_home_banner.dart';
 import '../../../hot_topics/presentation/providers/hot_topics_providers.dart';
+import '../../../../shared/profile/profile_covers_provider.dart';
 import '../../../hot_topics/presentation/widgets/hot_topics_card.dart';
-import '../../../contribution/contribution_router.dart';
-import '../../../discussion/discussion_router.dart';
-import '../../../encyclopedia/encyclopedia_router.dart';
-import '../../../entertainment/entertainment_router.dart';
-import '../../dictionary_router.dart';
-import '../providers/word_list_providers.dart';
+import '../../../chat/presentation/providers/chat_unread_provider.dart';
 import '../providers/word_of_day_providers.dart';
+import '../widgets/action_chips_row.dart';
 import '../widgets/word_of_day_card.dart';
 
 /// Durasi semua layer animasi header (tinggi, slide, fade, gap).
@@ -90,6 +88,8 @@ class HomeSearchPage extends HookConsumerWidget {
       ref.invalidate(pinnedAnnouncementsProvider);
       ref.invalidate(hotTopicsProvider);
       ref.read(activityFeedProvider(selectedCategory.value).notifier).load();
+      // Badge Diskusi (#360): sinkron pesan yang masuk saat di background.
+      unawaited(ref.read(chatUnreadProvider.notifier).refresh());
     });
 
     useEffect(() {
@@ -137,7 +137,7 @@ class HomeSearchPage extends HookConsumerWidget {
           child: const RepaintBoundary(
             child: Padding(
               padding: EdgeInsets.only(bottom: 4),
-              child: _HomeActionChips(),
+              child: ActionChipsRow(),
             ),
           ),
         ),
@@ -290,8 +290,12 @@ class HomeSearchPage extends HookConsumerWidget {
     await store.delete(
       buildCacheKey(method: 'GET', path: '/api/v1/words/today'),
     );
+    await store.delete(
+      buildCacheKey(method: 'GET', path: '/api/v1/about/profile-covers'),
+    );
     await store.deleteByPrefix('GET|/api/v1/activity');
     ref.invalidate(wordOfDayProvider);
+    ref.invalidate(profileCoversProvider);
     ref.invalidate(pinnedAnnouncementsProvider);
     ref.invalidate(hotTopicsProvider);
     await Future.wait([
@@ -301,160 +305,6 @@ class HomeSearchPage extends HookConsumerWidget {
       ref.read(wordOfDayProvider.future),
       ref.read(hotTopicsProvider.future),
     ]);
-  }
-}
-
-/// Satu baris tile aksi beranda (Cari / A-Z / Usulkan / Diskusi / Pantun /
-/// Ensiklopedia). Scroll horizontal; kotak ikon 1:1; label di bawahnya.
-class _HomeActionChips extends ConsumerWidget {
-  const _HomeActionChips();
-
-  /// Lebar kotak ikon (= tinggi, rasio 1:1). Sama dengan lebar kolom
-  /// supaya antar-kotak tidak ada "udara" dari padding label.
-  static const double _tileSize = 48;
-
-  /// Slot label di bawah kotak (gap ikon→teks + 2 baris kecil).
-  static const double _labelSlot = 28;
-
-  /// Tinggi total baris (kotak + gap + label).
-  static const double height = _tileSize + 6 + _labelSlot;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final items = <_HomeActionChip>[
-      _HomeActionChip(
-        icon: FLucideIcons.search,
-        label: l10n.dictSearchChip,
-        semanticsLabel: l10n.dictSearchHint,
-        onPress: () {
-          // #296: jangan bawa query keepAlive / riwayat disk ke field baru.
-          ref.read(wordListProvider.notifier).clearSearchSession();
-          context.push('${DictionaryRouter.list.path}?focus=1');
-        },
-      ),
-      _HomeActionChip(
-        icon: FLucideIcons.aLargeSmall,
-        label: l10n.dictAZ,
-        onPress: () => context.push(
-          DictionaryRouter.letter.path.replaceFirst(':letter', 'a'),
-        ),
-      ),
-      _HomeActionChip(
-        icon: FLucideIcons.plus,
-        label: l10n.dictProposeChip,
-        semanticsLabel: l10n.dictProposeWord,
-        onPress: () {
-          AnalyticsService.instance.log(
-            AnalyticsEvents.contributeStart,
-            params: {'from': 'home'},
-          );
-          context.push(ContributionRouter.contribute.path);
-        },
-      ),
-      _HomeActionChip(
-        icon: FLucideIcons.messagesSquare,
-        label: l10n.dictDiscussionChip,
-        semanticsLabel: l10n.dictDiscussionSubtitle,
-        onPress: () => context.push(DiscussionRouter.chat.path),
-      ),
-      _HomeActionChip(
-        icon: FLucideIcons.feather,
-        label: l10n.pantunTitle,
-        onPress: () => context.push(EntertainmentRouter.pantunHub.path),
-      ),
-      _HomeActionChip(
-        icon: FLucideIcons.bookOpen,
-        label: l10n.encyclopediaChip,
-        semanticsLabel: l10n.encyclopediaTitle,
-        onPress: () => context.push(EncyclopediaRouter.list.path),
-      ),
-    ];
-
-    return SizedBox(
-      height: height,
-      child: ListView.separated(
-        key: const ValueKey('home_action_chips'),
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-        itemCount: items.length,
-        separatorBuilder: (_, _) => const Gap(8),
-        itemBuilder: (context, i) => _HomeActionTile(item: items[i]),
-      ),
-    );
-  }
-}
-
-class _HomeActionChip {
-  const _HomeActionChip({
-    required this.icon,
-    required this.label,
-    required this.onPress,
-    this.semanticsLabel,
-  });
-
-  final IconData icon;
-  final String label;
-  final String? semanticsLabel;
-  final VoidCallback onPress;
-}
-
-class _HomeActionTile extends StatelessWidget {
-  const _HomeActionTile({required this.item});
-
-  final _HomeActionChip item;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final size = _HomeActionChips._tileSize;
-    return Semantics(
-      button: true,
-      label: item.semanticsLabel ?? item.label,
-      child: FTappable(
-        onPress: item.onPress,
-        // Lebar = ukuran kotak: jarak antar kotak = separator saja (4px).
-        child: SizedBox(
-          width: size,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: size,
-                height: size,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: theme.colors.secondary,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: theme.colors.border),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      item.icon,
-                      size: 18,
-                      color: theme.colors.foreground,
-                    ),
-                  ),
-                ),
-              ),
-              const Gap(6),
-              Text(
-                item.label,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: theme.typography.body.xs.copyWith(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  height: 1.1,
-                  color: theme.colors.foreground,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
 

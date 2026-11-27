@@ -92,6 +92,7 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
     commentsPublished: dto.stats.commentsPublished,
     avatarUrl: dto.avatarUrl,
     activeBorderUrl: dto.activeBorderUrl,
+    activeBorderAssetKind: dto.activeBorderAssetKind,
     leveling: dto.leveling == null
         ? null
         : PublicProfileLeveling(

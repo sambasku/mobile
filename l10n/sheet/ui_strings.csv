@@ -1576,6 +1576,7 @@ recordRetry,Ulangi,,
 recordStart,Mulai rekam,,
 regionAgendaDesa,Agenda di Desa {name},,Pertahankan placeholder: {name}
 regionDesaComingSoon,Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.,,
+regionKecamatanComingSoon,Info kecamatan ini sedang kami siapkan. Nanti kamu bisa lihat isinya di sini ya.,Teks halaman detail kecamatan saat konten belum tersedia,
 regionDesaTitle,Desa {name},,Judul halaman profil desa | Pertahankan placeholder: {name}
 regionKecamatanTitle,Kecamatan {name},,Judul halaman profil kecamatan | Pertahankan placeholder: {name}
 regionVillageCount,{count} desa,,Jumlah desa di kecamatan | Pertahankan placeholder: {count}
@@ -2440,7 +2441,7 @@ voteToggleFailed,Gagal mengubah vote,,
 voteWordTypeLabel,jenis kata,,
 wilayahAcaraInKecamatan,Acara di kecamatan ini,,
 wilayahDesaCount,{count} desa,,Pertahankan placeholder: {count}
-wilayahKecamatanProfile,Profil kecamatan,,
+wilayahKecamatanProfile,Lihat Kecamatan,,
 wilayahLoadingAcara,Memuat acara...,,
 wilayahLoadingUsaha,Memuat daftar usaha...,,
 wilayahLoadingVillage,Memuat desa...,,

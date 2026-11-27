@@ -95,12 +95,20 @@ class WrittenPronunciationLine extends ConsumerWidget {
       );
     }
 
+    final emptyLabel = '/${l10n.dictAddPronunciation}/';
     return Align(
       alignment: Alignment.centerLeft,
-      child: FButton(
-        variant: FButtonVariant.ghost,
-        onPress: () => _openAdd(context, ref),
-        child: Text(l10n.dictAddPronunciation),
+      child: GestureDetector(
+        onTap: () => _openAdd(context, ref),
+        behavior: HitTestBehavior.opaque,
+        child: Semantics(
+          button: true,
+          label: l10n.dictAddPronunciation,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text(emptyLabel, style: _ipaStyle(theme)),
+          ),
+        ),
       ),
     );
   }

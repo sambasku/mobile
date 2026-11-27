@@ -12,10 +12,12 @@ import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/public_account_name.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../baleho/domain/baleho_models.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../dictionary/dictionary_router.dart';
 import '../../../encyclopedia/encyclopedia_router.dart';
+import '../../../karya/karya_router.dart';
 import '../../../entertainment/entertainment_router.dart';
 import '../../../explore/explore_router.dart';
 import '../../../event/event_router.dart';
@@ -163,7 +165,8 @@ class ActivityFeedTile extends ConsumerWidget {
                       FeedActivityKind.comment ||
                       FeedActivityKind.discussion ||
                       FeedActivityKind.pantun ||
-                      FeedActivityKind.jinye => [(item.body, false)],
+                      FeedActivityKind.jinye ||
+                      FeedActivityKind.karya => [(item.body, false)],
                       _ => splitQuotedLemma(item.body),
                     })
                       TextSpan(
@@ -307,6 +310,8 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.layanan => l10n.feedKindLayanan,
       FeedActivityKind.culinary => l10n.feedKindCulinary,
       FeedActivityKind.article => l10n.feedKindArticle,
+      FeedActivityKind.karya => l10n.feedKindKarya,
+      FeedActivityKind.leaderboardRank => l10n.feedKindLeaderboard,
     };
   }
 
@@ -347,6 +352,8 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.layanan => l10n.feedCtaSeeLayanan,
       FeedActivityKind.culinary => l10n.feedCtaSeeCulinary,
       FeedActivityKind.article => l10n.feedCtaSeeArticle,
+      FeedActivityKind.karya => l10n.feedCtaSeeKarya,
+      FeedActivityKind.leaderboardRank => l10n.feedCtaSeeLeaderboard,
     };
   }
 
@@ -372,6 +379,8 @@ class ActivityFeedTile extends ConsumerWidget {
         );
       case 'chat':
         return DiscussionRouter.chat.path;
+      case 'leaderboard':
+        return BalehoBoard.weeklyLeaderboardPath;
       case 'discussion':
         // Pantun dulu di-wire sebagai discussion (target.type discussion).
         // Response lama / cache L1: bedakan lewat body copy tetap API.
@@ -405,6 +414,8 @@ class ActivityFeedTile extends ConsumerWidget {
         return UsahaRouter.detailPath(target.id);
       case 'article':
         return EncyclopediaRouter.detailPath(target.id);
+      case 'karya':
+        return KaryaRouter.detailPath(target.id);
       case 'user':
         final username = item.actor?.username?.trim();
         if (username == null ||

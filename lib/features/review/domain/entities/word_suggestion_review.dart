@@ -93,6 +93,7 @@ class WordSuggestionDetail {
     this.variantsRemoved = 0,
     this.imagesAdded = 0,
     this.imagesRemoved = 0,
+    this.proposedChanges = const {},
   });
 
   final String id;
@@ -105,6 +106,8 @@ class WordSuggestionDetail {
   final String reasonCode;
   final String status;
   final String createdAt;
+  /// `suggestion.proposed_changes` apa adanya (bentuk domain API, camelCase).
+  final Map<String, dynamic> proposedChanges;
   final WordSuggestionFieldDiff lemmaDiff;
   final WordSuggestionFieldDiff notesDiff;
   final WordSuggestionFieldDiff wordTypeDiff;

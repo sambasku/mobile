@@ -11,23 +11,31 @@ import '../../features/auth/auth_router.dart';
 import '../../features/auth/presentation/providers/auth_status_providers.dart';
 import '../../features/comment/data/providers/comment_data_providers.dart';
 import '../../features/comment/domain/entities/comment_image.dart';
+import '../../features/comment/presentation/providers/mention_suggest_providers.dart';
+import '../../features/comment/presentation/widgets/mention_suggest_overlay.dart';
+import '../../features/jinye/data/jinye_providers.dart';
 import '../../features/user_profile/user_profile_router.dart';
+import '../../features/vote/domain/entities/vote_target.dart';
+import '../../features/vote/presentation/providers/vote_providers.dart';
+import '../../features/vote/presentation/widgets/vote_buttons.dart';
 import '../../l10n/app_localizations.dart';
+import '../span_lemma/span_lemma_exports.dart';
 import '../stickers/sticker_providers.dart';
 import '../stickers/sticker_sheet.dart';
 import '../stickers/sticker_view.dart';
+import '../ugc_comment_lemma/ugc_comment_lemma_interaction.dart';
 import '../utils/error_bottom_sheet.dart';
 import '../utils/image_sheet_drawer.dart';
 import '../utils/photo_pick_constants.dart';
 import '../utils/public_account_name.dart';
+import '../utils/thread_reply_draft.dart';
 import '../widgets/image_crop_page.dart';
 import '../widgets/record_thread_audio_sheet.dart';
+import '../widgets/slide_fade_in.dart';
 import '../widgets/thread_audio_player.dart';
 import '../widgets/thread_comment_image.dart';
 import '../widgets/thread_edit_sheets.dart';
 import '../widgets/thread_message.dart';
-import '../span_lemma/span_lemma_exports.dart';
-import '../ugc_comment_lemma/ugc_comment_lemma_interaction.dart';
 import 'entity_comment.dart';
 import 'entity_comment_providers.dart';
 
@@ -42,6 +50,21 @@ EntityCommentCopy entityCommentCopy(
   EntityCommentTarget target,
 ) {
   return switch (target) {
+    EntityCommentTarget.word => (
+        title: (c) => l10n.encyclopediaCommentsTitle,
+        empty: l10n.commentEmpty,
+        hint: l10n.encyclopediaCommentPlaceholder,
+      ),
+    EntityCommentTarget.article => (
+        title: (c) => l10n.encyclopediaCommentsTitle,
+        empty: l10n.commentEmpty,
+        hint: l10n.encyclopediaCommentPlaceholder,
+      ),
+    EntityCommentTarget.jinye => (
+        title: (c) => l10n.jinyeCommentsTitle,
+        empty: l10n.jinyeDiscussionEmpty,
+        hint: l10n.jinyeCommentHint,
+      ),
     EntityCommentTarget.place => (
         title: (c) => l10n.placeCommentsTitle,
         empty: l10n.placeCommentsEmpty,
@@ -61,6 +84,11 @@ EntityCommentCopy entityCommentCopy(
         title: (c) => l10n.eventCommentsTitle,
         empty: l10n.eventCommentsEmpty,
         hint: l10n.eventCommentHint,
+      ),
+    EntityCommentTarget.karya => (
+        title: (c) => l10n.karyaCommentsTitle,
+        empty: l10n.karyaCommentsEmpty,
+        hint: l10n.karyaCommentHint,
       ),
   };
 }
@@ -105,7 +133,7 @@ class EntityCommentEntryBar extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final key = EntityCommentListKey(target, entityId);
     final async = ref.watch(entityCommentListControllerProvider(key));
-    final count = async.value?.items.length ?? 0;
+    final count = async.value?.totalLoadedCount ?? 0;
     final copy = entityCommentCopy(l10n, target);
 
     return Material(
@@ -178,21 +206,109 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
   String? _localPreviewPath;
   String? _stagingStickerId;
   bool _uploadingImage = false;
+  String? _replyParentId;
+  ThreadReplyDraft? _replyDraft;
+  String? _replyChipHandle;
+  bool _initialLoaded = false;
+  final Set<String> _seenIds = <String>{};
+  final Set<String> _justAddedIds = <String>{};
+
+  void _syncSeenIds(List<EntityComment> items, {required bool isLoadingMore}) {
+    if (!_initialLoaded) {
+      for (final c in items) {
+        _seenIds.add(c.id);
+        for (final r in c.replies) {
+          _seenIds.add(r.id);
+        }
+      }
+      _initialLoaded = true;
+      return;
+    }
+    for (final c in items) {
+      if (_seenIds.add(c.id) && !isLoadingMore) {
+        _justAddedIds.add(c.id);
+      }
+      for (final r in c.replies) {
+        if (_seenIds.add(r.id) && !isLoadingMore) {
+          _justAddedIds.add(r.id);
+        }
+      }
+    }
+  }
 
   EntityCommentListKey get _key =>
       EntityCommentListKey(widget.target, widget.entityId);
 
   @override
+  void initState() {
+    super.initState();
+    _bodyCtrl.addListener(_onBodyChanged);
+  }
+
+  @override
   void dispose() {
-    _bodyCtrl.dispose();
+    _bodyCtrl
+      ..removeListener(_onBodyChanged)
+      ..dispose();
     _composerFocus.dispose();
     super.dispose();
+  }
+
+  void _onBodyChanged() {
+    ref.read(mentionSuggestControllerProvider.notifier).onTextChanged(
+          _bodyCtrl.text,
+          _bodyCtrl.selection.baseOffset,
+        );
   }
 
   bool _isAuth() => ref.read(authStatusProvider).value?.isAuth == true;
 
   void _promptLogin() {
     context.push(AuthRouter.login.path);
+  }
+
+  void _startReply({
+    required EntityComment target,
+    required String rootParentId,
+  }) {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    final auth = ref.read(authStatusProvider).value;
+    final draft = buildThreadReplyDraft(
+      username: target.username,
+      body: target.body,
+      currentUsername: auth?.username,
+    );
+    final chipHandle = isLinkablePublicUsername(target.username)
+        ? target.username
+        : null;
+    setState(() {
+      _replyParentId = rootParentId;
+      _replyDraft = draft;
+      _replyChipHandle = chipHandle;
+    });
+    _bodyCtrl
+      ..text = draft.text
+      ..selection = TextSelection.collapsed(offset: draft.cursor);
+    _composerFocus.requestFocus();
+  }
+
+  void _dismissReply({bool clearComposerPrefix = true}) {
+    final draft = _replyDraft;
+    if (clearComposerPrefix && draft != null && _bodyCtrl.text == draft.text) {
+      _bodyCtrl.clear();
+    }
+    if (_replyParentId != null ||
+        _replyDraft != null ||
+        _replyChipHandle != null) {
+      setState(() {
+        _replyParentId = null;
+        _replyDraft = null;
+        _replyChipHandle = null;
+      });
+    }
   }
 
   void _clearStagingPhoto() {
@@ -380,8 +496,8 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
         ),
       );
     }
-    if (comment.hasImage) {
-      parts.add(ThreadCommentImage(image: comment.image!));
+    for (final img in comment.allImages) {
+      parts.add(ThreadCommentImage(image: img));
     }
     if (comment.hasSticker) {
       final sticker = ref
@@ -419,10 +535,12 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
     if (_uploadingImage) return;
     final l10n = AppLocalizations.of(context);
     final hadPhoto = _stagingImage != null;
+    final parentId = _replyParentId;
     final code = await ref
         .read(entityCommentListControllerProvider(_key).notifier)
         .create(
           _bodyCtrl.text,
+          parentId: parentId,
           image: _stagingImage,
           stickerId: _stagingStickerId,
         );
@@ -431,6 +549,7 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
       _bodyCtrl.clear();
       _clearStagingPhoto();
       _clearStagingSticker();
+      _dismissReply(clearComposerPrefix: false);
       showFToast(context: context, title: Text(l10n.commentSent));
       if (hadPhoto) {
         showFToast(
@@ -451,6 +570,7 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
       return;
     }
     final caption = _bodyCtrl.text.trim();
+    final parentId = _replyParentId;
     final l10n = AppLocalizations.of(context);
     await showRecordThreadAudioSheet(
       context,
@@ -464,9 +584,13 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
               audioFile: audioFile,
               durationMs: durationMs,
               body: caption.isEmpty ? null : caption,
+              parentId: parentId,
             );
         if (code == null) {
-          if (mounted) _bodyCtrl.clear();
+          if (mounted) {
+            _bodyCtrl.clear();
+            _dismissReply(clearComposerPrefix: false);
+          }
           return null;
         }
         if (code == 'empty') return l10n.commentEditEmpty;
@@ -539,6 +663,217 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
     showFToast(context: context, title: Text(l10n.commentEditSuccess));
   }
 
+  Future<void> _showEditHistory(EntityComment comment) async {
+    final l10n = AppLocalizations.of(context);
+    try {
+      final hist = await ref
+          .read(entityCommentListControllerProvider(_key).notifier)
+          .getEditHistory(comment);
+      if (!mounted) return;
+      await showThreadTextEditHistorySheet(
+        context,
+        title: l10n.commentEditHistoryTitle,
+        history: ThreadTextEditHistory(
+          currentBody: hist.currentBody,
+          currentUpdatedAt: hist.updatedAt?.toIso8601String(),
+          revisions: [
+            for (final r in hist.revisions)
+              ThreadTextEditRevision(
+                body: r.body,
+                createdAt: r.createdAt.toIso8601String(),
+              ),
+          ],
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      await showAppErrorSheet(
+        context,
+        message: l10n.commentEditHistoryFailed,
+      );
+    }
+  }
+
+  Widget _buildSingleCommentRow(
+    BuildContext context, {
+    required EntityComment comment,
+    required String rootParentId,
+    required String? myUserId,
+    required bool isAuth,
+  }) {
+    final l10n = AppLocalizations.of(context);
+    final published = comment.isPublished &&
+        !comment.isTakenDown &&
+        !comment.isDeletedByAuthor;
+    final canManage =
+        myUserId != null && myUserId == comment.userId && published;
+    final bodyText = comment.isTakenDown
+        ? l10n.commentTakenDownModerator
+        : comment.isDeletedByAuthor
+            ? l10n.commentDeletedByAuthor
+            : comment.body;
+
+    final List<JinyeLemmaLink> links;
+    if (widget.target == EntityCommentTarget.jinye) {
+      final detail = ref.watch(jinyeDetailProvider(widget.entityId)).value;
+      links = (detail?.lemmaLinks ?? const <JinyeLemmaLink>[])
+          .where((l) => l.commentId == comment.id)
+          .toList();
+    } else {
+      links = comment.lemmaLinks;
+    }
+
+    final anchor = anchorForEntityCommentTarget(widget.target);
+    final voteTarget = VoteTarget(
+      type: widget.target.voteTargetType,
+      id: comment.id,
+    );
+    final voteAsync = ref.watch(voteControllerProvider(voteTarget));
+
+    return ThreadMessageRow(
+      username: comment.username,
+      displayName: comment.displayName,
+      avatarUrl: comment.avatarUrl,
+      isVerifier: comment.isVerifier,
+      body: bodyText,
+      bodyWidget: !published || bodyText.trim().isEmpty
+          ? null
+          : ThreadLemmaBody(
+              body: comment.body,
+              links: links,
+              onMentionTap: (mentionedUsername) =>
+                  UserProfileRouter.open(context, mentionedUsername),
+              onWordTap: (span, link) async {
+                if (anchor != null) {
+                  await handleUgcCommentLemmaWordTap(
+                    context,
+                    ref,
+                    sheetContextId: widget.entityId,
+                    anchor: anchor,
+                    hostId: widget.entityId,
+                    commentId: comment.id,
+                    span: span,
+                    link: link,
+                    isAuth: isAuth,
+                    onLinked: () => ref.invalidate(
+                      entityCommentListControllerProvider(_key),
+                    ),
+                  );
+                } else {
+                  final result = await showJinyeWordMeaningSheet(
+                    context,
+                    jinyeId: widget.entityId,
+                    span: span,
+                    link: link,
+                    isAuth: isAuth,
+                    commentId: comment.id,
+                    onLinked: () =>
+                        ref.invalidate(jinyeDetailProvider(widget.entityId)),
+                  );
+                  if (context.mounted) {
+                    handleJinyeWordMeaningSheetResult(context, result);
+                  }
+                }
+              },
+            ),
+      dateLabel: formatRelativeCompact(comment.createdAt),
+      metaParts: [
+        if (comment.isTakenDown) l10n.commentTakenDownModerator,
+        if (comment.isDeletedByAuthor) l10n.commentDeletedByAuthor,
+      ],
+      isRedacted: !published,
+      isEdited: comment.isEdited && published,
+      editedLabel: l10n.commentEdited,
+      onShowEditHistory:
+          comment.isEdited && published ? () => _showEditHistory(comment) : null,
+      onReply: published
+          ? () => _startReply(target: comment, rootParentId: rootParentId)
+          : null,
+      onEdit: canManage ? () => _edit(comment) : null,
+      onDelete: canManage ? () => _confirmDelete(comment) : null,
+      onUsernameTap: isLinkablePublicUsername(comment.username)
+          ? () => UserProfileRouter.open(
+                context,
+                comment.username!,
+                displayName: comment.displayName,
+              )
+          : null,
+      onMentionTap: (mentionedUsername) =>
+          UserProfileRouter.open(context, mentionedUsername),
+      media: _commentMedia(comment),
+      footer: !published
+          ? null
+          : voteAsync.when(
+              loading: () => const VoteButtonsSkeleton(compact: true),
+              error: (_, _) => const SizedBox.shrink(),
+              data: (view) => VoteButtons(
+                upvotes: view.upvotes,
+                downvotes: view.downvotes,
+                myVote: view.myVote,
+                compact: true,
+                onVote: (value) async {
+                  if (!isAuth) {
+                    showFToast(
+                      context: context,
+                      title: Text(l10n.commentLoginPrompt),
+                    );
+                    _promptLogin();
+                    return;
+                  }
+                  final failure = await ref
+                      .read(voteControllerProvider(voteTarget).notifier)
+                      .toggle(value);
+                  if (failure != null && context.mounted) {
+                    showFToast(
+                      context: context,
+                      title: Text(failure.message),
+                      variant: FToastVariant.destructive,
+                    );
+                  }
+                },
+              ),
+            ),
+    );
+  }
+
+  Widget _buildThreadTile(
+    BuildContext context, {
+    required EntityComment comment,
+    required String? myUserId,
+    required bool isAuth,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildSingleCommentRow(
+          context,
+          comment: comment,
+          rootParentId: comment.id,
+          myUserId: myUserId,
+          isAuth: isAuth,
+        ),
+        if (comment.replies.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(left: 40),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final reply in comment.replies)
+                  _buildSingleCommentRow(
+                    context,
+                    comment: reply,
+                    // 1 tingkat: balas ke balasan tetap menempel ke root comment.
+                    rootParentId: comment.id,
+                    myUserId: myUserId,
+                    isAuth: isAuth,
+                  ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -546,7 +881,10 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
     final copy = entityCommentCopy(l10n, widget.target);
     final async = ref.watch(entityCommentListControllerProvider(_key));
     final listState = async.value;
-    final myUserId = ref.watch(authStatusProvider).value?.userId;
+    final auth = ref.watch(authStatusProvider).value;
+    final myUserId = auth?.userId;
+    final isAuth = auth?.isAuth ?? false;
+    final totalCount = listState?.totalLoadedCount ?? 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -568,7 +906,7 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
             children: [
               Expanded(
                 child: Text(
-                  '${copy.title(listState?.items.length ?? 0)} (${listState?.items.length ?? 0})',
+                  '${copy.title(totalCount)} ($totalCount)',
                   style: theme.typography.body.md.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -601,80 +939,26 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
                         ),
                       ),
                     )
-                  else
-                    ...state.items.map((comment) {
-                      final published = comment.isPublished &&
-                          !comment.isTakenDown &&
-                          !comment.isDeletedByAuthor;
-                      final canManage = myUserId != null &&
-                          myUserId == comment.userId &&
-                          published;
-                      final bodyText = comment.isTakenDown
-                          ? l10n.commentTakenDownModerator
-                          : comment.isDeletedByAuthor
-                          ? l10n.commentDeletedByAuthor
-                          : comment.body;
-                      final auth = ref.watch(authStatusProvider).value;
-                      final isAuth = auth?.isAuth ?? false;
-                      return ThreadMessageRow(
-                        username: comment.username,
-                        displayName: comment.displayName,
-                        avatarUrl: comment.avatarUrl,
-                        body: bodyText,
-                        bodyWidget: bodyText.trim().isEmpty
-                            ? null
-                            : ThreadLemmaBody(
-                                body: comment.body,
-                                links: comment.lemmaLinks,
-                                onMentionTap: (mentionedUsername) =>
-                                    UserProfileRouter.open(
-                                      context,
-                                      mentionedUsername,
-                                    ),
-                                onWordTap: (span, link) =>
-                                    handleUgcCommentLemmaWordTap(
-                                  context,
-                                  ref,
-                                  sheetContextId: widget.entityId,
-                                  anchor: anchorForEntityCommentTarget(
-                                    widget.target,
-                                  ),
-                                  hostId: widget.entityId,
-                                  commentId: comment.id,
-                                  span: span,
-                                  link: link,
-                                  isAuth: isAuth,
-                                  onLinked: () => ref.invalidate(
-                                    entityCommentListControllerProvider(_key),
-                                  ),
-                                ),
-                              ),
-                        dateLabel: formatRelativeCompact(comment.createdAt),
-                        metaParts: [
-                          if (comment.isTakenDown)
-                            l10n.commentTakenDownModerator,
-                          if (comment.isDeletedByAuthor)
-                            l10n.commentDeletedByAuthor,
-                        ],
-                        isRedacted: !published,
-                        isEdited: comment.isEdited && published,
-                        editedLabel: l10n.commentEdited,
-                        onEdit: canManage ? () => _edit(comment) : null,
-                        onDelete:
-                            canManage ? () => _confirmDelete(comment) : null,
-                        onUsernameTap:
-                            isLinkablePublicUsername(comment.username)
-                            ? () => UserProfileRouter.open(
-                                  context,
-                                  comment.username!,
-                                  displayName: comment.displayName,
-                                )
-                            : null,
-                        onMentionTap: (mentionedUsername) =>
-                            UserProfileRouter.open(context, mentionedUsername),
-                        media: _commentMedia(comment),
+                  else ...[
+                    ...() {
+                      _syncSeenIds(
+                        state.items,
+                        isLoadingMore: state.isLoadingMore,
                       );
-                    }),
+                      return state.items.map(
+                        (comment) => SlideFadeIn(
+                          key: ValueKey('entity-comment-${comment.id}'),
+                          animate: _justAddedIds.contains(comment.id),
+                          child: _buildThreadTile(
+                            context,
+                            comment: comment,
+                            myUserId: myUserId,
+                            isAuth: isAuth,
+                          ),
+                        ),
+                      );
+                    }(),
+                  ],
                   if (state.hasMore)
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
@@ -696,7 +980,7 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
                           child: Text(
                             state.isLoadingMore
                                 ? l10n.commentLoading
-                                : l10n.aboutContributorsLoadMore,
+                                : l10n.commentLoadMore,
                           ),
                         ),
                       ),
@@ -710,22 +994,42 @@ class _EntityCommentsSectionState extends ConsumerState<EntityCommentsSection> {
           top: false,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-            child: !_isAuth()
+            child: !isAuth
                 ? ThreadLoginPrompt(
                     message: l10n.commentLoginComposerPrompt,
                     onLogin: _promptLogin,
                   )
-                : ThreadComposer(
-                    controller: _bodyCtrl,
-                    focusNode: _composerFocus,
-                    isSubmitting: (listState?.isSubmitting ?? false) ||
-                        _uploadingImage,
-                    onSubmit: _submit,
-                    onRecordAudio: _recordAudioComment,
-                    onPickImage: _pickCommentPhoto,
-                    onPickSticker: _pickCommentSticker,
-                    attachmentPreview: _buildAttachmentPreview(context),
-                    hint: copy.hint,
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      MentionSuggestOverlay(
+                        onSelect: (username) =>
+                            insertIntoComposer(_bodyCtrl, username),
+                      ),
+                      if (_replyParentId != null) ...[
+                        ThreadReplyBanner(
+                          title: _replyChipHandle != null
+                              ? l10n.threadReplyingTo(_replyChipHandle!)
+                              : l10n.threadReply,
+                          subtitle: _replyDraft?.quotePreview,
+                          onDismiss: _dismissReply,
+                        ),
+                        const Gap(6),
+                      ],
+                      ThreadComposer(
+                        controller: _bodyCtrl,
+                        focusNode: _composerFocus,
+                        isSubmitting: (listState?.isSubmitting ?? false) ||
+                            _uploadingImage,
+                        onSubmit: _submit,
+                        onRecordAudio: _recordAudioComment,
+                        onPickImage: _pickCommentPhoto,
+                        onPickSticker: _pickCommentSticker,
+                        attachmentPreview: _buildAttachmentPreview(context),
+                        hint: copy.hint,
+                      ),
+                    ],
                   ),
           ),
         ),

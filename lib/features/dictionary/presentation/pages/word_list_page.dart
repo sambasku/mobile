@@ -10,14 +10,13 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/widgets/pending_review_badge_icon.dart';
-import '../../../../core/widgets/word_approved_badge_icon.dart';
-import '../../dictionary_router.dart';
-import '../../domain/entities/word_summary.dart';
 import '../models/word_list_state.dart';
 import '../providers/search_history_provider.dart';
 import '../providers/categories_provider.dart';
 import '../providers/word_list_providers.dart';
+import '../providers/lemma_merge_selection_provider.dart';
+import '../widgets/lemma_merge_selection_bar.dart';
+import '../widgets/lemma_merge_word_tile.dart';
 import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 
 /// Daftar kata. q kosong di mode Sambas = A-Z (`GET /words`).
@@ -116,8 +115,18 @@ class WordListPage extends HookConsumerWidget {
 
     final theme = context.theme;
 
+    final mergeSel = ref.watch(lemmaMergeSelectionProvider);
+
     return ExcludeSemanticsOnExit(
-      child: FScaffold(
+      child: PopScope(
+        canPop: !mergeSel.active,
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop && mergeSel.active) {
+            ref.read(lemmaMergeSelectionProvider.notifier).cancel();
+          }
+        },
+        child: FScaffold(
+        footer: const LemmaMergeSelectionBar(),
         childPad: true,
         header: FHeader.nested(
           title: Text(AppLocalizations.of(context).dictListTitle),
@@ -222,6 +231,7 @@ class WordListPage extends HookConsumerWidget {
               Expanded(child: _buildBody(context, ref, theme, state, scroll)),
           ],
         ),
+      ),
       ),
     );
   }
@@ -356,9 +366,33 @@ class WordListPage extends HookConsumerWidget {
                   scrollController: scroll,
                   physics: const AlwaysScrollableScrollPhysics(),
                   count: state.items.length,
-                  tileBuilder: (context, index) => _WordTile(
+                  tileBuilder: (context, index) => LemmaMergeWordTile(
                     item: state.items[index],
-                    searchIn: state.searchIn,
+                    subtitleBuilder: (ctx, item) {
+                      final gloss = item.sense?.trim();
+                      final matched = item.matchedTranslation?.trim();
+                      String? subtitle;
+                      if (gloss != null && gloss.isNotEmpty) {
+                        subtitle = gloss;
+                      } else if (state.searchIn == 'translation' &&
+                          matched != null &&
+                          matched.isNotEmpty) {
+                        subtitle = matched;
+                      } else if (state.searchIn != 'translation' &&
+                          item.wordType != 'word') {
+                        subtitle = wordSummaryTypeLabel(
+                          item,
+                          AppLocalizations.of(ctx),
+                        );
+                      }
+                      if (item.isRelatedGroupMatch) {
+                        final l10n = AppLocalizations.of(ctx);
+                        subtitle = subtitle == null
+                            ? l10n.dictRelatedMeanings
+                            : l10n.dictRelatedMeaningSubtitle(subtitle);
+                      }
+                      return subtitle;
+                    },
                   ),
                 ),
               ),
@@ -367,53 +401,6 @@ class WordListPage extends HookConsumerWidget {
           if (state.isLoadingMore) const _LoadingMoreFooter(),
         ],
       ),
-    );
-  }
-}
-
-class _WordTile extends StatelessWidget with FTileMixin {
-  const _WordTile({required this.item, required this.searchIn});
-
-  final WordSummary item;
-
-  /// `lemma` (Sambas A-Z / saring) atau `translation` (cari Indonesia).
-  final String searchIn;
-
-  @override
-  Widget build(BuildContext context) {
-    // Sambas: gloss A-Z / sense hasil search.
-    // Indonesia: sense (gloss Sambas) - fallback matched_translation.
-    final gloss = item.sense?.trim();
-    final matched = item.matchedTranslation?.trim();
-    String? subtitle;
-    if (gloss != null && gloss.isNotEmpty) {
-      subtitle = gloss;
-    } else if (searchIn == 'translation' &&
-        matched != null &&
-        matched.isNotEmpty) {
-      subtitle = matched;
-    } else if (searchIn != 'translation' && item.wordType != 'word') {
-      subtitle = wordSummaryTypeLabel(item, AppLocalizations.of(context));
-    }
-
-    // PRD relasi-lemma: tandai hasil yang datang dari perluasan kelompok
-    // makna, supaya user tahu ini bukan cocok langsung.
-    if (item.isRelatedGroupMatch) {
-      subtitle = subtitle == null
-          ? AppLocalizations.of(context).dictRelatedMeanings
-          : AppLocalizations.of(context).dictRelatedMeaningSubtitle(subtitle);
-    }
-
-    return FTile(
-      title: Text(item.lemma),
-      subtitle: subtitle != null ? Text(subtitle) : null,
-      suffix: item.isVerified
-          ? const WordApprovedBadgeIcon()
-          : const PendingReviewBadgeIcon(),
-      onPress: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-        context.push(DictionaryRouter.detail.path.replaceFirst(':id', item.id));
-      },
     );
   }
 }

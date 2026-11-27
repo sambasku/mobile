@@ -28,6 +28,9 @@ class _LemmaDatasetSettingsSectionState
     try {
       final updater = ref.read(lemmaDatasetUpdaterProvider);
       final result = await updater.update();
+      if (result.message != null) {
+        debugPrint('[lemma_ota] ${result.outcome.name}: ${result.message}');
+      }
       if (!mounted) return;
       switch (result.outcome) {
         case LemmaDatasetUpdateOutcome.updated:

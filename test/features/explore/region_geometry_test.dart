@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/explore/domain/region_geometry.dart';
 
@@ -129,6 +132,95 @@ void main() {
         ],
       };
       expect(RegionGeometry.ringsFor(bad, 'kec-a'), isEmpty);
+    });
+  });
+
+  group('RFC 7946 GeoJSON validity (iOS MLNShape)', () {
+    test('asset regions.geojson & regions-adm4.geojson bebas ring < 4 titik', () async {
+      for (final asset in [
+        'assets/data/regions.geojson',
+        'assets/data/regions-adm4.geojson',
+      ]) {
+        final raw = await rootBundle.loadString(asset);
+        final decoded = jsonDecode(raw) as Map<String, dynamic>;
+        final feats = decoded['features'] as List;
+        for (final f in feats) {
+          final g = (f as Map)['geometry'] as Map;
+          final type = g['type'] as String;
+          final polys = type == 'Polygon'
+              ? [g['coordinates'] as List]
+              : (g['coordinates'] as List);
+          for (final poly in polys) {
+            for (final ring in poly as List) {
+              final r = ring as List;
+              expect(
+                r.length,
+                greaterThanOrEqualTo(4),
+                reason: '$asset punya ring < 4 titik (ditolak MLNShape iOS)',
+              );
+              expect(r.first, equals(r.last), reason: '$asset ring tidak tertutup');
+            }
+          }
+        }
+      }
+    });
+
+    test('sanitizeFeatureCollection membuang ring degenerat < 4 titik', () {
+      final dirty = {
+        'type': 'FeatureCollection',
+        'features': [
+          {
+            'type': 'Feature',
+            'properties': {'id': 'pemangkat'},
+            'geometry': {
+              'type': 'Polygon',
+              'coordinates': [
+                [
+                  [109.0, 1.0],
+                  [109.1, 1.0],
+                  [109.1, 1.1],
+                  [109.0, 1.0],
+                ],
+                [
+                  [108.97, 1.18],
+                  [108.97, 1.19],
+                  [108.97, 1.18],
+                ],
+              ],
+            },
+          },
+          {
+            'type': 'Feature',
+            'properties': {'id': 'jawai-selatan'},
+            'geometry': {
+              'type': 'MultiPolygon',
+              'coordinates': [
+                [
+                  [
+                    [109.0, 1.0],
+                    [109.1, 1.0],
+                    [109.1, 1.1],
+                    [109.0, 1.0],
+                  ],
+                ],
+                [
+                  [
+                    [108.97, 1.18],
+                    [108.97, 1.19],
+                    [108.97, 1.18],
+                  ],
+                ],
+              ],
+            },
+          },
+        ],
+      };
+
+      final clean = RegionGeometry.sanitizeFeatureCollection(dirty);
+      final feats = clean['features'] as List;
+      expect(feats, hasLength(2));
+      expect((feats[0]['geometry']['coordinates'] as List), hasLength(1));
+      expect((feats[1]['geometry']['coordinates'] as List), hasLength(1));
     });
   });
 }

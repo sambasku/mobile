@@ -4,13 +4,14 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/utils/format_number.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../dictionary/dictionary_router.dart';
 import '../../domain/hot_topics.dart';
 import '../providers/hot_topics_providers.dart';
 
-/// Kartu Sorotan di Home: Hits / Usulan / Dicari / Cek.
+/// Kartu Sorotan di Home: Terpopuler / Baru / Dikomentari / Usulan / Dicari / Cek.
 /// Konten digeser sebagai carousel (`PageView`); chip indikator ikut
 /// sinkron (tap chip = animasi halaman, swipe halaman = chip aktif).
 /// Tinggi list tetap 10 slot supaya kontainer tidak loncat saat ganti tab.
@@ -24,6 +25,7 @@ class HotTopicsCard extends ConsumerStatefulWidget {
 class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
   static const _slotCount = 10;
   static const _columnCount = 2;
+
   /// Judul + subtitle + badge + chevron; row rapat supaya container compact.
   static const _cellHeight = 36.0;
   static const _rowGap = 1.0;
@@ -54,7 +56,7 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
     });
   }
 
-  static const _tabCount = 4;
+  static const _tabCount = 6;
 
   late final PageController _pageController;
   final _chipScroll = ScrollController();
@@ -167,22 +169,38 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
     const emptyIcon = FLucideIcons.chartNoAxesColumn;
     final tabs = [
       (
-        label: l10n.hotTopicsTabNearThreshold,
+        label: l10n.hotTopicsTabHits,
+        blurb: l10n.hotTopicsTabHitsBlurb,
         tab: bundle.viewed,
-        emptyBody: l10n.hotTopicsTabEmptyNearBody,
+        emptyBody: l10n.hotTopicsTabEmptyViewedBody,
+      ),
+      (
+        label: l10n.hotTopicsTabVerified,
+        blurb: l10n.hotTopicsTabVerifiedBlurb,
+        tab: bundle.verified,
+        emptyBody: l10n.hotTopicsTabEmptyVerifiedBody,
+      ),
+      (
+        label: l10n.hotTopicsTabCommented,
+        blurb: l10n.hotTopicsTabCommentedBlurb,
+        tab: bundle.commented,
+        emptyBody: l10n.hotTopicsTabEmptyCommentedBody,
       ),
       (
         label: l10n.hotTopicsTabProposed,
+        blurb: l10n.hotTopicsTabProposedBlurb,
         tab: bundle.proposed,
         emptyBody: l10n.hotTopicsTabEmptyProposedBody,
       ),
       (
         label: l10n.hotTopicsTabSearched,
+        blurb: l10n.hotTopicsTabSearchedBlurb,
         tab: bundle.searched,
         emptyBody: l10n.hotTopicsTabEmptySearchedBody,
       ),
       (
         label: l10n.hotTopicsTabCheck,
+        blurb: l10n.hotTopicsTabCheckBlurb,
         tab: bundle.check,
         emptyBody: l10n.hotTopicsTabEmptyCheckBody,
       ),
@@ -243,6 +261,25 @@ class _HotTopicsCardState extends ConsumerState<HotTopicsCard> {
                 ),
               );
             },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: theme.colors.muted,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              child: Text(
+                active.blurb,
+                style: theme.typography.body.xs.copyWith(
+                  color: theme.colors.mutedForeground,
+                  height: 1.3,
+                ),
+              ),
+            ),
           ),
         ),
         Padding(
@@ -364,16 +401,34 @@ class _CompactCell extends StatelessWidget {
       HotProposedItem(:final wordId, :final lemma) => (
         title: lemma,
         meta: l10n.hotTopicsProposedSubtitle,
-        onPress: () => context.push(
-          wordDetailPath(wordId, includeUnverified: true),
-        ),
+        onPress: () =>
+            context.push(wordDetailPath(wordId, includeUnverified: true)),
       ),
-      // Hits: detail kamus reguler (hanya makna verified).
+      // Terpopuler (word_views): detail kamus reguler (hanya makna verified).
       HotViewedItem(:final wordId, :final lemma, :final viewCount) => (
         title: lemma,
         meta: l10n.hotTopicsViewCount(formatRibuan(viewCount)),
         onPress: () => context.push(wordDetailPath(wordId)),
       ),
+      HotVerifiedItem(:final wordId, :final lemma, :final verifiedAt) => (
+        title: lemma,
+        meta: l10n.hotTopicsVerifiedMeta(formatRelativeCompact(verifiedAt)),
+        onPress: () => context.push(wordDetailPath(wordId)),
+      ),
+      HotCommentedItem(
+        :final wordId,
+        :final lemma,
+        :final commentCount,
+        :final lastCommentedAt,
+      ) =>
+        (
+          title: lemma,
+          meta: l10n.hotTopicsCommentedMeta(
+            formatRibuan(commentCount),
+            formatRelativeCompact(lastCommentedAt),
+          ),
+          onPress: () => context.push(wordDetailPath(wordId)),
+        ),
       // Cek: fokus makna downvote (mode Periksa Kata via ?meaning=).
       HotCheckItem(
         :final wordId,
@@ -384,9 +439,8 @@ class _CompactCell extends StatelessWidget {
         (
           title: lemma,
           meta: l10n.hotTopicsDownvoteCount(formatRibuan(downvotes)),
-          onPress: () => context.push(
-            wordDetailPath(wordId, meaningId: meaningId),
-          ),
+          onPress: () =>
+              context.push(wordDetailPath(wordId, meaningId: meaningId)),
         ),
     };
 

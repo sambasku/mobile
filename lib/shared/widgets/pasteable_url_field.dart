@@ -1,11 +1,10 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
-import 'package:gap/gap.dart';
 
 import '../../l10n/app_localizations.dart';
 
-/// Field URL dengan tombol Tempel di kanan (pola maps / ensiklopedia).
+/// Field URL dengan tombol Tempel di dalam container field (suffix).
 ///
 /// Tempel clipboard OS - lebih enak di HP daripada long-press field.
 class PasteableUrlField extends StatelessWidget {
@@ -62,39 +61,38 @@ class PasteableUrlField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: FTextField(
-            control: FTextFieldControl.managed(
-              controller: controller,
-              onChange: onChanged,
+    return FTextField(
+      control: FTextFieldControl.managed(
+        controller: controller,
+        onChange: onChanged,
+      ),
+      label: label,
+      hint: hint,
+      description: description,
+      error: error,
+      enabled: enabled,
+      autofocus: autofocus,
+      autocorrect: autocorrect,
+      maxLines: maxLines,
+      minLines: minLines,
+      keyboardType: TextInputType.url,
+      textInputAction: textInputAction,
+      onSubmit: onSubmit,
+      suffixBuilder: (context, style, variants) {
+        final disabled =
+            !enabled || variants.contains(FTextFieldVariant.disabled);
+        return Padding(
+          padding: style.clearButtonPadding,
+          child: FButton.icon(
+            style: style.clearButtonStyle,
+            onPress: disabled ? null : () => _paste(context),
+            child: Icon(
+              FLucideIcons.clipboardPaste,
+              semanticLabel: l10n.commonPaste,
             ),
-            label: label,
-            hint: hint,
-            description: description,
-            error: error,
-            enabled: enabled,
-            autofocus: autofocus,
-            autocorrect: autocorrect,
-            maxLines: maxLines,
-            minLines: minLines,
-            keyboardType: TextInputType.url,
-            textInputAction: textInputAction,
-            onSubmit: onSubmit,
           ),
-        ),
-        const Gap(6),
-        FButton(
-          variant: FButtonVariant.outline,
-          onPress: enabled ? () => _paste(context) : null,
-          child: Semantics(
-            label: l10n.commonPaste,
-            child: const Icon(FLucideIcons.clipboardPaste),
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 }

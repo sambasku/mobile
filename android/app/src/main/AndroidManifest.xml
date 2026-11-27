@@ -147,5 +147,10 @@
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="market" android:host="details" />
         </intent>
+        <!-- Pastikan resolveActivity(ACTION_PICK_IMAGES) di MainActivity tidak
+             false-negative karena package visibility Android 11+. -->
+        <intent>
+            <action android:name="android.provider.action.PICK_IMAGES" />
+        </intent>
     </queries>
 </manifest>

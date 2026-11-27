@@ -5,6 +5,8 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sambasku_mobile/core/models/image_attribution.dart';
+import 'package:sambasku_mobile/features/auth/presentation/models/auth_status_state.dart';
+import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status_providers.dart';
 import 'package:sambasku_mobile/features/dictionary/data/providers/dictionary_data_providers.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/entities/word_detail.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/entities/word_of_day.dart';
@@ -72,7 +74,25 @@ class _StubRepo implements DictionaryRepository {
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
 }
 
-Future<void> _pump(WidgetTester tester) async {
+class _FakeAuthStatus extends AuthStatusNotifier {
+  _FakeAuthStatus(this._isAuth);
+
+  final bool _isAuth;
+
+  @override
+  Future<AuthStatusState> build() async => AuthStatusState(
+    isAuth: _isAuth,
+    username: _isAuth ? 'budi' : null,
+    role: _isAuth ? 'user' : null,
+    userId: _isAuth ? 'u1' : null,
+  );
+}
+
+Future<void> _pump(
+  WidgetTester tester, {
+  bool isAuth = false,
+  List<String>? pushedRoutes,
+}) async {
   final router = GoRouter(
     initialLocation: '/words/$_wordId',
     routes: [
@@ -81,11 +101,28 @@ Future<void> _pump(WidgetTester tester) async {
         builder: (context, state) =>
             WordDetailPage(wordId: state.pathParameters['id']!),
       ),
+      GoRoute(
+        path: '/suggest-edit/:wordId',
+        builder: (context, state) {
+          pushedRoutes?.add(state.uri.toString());
+          return const Scaffold(body: Text('SUGGEST_EDIT_PAGE'));
+        },
+      ),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) {
+          pushedRoutes?.add('/login');
+          return const Scaffold(body: Text('LOGIN_PAGE'));
+        },
+      ),
     ],
   );
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [dictionaryRepositoryProvider.overrideWithValue(_StubRepo())],
+      overrides: [
+        dictionaryRepositoryProvider.overrideWithValue(_StubRepo()),
+        authStatusProvider.overrideWith(() => _FakeAuthStatus(isAuth)),
+      ],
       child: MaterialApp.router(
         theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
         localizationsDelegates: [
@@ -142,5 +179,34 @@ void main() {
     _images = [_img('a', primary: true), _img('b')];
     await _pump(tester);
     expect(find.text('2'), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.imagePlus), findsNothing);
   });
+
+  testWidgets(
+    'tanpa foto: container Tambah foto tampil default dan buka form add_photo',
+    (tester) async {
+      final pushed = <String>[];
+      await _pump(tester, isAuth: true, pushedRoutes: pushed);
+
+      expect(find.byIcon(FLucideIcons.imagePlus), findsOneWidget);
+      expect(find.text('Tambah foto'), findsOneWidget);
+
+      await tester.tap(find.text('Tambah foto'));
+      await tester.pumpAndSettle();
+
+      expect(pushed, ['/suggest-edit/$_wordId?category=add_photo&autoPick=1']);
+    },
+  );
+
+  testWidgets(
+    'pelafalan kosong tampil dengan format /Tambah pelafalan/ bergaya IPA',
+    (tester) async {
+      await _pump(tester);
+
+      final textFinder = find.text('/Tambah pelafalan/');
+      expect(textFinder, findsOneWidget);
+      final widget = tester.widget<Text>(textFinder);
+      expect(widget.style?.fontStyle, FontStyle.italic);
+    },
+  );
 }

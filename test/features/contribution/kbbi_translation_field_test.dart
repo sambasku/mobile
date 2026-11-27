@@ -28,8 +28,9 @@ void main() {
         ],
         supportedLocales: const [Locale('id')],
         locale: const Locale('id'),
-        builder: (context, child) =>
-            FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
+        builder: (context, child) => MediaQuery.withNoTextScaling(
+          child: FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
+        ),
         home: Scaffold(
           body: Padding(
             padding: const EdgeInsets.all(16),
@@ -48,8 +49,9 @@ void main() {
     final icon = tester.getRect(find.byIcon(FLucideIcons.bookOpen));
 
     expect(box.height, greaterThan(icon.height * 1.4));
-    expect(icon.top - box.top, lessThanOrEqualTo(16));
-    expect(box.right - icon.right, lessThanOrEqualTo(16));
+    // Label di atas field; toleransi ikut tinggi baris label bertema.
+    expect(icon.top - box.top, lessThanOrEqualTo(18));
+    expect(box.right - icon.right, lessThanOrEqualTo(18));
     expect(icon.center.dy, lessThan(box.top + box.height / 2));
 
     await tester.tap(find.byIcon(FLucideIcons.bookOpen));
@@ -70,8 +72,9 @@ void main() {
         ],
         supportedLocales: const [Locale('id')],
         locale: const Locale('id'),
-        builder: (context, child) =>
-            FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
+        builder: (context, child) => MediaQuery.withNoTextScaling(
+          child: FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
+        ),
         home: Scaffold(
           body: Padding(
             padding: const EdgeInsets.all(16),

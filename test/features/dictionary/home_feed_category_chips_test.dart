@@ -241,6 +241,14 @@ Future<void> pumpHome(
   addTearDown(tester.view.reset);
 
   const emptyHot = HotTopicsBundle(
+    verified: HotTopicTab(
+      items: [],
+      meta: HotTopicTabMeta(inWindow: 0, backfilled: 0, backfillUsed: false),
+    ),
+    commented: HotTopicTab(
+      items: [],
+      meta: HotTopicTabMeta(inWindow: 0, backfilled: 0, backfillUsed: false),
+    ),
     searched: HotTopicTab(
       items: [],
       meta: HotTopicTabMeta(inWindow: 0, backfilled: 0, backfillUsed: false),

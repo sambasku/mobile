@@ -123,6 +123,8 @@ class DictionaryRouter {
         ),
         initialMeaningId: state.uri.queryParameters['meaning'],
         initialPronunciationId: state.uri.queryParameters['pronunciation'],
+        autoPickPhoto: state.uri.queryParameters['autoPick'] == '1',
+        reviewSuggestionId: state.uri.queryParameters['review'],
       ),
     ),
   ];

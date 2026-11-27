@@ -10,10 +10,9 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../event/presentation/providers/event_providers.dart';
 import '../../../event/presentation/widgets/event_ui.dart';
 import '../providers/regions_providers.dart';
-import '../widgets/district_markdown_view.dart';
 
-/// Detail kecamatan/desa. Kecamatan: artikel markdown dari CDN (#123)
-/// dirender di atas info wilayah. Desa: masih "Segera hadir".
+/// Detail kecamatan/desa. Konten profil belum dikelola CMS, jadi kedua
+/// halaman menampilkan "Segera hadir". Jumlah desa di kecamatan tetap.
 class RegionDetailPage extends ConsumerStatefulWidget {
   const RegionDetailPage.kecamatan({super.key, required this.slug})
     : isKecamatan = true;
@@ -65,31 +64,24 @@ class _RegionDetailPageState extends ConsumerState<RegionDetailPage> {
 
     return FScaffold(
       header: FHeader.nested(title: Text(name)),
-      // childPad false: sama pola artikel wisata (#168) - padding hanya di
-      // ListView supaya markdown/tabel tidak kena gutter dobel (12+16).
       childPad: false,
-      // ListView agar artikel panjang bisa di-scroll.
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         children: [
-          if (isKec) ...[
-            // Artikel markdown kecamatan: skeleton saat loading, kosong
-            // bila tidak tersedia (soft-fail, halaman tetap normal).
-            DistrictMarkdownView(slug: widget.slug),
-            const Gap(24),
-          ],
-          if (!isKec) ...[
-            Icon(FLucideIcons.mapPin, size: 48, color: theme.colors.primary),
-            const Gap(16),
-            FBadge(
-              variant: FBadgeVariant.outline,
-              child: Text(l10n.exploreComingSoon),
-            ),
-            const Gap(12),
-          ],
+          Icon(FLucideIcons.mapPin, size: 48, color: theme.colors.primary),
+          const Gap(16),
+          FBadge(
+            variant: FBadgeVariant.outline,
+            child: Text(l10n.exploreComingSoon),
+          ),
+          const Gap(12),
           Text(
-            isKec ? l10n.regionKecamatanTitle(name) : l10n.regionDesaTitle(name),
-            style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
+            isKec
+                ? l10n.regionKecamatanTitle(name)
+                : l10n.regionDesaTitle(name),
+            style: theme.typography.body.lg.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
           if (isKec && desaCount > 0) ...[
             const Gap(4),
@@ -100,25 +92,24 @@ class _RegionDetailPageState extends ConsumerState<RegionDetailPage> {
               ),
             ),
           ],
-if (!isKec) ...[
           const Gap(12),
           Text(
-            l10n.regionDesaComingSoon,
+            isKec ? l10n.regionKecamatanComingSoon : l10n.regionDesaComingSoon,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
+          // Agenda desa (hanya desa): acara dengan village_id = desa ini.
+          // Slug wilayah (id katalog publik) diterima API sebagai village_id.
+          if (!isKec && region != null)
+            buildEventMiniList(
+                  context,
+                  ref.watch(eventsForVillageProvider(region.id)).value ??
+                      const [],
+                  title: l10n.regionAgendaDesa(name),
+                ) ??
+                const SizedBox.shrink(),
         ],
-        // Agenda desa (hanya desa): acara dengan village_id = desa ini.
-        // Slug wilayah (id katalog publik) diterima API sebagai village_id.
-        if (!isKec && region != null)
-          buildEventMiniList(
-            context,
-            ref.watch(eventsForVillageProvider(region.id)).value ?? const [],
-            title: l10n.regionAgendaDesa(name),
-          ) ??
-          const SizedBox.shrink(),
-      ],
       ),
     );
   }

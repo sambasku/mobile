@@ -32,8 +32,10 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     this._local,
     LemmaStickyStore? sticky,
     bool Function()? isOffline,
+    bool Function()? isVerifier,
     void Function(LemmaDataSourceKind kind)? onSource,
-  }) : _gate = LemmaHybridGate(
+  }) : _isVerifier = isVerifier ?? (() => false),
+       _gate = LemmaHybridGate(
          sticky: sticky ?? LemmaStickyStore(),
          isOffline: isOffline ?? () => false,
          onSource: onSource,
@@ -43,6 +45,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   final Dio? _dio;
   final CachedJsonClient? _cache;
   final DictionaryLocalDatasource? _local;
+  final bool Function() _isVerifier;
   final LemmaHybridGate _gate;
 
   @override
@@ -813,7 +816,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   }) {
     final visible = visibleMeaningsForPublicDetail(
       detail.meanings,
-      viewerIsVerifier: false,
+      viewerIsVerifier: _isVerifier(),
       focusMeaningId: focusMeaningId,
       includeUnverified: includeUnverified,
     );
@@ -940,6 +943,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
             isVerified: i.isVerified,
             contentWarnings: List<String>.from(i.contentWarnings),
             attribution: ImageAttribution.fromJson(i.attribution),
+            sourceJinyeId: i.sourceJinyeId,
           ),
         )
         .toList(),

@@ -185,6 +185,12 @@ void main() {
           path: '/login',
           builder: (context, state) => const Text('halaman login'),
         ),
+        GoRoute(
+          name: 'UserProfileRouter.profile',
+          path: '/u/:username',
+          builder: (context, state) =>
+              Text('profil publik ${state.pathParameters['username']}'),
+        ),
       ],
     );
     await tester.pumpWidget(
@@ -206,7 +212,7 @@ void main() {
             ...AppLocalizations.localizationsDelegates,
           ],
           supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+          locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) => FTheme(
             data: foruiPalettes['zinc']!.light.touch,
@@ -229,14 +235,14 @@ void main() {
 
       expect(find.text('Belum masuk'), findsOneWidget);
       expect(find.text('Masuk / Login'), findsOneWidget);
-    expect(find.text('Daftar'), findsOneWidget);
-    expect(find.text('Pengaturan'), findsOneWidget);
-    expect(find.text('Keluar'), findsNothing);
+      expect(find.text('Daftar'), findsOneWidget);
+      expect(find.text('Pengaturan'), findsOneWidget);
+      expect(find.text('Keluar'), findsNothing);
     },
   );
 
   testWidgets(
-    'sudah login - header kaya: bio, stat, verifikator, tanpa label role',
+    'sudah login - header ringkas: avatar, nama (buka profil publik), tanpa bio/stat/edit',
     (tester) async {
       await pumpProfile(
         tester,
@@ -251,58 +257,33 @@ void main() {
         ],
       );
 
-      expect(find.text('@budi'), findsOneWidget);
-      expect(find.text('Bio percobaan'), findsOneWidget);
-      expect(find.textContaining('usul kata'), findsOneWidget);
-      expect(find.textContaining('perbaikan'), findsOneWidget);
-      // Label teks "Verifikator" dihapus: centang hijau yang mewakili,
-      // tap ikon membuka penjelasan.
-      expect(find.text('Verifikator'), findsNothing);
-      // Dua centang di profil sendiri: samping nama + baris meta.
-      expect(
-        find.bySemanticsLabel('Verifikator, ketuk untuk info'),
-        findsWidgets,
-      );
-      // Label role lama tidak boleh tampil lagi.
-      expect(find.text('Reviewer'), findsNothing);
-      expect(find.text('Kontributor'), findsNothing);
-
-      // CTA eksplisit ke profil publik (header juga bisa di-tap).
-      expect(find.text('Lihat profil publik'), findsOneWidget);
-      // Tombol shrink-wrap (bukan full width) - sejajar tombol kecil lain.
-      final btn = tester.getRect(
-        find.widgetWithText(FButton, 'Lihat profil publik'),
-      );
-      final label = tester.getRect(find.text('Lihat profil publik'));
-      expect(btn.width, lessThan(label.width + 80));
-      // Edit profil = ikon di bar melayang (IconButton tooltip), bukan tile teks.
-      expect(find.text('Edit profil'), findsNothing);
-      expect(find.byTooltip('Edit profil'), findsOneWidget);
+      expect(find.text('budi'), findsOneWidget);
+      expect(find.text('@budi'), findsNothing);
+      expect(find.text('Bio percobaan'), findsNothing);
+      expect(find.textContaining('usul kata'), findsNothing);
+      expect(find.text('Lihat profil publik'), findsNothing);
+      expect(find.byTooltip('Edit profil'), findsNothing);
+      expect(find.byIcon(FLucideIcons.messageCircle), findsNothing);
+      expect(find.byIcon(FLucideIcons.archive), findsNothing);
+      expect(find.byIcon(FLucideIcons.pencil), findsNothing);
 
       // Layout center: avatar besar (104) tepat di tengah lebar layar,
-      // identitas rata tengah di bawahnya.
+      // nama rata tengah di bawahnya.
       final avatar = find.byType(UserAvatar);
       expect(tester.getSize(avatar).width, 104);
       final screenCenter = tester.view.physicalSize.width / 2;
       expect(tester.getCenter(avatar).dx, closeTo(screenCenter, 1));
-      expect(tester.getCenter(find.text('@budi')).dx, closeTo(screenCenter, 1));
       expect(
-        tester.getTopLeft(find.text('@budi')).dy,
+        tester.getTopLeft(find.text('budi')).dy,
         greaterThan(tester.getBottomLeft(avatar).dy),
-        reason: 'handle ada di bawah avatar, bukan di sampingnya',
+        reason: 'nama ada di bawah avatar, bukan di sampingnya',
       );
 
-      // Tap centang hijau → sheet penjelasan peran verifikator.
-      await tester.tap(
-        find.bySemanticsLabel('Verifikator, ketuk untuk info').first,
-      );
+      // Tap nama -> buka halaman profil publik.
+      await tester.tap(find.text('budi'));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-      expect(find.text('Verifikator'), findsOneWidget);
-      expect(find.textContaining('memeriksa usulan'), findsOneWidget);
-      await tester.tap(find.text('Mengerti'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('profil publik budi'), findsOneWidget);
     },
   );
 
@@ -353,9 +334,9 @@ void main() {
       ],
     );
 
-    // Nama dapat centang via PublicAccountName; baris "Bergabung" tidak.
+    // Nama dapat centang via PublicAccountName; baris "Bergabung" tidak tampil di tab.
     expect(find.byIcon(FLucideIcons.badgeCheck), findsOneWidget);
-    expect(find.textContaining('Bergabung'), findsOneWidget);
+    expect(find.textContaining('Bergabung'), findsNothing);
   });
 
   testWidgets('sudah login - tile Vote dan Komentar membuka route', (
@@ -428,7 +409,7 @@ void main() {
             ...AppLocalizations.localizationsDelegates,
           ],
           supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+          locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) =>
               FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),

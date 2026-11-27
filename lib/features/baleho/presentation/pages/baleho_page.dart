@@ -35,8 +35,10 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
   late final PageController _pageController;
   var _slideIndex = 0;
   BalehoSelection? _selection;
+
   /// Mode pilih/drag slot - harus dinyalakan dulu supaya tidak bentrok swipe slide.
   var _pickMode = false;
+
   /// Guard anti double-open CTA setelah sheet konfirmasi.
   var _actionBusy = false;
   final _impressedIds = <String>{};
@@ -67,7 +69,9 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
     String? frameId,
   }) {
     unawaited(
-      ref.read(balehoApiProvider).recordEvent(
+      ref
+          .read(balehoApiProvider)
+          .recordEvent(
             placementId: placementId,
             frameId: frameId,
             eventType: eventType,
@@ -148,10 +152,7 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
     } catch (_) {
       _track('action_fail', placementId: placement.id, frameId: frame.id);
       if (mounted) {
-        showFToast(
-          context: context,
-          title: Text(l10n.balehoActionFailToast),
-        );
+        showFToast(context: context, title: Text(l10n.balehoActionFailToast));
       }
     } finally {
       _actionBusy = false;
@@ -168,7 +169,8 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
       return;
     }
     if (!mounted) return;
-    final refQ = widget.referralUsername == null ||
+    final refQ =
+        widget.referralUsername == null ||
             widget.referralUsername!.trim().isEmpty
         ? ''
         : '&ref=${Uri.encodeQueryComponent(widget.referralUsername!.trim())}';
@@ -272,94 +274,11 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
-      builder: (sheetContext) {
-        final theme = sheetContext.theme;
-        final sheetL10n = AppLocalizations.of(sheetContext);
-        final maxBodyH = MediaQuery.sizeOf(sheetContext).height * 0.45;
-        final amountFmt = NumberFormat.decimalPattern('id');
-        return Padding(
-          padding: MediaQuery.viewInsetsOf(sheetContext),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    sheetL10n.balehoSlidePromoCaption,
-                    softWrap: true,
-                    style: theme.typography.body.lg.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: theme.colors.foreground,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: maxBodyH),
-                    child: SingleChildScrollView(
-                      child: Text(
-                        sheetL10n.balehoSlidePromoBody,
-                        softWrap: true,
-                        style: theme.typography.body.sm.copyWith(
-                          color: theme.colors.foreground.withValues(
-                            alpha: 0.85,
-                          ),
-                          height: 1.35,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  FutureBuilder<int>(
-                    future: priceAsync,
-                    initialData: 3000,
-                    builder: (context, snap) {
-                      final price = snap.data ?? 3000;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            sheetL10n.balehoPricingUnitLine(
-                              amountFmt.format(price),
-                            ),
-                            softWrap: true,
-                            style: theme.typography.body.sm.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: theme.colors.foreground,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            sheetL10n.balehoQuoteFormulaHint,
-                            softWrap: true,
-                            style: theme.typography.body.xs.copyWith(
-                              color: theme.colors.foreground.withValues(
-                                alpha: 0.75,
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  FButton(
-                    onPress: () => Navigator.pop(sheetContext, true),
-                    child: Text(sheetL10n.balehoEnterPickMode),
-                  ),
-                  const SizedBox(height: 8),
-                  FButton(
-                    variant: FButtonVariant.outline,
-                    onPress: () => Navigator.pop(sheetContext, false),
-                    child: Text(sheetL10n.commonClose),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+      builder: (sheetContext) => _BalehoPromoPricingSheet(
+        priceAsync: priceAsync,
+        onPickSlot: () => Navigator.pop(sheetContext, true),
+        onClose: () => Navigator.pop(sheetContext, false),
+      ),
     );
     if (!mounted || startPick != true) return;
     setState(() {
@@ -418,10 +337,10 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
           ],
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 6),
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
           child: SizedBox(
             // Tinggi caption tetap - ganti mode tidak geser grid.
-            height: 22,
+            height: 20,
             child: _slideIndex == 0
                 ? Row(
                     children: [
@@ -434,9 +353,12 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
                             maxLines: 1,
                             softWrap: false,
                             overflow: TextOverflow.fade,
-                            style: theme.typography.body.sm.copyWith(
-                              color: theme.colors.foreground,
-                              fontWeight: FontWeight.w700,
+                            style: theme.typography.body.xs.copyWith(
+                              color: theme.colors.foreground.withValues(
+                                alpha: 0.85,
+                              ),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
                               height: 1.2,
                             ),
                           ),
@@ -489,9 +411,10 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
                       maxLines: 1,
                       softWrap: false,
                       overflow: TextOverflow.fade,
-                      style: theme.typography.body.sm.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: theme.colors.foreground.withValues(alpha: 0.85),
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
                         height: 1.2,
                       ),
                     ),
@@ -531,40 +454,38 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
             ],
           ),
         ),
-        SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+          // Satu baris bawah tetap (note promo / aksi mode pilih + indikator
+          // halaman) agar area bawah compact & tidak menggeser grid.
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 18),
+            child: Row(
               children: [
-                // Slot aksi tetap tinggi - mode pesan tidak dorong/geser grid.
-                SizedBox(
-                  height: 28,
+                Expanded(
                   child: _slideIndex == 0 && _pickMode
                       ? (_selection == null
-                          ? Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
+                            ? Text(
                                 l10n.balehoSelectionHint,
                                 maxLines: 1,
                                 softWrap: false,
-                                overflow: TextOverflow.fade,
+                                overflow: TextOverflow.ellipsis,
                                 style: theme.typography.body.sm.copyWith(
                                   color: theme.colors.foreground.withValues(
                                     alpha: 0.85,
                                   ),
-                                  fontSize: 12,
+                                  fontSize: 11,
                                   height: 1.2,
                                 ),
-                              ),
-                            )
-                          : Center(
-                              child: GestureDetector(
+                              )
+                            : GestureDetector(
                                 onTap: _continueBooking,
                                 behavior: HitTestBehavior.opaque,
                                 child: Text(
                                   l10n.balehoContinueBook,
+                                  maxLines: 1,
+                                  softWrap: false,
+                                  overflow: TextOverflow.ellipsis,
                                   style: theme.typography.body.sm.copyWith(
                                     color: theme.colors.primary,
                                     fontWeight: FontWeight.w700,
@@ -572,12 +493,35 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
                                     height: 1.2,
                                   ),
                                 ),
+                              ))
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              FLucideIcons.info,
+                              size: 11,
+                              color: theme.colors.mutedForeground,
+                            ),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                l10n.balehoFooterPromoNote,
+                                maxLines: 1,
+                                softWrap: false,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.typography.body.xs.copyWith(
+                                  color: theme.colors.mutedForeground,
+                                  fontSize: 10,
+                                  height: 1.2,
+                                ),
                               ),
-                            ))
-                      : null,
+                            ),
+                          ],
+                        ),
                 ),
+                const SizedBox(width: 8),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: List.generate(2, (i) {
                     final active = i == _slideIndex;
                     return Semantics(
@@ -590,19 +534,19 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 4,
-                            vertical: 4,
+                            vertical: 2,
                           ),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
-                            height: 8,
-                            width: active ? 22 : 8,
+                            height: 6,
+                            width: active ? 18 : 6,
                             decoration: BoxDecoration(
                               color: active
                                   ? theme.colors.primary
                                   : theme.colors.mutedForeground.withValues(
                                       alpha: 0.35,
                                     ),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(6),
                             ),
                           ),
                         ),
@@ -610,35 +554,348 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
                     );
                   }),
                 ),
-                const SizedBox(height: 6),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BalehoPromoPricingSheet extends StatelessWidget {
+  const _BalehoPromoPricingSheet({
+    required this.priceAsync,
+    required this.onPickSlot,
+    required this.onClose,
+  });
+
+  final Future<int> priceAsync;
+  final VoidCallback onPickSlot;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
+    final amountFmt = NumberFormat.decimalPattern('id');
+    final maxH = MediaQuery.sizeOf(context).height * 0.85;
+
+    return Padding(
+      padding: MediaQuery.viewInsetsOf(context),
+      child: SafeArea(
+        top: false,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxH),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colors.border,
+                      borderRadius: BorderRadius.circular(99),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 14),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 1),
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: theme.colors.primary.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      alignment: Alignment.center,
                       child: Icon(
-                        FLucideIcons.info,
-                        size: 11,
-                        color: theme.colors.mutedForeground,
+                        FLucideIcons.megaphone,
+                        size: 20,
+                        color: theme.colors.primary,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.balehoSlidePromoCaption,
+                            softWrap: true,
+                            style: theme.typography.body.md.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: theme.colors.foreground,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            l10n.balehoSlidePromoBody,
+                            softWrap: true,
+                            style: theme.typography.body.xs.copyWith(
+                              color: theme.colors.mutedForeground,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(width: 4),
-                    Flexible(
-                      child: Text(
-                        l10n.balehoFooterPromoNote,
-                        textAlign: TextAlign.center,
-                        softWrap: true,
-                        style: theme.typography.body.xs.copyWith(
-                          color: theme.colors.mutedForeground,
-                          fontSize: 10,
-                          height: 1.25,
+                    Semantics(
+                      button: true,
+                      label: l10n.commonClose,
+                      child: GestureDetector(
+                        onTap: onClose,
+                        behavior: HitTestBehavior.opaque,
+                        child: SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: Center(
+                            child: Icon(
+                              FLucideIcons.x,
+                              size: 18,
+                              color: theme.colors.mutedForeground,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
+                const SizedBox(height: 16),
+                FutureBuilder<int>(
+                  future: priceAsync,
+                  initialData: 3000,
+                  builder: (context, snap) {
+                    final price = snap.data ?? 3000;
+                    return Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: theme.colors.primary.withValues(alpha: 0.04),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: theme.colors.primary.withValues(alpha: 0.22),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                l10n.balehoPricingStartFrom,
+                                style: theme.typography.body.xs.copyWith(
+                                  color: theme.colors.mutedForeground,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const Spacer(),
+                              FBadge(
+                                variant: FBadgeVariant.secondary,
+                                child: Text(l10n.balehoPricingBadge),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.end,
+                            spacing: 6,
+                            runSpacing: 2,
+                            children: [
+                              Text(
+                                l10n.balehoPricingCurrencyValue(
+                                  amountFmt.format(price),
+                                ),
+                                style: theme.typography.body.lg.copyWith(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: -0.5,
+                                  color: theme.colors.foreground,
+                                  height: 1.15,
+                                  fontFeatures: const [
+                                    FontFeature.tabularFigures(),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 3),
+                                child: Text(
+                                  l10n.balehoPricingPerUnit,
+                                  style: theme.typography.body.xs.copyWith(
+                                    color: theme.colors.mutedForeground,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Container(
+                              height: 0.5,
+                              color: theme.colors.border,
+                            ),
+                          ),
+                          Text(
+                            l10n.balehoPricingEstimateHeading,
+                            style: theme.typography.body.xs.copyWith(
+                              color: theme.colors.mutedForeground,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 11,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _PromoEstimateTile(
+                                  daysLabel: l10n.balehoPricingDaysShort(1),
+                                  amountLabel: l10n.balehoPricingCurrencyValue(
+                                    amountFmt.format(price),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: _PromoEstimateTile(
+                                  daysLabel: l10n.balehoPricingDaysShort(7),
+                                  amountLabel: l10n.balehoPricingCurrencyValue(
+                                    amountFmt.format(price * 7),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: _PromoEstimateTile(
+                                  daysLabel: l10n.balehoPricingDaysShort(30),
+                                  amountLabel: l10n.balehoPricingCurrencyValue(
+                                    amountFmt.format(price * 30),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 14),
+                _PromoPricingPoint(
+                  icon: FLucideIcons.grid2x2,
+                  text: l10n.balehoPricingPointSize,
+                ),
+                const SizedBox(height: 10),
+                _PromoPricingPoint(
+                  icon: FLucideIcons.calculator,
+                  text: l10n.balehoQuoteFormulaHint,
+                ),
+                const SizedBox(height: 10),
+                _PromoPricingPoint(
+                  icon: FLucideIcons.eye,
+                  text: l10n.balehoPricingPointReach,
+                ),
+                const SizedBox(height: 18),
+                FButton(
+                  prefix: const Icon(FLucideIcons.layoutGrid, size: 16),
+                  onPress: onPickSlot,
+                  child: Text(l10n.balehoEnterPickMode),
+                ),
               ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PromoEstimateTile extends StatelessWidget {
+  const _PromoEstimateTile({
+    required this.daysLabel,
+    required this.amountLabel,
+  });
+
+  final String daysLabel;
+  final String amountLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      decoration: BoxDecoration(
+        color: theme.colors.background,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: theme.colors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            daysLabel,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.typography.body.xs.copyWith(
+              fontSize: 11,
+              color: theme.colors.mutedForeground,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            amountLabel,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.typography.body.xs.copyWith(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: theme.colors.foreground,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PromoPricingPoint extends StatelessWidget {
+  const _PromoPricingPoint({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            color: theme.colors.secondary,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          alignment: Alignment.center,
+          child: Icon(icon, size: 14, color: theme.colors.foreground),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            text,
+            softWrap: true,
+            style: theme.typography.body.xs.copyWith(
+              fontSize: 12.5,
+              color: theme.colors.foreground.withValues(alpha: 0.88),
+              height: 1.35,
             ),
           ),
         ),
@@ -684,10 +941,7 @@ class _SlideBody extends ConsumerWidget {
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 12),
           children: const [
-            Align(
-              alignment: Alignment.topCenter,
-              child: _BalehoGridSkeleton(),
-            ),
+            Align(alignment: Alignment.topCenter, child: _BalehoGridSkeleton()),
           ],
         ),
         error: (_, _) => ListView(

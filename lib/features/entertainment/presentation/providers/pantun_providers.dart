@@ -104,6 +104,13 @@ class PantunFeedController extends AsyncNotifier<PantunFeedState> {
     });
   }
 
+  /// Sinkron vote dari halaman detail ke feed (tanpa refetch).
+  void syncVote(String key, VoteView view) {
+    final current = state.value;
+    if (current == null) return;
+    _applyVote(current, key, view);
+  }
+
   void _applyVote(PantunFeedState current, String key, VoteView view) {
     state = AsyncData(
       current.copyWith(
@@ -114,6 +121,7 @@ class PantunFeedController extends AsyncNotifier<PantunFeedState> {
                     upvotes: view.upvotes,
                     downvotes: view.downvotes,
                     myVote: view.myVote,
+                    clearMyVote: view.myVote == null,
                   )
                 : p,
         ],
@@ -239,6 +247,10 @@ class PantunDetailController extends AsyncNotifier<PantunDetail> {
           ],
         ),
       );
+      // Feed yang masih hidup di bawah stack ikut diperbarui (tanpa refetch).
+      if (ref.exists(pantunFeedProvider)) {
+        ref.read(pantunFeedProvider.notifier).syncVote(key, view);
+      }
       return null;
     });
   }
@@ -247,6 +259,7 @@ class PantunDetailController extends AsyncNotifier<PantunDetail> {
     upvotes: view.upvotes,
     downvotes: view.downvotes,
     myVote: view.myVote,
+    clearMyVote: view.myVote == null,
   );
 
   void replaceReply(Pantun updated) {

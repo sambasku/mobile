@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../core/cache/cache_providers.dart';
 import '../../../core/network/network_providers.dart';
 import '../../activity/data/activity_feed_repository.dart';
 import '../../activity/presentation/providers/activity_feed_providers.dart';
@@ -27,14 +30,25 @@ final latestJinyeByUsernameProvider =
   return page.items.isEmpty ? null : page.items.first;
 });
 
-/// Setelah create/quote/repost/arsip: bubble + timeline profil + feed beranda.
+/// Setelah create/edit/quote/repost/arsip: bubble + timeline profil + feed beranda.
 void invalidateJinyeProfileSurfaces(WidgetRef ref, String? username) {
   final u = username?.trim().toLowerCase();
-  if (u == null || u.isEmpty) return;
-  ref.invalidate(latestJinyeByUsernameProvider(u));
-  ref.invalidate(publicActivityProvider(u));
-  ref.invalidate(publicActivityByKindProvider(u, 'jinye'));
-  ref.invalidate(activityFeedProvider(FeedCategory.all));
+  if (u != null && u.isNotEmpty) {
+    ref.invalidate(latestJinyeByUsernameProvider(u));
+    ref.invalidate(publicActivityProvider(u));
+    ref.invalidate(publicActivityByKindProvider(u, 'jinye'));
+  }
+  final container = ProviderScope.containerOf(ref.context, listen: false);
+  final store = ref.read(responseCacheStoreProvider);
+  unawaited(
+    store
+        .deleteByPrefix('GET|${ActivityFeedRepository.path}')
+        .catchError((_) {})
+        .whenComplete(() {
+          container.invalidate(activityFeedProvider(FeedCategory.all));
+          container.invalidate(activityFeedProvider(FeedCategory.jinye));
+        }),
+  );
 }
 
 final jinyeDetailProvider =

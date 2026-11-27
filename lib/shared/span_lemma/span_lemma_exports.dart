@@ -7,4 +7,9 @@ export '../../features/jinye/presentation/widgets/jinye_link_lemma_sheet.dart'
 export '../../features/jinye/presentation/widgets/jinye_lemma_body.dart'
     show JinyeLemmaBody, ThreadLemmaBody;
 export '../../features/jinye/presentation/widgets/jinye_word_meaning_sheet.dart'
-    show showJinyeWordMeaningSheet, jinyeLookupToken;
+    show
+        showJinyeWordMeaningSheet,
+        handleJinyeWordMeaningSheetResult,
+        jinyeSheetAddMeaningPrefix,
+        jinyeSheetContributePrefix,
+        jinyeLookupToken;

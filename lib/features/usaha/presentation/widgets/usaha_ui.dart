@@ -18,11 +18,10 @@ Uri? usahaGoogleMapsUri(Usaha usaha) {
     if (uri != null && uri.isScheme('https')) return uri;
   }
   if (usaha.hasCoordinates) {
-    return Uri.https(
-      'www.google.com',
-      '/maps/search/',
-      {'api': '1', 'query': '${usaha.lat},${usaha.lng}'},
-    );
+    return Uri.https('www.google.com', '/maps/search/', {
+      'api': '1',
+      'query': '${usaha.lat},${usaha.lng}',
+    });
   }
   return null;
 }
@@ -72,6 +71,12 @@ FBadge? usahaSponsorListBadge(AppLocalizations l10n, String? tier) {
   if (tier == null || tier.isEmpty) return null;
   return FBadge(
     variant: FBadgeVariant.primary,
+    style: const FBadgeStyleDelta.delta(
+      labelTextStyle: TextStyleDelta.delta(fontSize: 8, height: 1.1),
+      padding: EdgeInsetsGeometryDelta.value(
+        EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+      ),
+    ),
     child: Text(l10n.usahaSponsorBadge),
   );
 }
@@ -137,22 +142,34 @@ class UsahaCard extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 1,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: cover == null || cover.isEmpty
-                    ? ColoredBox(
-                        color: theme.colors.muted,
-                        child: Icon(
-                          FLucideIcons.store,
-                          size: 28,
-                          color: theme.colors.mutedForeground,
-                        ),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: cover == null || cover.isEmpty
+                        ? ColoredBox(
+                            color: theme.colors.muted,
+                            child: Icon(
+                              FLucideIcons.store,
+                              size: 28,
+                              color: theme.colors.mutedForeground,
+                            ),
+                          )
+                        : CachedNetworkImageWithFallback(
+                            imageUrl:
+                                displayImageUrl(cover, width: 360) ?? cover,
+                            fallbackUrl: cover,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                  if (usahaSponsorListBadge(
+                        AppLocalizations.of(context),
+                        usaha.sponsorTier,
                       )
-                    : CachedNetworkImageWithFallback(
-                        imageUrl: displayImageUrl(cover, width: 360) ?? cover,
-                        fallbackUrl: cover,
-                        fit: BoxFit.cover,
-                      ),
+                      case final sponsorBadge?)
+                    Positioned(top: 6, left: 6, child: sponsorBadge),
+                ],
               ),
             ),
             const Gap(6),
@@ -165,14 +182,6 @@ class UsahaCard extends StatelessWidget {
                 style: titleStyle,
               ),
             ),
-            if (usahaSponsorListBadge(
-                  AppLocalizations.of(context),
-                  usaha.sponsorTier,
-                )
-                case final sponsorBadge?) ...[
-              const Gap(4),
-              sponsorBadge,
-            ],
           ],
         ),
       ),

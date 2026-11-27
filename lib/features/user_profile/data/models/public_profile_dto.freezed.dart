@@ -18,7 +18,7 @@ mixin _$PublicProfileDto {
 
  String get username;@JsonKey(name: 'display_name') String? get displayName; String? get bio;/// `native` | `learner` | null.
 @JsonKey(name: 'speaker_status') String? get speakerStatus; String get role;@JsonKey(name: 'is_verifier') bool get isVerifier;@JsonKey(name: 'joined_at') String get joinedAt;@JsonKey(name: 'avatar_url') String? get avatarUrl;/// URL aset bingkai profil aktif (achievement reward_type profile_border).
-@JsonKey(name: 'active_border_url') String? get activeBorderUrl; PublicProfileStatsDto get stats; PublicProfileLevelingDto? get leveling;
+@JsonKey(name: 'active_border_url') String? get activeBorderUrl;@JsonKey(name: 'active_border_asset_kind') String get activeBorderAssetKind; PublicProfileStatsDto get stats; PublicProfileLevelingDto? get leveling;
 /// Create a copy of PublicProfileDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -32,20 +32,20 @@ $PublicProfileDtoCopyWith<PublicProfileDto> get copyWith => _$PublicProfileDtoCo
 @override
 bool operator ==(Object other) {
   final _this = this as PublicProfileDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicProfileDto&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.bio, _this.bio) || other.bio == _this.bio)&&(identical(other.speakerStatus, _this.speakerStatus) || other.speakerStatus == _this.speakerStatus)&&(identical(other.role, _this.role) || other.role == _this.role)&&(identical(other.isVerifier, _this.isVerifier) || other.isVerifier == _this.isVerifier)&&(identical(other.joinedAt, _this.joinedAt) || other.joinedAt == _this.joinedAt)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl)&&(identical(other.activeBorderUrl, _this.activeBorderUrl) || other.activeBorderUrl == _this.activeBorderUrl)&&(identical(other.stats, _this.stats) || other.stats == _this.stats)&&(identical(other.leveling, _this.leveling) || other.leveling == _this.leveling));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicProfileDto&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.bio, _this.bio) || other.bio == _this.bio)&&(identical(other.speakerStatus, _this.speakerStatus) || other.speakerStatus == _this.speakerStatus)&&(identical(other.role, _this.role) || other.role == _this.role)&&(identical(other.isVerifier, _this.isVerifier) || other.isVerifier == _this.isVerifier)&&(identical(other.joinedAt, _this.joinedAt) || other.joinedAt == _this.joinedAt)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl)&&(identical(other.activeBorderUrl, _this.activeBorderUrl) || other.activeBorderUrl == _this.activeBorderUrl)&&(identical(other.activeBorderAssetKind, _this.activeBorderAssetKind) || other.activeBorderAssetKind == _this.activeBorderAssetKind)&&(identical(other.stats, _this.stats) || other.stats == _this.stats)&&(identical(other.leveling, _this.leveling) || other.leveling == _this.leveling));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as PublicProfileDto;
-  return Object.hash(runtimeType,_this.username,_this.displayName,_this.bio,_this.speakerStatus,_this.role,_this.isVerifier,_this.joinedAt,_this.avatarUrl,_this.activeBorderUrl,_this.stats,_this.leveling);
+  return Object.hash(runtimeType,_this.username,_this.displayName,_this.bio,_this.speakerStatus,_this.role,_this.isVerifier,_this.joinedAt,_this.avatarUrl,_this.activeBorderUrl,_this.activeBorderAssetKind,_this.stats,_this.leveling);
 }
 
 @override
 String toString() {
   final _this = this as PublicProfileDto;
-  return 'PublicProfileDto(username: ${_this.username}, displayName: ${_this.displayName}, bio: ${_this.bio}, speakerStatus: ${_this.speakerStatus}, role: ${_this.role}, isVerifier: ${_this.isVerifier}, joinedAt: ${_this.joinedAt}, avatarUrl: ${_this.avatarUrl}, activeBorderUrl: ${_this.activeBorderUrl}, stats: ${_this.stats}, leveling: ${_this.leveling})';
+  return 'PublicProfileDto(username: ${_this.username}, displayName: ${_this.displayName}, bio: ${_this.bio}, speakerStatus: ${_this.speakerStatus}, role: ${_this.role}, isVerifier: ${_this.isVerifier}, joinedAt: ${_this.joinedAt}, avatarUrl: ${_this.avatarUrl}, activeBorderUrl: ${_this.activeBorderUrl}, activeBorderAssetKind: ${_this.activeBorderAssetKind}, stats: ${_this.stats}, leveling: ${_this.leveling})';
 }
 
 
@@ -56,7 +56,7 @@ abstract mixin class $PublicProfileDtoCopyWith<$Res>  {
   factory $PublicProfileDtoCopyWith(PublicProfileDto value, $Res Function(PublicProfileDto) _then) = _$PublicProfileDtoCopyWithImpl;
 @useResult
 $Res call({
- String username,@JsonKey(name: 'display_name') String? displayName, String? bio,@JsonKey(name: 'speaker_status') String? speakerStatus, String role,@JsonKey(name: 'is_verifier') bool isVerifier,@JsonKey(name: 'joined_at') String joinedAt,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'active_border_url') String? activeBorderUrl, PublicProfileStatsDto stats, PublicProfileLevelingDto? leveling
+ String username,@JsonKey(name: 'display_name') String? displayName, String? bio,@JsonKey(name: 'speaker_status') String? speakerStatus, String role,@JsonKey(name: 'is_verifier') bool isVerifier,@JsonKey(name: 'joined_at') String joinedAt,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'active_border_url') String? activeBorderUrl,@JsonKey(name: 'active_border_asset_kind') String activeBorderAssetKind, PublicProfileStatsDto stats, PublicProfileLevelingDto? leveling
 });
 
 
@@ -73,7 +73,7 @@ class _$PublicProfileDtoCopyWithImpl<$Res>
 
 /// Create a copy of PublicProfileDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? displayName = freezed,Object? bio = freezed,Object? speakerStatus = freezed,Object? role = null,Object? isVerifier = null,Object? joinedAt = null,Object? avatarUrl = freezed,Object? activeBorderUrl = freezed,Object? stats = null,Object? leveling = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? displayName = freezed,Object? bio = freezed,Object? speakerStatus = freezed,Object? role = null,Object? isVerifier = null,Object? joinedAt = null,Object? avatarUrl = freezed,Object? activeBorderUrl = freezed,Object? activeBorderAssetKind = null,Object? stats = null,Object? leveling = freezed,}) {
   return _then(PublicProfileDto(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -84,7 +84,8 @@ as String,isVerifier: null == isVerifier ? _self.isVerifier : isVerifier // igno
 as bool,joinedAt: null == joinedAt ? _self.joinedAt : joinedAt // ignore: cast_nullable_to_non_nullable
 as String,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
 as String?,activeBorderUrl: freezed == activeBorderUrl ? _self.activeBorderUrl : activeBorderUrl // ignore: cast_nullable_to_non_nullable
-as String?,stats: null == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
+as String?,activeBorderAssetKind: null == activeBorderAssetKind ? _self.activeBorderAssetKind : activeBorderAssetKind // ignore: cast_nullable_to_non_nullable
+as String,stats: null == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
 as PublicProfileStatsDto,leveling: freezed == leveling ? _self.leveling : leveling // ignore: cast_nullable_to_non_nullable
 as PublicProfileLevelingDto?,
   ));
@@ -192,10 +193,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'speaker_status')  String? speakerStatus,  String role, @JsonKey(name: 'is_verifier')  bool isVerifier, @JsonKey(name: 'joined_at')  String joinedAt, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'active_border_url')  String? activeBorderUrl,  PublicProfileStatsDto stats,  PublicProfileLevelingDto? leveling)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'speaker_status')  String? speakerStatus,  String role, @JsonKey(name: 'is_verifier')  bool isVerifier, @JsonKey(name: 'joined_at')  String joinedAt, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'active_border_url')  String? activeBorderUrl, @JsonKey(name: 'active_border_asset_kind')  String activeBorderAssetKind,  PublicProfileStatsDto stats,  PublicProfileLevelingDto? leveling)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PublicProfileDto() when $default != null:
-return $default(_that.username,_that.displayName,_that.bio,_that.speakerStatus,_that.role,_that.isVerifier,_that.joinedAt,_that.avatarUrl,_that.activeBorderUrl,_that.stats,_that.leveling);case _:
+return $default(_that.username,_that.displayName,_that.bio,_that.speakerStatus,_that.role,_that.isVerifier,_that.joinedAt,_that.avatarUrl,_that.activeBorderUrl,_that.activeBorderAssetKind,_that.stats,_that.leveling);case _:
   return orElse();
 
 }
@@ -213,10 +214,10 @@ return $default(_that.username,_that.displayName,_that.bio,_that.speakerStatus,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'speaker_status')  String? speakerStatus,  String role, @JsonKey(name: 'is_verifier')  bool isVerifier, @JsonKey(name: 'joined_at')  String joinedAt, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'active_border_url')  String? activeBorderUrl,  PublicProfileStatsDto stats,  PublicProfileLevelingDto? leveling)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'speaker_status')  String? speakerStatus,  String role, @JsonKey(name: 'is_verifier')  bool isVerifier, @JsonKey(name: 'joined_at')  String joinedAt, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'active_border_url')  String? activeBorderUrl, @JsonKey(name: 'active_border_asset_kind')  String activeBorderAssetKind,  PublicProfileStatsDto stats,  PublicProfileLevelingDto? leveling)  $default,) {final _that = this;
 switch (_that) {
 case _PublicProfileDto():
-return $default(_that.username,_that.displayName,_that.bio,_that.speakerStatus,_that.role,_that.isVerifier,_that.joinedAt,_that.avatarUrl,_that.activeBorderUrl,_that.stats,_that.leveling);case _:
+return $default(_that.username,_that.displayName,_that.bio,_that.speakerStatus,_that.role,_that.isVerifier,_that.joinedAt,_that.avatarUrl,_that.activeBorderUrl,_that.activeBorderAssetKind,_that.stats,_that.leveling);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -233,10 +234,10 @@ return $default(_that.username,_that.displayName,_that.bio,_that.speakerStatus,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username, @JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'speaker_status')  String? speakerStatus,  String role, @JsonKey(name: 'is_verifier')  bool isVerifier, @JsonKey(name: 'joined_at')  String joinedAt, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'active_border_url')  String? activeBorderUrl,  PublicProfileStatsDto stats,  PublicProfileLevelingDto? leveling)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username, @JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'speaker_status')  String? speakerStatus,  String role, @JsonKey(name: 'is_verifier')  bool isVerifier, @JsonKey(name: 'joined_at')  String joinedAt, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'active_border_url')  String? activeBorderUrl, @JsonKey(name: 'active_border_asset_kind')  String activeBorderAssetKind,  PublicProfileStatsDto stats,  PublicProfileLevelingDto? leveling)?  $default,) {final _that = this;
 switch (_that) {
 case _PublicProfileDto() when $default != null:
-return $default(_that.username,_that.displayName,_that.bio,_that.speakerStatus,_that.role,_that.isVerifier,_that.joinedAt,_that.avatarUrl,_that.activeBorderUrl,_that.stats,_that.leveling);case _:
+return $default(_that.username,_that.displayName,_that.bio,_that.speakerStatus,_that.role,_that.isVerifier,_that.joinedAt,_that.avatarUrl,_that.activeBorderUrl,_that.activeBorderAssetKind,_that.stats,_that.leveling);case _:
   return null;
 
 }
@@ -248,7 +249,7 @@ return $default(_that.username,_that.displayName,_that.bio,_that.speakerStatus,_
 @JsonSerializable()
 
 class _PublicProfileDto implements PublicProfileDto {
-  const _PublicProfileDto({required this.username, @JsonKey(name: 'display_name') this.displayName, this.bio, @JsonKey(name: 'speaker_status') this.speakerStatus, required this.role, @JsonKey(name: 'is_verifier') this.isVerifier = false, @JsonKey(name: 'joined_at') required this.joinedAt, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'active_border_url') this.activeBorderUrl, required this.stats, this.leveling});
+  const _PublicProfileDto({required this.username, @JsonKey(name: 'display_name') this.displayName, this.bio, @JsonKey(name: 'speaker_status') this.speakerStatus, required this.role, @JsonKey(name: 'is_verifier') this.isVerifier = false, @JsonKey(name: 'joined_at') required this.joinedAt, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'active_border_url') this.activeBorderUrl, @JsonKey(name: 'active_border_asset_kind') this.activeBorderAssetKind = 'image', required this.stats, this.leveling});
   factory _PublicProfileDto.fromJson(Map<String, dynamic> json) => _$PublicProfileDtoFromJson(json);
 
 @override final  String username;
@@ -262,6 +263,7 @@ class _PublicProfileDto implements PublicProfileDto {
 @override@JsonKey(name: 'avatar_url') final  String? avatarUrl;
 /// URL aset bingkai profil aktif (achievement reward_type profile_border).
 @override@JsonKey(name: 'active_border_url') final  String? activeBorderUrl;
+@override@JsonKey(name: 'active_border_asset_kind') final  String activeBorderAssetKind;
 @override final  PublicProfileStatsDto stats;
 @override final  PublicProfileLevelingDto? leveling;
 
@@ -278,18 +280,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicProfileDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.speakerStatus, speakerStatus) || other.speakerStatus == speakerStatus)&&(identical(other.role, role) || other.role == role)&&(identical(other.isVerifier, isVerifier) || other.isVerifier == isVerifier)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.activeBorderUrl, activeBorderUrl) || other.activeBorderUrl == activeBorderUrl)&&(identical(other.stats, stats) || other.stats == stats)&&(identical(other.leveling, leveling) || other.leveling == leveling));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicProfileDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.speakerStatus, speakerStatus) || other.speakerStatus == speakerStatus)&&(identical(other.role, role) || other.role == role)&&(identical(other.isVerifier, isVerifier) || other.isVerifier == isVerifier)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.activeBorderUrl, activeBorderUrl) || other.activeBorderUrl == activeBorderUrl)&&(identical(other.activeBorderAssetKind, activeBorderAssetKind) || other.activeBorderAssetKind == activeBorderAssetKind)&&(identical(other.stats, stats) || other.stats == stats)&&(identical(other.leveling, leveling) || other.leveling == leveling));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,username,displayName,bio,speakerStatus,role,isVerifier,joinedAt,avatarUrl,activeBorderUrl,stats,leveling);
+    return Object.hash(runtimeType,username,displayName,bio,speakerStatus,role,isVerifier,joinedAt,avatarUrl,activeBorderUrl,activeBorderAssetKind,stats,leveling);
 }
 
 @override
 String toString() {
-    return 'PublicProfileDto(username: $username, displayName: $displayName, bio: $bio, speakerStatus: $speakerStatus, role: $role, isVerifier: $isVerifier, joinedAt: $joinedAt, avatarUrl: $avatarUrl, activeBorderUrl: $activeBorderUrl, stats: $stats, leveling: $leveling)';
+    return 'PublicProfileDto(username: $username, displayName: $displayName, bio: $bio, speakerStatus: $speakerStatus, role: $role, isVerifier: $isVerifier, joinedAt: $joinedAt, avatarUrl: $avatarUrl, activeBorderUrl: $activeBorderUrl, activeBorderAssetKind: $activeBorderAssetKind, stats: $stats, leveling: $leveling)';
 }
 
 
@@ -300,7 +302,7 @@ abstract mixin class _$PublicProfileDtoCopyWith<$Res> implements $PublicProfileD
   factory _$PublicProfileDtoCopyWith(_PublicProfileDto value, $Res Function(_PublicProfileDto) _then) = __$PublicProfileDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String username,@JsonKey(name: 'display_name') String? displayName, String? bio,@JsonKey(name: 'speaker_status') String? speakerStatus, String role,@JsonKey(name: 'is_verifier') bool isVerifier,@JsonKey(name: 'joined_at') String joinedAt,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'active_border_url') String? activeBorderUrl, PublicProfileStatsDto stats, PublicProfileLevelingDto? leveling
+ String username,@JsonKey(name: 'display_name') String? displayName, String? bio,@JsonKey(name: 'speaker_status') String? speakerStatus, String role,@JsonKey(name: 'is_verifier') bool isVerifier,@JsonKey(name: 'joined_at') String joinedAt,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'active_border_url') String? activeBorderUrl,@JsonKey(name: 'active_border_asset_kind') String activeBorderAssetKind, PublicProfileStatsDto stats, PublicProfileLevelingDto? leveling
 });
 
 
@@ -317,7 +319,7 @@ class __$PublicProfileDtoCopyWithImpl<$Res>
 
 /// Create a copy of PublicProfileDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? displayName = freezed,Object? bio = freezed,Object? speakerStatus = freezed,Object? role = null,Object? isVerifier = null,Object? joinedAt = null,Object? avatarUrl = freezed,Object? activeBorderUrl = freezed,Object? stats = null,Object? leveling = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? displayName = freezed,Object? bio = freezed,Object? speakerStatus = freezed,Object? role = null,Object? isVerifier = null,Object? joinedAt = null,Object? avatarUrl = freezed,Object? activeBorderUrl = freezed,Object? activeBorderAssetKind = null,Object? stats = null,Object? leveling = freezed,}) {
   return _then(_PublicProfileDto(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -328,7 +330,8 @@ as String,isVerifier: null == isVerifier ? _self.isVerifier : isVerifier // igno
 as bool,joinedAt: null == joinedAt ? _self.joinedAt : joinedAt // ignore: cast_nullable_to_non_nullable
 as String,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
 as String?,activeBorderUrl: freezed == activeBorderUrl ? _self.activeBorderUrl : activeBorderUrl // ignore: cast_nullable_to_non_nullable
-as String?,stats: null == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
+as String?,activeBorderAssetKind: null == activeBorderAssetKind ? _self.activeBorderAssetKind : activeBorderAssetKind // ignore: cast_nullable_to_non_nullable
+as String,stats: null == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
 as PublicProfileStatsDto,leveling: freezed == leveling ? _self.leveling : leveling // ignore: cast_nullable_to_non_nullable
 as PublicProfileLevelingDto?,
   ));

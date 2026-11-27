@@ -74,4 +74,56 @@ void main() {
     await container.read(wordDetailProvider(wordId).future);
     expect(l1DeletedAtBuild, [false, true]);
   });
+
+  testWidgets(
+    'wordDetailCommunityProvider ikut refetch saat invalidate (#331)',
+    (tester) async {
+      const wordId = '01JWORD0000000000000000001';
+      const lemma = 'makan';
+      const query = (id: wordId, meaningId: null, includeUnverified: true);
+      final store = _Store();
+      var builds = 0;
+
+      const detail = WordDetail(
+        id: wordId,
+        lemma: lemma,
+        languageId: 'lang-sbs',
+        wordType: 'word',
+        status: 'published',
+        isVerified: false,
+        isCorrected: false,
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          responseCacheStoreProvider.overrideWithValue(store),
+          wordDetailCommunityProvider(query).overrideWith((ref) async {
+            builds++;
+            return detail;
+          }),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      late WidgetRef ref;
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: Consumer(
+            builder: (_, r, _) {
+              ref = r;
+              r.watch(wordDetailCommunityProvider(query));
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(builds, 1);
+
+      await invalidateWordDetailCaches(ref, wordId, lemma);
+      await tester.pumpAndSettle();
+      expect(builds, 2);
+    },
+  );
 }

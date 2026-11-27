@@ -7,28 +7,21 @@ void main() {
     expect(active.map((c) => c.id), containsAll(['wisata', 'kuliner']));
   });
 
-  test('comingSoon: komunitas satu-satunya stub di grid', () {
+  test('comingSoon: komunitas sudah aktif bersama kategori lainnya', () {
     final active = ExploreCategory.all.where((c) => !c.comingSoon).toList();
     final coming = ExploreCategory.all.where((c) => c.comingSoon).toList();
-    expect(coming.map((c) => c.id), ['komunitas']);
-    expect(active + coming, ExploreCategory.all);
-    expect(active, isNotEmpty);
+    expect(coming, isEmpty);
+    expect(active, ExploreCategory.all);
+    expect(active.map((c) => c.id), contains('komunitas'));
   });
 
-  test('toggle segera hadir tidak menggeser posisi kartu aktif', () {
+  test('posisi kartu aktif tetap konsisten', () {
     final active = ExploreCategory.all.where((c) => !c.comingSoon).toList();
-    final soon = ExploreCategory.all.where((c) => c.comingSoon).toList();
-    final withSoon = [...active, ...soon];
-
-    // Kartu aktif menempati prefix yang identik sebelum & sesudah toggle.
+    expect(active, isNotEmpty);
+    // Anchor urutan = karya sebelum komunitas (komunitas kartu terakhir).
     expect(
-      withSoon.take(active.length).map((c) => c.id),
-      active.map((c) => c.id),
-    );
-    // Anchor urutan = kartu aktif TERAKHIR (karya, setelah layanan).
-    expect(
-      withSoon.indexOf(ExploreCategory.byId('karya')!),
-      active.length - 1,
+      ExploreCategory.byId('komunitas'),
+      active.last,
     );
     expect(
       ExploreCategory.all.indexWhere((c) => c.id == 'acara') <
@@ -65,7 +58,7 @@ void main() {
       ]),
       isFalse,
     );
-    // Pengganti: ensiklopedia + hiburan; karya = musik/film; komunitas = stub.
+    // Pengganti: ensiklopedia + hiburan; karya = musik/film; komunitas = direktori.
     expect(
       ids.containsAll(['ensiklopedia', 'hiburan', 'karya', 'komunitas']),
       isTrue,

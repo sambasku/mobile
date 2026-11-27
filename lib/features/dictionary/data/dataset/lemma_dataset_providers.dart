@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/network/connectivity_provider.dart';
-import '../../../../core/network/network_providers.dart';
+import '../../../../core/network/interceptors/network_monitor_interceptor.dart';
+import '../../../../shared/dev_tool/network_monitor/network_monitor_registry.dart';
 import '../datasources/dictionary_local_datasource.dart';
 import 'lemma_data_source_kind.dart';
 import 'lemma_database_opener.dart';
@@ -53,14 +55,23 @@ Future<LemmaReleaseMeta?> lemmaInstalledMeta(Ref ref) async {
   return handle?.meta;
 }
 
-@riverpod
+/// keepAlive + offline dibaca saat update: autoDispose / rebuild akan
+/// menutup Dio di tengah fetch (ref.read langsung menjadwalkan dispose).
+@Riverpod(keepAlive: true)
 LemmaDatasetUpdater lemmaDatasetUpdater(Ref ref) {
-  final offline = ref.watch(isOfflineProvider);
   final opener = ref.watch(lemmaDatabaseOpenerProvider);
+  // Klien bersih khusus dataset eksternal (GitHub): tanpa AuthInterceptor
+  // (raw.githubusercontent.com membalas 404 jika diberi Bearer JWT asing)
+  // dan tanpa FailoverInterceptor (jangan timpa receiveTimeout 2 menit).
+  final datasetDio = Dio();
+  datasetDio.interceptors.add(
+    NetworkMonitorInterceptor(repository: NetworkMonitorRegistry.repository),
+  );
+  ref.onDispose(() => datasetDio.close(force: true));
   return LemmaDatasetUpdater(
-    dio: ref.watch(dioProvider),
+    dio: datasetDio,
     opener: opener,
-    isOnline: !offline,
+    isOnline: () => !ref.read(isOfflineProvider),
     onBeforeSwap: () async {
       final async = ref.read(lemmaDatabaseHandleProvider);
       final handle = async.asData?.value;

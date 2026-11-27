@@ -14,10 +14,13 @@ class BalehoBoard {
 
   static const prototypeCols = 4;
   static const prototypeRows = 6;
+
   /// Sisi panjang max (landscape 4x2 / portrait 2x4).
   static const maxLong = 4;
+
   /// Sisi pendek max - salah satu sisi wajib <= ini.
   static const maxShort = 2;
+
   /// Alias loop/clamp per sumbu (boleh sampai sisi panjang).
   static const maxW = maxLong;
   static const maxH = maxLong;
@@ -51,6 +54,9 @@ class BalehoBoard {
   static String weeklyLeaderboardHistoryWeekPath(String weekId) =>
       '$weeklyLeaderboardPath/riwayat/$weekId';
 
+  /// Halaman cara dapat poin papan peringkat.
+  static const weeklyLeaderboardPointsPath = '$weeklyLeaderboardPath/poin';
+
   factory BalehoBoard.fromJson(Map<String, dynamic> json) {
     final items = json['placements'];
     // Ukuran papan = konstanta klien (4x6). Jangan ikut `rows`/`cols` API
@@ -69,11 +75,11 @@ class BalehoBoard {
 
   /// Board kosong saat API gagal / belum migrate - sel tetap bisa dipilih.
   factory BalehoBoard.empty(int slide) => BalehoBoard(
-        slide: slide,
-        cols: prototypeCols,
-        rows: prototypeRows,
-        placements: const [],
-      );
+    slide: slide,
+    cols: prototypeCols,
+    rows: prototypeRows,
+    placements: const [],
+  );
 
   /// True jika setiap sel tertutup placement (tidak ada ruang pesan).
   bool get isFullyOccupied {

@@ -7,12 +7,18 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../entertainment_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/providers/thread_audio_player_provider.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/back_to_top_button.dart';
+import '../../../../shared/widgets/cover_hero.dart';
+import '../../../../shared/widgets/profile_hero_shell.dart';
+import '../../../../shared/widgets/profile_identity_header.dart';
+import '../../../user_profile/presentation/widgets/profile_activity_section.dart'
+    show OverlapAboveBox, ProfileBarClearanceHeader;
 import '../../domain/pantun_models.dart';
 import '../providers/pantun_providers.dart';
 import '../widgets/pantun_card.dart';
@@ -45,6 +51,7 @@ class PantunFeedPage extends HookConsumerWidget {
     useEffect(() {
       void listener() {
         if (!scroll.hasClients) return;
+        if (searchController.text.trim().isNotEmpty) return;
         if (scroll.position.maxScrollExtent - scroll.position.pixels < 200) {
           ref.read(pantunFeedProvider.notifier).loadMore();
         }
@@ -79,199 +86,278 @@ class PantunFeedPage extends HookConsumerWidget {
       await showAppErrorSheet(context, message: error);
     }
 
+    final searchAsync = searching
+        ? ref.watch(pantunSearchProvider(query.value))
+        : null;
+
+    Future<void> refresh() async {
+      if (query.value.isNotEmpty) {
+        final q = query.value;
+        ref.invalidate(pantunSearchProvider(q));
+        try {
+          await ref.read(pantunSearchProvider(q).future);
+        } catch (_) {}
+        return;
+      }
+      await ref.read(pantunFeedProvider.notifier).refresh();
+    }
+
+    final content = searching
+        ? _searchSlivers(context, l10n, searchAsync!)
+        : _feedSlivers(
+            context,
+            ref,
+            l10n,
+            async,
+            myUserId: myUserId,
+            onDelete: deletePantun,
+          );
+
     return StopThreadAudioOnLeave(
       action: ThreadAudioLeaveAction.stop,
       child: FScaffold(
-      childPad: true,
-      header: FHeader.nested(
-        title: Text(l10n.pantunTitle),
-        prefixes: [
-          FHeaderAction.back(
-            onPress: () => context.canPop()
-                ? context.pop()
-                : context.go(EntertainmentRouter.hub.path),
-          ),
-        ],
-      ),
-      footer: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-          child: FButton(
-            onPress: () async {
-              final auth = await ref.read(authStatusProvider.future);
-              if (!auth.isAuth) {
-                if (context.mounted) {
-                  await showAppErrorSheet(
-                    context,
-                    message: l10n.pantunWriteLoginRequired,
-                  );
+        childPad: false,
+        footer: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+            child: FButton(
+              onPress: () async {
+                final auth = await ref.read(authStatusProvider.future);
+                if (!auth.isAuth) {
+                  if (context.mounted) {
+                    await showAppErrorSheet(
+                      context,
+                      message: l10n.pantunWriteLoginRequired,
+                    );
+                  }
+                  return;
                 }
-                return;
-              }
-              if (context.mounted) {
-                await context.push('/entertainment/pantun/create');
-              }
-            },
-            child: Text(l10n.pantunWrite),
-          ),
-        ),
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: FTextField(
-              control: FTextFieldControl.managed(
-                controller: searchController,
-                onChange: (value) => rawQuery.value = value.text,
-              ),
-              hint: l10n.pantunSearchHint,
-              clearable: (value) => value.text.isNotEmpty,
-              textInputAction: TextInputAction.search,
-              prefixBuilder: (context, style, variants) =>
-                  FTextField.prefixIconBuilder(
-                    context,
-                    style,
-                    variants,
-                    const Icon(FLucideIcons.search),
-                  ),
+                if (context.mounted) {
+                  await context.push('/entertainment/pantun/create');
+                }
+              },
+              child: Text(l10n.pantunWrite),
             ),
           ),
-          Expanded(
-            child: searching
-                ? _SearchResults(query: query.value)
-                : ScrollWithBackToTop(
-                    // Sedikit lebih tinggi: footer "Tulis pantun" di bawah body.
-                    controller: scroll,
-                    bottom: 8,
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        await ref.read(pantunFeedProvider.notifier).refresh();
-                      },
-                      child: async.when(
-                        loading: () => const _FeedSkeleton(),
-                        error: (e, _) => _MessageList(
-                          icon: FLucideIcons.circleAlert,
-                          title: e is PantunFailure
-                              ? e.message
-                              : l10n.pantunLoadFailedShort,
+        ),
+        child: ProfileHeroShell(
+          showBack: true,
+          onBack: () => context.canPop()
+              ? context.pop()
+              : context.go(EntertainmentRouter.hub.path),
+          backLabel: l10n.commonBack,
+          coverHeight: ProfileIdentityHeader.coverHeightOf(
+            ProfileHeaderVariant.compact,
+            MediaQuery.sizeOf(context).width,
+          ),
+          title: l10n.pantunTitle,
+          compactActions: true,
+          scrollView: ScrollWithBackToTop(
+            // Sedikit lebih tinggi: footer "Tulis pantun" di bawah body.
+            controller: scroll,
+            bottom: 8,
+            child: RefreshIndicator(
+              onRefresh: refresh,
+              child: CustomScrollView(
+                controller: scroll,
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: [
+                  ..._pantunCoverSlivers(context, l10n),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                      child: FTextField(
+                        control: FTextFieldControl.managed(
+                          controller: searchController,
+                          onChange: (value) => rawQuery.value = value.text,
                         ),
-                        data: (state) => ListView(
-                          controller: scroll,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-                          children: [
-                            if (state.items.isEmpty)
-                              _MessageList(
-                                shrink: true,
-                                icon: FLucideIcons.feather,
-                                title: l10n.pantunEmptyTitle,
-                                subtitle: l10n.pantunEmptyBody,
-                              )
-                            else
-                              for (final p in state.items)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: PantunCard(
-                                    pantun: p,
-                                    onTap: () => context.push(
-                                      '/entertainment/pantun/${p.id}',
-                                    ),
-                                    onVoteToggle: (pantun, value) => ref
-                                        .read(pantunFeedProvider.notifier)
-                                        .toggleVote(pantun, value),
-                                    footer: p.userId == myUserId
-                                        ? PantunActionRow.delete(
-                                            onDelete: () => deletePantun(p),
-                                          )
-                                        : PantunActionRow.report(
-                                            onReport: () => reportPantunFromUi(
-                                              context,
-                                              ref,
-                                              targetType: 'pantun',
-                                              targetId: p.id,
-                                            ),
-                                          ),
-                                  ),
-                                ),
-                            if (state.isLoadingMore)
-                              const Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Center(
-                                  child: FCircularProgress(size: .sm),
-                                ),
-                              ),
-                          ],
-                        ),
+                        hint: l10n.pantunSearchHint,
+                        clearable: (value) => value.text.isNotEmpty,
+                        textInputAction: TextInputAction.search,
+                        prefixBuilder: (context, style, variants) =>
+                            FTextField.prefixIconBuilder(
+                              context,
+                              style,
+                              variants,
+                              const Icon(FLucideIcons.search),
+                            ),
                       ),
                     ),
                   ),
+                  ...content,
+                ],
+              ),
+            ),
           ),
-        ],
-      ),
+        ),
       ),
     );
   }
 }
 
-/// Hasil pencarian: induk langsung ke detail, balasan ke induk + auto-scroll.
-class _SearchResults extends ConsumerWidget {
-  const _SearchResults({required this.query});
-
-  final String query;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final async = ref.watch(pantunSearchProvider(query));
-    return async.when(
-      loading: () => const _FeedSkeleton(),
-      error: (e, _) => ListView(
-        children: [
-          _MessageList(
-            icon: FLucideIcons.circleAlert,
-            title: e is PantunFailure ? e.message : l10n.pantunSearchFailed,
-          ),
-        ],
+List<Widget> _pantunCoverSlivers(BuildContext context, AppLocalizations l10n) {
+  final barOffset =
+      MediaQuery.paddingOf(context).top + ProfileHeroShell.barHeight;
+  return [
+    SliverPersistentHeader(
+      pinned: true,
+      delegate: ProfileBarClearanceHeader(height: barOffset),
+    ),
+    SliverToBoxAdapter(
+      child: OverlapAboveBox(
+        overlap: barOffset,
+        child: CoverHero(
+          asset: 'assets/images/pantun_hero.webp',
+          title: l10n.pantunTitle,
+          subtitle: l10n.pantunListSubtitle,
+          semanticLabel: l10n.pantunHeroSemantics,
+        ),
       ),
-      data: (items) => ListView(
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-        children: [
-          if (items.isEmpty)
-            _MessageList(
-              shrink: true,
-              icon: FLucideIcons.searchX,
-              title: l10n.pantunSearchEmptyTitle,
-              subtitle: l10n.pantunSearchEmptyBody,
-            )
-          else
-            for (final p in items)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: PantunCard(
-                  pantun: p,
-                  footer: p.parentId == null
-                      ? null
-                      : Text(
-                          'Balasan',
-                          style: context.theme.typography.body.sm.copyWith(
-                            fontSize: 11,
-                            color: context.theme.colors.mutedForeground,
+    ),
+  ];
+}
+
+/// Hasil pencarian: induk langsung ke detail, balasan ke induk + auto-scroll.
+List<Widget> _searchSlivers(
+  BuildContext context,
+  AppLocalizations l10n,
+  AsyncValue<List<Pantun>> async,
+) {
+  return async.when(
+    loading: () => const [SliverToBoxAdapter(child: _FeedSkeleton())],
+    error: (e, _) => [
+      SliverFillRemaining(
+        hasScrollBody: false,
+        child: _MessageList(
+          icon: FLucideIcons.circleAlert,
+          title: e is PantunFailure ? e.message : l10n.pantunSearchFailed,
+        ),
+      ),
+    ],
+    data: (items) {
+      if (items.isEmpty) {
+        return [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: _MessageList(
+                shrink: true,
+                icon: FLucideIcons.searchX,
+                title: l10n.pantunSearchEmptyTitle,
+                subtitle: l10n.pantunSearchEmptyBody,
+              ),
+            ),
+          ),
+        ];
+      }
+      return [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+          sliver: SliverList.list(
+            children: [
+              for (final p in items)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: PantunCard(
+                    pantun: p,
+                    footer: p.parentId == null
+                        ? null
+                        : Text(
+                            l10n.pantunReplies,
+                            style: context.theme.typography.body.sm.copyWith(
+                              fontSize: 11,
+                              color: context.theme.colors.mutedForeground,
+                            ),
                           ),
-                        ),
-                  onTap: () => context.push(
-                    p.parentId == null
-                        ? '/entertainment/pantun/${p.id}'
-                        // Balasan: buka thread induk, lalu auto-scroll ke sini.
-                        : '/entertainment/pantun/${p.parentId}?reply=${p.id}',
+                    onTap: () => context.push(
+                      p.parentId == null
+                          ? '/entertainment/pantun/${p.id}'
+                          // Balasan: buka thread induk, lalu auto-scroll ke sini.
+                          : '/entertainment/pantun/${p.parentId}?reply=${p.id}',
+                    ),
                   ),
                 ),
-              ),
-        ],
+            ],
+          ),
+        ),
+      ];
+    },
+  );
+}
+
+List<Widget> _feedSlivers(
+  BuildContext context,
+  WidgetRef ref,
+  AppLocalizations l10n,
+  AsyncValue<PantunFeedState> async, {
+  required String? myUserId,
+  required Future<void> Function(Pantun pantun) onDelete,
+}) {
+  return async.when(
+    loading: () => const [SliverToBoxAdapter(child: _FeedSkeleton())],
+    error: (e, _) => [
+      SliverFillRemaining(
+        hasScrollBody: false,
+        child: _MessageList(
+          icon: FLucideIcons.circleAlert,
+          title: e is PantunFailure ? e.message : l10n.pantunLoadFailedShort,
+        ),
       ),
-    );
-  }
+    ],
+    data: (state) {
+      if (state.items.isEmpty) {
+        return [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: _MessageList(
+                shrink: true,
+                icon: FLucideIcons.feather,
+                title: l10n.pantunEmptyTitle,
+                subtitle: l10n.pantunEmptyBody,
+              ),
+            ),
+          ),
+        ];
+      }
+      return [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+          sliver: SliverList.list(
+            children: [
+              for (final p in state.items)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: PantunCard(
+                    pantun: p,
+                    onTap: () => context.push('/entertainment/pantun/${p.id}'),
+                    onVoteToggle: (pantun, value) => ref
+                        .read(pantunFeedProvider.notifier)
+                        .toggleVote(pantun, value),
+                    footer: p.userId == myUserId
+                        ? PantunActionRow.delete(onDelete: () => onDelete(p))
+                        : PantunActionRow.report(
+                            onReport: () => reportPantunFromUi(
+                              context,
+                              ref,
+                              targetType: 'pantun',
+                              targetId: p.id,
+                            ),
+                          ),
+                  ),
+                ),
+              if (state.isLoadingMore)
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Center(child: FCircularProgress(size: .sm)),
+                ),
+            ],
+          ),
+        ),
+      ];
+    },
+  );
 }
 
 class _MessageList extends StatelessWidget {
@@ -343,14 +429,15 @@ class _FeedSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Skeletonizer(
-      child: ListView(
-        physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-        children: List.generate(
-          4,
-          (_) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: PantunCard(pantun: _sample),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+        child: Column(
+          children: List.generate(
+            4,
+            (_) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: PantunCard(pantun: _sample),
+            ),
           ),
         ),
       ),

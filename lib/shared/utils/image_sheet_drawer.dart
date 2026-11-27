@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -45,6 +47,17 @@ void showImageSheetDrawer(
   CropAspectRatio? lockedAspectRatio,
 }) {
   final imagePicker = picker ?? ImagePicker();
+  var picking = false;
+
+  Future<void> runSingleFlight(Future<void> Function() action) async {
+    if (picking) return;
+    picking = true;
+    try {
+      await action();
+    } finally {
+      picking = false;
+    }
+  }
 
   // Picker memanggil onSuccess lalu pop(sheetContext) secara sinkron; crop
   // dijadwalkan sesudahnya supaya pop itu tidak menutup halaman crop.
@@ -118,56 +131,62 @@ void showImageSheetDrawer(
                         _SourceButton(
                           icon: Icons.camera_alt_outlined,
                           label: AppLocalizations.of(context).imageSheetCamera,
-                          onTap: () => openCamera(
-                            sheetContext,
-                            imagePicker,
-                            (xfile) => deliver(File(xfile.path), (file) {
-                              onCameraCaptured?.call(XFile(file.path));
-                              onPickedWithSource?.call(
-                                file,
-                                PhotoPickSource.camera,
-                              );
-                              onPicked?.call(file);
-                            }),
-                            maxWidth: maxWidth,
-                            maxHeight: maxHeight,
-                            imageQuality: imageQuality,
+                          onTap: () => runSingleFlight(
+                            () => openCamera(
+                              sheetContext,
+                              imagePicker,
+                              (xfile) => deliver(File(xfile.path), (file) {
+                                onCameraCaptured?.call(XFile(file.path));
+                                onPickedWithSource?.call(
+                                  file,
+                                  PhotoPickSource.camera,
+                                );
+                                onPicked?.call(file);
+                              }),
+                              maxWidth: maxWidth,
+                              maxHeight: maxHeight,
+                              imageQuality: imageQuality,
+                            ),
                           ),
                         ),
                       if (galleryPicker)
                         _SourceButton(
                           icon: Icons.photo_outlined,
                           label: AppLocalizations.of(context).imageSheetGallery,
-                          onTap: () => pickImageFromGallery(
-                            sheetContext,
-                            imagePicker,
-                            (xfile) => deliver(File(xfile.path), (file) {
-                              onImagePicked?.call(XFile(file.path));
-                              onPickedWithSource?.call(
-                                file,
-                                PhotoPickSource.gallery,
-                              );
-                              onPicked?.call(file);
-                            }),
-                            maxWidth: maxWidth,
-                            maxHeight: maxHeight,
-                            imageQuality: imageQuality,
+                          onTap: () => runSingleFlight(
+                            () => pickImageFromGallery(
+                              sheetContext,
+                              imagePicker,
+                              (xfile) => deliver(File(xfile.path), (file) {
+                                onImagePicked?.call(XFile(file.path));
+                                onPickedWithSource?.call(
+                                  file,
+                                  PhotoPickSource.gallery,
+                                );
+                                onPicked?.call(file);
+                              }),
+                              maxWidth: maxWidth,
+                              maxHeight: maxHeight,
+                              imageQuality: imageQuality,
+                            ),
                           ),
                         ),
                       if (filePicker)
                         _SourceButton(
                           icon: Icons.insert_drive_file_outlined,
                           label: AppLocalizations.of(context).imageSheetFile,
-                          onTap: () => pickImageFromFile(
-                            sheetContext,
-                            (picked) => deliver(picked, (file) {
-                              onFilePicked?.call(file);
-                              onPickedWithSource?.call(
-                                file,
-                                PhotoPickSource.file,
-                              );
-                              onPicked?.call(file);
-                            }),
+                          onTap: () => runSingleFlight(
+                            () => pickImageFromFile(
+                              sheetContext,
+                              (picked) => deliver(picked, (file) {
+                                onFilePicked?.call(file);
+                                onPickedWithSource?.call(
+                                  file,
+                                  PhotoPickSource.file,
+                                );
+                                onPicked?.call(file);
+                              }),
+                            ),
                           ),
                         ),
                       if (mediaExplorerPicker && onMediaExplorer != null)
@@ -253,10 +272,39 @@ Future<void> openCamera(
   } catch (e, st) {
     debugPrint('[Camera] $e\n$st');
     if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).imageSheetCameraOpenFailed)));
+      showFToast(
+        context: context,
+        title: Text(AppLocalizations.of(context).imageSheetCameraOpenFailed),
+      );
     }
+  }
+}
+
+/// Pilih 1 gambar dari galeri dengan fallback ke `FilePicker` bila
+/// `image_picker` melempar `PlatformException` (kecuali `already_active`).
+/// Mengembalikan `null` bila user batal atau picker sudah aktif.
+Future<File?> pickImageFromGalleryRaw(
+  ImagePicker picker, {
+  double? maxWidth,
+  double? maxHeight,
+  int? imageQuality,
+  Future<File?> Function()? fallbackFilePicker,
+}) async {
+  try {
+    final picked = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
+      imageQuality: imageQuality,
+    );
+    return picked == null ? null : File(picked.path);
+  } on PlatformException catch (e, st) {
+    if (e.code == 'already_active') {
+      debugPrint('[Gallery] picker sudah aktif, abaikan tap ganda: $e');
+      return null;
+    }
+    debugPrint('[Gallery] PlatformException, fallback FilePicker: $e\n$st');
+    return (fallbackFilePicker ?? _pickGalleryFallbackFile)();
   }
 }
 
@@ -267,33 +315,79 @@ Future<void> pickImageFromGallery(
   double maxWidth = kPhotoPickMaxWidth,
   double maxHeight = kPhotoPickMaxHeight,
   int imageQuality = kPhotoPickQuality,
+  Future<File?> Function()? fallbackFilePicker,
+  Future<File> Function(File file)? processFile,
 }) async {
   try {
-    final picked = await picker.pickImage(
-      source: ImageSource.gallery,
+    final file = await pickImageFromGalleryRaw(
+      picker,
       maxWidth: maxWidth,
       maxHeight: maxHeight,
       imageQuality: 100,
+      fallbackFilePicker: fallbackFilePicker,
     );
-    if (picked == null) return;
+    if (file == null || !context.mounted) return;
 
-    final persisted = await copyToUniqueTempPath(File(picked.path));
-    final compressed = await compressImageForUpload(
-      persisted,
+    await _finalizeGalleryFile(
+      context,
+      file,
+      onSuccess,
       maxWidth: maxWidth,
       maxHeight: maxHeight,
-      quality: imageQuality,
+      imageQuality: imageQuality,
+      processFile: processFile,
     );
-    onSuccess(XFile(compressed.path));
-    if (context.mounted) Navigator.of(context).pop();
   } catch (e, st) {
     debugPrint('[Gallery] $e\n$st');
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context).imageSheetGalleryPickFailed)),
+      showFToast(
+        context: context,
+        title: Text(AppLocalizations.of(context).imageSheetGalleryPickFailed),
       );
     }
   }
+}
+
+Future<void> _finalizeGalleryFile(
+  BuildContext context,
+  File file,
+  Function(XFile) onSuccess, {
+  required double maxWidth,
+  required double maxHeight,
+  required int imageQuality,
+  Future<File> Function(File file)? processFile,
+}) async {
+  final processed = processFile != null
+      ? await processFile(file)
+      : await compressImageForUpload(
+          await copyToUniqueTempPath(file),
+          maxWidth: maxWidth,
+          maxHeight: maxHeight,
+          quality: imageQuality,
+        );
+  onSuccess(XFile(processed.path));
+  if (context.mounted) Navigator.of(context).pop();
+}
+
+Future<File?> _pickGalleryFallbackFile() async {
+  final platformFile = await FilePicker.pickFile(type: FileType.image);
+  if (platformFile == null) return null;
+  return _resolvePlatformFile(platformFile);
+}
+
+Future<File?> _resolvePlatformFile(PlatformFile platformFile) async {
+  final path = platformFile.path;
+  if (path != null && path.isNotEmpty) {
+    return File(path);
+  }
+  final bytes = await platformFile.readAsBytes();
+  if (bytes.isEmpty) return null;
+  final dir = await pickedPersistDir();
+  final source = File(
+    '${dir.path}/pick_${DateTime.now().microsecondsSinceEpoch}_${platformFile.name}',
+  );
+  await source.writeAsBytes(bytes, flush: true);
+  return source;
 }
 
 Future<void> pickImageFromFile(
@@ -307,19 +401,8 @@ Future<void> pickImageFromFile(
     );
     if (platformFile == null) return;
 
-    File source;
-    final path = platformFile.path;
-    if (path != null && path.isNotEmpty) {
-      source = File(path);
-    } else {
-      final bytes = await platformFile.readAsBytes();
-      if (bytes.isEmpty) return;
-      final dir = await pickedPersistDir();
-      source = File(
-        '${dir.path}/pick_${DateTime.now().microsecondsSinceEpoch}_${platformFile.name}',
-      );
-      await source.writeAsBytes(bytes, flush: true);
-    }
+    final source = await _resolvePlatformFile(platformFile);
+    if (source == null) return;
 
     final persisted = await copyToUniqueTempPath(source);
     // ponytail: flutter_image_compress memperlakukan min* sebagai batas sisi
@@ -331,9 +414,10 @@ Future<void> pickImageFromFile(
   } catch (e, st) {
     debugPrint('[ImageSheet] file pick $e\n$st');
     if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).imageSheetFilePickFailed)));
+      showFToast(
+        context: context,
+        title: Text(AppLocalizations.of(context).imageSheetFilePickFailed),
+      );
     }
   }
 }

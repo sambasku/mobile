@@ -386,6 +386,18 @@ class _BodyState extends ConsumerState<_Body> {
                                   : AuthRouter.login.path,
                             ),
                           ),
+                          FTile(
+                            prefix: const Icon(FLucideIcons.history, size: 18),
+                            title: Text(l10n.historyTitle),
+                            subtitle: Text(l10n.placeHistoryBody),
+                            suffix: const Icon(
+                              FLucideIcons.chevronRight,
+                              size: 16,
+                            ),
+                            onPress: () => context.push(
+                              ExploreRouter.placeHistoryPath(place.slug),
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -1003,7 +1015,18 @@ class _NearbyWisata extends ConsumerWidget {
               child: AspectRatio(
                 aspectRatio: 16 / 10,
                 child: cover == null
-                    ? ColoredBox(color: theme.colors.muted)
+                    // Belum ada foto: placeholder ikon (pola kartu list/pins),
+                    // bukan kotak kosong.
+                    ? ColoredBox(
+                        color: theme.colors.muted,
+                        child: Center(
+                          child: Icon(
+                            FLucideIcons.landmark,
+                            size: 28,
+                            color: theme.colors.mutedForeground,
+                          ),
+                        ),
+                      )
                     : CachedNetworkImageWithFallback(
                         imageUrl:
                             displayImageUrl(cover.url, width: 400) ?? cover.url,

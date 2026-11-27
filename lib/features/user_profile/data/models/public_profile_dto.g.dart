@@ -6,26 +6,26 @@ part of 'public_profile_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_PublicProfileDto _$PublicProfileDtoFromJson(Map<String, dynamic> json) =>
-    _PublicProfileDto(
-      username: json['username'] as String,
-      displayName: json['display_name'] as String?,
-      bio: json['bio'] as String?,
-      speakerStatus: json['speaker_status'] as String?,
-      role: json['role'] as String,
-      isVerifier: json['is_verifier'] as bool? ?? false,
-      joinedAt: json['joined_at'] as String,
-      avatarUrl: json['avatar_url'] as String?,
-      activeBorderUrl: json['active_border_url'] as String?,
-      stats: PublicProfileStatsDto.fromJson(
-        json['stats'] as Map<String, dynamic>,
-      ),
-      leveling: json['leveling'] == null
-          ? null
-          : PublicProfileLevelingDto.fromJson(
-              json['leveling'] as Map<String, dynamic>,
-            ),
-    );
+_PublicProfileDto _$PublicProfileDtoFromJson(
+  Map<String, dynamic> json,
+) => _PublicProfileDto(
+  username: json['username'] as String,
+  displayName: json['display_name'] as String?,
+  bio: json['bio'] as String?,
+  speakerStatus: json['speaker_status'] as String?,
+  role: json['role'] as String,
+  isVerifier: json['is_verifier'] as bool? ?? false,
+  joinedAt: json['joined_at'] as String,
+  avatarUrl: json['avatar_url'] as String?,
+  activeBorderUrl: json['active_border_url'] as String?,
+  activeBorderAssetKind: json['active_border_asset_kind'] as String? ?? 'image',
+  stats: PublicProfileStatsDto.fromJson(json['stats'] as Map<String, dynamic>),
+  leveling: json['leveling'] == null
+      ? null
+      : PublicProfileLevelingDto.fromJson(
+          json['leveling'] as Map<String, dynamic>,
+        ),
+);
 
 Map<String, dynamic> _$PublicProfileDtoToJson(_PublicProfileDto instance) =>
     <String, dynamic>{
@@ -38,6 +38,7 @@ Map<String, dynamic> _$PublicProfileDtoToJson(_PublicProfileDto instance) =>
       'joined_at': instance.joinedAt,
       'avatar_url': instance.avatarUrl,
       'active_border_url': instance.activeBorderUrl,
+      'active_border_asset_kind': instance.activeBorderAssetKind,
       'stats': instance.stats,
       'leveling': instance.leveling,
     };

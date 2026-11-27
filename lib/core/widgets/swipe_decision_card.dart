@@ -254,8 +254,9 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
     }
     setState(() => _busyGesture = true);
     // Fling cepat bisa commit tanpa pernah lewat ambang: getar di sini juga.
-    // Medium di semua jalur commit - konsisten dengan haptic ambang drag.
-    HapticFeedback.mediumImpact();
+    // Kalau ambang sudah lewat saat drag, getarnya sudah dibunyikan di
+    // _onPanUpdate - jangan dobel supaya tepat satu getar medium per keputusan.
+    if (!_hapticFired) HapticFeedback.mediumImpact();
 
     final target = switch (direction) {
       SwipeDecisionDirection.positive => Offset(_width * 1.35, 0),
@@ -570,10 +571,12 @@ class _SwipeIconOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final opacity = t * SwipeDecisionCardState._overlayMaxOpacity;
-    if (opacity < SwipeDecisionCardState._overlayVisibleFloor) {
+    if (t < SwipeDecisionCardState._overlayVisibleFloor) {
       return const SizedBox.shrink();
     }
+    // Fade pakai t penuh (bukan dikali _overlayMaxOpacity) supaya panel
+    // ikon + label opak tegas di ujung swipe.
+    final opacity = t.clamp(0.0, 1.0);
     final scale = lerpDouble(
       SwipeDecisionCardState._overlayMinScale,
       SwipeDecisionCardState._overlayMaxScale,
@@ -584,61 +587,71 @@ class _SwipeIconOverlay extends StatelessWidget {
     // ikon/teks kontras di atas isi kartu (deck vote + mulai tinjauan).
     return Positioned.fill(
       child: IgnorePointer(
-        child: Center(
-          child: Opacity(
-            opacity: opacity,
-            child: Transform.scale(
-              scale: scale,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: theme.colors.background.withValues(alpha: 0.94),
-                      border: Border.all(color: color, width: 3),
-                      boxShadow: [
-                        BoxShadow(
-                          color: theme.colors.foreground.withValues(alpha: 0.12),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Scrim tipis: meredupkan isi kartu di belakang ikon + label.
+            ColoredBox(
+              color: theme.colors.background.withValues(alpha: 0.5 * t),
+            ),
+            Center(
+              child: Opacity(
+                opacity: opacity,
+                child: Transform.scale(
+                  scale: scale,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: theme.colors.background.withValues(
+                            alpha: 0.94,
+                          ),
+                          border: Border.all(color: color, width: 3),
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.colors.foreground.withValues(
+                                alpha: 0.12,
+                              ),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: SizedBox(
-                      width: 112,
-                      height: 112,
-                      child: Icon(icon, size: 56, color: color),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: theme.colors.background.withValues(alpha: 0.94),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: color.withValues(alpha: 0.55),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      child: Text(
-                        label,
-                        style: theme.typography.body.lg.copyWith(
-                          color: color,
-                          fontWeight: FontWeight.w800,
+                        child: SizedBox(
+                          width: 112,
+                          height: 112,
+                          child: Icon(icon, size: 56, color: color),
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 10),
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: theme.colors.background,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: color, width: 1.5),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          child: Text(
+                            label,
+                            style: theme.typography.body.lg.copyWith(
+                              color: color,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

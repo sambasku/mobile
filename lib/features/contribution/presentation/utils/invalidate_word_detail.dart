@@ -33,4 +33,7 @@ Future<void> invalidateWordDetailCaches(
 
   if (wordId.isNotEmpty) ref.invalidate(wordDetailProvider(wordId));
   if (cleanLemma.isNotEmpty) ref.invalidate(wordDetailProvider(cleanLemma));
+  // Detail yang dibuka dari feed usulan (`?include_unverified=1`) atau
+  // Periksa Kata (`?meaning=`) watch `wordDetailCommunityProvider` (#331).
+  ref.invalidate(wordDetailCommunityProvider);
 }

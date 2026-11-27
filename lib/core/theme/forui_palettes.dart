@@ -44,9 +44,25 @@ FColors _c(
   border: border,
 );
 
+/// Skala tipografi default app - lebih rapat dari Forui touch stock.
+/// Semua layar (FTile, FButton, Text pakai theme.typography) ikut mengecil.
+const kForuiTypographyScale = 0.9;
+
+FThemeData _theme(FColors c, {required bool touch}) {
+  final typography = FTypography.inherit(
+    colors: c,
+    touch: touch,
+  ).scale(sizeScalar: kForuiTypographyScale);
+  return FThemeData(
+    colors: c,
+    touch: touch,
+    typography: typography,
+  );
+}
+
 FPlatformThemeData _p({required FColors c}) => FPlatformThemeData(
-  desktop: () => FThemeData(colors: c, touch: false),
-  touch: () => FThemeData(colors: c, touch: true),
+  desktop: () => _theme(c, touch: false),
+  touch: () => _theme(c, touch: true),
 );
 
 /// Katalog palet warna (nilai shadcn/ui, sama dengan FThemes 0.22).

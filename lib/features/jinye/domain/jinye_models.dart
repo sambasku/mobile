@@ -14,32 +14,6 @@ class JinyeImageRef {
       };
 }
 
-class JinyeUploadCredentials {
-  const JinyeUploadCredentials({
-    required this.token,
-    required this.signature,
-    required this.expire,
-    required this.publicKey,
-    required this.uploadEndpoint,
-  });
-
-  final String token;
-  final String signature;
-  final int expire;
-  final String publicKey;
-  final String uploadEndpoint;
-
-  factory JinyeUploadCredentials.fromJson(Map<String, dynamic> json) {
-    return JinyeUploadCredentials(
-      token: json['token'] as String,
-      signature: json['signature'] as String,
-      expire: json['expire'] as int,
-      publicKey: json['public_key'] as String,
-      uploadEndpoint: json['upload_endpoint'] as String,
-    );
-  }
-}
-
 class JinyeImageUploadUnavailable implements Exception {
   const JinyeImageUploadUnavailable();
 }
@@ -413,6 +387,7 @@ class JinyeComment {
     this.username,
     this.displayName,
     this.avatarUrl,
+    this.isVerifier = false,
     this.status = 'published',
     this.isEdited = false,
     this.stickerId,
@@ -431,6 +406,7 @@ class JinyeComment {
   final String? username;
   final String? displayName;
   final String? avatarUrl;
+  final bool isVerifier;
   final String status;
   final bool isEdited;
   final String? stickerId;
@@ -460,6 +436,7 @@ class JinyeComment {
       username: json['username'] as String?,
       displayName: json['display_name'] as String?,
       avatarUrl: json['avatar_url'] as String?,
+      isVerifier: json['is_verifier'] == true,
       status: json['status'] as String? ?? 'published',
       isEdited: json['is_edited'] == true,
       stickerId: json['sticker_id'] as String?,

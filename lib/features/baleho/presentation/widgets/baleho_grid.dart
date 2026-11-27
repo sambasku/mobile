@@ -6,7 +6,10 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/baleho_models.dart';
 
-typedef BalehoCellTap = void Function(BalehoPlacement placement, BalehoFrame frame);
+typedef BalehoCellTap = void Function(
+  BalehoPlacement placement,
+  BalehoFrame frame,
+);
 typedef BalehoSelectionChanged = void Function(BalehoSelection? selection);
 typedef BalehoVacantTap = void Function(int col, int row);
 
@@ -55,8 +58,10 @@ class BalehoGrid extends StatefulWidget {
   final BalehoSelection? selection;
   final BalehoSelectionChanged? onSelectionChanged;
   final BalehoCellTap? onPlacementTap;
+
   /// Mode lihat: ketuk area kosong = aksi sama dengan "Ingin tampil di sini?".
   final BalehoVacantTap? onVacantTap;
+
   /// Ketuk sel "Dipesan" (pending/awaiting tanpa konten publik).
   final VoidCallback? onHeldTap;
 
@@ -196,7 +201,12 @@ class _BalehoGridState extends State<BalehoGrid> {
             }
 
             // Tap 2: perluas dari jangkar ke sel ini.
-            final next = _selectionFromCorners(_anchorCol!, _anchorRow!, col, row);
+            final next = _selectionFromCorners(
+              _anchorCol!,
+              _anchorRow!,
+              col,
+              row,
+            );
             if (next == null) return;
             setState(() => _draft = null);
             // Pakai sudut kiri atas hasil supaya chip ukuran konsisten.
@@ -272,7 +282,8 @@ class _BalehoGridState extends State<BalehoGrid> {
                         height: cell,
                         child: Builder(
                           builder: (context) {
-                            final covered = sel != null &&
+                            final covered =
+                                sel != null &&
                                 c >= sel.col &&
                                 c < sel.col + sel.w &&
                                 r >= sel.row &&
@@ -313,12 +324,12 @@ class _BalehoGridState extends State<BalehoGrid> {
                         // Pending/awaiting tanpa frame = hold slot untuk orang
                         // lain. Jangan render seperti iklan "Promosi".
                         : p.frames.isEmpty
-                            ? _HeldSlotCell(onTap: widget.onHeldTap)
-                            : _PlacementCell(
-                                placement: p,
-                                enabled: !widget.sellable,
-                                onPlacementTap: widget.onPlacementTap,
-                              ),
+                        ? _HeldSlotCell(onTap: widget.onHeldTap)
+                        : _PlacementCell(
+                            placement: p,
+                            enabled: !widget.sellable,
+                            onPlacementTap: widget.onPlacementTap,
+                          ),
                   ),
                 if (sel != null)
                   Positioned(
@@ -357,10 +368,7 @@ class _BalehoGridState extends State<BalehoGrid> {
 
 /// Banner tetap 4x1: Peringkat Mingguan.
 class _WeeklyLeaderboardTile extends StatelessWidget {
-  const _WeeklyLeaderboardTile({
-    required this.onTap,
-    this.enabled = true,
-  });
+  const _WeeklyLeaderboardTile({required this.onTap, this.enabled = true});
 
   final VoidCallback onTap;
   final bool enabled;
@@ -459,9 +467,7 @@ class _HeldSlotCell extends StatelessWidget {
         margin: const EdgeInsets.all(2),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: theme.colors.border.withValues(alpha: 0.7),
-          ),
+          border: Border.all(color: theme.colors.border.withValues(alpha: 0.7)),
           color: theme.colors.secondary.withValues(alpha: 0.18),
         ),
         alignment: Alignment.center,
@@ -539,15 +545,13 @@ class _PlacementCellState extends State<_PlacementCell> {
     final parent = frames.isNotEmpty ? frames.first : frame;
     final pending = widget.placement.isOwnerPending;
     // Judul/CTA dari parent; child hanya media carousel.
-    final copyText =
-        parent?.title ?? parent?.ctaLabel ?? l10n.balehoPromoSlide;
+    final copyText = parent?.title ?? parent?.ctaLabel ?? l10n.balehoPromoSlide;
     final titleRaw = parent?.title?.trim();
     final mediaUrl = frame?.mediaUrl;
-    final hasMedia = mediaUrl != null &&
+    final hasMedia =
+        mediaUrl != null &&
         (frame?.mediaType == 'image' || frame?.mediaType == 'video');
-    final titleChip = hasMedia &&
-            titleRaw != null &&
-            titleRaw.isNotEmpty
+    final titleChip = hasMedia && titleRaw != null && titleRaw.isNotEmpty
         ? titleRaw
         : null;
 

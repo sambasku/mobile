@@ -106,6 +106,7 @@ WordSuggestionDetail _parseDetail(Map<String, dynamic> data) {
     variantsRemoved: countList(variants, 'removed').length,
     imagesAdded: countList(images, 'added').length,
     imagesRemoved: countList(images, 'removed').length,
+    proposedChanges: asStringKeyMap(suggestion['proposed_changes']),
   );
 }
 
@@ -200,6 +201,31 @@ class WordSuggestionReviewRepositoryImpl
       return Either.right(unit);
     } on DioException catch (error) {
       return Either.left(_mapDio(error, l10n.reviewRepoSuggestionRejectFailed));
+    } catch (error) {
+      return Either.left(ReviewFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ReviewFailure, Unit>> correct(
+    String id, {
+    required Map<String, dynamic> correctedChanges,
+    String? comment,
+  }) async {
+    try {
+      await _dio.post<Map<String, dynamic>>(
+        '$_base/$id/correct',
+        data: {
+          'entity_type': 'word_suggestion',
+          'publish': true,
+          'corrected_changes': correctedChanges,
+          if (comment != null && comment.trim().isNotEmpty)
+            'comment': comment.trim(),
+        },
+      );
+      return Either.right(unit);
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error, l10n.reviewRepoSuggestionCorrectFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }

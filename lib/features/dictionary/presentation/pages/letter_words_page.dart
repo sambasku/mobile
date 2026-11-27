@@ -1,6 +1,5 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
-import '../dictionary_labels.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -8,13 +7,13 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/widgets/pending_review_badge_icon.dart';
-import '../../../../core/widgets/word_approved_badge_icon.dart';
 import '../../dictionary_router.dart';
-import '../../domain/entities/word_summary.dart';
 import '../models/letter_words_state.dart';
 import '../providers/letter_words_providers.dart';
 import '../providers/word_list_providers.dart';
+import '../providers/lemma_merge_selection_provider.dart';
+import '../widgets/lemma_merge_selection_bar.dart';
+import '../widgets/lemma_merge_word_tile.dart';
 import '../widgets/alphabet_letter_strip.dart';
 
 /// Direktori kata per huruf - setara web `/huruf/:letter`.
@@ -70,8 +69,18 @@ class LetterWordsPage extends HookConsumerWidget {
       ],
     );
 
-    return FScaffold(
+    final mergeSel = ref.watch(lemmaMergeSelectionProvider);
+
+    return PopScope(
+      canPop: !mergeSel.active,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && mergeSel.active) {
+          ref.read(lemmaMergeSelectionProvider.notifier).cancel();
+        }
+      },
+      child: FScaffold(
       childPad: true,
+      footer: const LemmaMergeSelectionBar(),
       header: FHeader.nested(
         title: Text(AppLocalizations.of(context).dictLetterTitle(display)),
         prefixes: [
@@ -97,6 +106,7 @@ class LetterWordsPage extends HookConsumerWidget {
           Expanded(child: _buildBody(context, ref, theme, state, scroll)),
         ],
       ),
+    ),
     );
   }
 
@@ -197,41 +207,16 @@ class LetterWordsPage extends HookConsumerWidget {
                 scrollController: scroll,
                 physics: const AlwaysScrollableScrollPhysics(),
                 count: state.items.length,
-                tileBuilder: (context, index) =>
-                    _WordTile(item: state.items[index]),
+                tileBuilder: (context, index) => LemmaMergeWordTile(
+                  item: state.items[index],
+                  subtitleBuilder: defaultWordTileSubtitle,
+                ),
               ),
             ),
           ),
           if (state.isLoadingMore) const _LoadingMoreFooter(),
         ],
       ),
-    );
-  }
-}
-
-class _WordTile extends StatelessWidget with FTileMixin {
-  const _WordTile({required this.item});
-
-  final WordSummary item;
-
-  @override
-  Widget build(BuildContext context) {
-    final gloss = item.sense?.trim();
-    final subtitle = (gloss != null && gloss.isNotEmpty)
-        ? gloss
-        : (item.wordType != 'word'
-              ? wordSummaryTypeLabel(item, AppLocalizations.of(context))
-              : null);
-
-    return FTile(
-      title: Text(item.lemma),
-      subtitle: subtitle != null ? Text(subtitle) : null,
-      suffix: item.isVerified
-          ? const WordApprovedBadgeIcon()
-          : const PendingReviewBadgeIcon(),
-      onPress: () {
-        context.push(DictionaryRouter.detail.path.replaceFirst(':id', item.id));
-      },
     );
   }
 }

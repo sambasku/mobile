@@ -68,11 +68,16 @@ class ChatBubble extends StatelessWidget {
     final showMeta =
         message.pending || (showTime && timeLabel.isNotEmpty) || showEdited;
     final frameBubble = highlighted || replyingTo;
-    // Player sudah punya kotak sendiri. Bubble luar = container dobel.
+    // Player & stiker tanpa reply tampil bare tanpa kotak bubble luar.
     final bareVoice =
         !message.isDeleted &&
         message.kind == ChatMessageKind.voiceNote &&
         (message.audioUrl?.trim().isNotEmpty ?? false);
+    final bareSticker =
+        !message.isDeleted &&
+        message.kind == ChatMessageKind.sticker &&
+        message.replyToId == null;
+    final bareContainer = bareVoice || bareSticker;
     final bubbleBody = Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
@@ -98,39 +103,49 @@ class ChatBubble extends StatelessWidget {
         ),
         if (showMeta) ...[
           const Gap(2),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (message.pending) ...[
-                Text(
-                  l10n.chatSending,
-                  style: theme.typography.body.xs3.copyWith(
-                    color: theme.colors.mutedForeground,
-                    fontStyle: FontStyle.italic,
+          AnimatedSwitcher(
+            duration: MediaQuery.disableAnimationsOf(context)
+                ? Duration.zero
+                : const Duration(milliseconds: 160),
+            child: message.pending
+                ? Row(
+                    key: const ValueKey('pending'),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l10n.chatSending,
+                        style: theme.typography.body.xs3.copyWith(
+                          color: theme.colors.mutedForeground,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      const Gap(4),
+                      const FCircularProgress(size: .xs),
+                    ],
+                  )
+                : Row(
+                    key: ValueKey('sent-$showEdited-$timeLabel'),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (showEdited) ...[
+                        Text(
+                          l10n.chatEdited,
+                          style: theme.typography.body.xs3.copyWith(
+                            color: theme.colors.mutedForeground,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        if (showTime && timeLabel.isNotEmpty) const Gap(4),
+                      ],
+                      if (showTime && timeLabel.isNotEmpty)
+                        Text(
+                          timeLabel,
+                          style: theme.typography.body.xs3.copyWith(
+                            color: theme.colors.mutedForeground,
+                          ),
+                        ),
+                    ],
                   ),
-                ),
-                const Gap(4),
-                const FCircularProgress(size: .xs),
-              ] else ...[
-                if (showEdited) ...[
-                  Text(
-                    l10n.chatEdited,
-                    style: theme.typography.body.xs3.copyWith(
-                      color: theme.colors.mutedForeground,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                  if (showTime && timeLabel.isNotEmpty) const Gap(4),
-                ],
-                if (showTime && timeLabel.isNotEmpty)
-                  Text(
-                    timeLabel,
-                    style: theme.typography.body.xs3.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-              ],
-            ],
           ),
         ],
       ],
@@ -187,7 +202,7 @@ class ChatBubble extends StatelessWidget {
                             ),
                           )
                         : const BoxDecoration(),
-                    child: bareVoice
+                    child: bareContainer
                         ? bubbleBody
                         : DecoratedBox(
                             decoration: BoxDecoration(
@@ -365,7 +380,11 @@ class _BubbleBody extends StatelessWidget {
 
     switch (message.kind) {
       case ChatMessageKind.sticker:
-        return ChatStickerView(stickerId: message.stickerId ?? '', size: 96);
+        return ChatStickerView(
+          stickerId: message.stickerId ?? '',
+          size: 110,
+          tappable: !message.pending && !message.isDeleted,
+        );
       case ChatMessageKind.voiceNote:
         final url = message.audioUrl?.trim() ?? '';
         if (url.isEmpty) {

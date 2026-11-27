@@ -294,4 +294,20 @@ void main() {
     );
     expect(SuggestCategory.changeCategories.code, 'change_categories');
   });
+
+  test('usulan yang bisa dikoreksi di tinjau mobile', () {
+    expect(
+      reviewCorrectableCategory('change_meaning'),
+      SuggestCategory.changeMeaning,
+    );
+    expect(
+      reviewCorrectableCategory('change_usage_labels'),
+      SuggestCategory.changeUsageLabels,
+    );
+    // Relasi, varian, kelompok, dan foto tetap Setujui/Tolak di mobile.
+    expect(reviewCorrectableCategory('synonym'), isNull);
+    expect(reviewCorrectableCategory('change_photo'), isNull);
+    expect(reviewCorrectableCategory('spelling_variant'), isNull);
+    expect(reviewCorrectableCategory('unknown'), isNull);
+  });
 }

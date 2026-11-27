@@ -438,7 +438,7 @@ class _InfoGroup extends ConsumerWidget {
                 softWrap: true,
               ),
             ),
-          // Presensi "Aku hadir" - tile toggle (pola tile kontribusi).
+          // Presensi kehadiran - tile toggle (pola tile kontribusi).
           FTile(
             prefix: goingBusy
                 ? const FCircularProgress(size: .sm)
@@ -449,11 +449,19 @@ class _InfoGroup extends ConsumerWidget {
                     size: 18,
                   ),
             title: Text(
-              event.viewerGoing
-                  ? l10n.eventGoingCancel
-                  : l10n.eventGoingAction,
+              event.eventDateReached()
+                  ? (event.viewerGoing
+                      ? l10n.eventGoingCancelAttend
+                      : l10n.eventGoingActionAttend)
+                  : (event.viewerGoing
+                      ? l10n.eventGoingCancelPlan
+                      : l10n.eventGoingActionPlan),
             ),
-            subtitle: Text(l10n.eventGoingCount(event.goingCount)),
+            subtitle: Text(
+              event.eventDateReached()
+                  ? l10n.eventGoingCountAttend(event.goingCount)
+                  : l10n.eventGoingCountPlan(event.goingCount),
+            ),
             onPress: goingBusy ? null : onGoingToggle,
           ),
           // Tambah foto acara - pola wisata: tile aksi + login gate.
@@ -469,6 +477,13 @@ class _InfoGroup extends ConsumerWidget {
                   ? EventRouter.photoAddPath(event.slug)
                   : AuthRouter.login.path,
             ),
+          ),
+          FTile(
+            prefix: const Icon(FLucideIcons.history, size: 18),
+            title: Text(l10n.historyTitle),
+            subtitle: Text(l10n.eventHistoryBody),
+            suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+            onPress: () => context.push(EventRouter.historyPath(event.slug)),
           ),
       ],
     );

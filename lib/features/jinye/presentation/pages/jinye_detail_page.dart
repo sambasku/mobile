@@ -28,7 +28,9 @@ import '../../data/jinye_providers.dart';
 import '../../domain/jinye_models.dart';
 import '../../jinye_router.dart';
 import '../utils/jinye_quota_message.dart';
-import '../widgets/jinye_comments_section.dart';
+import '../widgets/jinye_promote_image_sheet.dart';
+import '../../../../shared/entity_comments/entity_comment.dart';
+import '../../../../shared/entity_comments/entity_comments_section.dart';
 import '../widgets/jinye_lemma_body.dart';
 import '../widgets/jinye_link_lemma_sheet.dart';
 import '../widgets/jinye_report_sheet.dart';
@@ -49,19 +51,22 @@ class JinyeDetailPage extends ConsumerWidget {
     final theme = context.theme;
     final auth = ref.watch(authStatusProvider).value;
     final isAuth = auth?.isAuth ?? false;
+    final isOwner =
+        isAuth && async.hasValue && auth?.userId == async.requireValue.userId;
 
     return StopThreadAudioOnLeave(
       child: FScaffold(
         header: FHeader.nested(
-          title: Text(l10n.jinyeDetailTitle),
+          title: Text(
+            isOwner ? l10n.jinyeProfileJikuLabel : l10n.jinyeDetailTitle,
+          ),
           prefixes: [
             FHeaderAction.back(
-              onPress: () =>
-                  context.canPop() ? context.pop() : context.go('/'),
+              onPress: () => context.canPop() ? context.pop() : context.go('/'),
             ),
           ],
           suffixes: [
-              if (async.hasValue && isAuth)
+            if (async.hasValue && isAuth)
               FHeaderAction(
                 icon: const Icon(FLucideIcons.ellipsisVertical),
                 onPress: () {
@@ -86,7 +91,10 @@ class JinyeDetailPage extends ConsumerWidget {
               ),
           ],
         ),
-        footer: JinyeCommentEntryBar(jinyeId: id),
+        footer: EntityCommentEntryBar(
+          target: EntityCommentTarget.jinye,
+          entityId: id,
+        ),
         child: async.when(
           loading: () => Skeletonizer(
             enabled: true,
@@ -136,10 +144,8 @@ class JinyeDetailPage extends ConsumerWidget {
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: canOpenProfile
-                          ? () => UserProfileRouter.open(
-                                context,
-                                item.username!,
-                              )
+                          ? () =>
+                                UserProfileRouter.open(context, item.username!)
                           : null,
                       child: ActivityKindAvatar(
                         kind: FeedActivityKind.jinye,
@@ -161,9 +167,9 @@ class JinyeDetailPage extends ConsumerWidget {
                                   isVerifier: item.isVerifier,
                                   onTap: canOpenProfile
                                       ? () => UserProfileRouter.open(
-                                            context,
-                                            item.username!,
-                                          )
+                                          context,
+                                          item.username!,
+                                        )
                                       : null,
                                   style: theme.typography.body.sm.copyWith(
                                     fontWeight: FontWeight.w700,
@@ -243,13 +249,13 @@ class JinyeDetailPage extends ConsumerWidget {
                     ),
                     onWordTap: item.status == 'published'
                         ? (span, link) => _showWordMeaningFromUi(
-                              context,
-                              ref,
-                              item: item,
-                              span: span,
-                              link: link,
-                              isAuth: isAuth,
-                            )
+                            context,
+                            ref,
+                            item: item,
+                            span: span,
+                            link: link,
+                            isAuth: isAuth,
+                          )
                         : null,
                   ),
                   if (item.isEdited) ...[
@@ -265,7 +271,9 @@ class JinyeDetailPage extends ConsumerWidget {
                       ),
                     ),
                   ],
-                  ref.watch(jinyeTranslationsProvider(id)).when(
+                  ref
+                      .watch(jinyeTranslationsProvider(id))
+                      .when(
                         data: (rows) => _JinyeTranslationsBlock(
                           jinyeId: id,
                           rows: rows,
@@ -315,9 +323,7 @@ class JinyeDetailPage extends ConsumerWidget {
                             return;
                           }
                           final failure = await ref
-                              .read(
-                                voteControllerProvider(voteTarget).notifier,
-                              )
+                              .read(voteControllerProvider(voteTarget).notifier)
                               .toggle(value);
                           if (failure != null && context.mounted) {
                             showFToast(
@@ -357,7 +363,6 @@ class JinyeDetailPage extends ConsumerWidget {
 bool _isVerifierRole(String? role) =>
     role == 'admin' || role == 'root' || role == 'reviewer';
 
-
 /// Tap kata di body → sheet makna (+ Hubungkan / Buka lemma).
 Future<void> _showWordMeaningFromUi(
   BuildContext context,
@@ -375,20 +380,8 @@ Future<void> _showWordMeaningFromUi(
     isAuth: isAuth,
     onLinked: () => ref.invalidate(jinyeDetailProvider(item.id)),
   );
-  if (!context.mounted || result == null) return;
-  if (result == 'login') {
-    context.push('/login');
-    return;
-  }
-  const contributePrefix = 'contribute:';
-  if (result.startsWith(contributePrefix)) {
-    final lemma = Uri.decodeComponent(result.substring(contributePrefix.length));
-    context.push(
-      '/contribute?lemma=${Uri.encodeQueryComponent(lemma)}',
-    );
-    return;
-  }
-  context.push('/words/$result');
+  if (!context.mounted) return;
+  handleJinyeWordMeaningSheetResult(context, result);
 }
 
 Future<void> _promoteExampleFromUi(
@@ -397,14 +390,9 @@ Future<void> _promoteExampleFromUi(
   required JinyeItem item,
 }) async {
   final l10n = AppLocalizations.of(context);
-  final opLinks =
-      item.lemmaLinks.where((l) => l.commentId == null).toList();
-  final initial =
-      opLinks.isNotEmpty ? (opLinks.first.lemma ?? '') : '';
-  final word = await showJinyeWordPickerSheet(
-    context,
-    initialQuery: initial,
-  );
+  final opLinks = item.lemmaLinks.where((l) => l.commentId == null).toList();
+  final initial = opLinks.isNotEmpty ? (opLinks.first.lemma ?? '') : '';
+  final word = await showJinyeWordPickerSheet(context, initialQuery: initial);
   if (word == null || !context.mounted) return;
 
   var includeAudio = false;
@@ -442,7 +430,9 @@ Future<void> _promoteExampleFromUi(
   }
 
   try {
-    await ref.read(jinyeRepositoryProvider).promoteExample(
+    await ref
+        .read(jinyeRepositoryProvider)
+        .promoteExample(
           jinyeId: item.id,
           wordId: word.id,
           includeAudio: includeAudio,
@@ -456,13 +446,67 @@ Future<void> _promoteExampleFromUi(
         : null;
     await showAppErrorSheet(
       context,
-      message: msg is String && msg.isNotEmpty
-          ? msg
-          : l10n.jinyePromoteFailed,
+      message: msg is String && msg.isNotEmpty ? msg : l10n.jinyePromoteFailed,
     );
   } catch (_) {
     if (!context.mounted) return;
     await showAppErrorSheet(context, message: l10n.jinyePromoteFailed);
+  }
+}
+
+bool _canPromoteImage(JinyeItem item) =>
+    item.status == 'published' &&
+    !item.isPlainRepost &&
+    item.images.any((i) => i.displaySource != null);
+
+Future<void> _promoteImageFromUi(
+  BuildContext context,
+  WidgetRef ref, {
+  required JinyeItem item,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final urls = item.images
+      .map((i) => i.displaySource)
+      .whereType<String>()
+      .toList();
+  if (urls.isEmpty) return;
+  final picked = urls.length == 1
+      ? urls
+      : await showJinyePromoteImageSheet(context, imageUrls: urls);
+  if (picked == null || picked.isEmpty || !context.mounted) return;
+
+  final opLinks = item.lemmaLinks.where((l) => l.commentId == null).toList();
+  final word = await showJinyeWordPickerSheet(
+    context,
+    initialQuery: opLinks.isNotEmpty ? (opLinks.first.lemma ?? '') : '',
+  );
+  if (word == null || !context.mounted) return;
+
+  try {
+    final published = await ref
+        .read(jinyeRepositoryProvider)
+        .promoteImage(jinyeId: item.id, wordId: word.id, imageUrls: picked);
+    if (!context.mounted) return;
+    showFToast(
+      context: context,
+      title: Text(
+        published ? l10n.jinyePromoteImageDone : l10n.jinyePromoteImagePending,
+      ),
+    );
+  } on DioException catch (e) {
+    if (!context.mounted) return;
+    final msg = e.response?.data is Map
+        ? (e.response!.data as Map)['message']
+        : null;
+    await showAppErrorSheet(
+      context,
+      message: msg is String && msg.isNotEmpty
+          ? msg
+          : l10n.jinyePromoteImageFailed,
+    );
+  } catch (_) {
+    if (!context.mounted) return;
+    await showAppErrorSheet(context, message: l10n.jinyePromoteImageFailed);
   }
 }
 
@@ -475,10 +519,9 @@ Future<void> _translateJinyeFromUi(
   final body = await showJinyeTranslationSheet(context);
   if (body == null || body.isEmpty || !context.mounted) return;
   try {
-    await ref.read(jinyeRepositoryProvider).createTranslation(
-          jinyeId: item.id,
-          body: body,
-        );
+    await ref
+        .read(jinyeRepositoryProvider)
+        .createTranslation(jinyeId: item.id, body: body);
     ref.invalidate(jinyeTranslationsProvider(item.id));
     if (!context.mounted) return;
     showFToast(context: context, title: Text(l10n.jinyeTranslateSuccess));
@@ -570,7 +613,8 @@ Future<void> _showLemmaLinkActions(
         }
         final word = await showJinyeWordPickerSheet(
           context,
-          initialQuery: link.lemma ??
+          initialQuery:
+              link.lemma ??
               (link.start < item.body.length && link.end <= item.body.length
                   ? item.body.substring(link.start, link.end)
                   : ''),
@@ -678,14 +722,10 @@ Future<void> _showOwnerActions(
                     size: 18,
                   ),
                   title: Text(
-                    item.isPinned
-                        ? l10n.jinyeUnpinAction
-                        : l10n.jinyePinAction,
+                    item.isPinned ? l10n.jinyeUnpinAction : l10n.jinyePinAction,
                   ),
-                  onPress: () => Navigator.pop(
-                    context,
-                    item.isPinned ? 'unpin' : 'pin',
-                  ),
+                  onPress: () =>
+                      Navigator.pop(context, item.isPinned ? 'unpin' : 'pin'),
                 ),
                 FTile(
                   prefix: const Icon(FLucideIcons.archive, size: 18),
@@ -697,6 +737,12 @@ Future<void> _showOwnerActions(
                     prefix: const Icon(FLucideIcons.bookOpen, size: 18),
                     title: Text(l10n.jinyePromoteExampleAction),
                     onPress: () => Navigator.pop(context, 'promote'),
+                  ),
+                if (_canPromoteImage(item))
+                  FTile(
+                    prefix: const Icon(FLucideIcons.image, size: 18),
+                    title: Text(l10n.jinyePromoteImageAction),
+                    onPress: () => Navigator.pop(context, 'promote_image'),
                   ),
                 // Terjemahan juga di menu pemilik (boleh usul sendiri).
                 if (item.status == 'published' && item.body.trim().isNotEmpty)
@@ -733,6 +779,10 @@ Future<void> _showOwnerActions(
 
   if (action == 'promote') {
     await _promoteExampleFromUi(context, ref, item: item);
+    return;
+  }
+  if (action == 'promote_image') {
+    await _promoteImageFromUi(context, ref, item: item);
     return;
   }
   if (action == 'translate') {
@@ -779,10 +829,7 @@ Future<void> _showOwnerActions(
       case 'unarchive':
         await repo.unarchive(item.id);
         if (context.mounted) {
-          showFToast(
-            context: context,
-            title: Text(l10n.jinyeUnarchiveSuccess),
-          );
+          showFToast(context: context, title: Text(l10n.jinyeUnarchiveSuccess));
         }
       default:
         return;
@@ -837,6 +884,13 @@ Future<void> _showVisitorActions(
                   onPress: () => Navigator.pop(context, 'quote'),
                 ),
               ],
+              // API: promote-image = login siapa saja; user biasa masuk review.
+              if (_canPromoteImage(item))
+                FTile(
+                  prefix: const Icon(FLucideIcons.image, size: 18),
+                  title: Text(l10n.jinyePromoteImageAction),
+                  onPress: () => Navigator.pop(context, 'promote_image'),
+                ),
               // API: POST translations = login siapa saja (bukan owner-only).
               if (item.status == 'published' && item.body.trim().isNotEmpty)
                 FTile(
@@ -848,8 +902,7 @@ Future<void> _showVisitorActions(
                 FTile(
                   prefix: const Icon(FLucideIcons.clipboardCheck, size: 18),
                   title: Text(l10n.jinyeTranslateReviewAction),
-                  onPress: () =>
-                      Navigator.pop(context, 'review_translations'),
+                  onPress: () => Navigator.pop(context, 'review_translations'),
                 ),
               FTile(
                 prefix: const Icon(FLucideIcons.x, size: 18),
@@ -869,6 +922,10 @@ Future<void> _showVisitorActions(
   }
   if (action == 'quote') {
     await _quoteJinyeFromUi(context, ref, item: item);
+    return;
+  }
+  if (action == 'promote_image') {
+    await _promoteImageFromUi(context, ref, item: item);
     return;
   }
   if (action == 'translate') {
@@ -908,6 +965,7 @@ Future<void> _editJinyeFromUi(
   );
   if (saved == null || !context.mounted) return;
   ref.invalidate(jinyeDetailProvider(item.id));
+  invalidateJinyeProfileSurfaces(ref, item.username);
   showFToast(context: context, title: Text(l10n.jinyeEditSuccess));
 }
 
@@ -918,8 +976,9 @@ Future<void> _showJinyeEditHistory(
 ) async {
   final l10n = AppLocalizations.of(context);
   try {
-    final history =
-        await ref.read(jinyeRepositoryProvider).editHistory(item.id);
+    final history = await ref
+        .read(jinyeRepositoryProvider)
+        .editHistory(item.id);
     if (!context.mounted) return;
     await showThreadTextEditHistorySheet(
       context,
@@ -970,9 +1029,7 @@ Future<void> _repostJinyeFromUi(
         : null;
     await showAppErrorSheet(
       context,
-      message: msg is String && msg.isNotEmpty
-          ? msg
-          : l10n.jinyeRepostFailed,
+      message: msg is String && msg.isNotEmpty ? msg : l10n.jinyeRepostFailed,
     );
   } catch (_) {
     if (!context.mounted) return;
@@ -994,10 +1051,9 @@ Future<void> _quoteJinyeFromUi(
   );
   if (caption == null || !context.mounted) return;
   try {
-    final created = await ref.read(jinyeRepositoryProvider).quote(
-          id: item.id,
-          quoteBody: caption,
-        );
+    final created = await ref
+        .read(jinyeRepositoryProvider)
+        .quote(id: item.id, quoteBody: caption);
     if (!context.mounted) return;
     final me = ref.read(authStatusProvider).value?.username;
     invalidateJinyeProfileSurfaces(ref, me);
@@ -1011,13 +1067,11 @@ Future<void> _quoteJinyeFromUi(
     final msg = code == 'RATE_LIMITED'
         ? jinyeQuotaRateLimitedMessage(e, l10n)
         : (e.response?.data is Map
-            ? (e.response!.data as Map)['message']
-            : null);
+              ? (e.response!.data as Map)['message']
+              : null);
     await showAppErrorSheet(
       context,
-      message: msg is String && msg.isNotEmpty
-          ? msg
-          : l10n.jinyeQuoteFailed,
+      message: msg is String && msg.isNotEmpty ? msg : l10n.jinyeQuoteFailed,
     );
   } catch (_) {
     if (!context.mounted) return;
@@ -1050,9 +1104,7 @@ class _JinyeQuoteSheetState extends State<_JinyeQuoteSheet> {
     final canSubmit = _ctrl.text.trim().isNotEmpty;
 
     return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.viewInsetsOf(context).bottom,
-      ),
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1277,10 +1329,9 @@ class _JinyeTranslationsBlockState
     final l10n = AppLocalizations.of(context);
     setState(() => _busyId = row.id);
     try {
-      await ref.read(jinyeRepositoryProvider).resolveTranslation(
-            translationId: row.id,
-            action: action,
-          );
+      await ref
+          .read(jinyeRepositoryProvider)
+          .resolveTranslation(translationId: row.id, action: action);
       if (!mounted) return;
       ref.invalidate(jinyeTranslationsProvider(widget.jinyeId));
       ref.invalidate(jinyeTranslationQueueProvider('pending'));
@@ -1396,30 +1447,25 @@ class _JinyeTranslationsBlockState
   }
 }
 
-class _JinyeImageRow extends StatefulWidget {
+/// Foto Jinye: thumbnail kecil, 3 foto muat 1 layar, sisanya geser horizontal.
+class _JinyeImageRow extends StatelessWidget {
   const _JinyeImageRow({required this.images});
 
   final List<JinyeImage> images;
 
-  @override
-  State<_JinyeImageRow> createState() => _JinyeImageRowState();
-}
+  static const _gap = 6.0;
+  static const _visibleCount = 3;
 
-class _JinyeImageRowState extends State<_JinyeImageRow> {
-  var _page = 0;
-
-  List<JinyeImage> get _pages => widget.images
+  List<JinyeImage> get _pages => images
       .where((i) => i.displaySource != null)
       .take(4)
       .toList(growable: false);
 
-  List<String> get _previewUrls => [
-        for (final u in _pages)
-          displayImageUrl(u.displaySource!, width: 1200) ?? u.displaySource!,
-      ];
-
-  void _openPreview(int index) {
-    final urls = _previewUrls;
+  void _openPreview(BuildContext context, List<JinyeImage> pages, int index) {
+    final urls = [
+      for (final u in pages)
+        displayImageUrl(u.displaySource!, width: 1200) ?? u.displaySource!,
+    ];
     if (urls.isEmpty) return;
     showImagePreview(
       context,
@@ -1430,68 +1476,39 @@ class _JinyeImageRowState extends State<_JinyeImageRow> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
     final pages = _pages;
     if (pages.isEmpty) return const SizedBox.shrink();
-    final multi = pages.length > 1;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        AspectRatio(
-          aspectRatio: 4 / 3,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: multi
-                ? PageView.builder(
-                    itemCount: pages.length,
-                    onPageChanged: (i) => setState(() => _page = i),
-                    itemBuilder: (context, index) {
-                      final src = pages[index].displaySource!;
-                      final url = displayImageUrl(src, width: 900) ?? src;
-                      return GestureDetector(
-                        onTap: () => _openPreview(index),
-                        child: CachedNetworkImageWithFallback(
-                          imageUrl: url,
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    },
-                  )
-                : GestureDetector(
-                    onTap: () => _openPreview(0),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final tile =
+            (constraints.maxWidth - _gap * (_visibleCount - 1)) / _visibleCount;
+        return SizedBox(
+          height: tile,
+          child: ListView.separated(
+            padding: EdgeInsets.zero,
+            scrollDirection: Axis.horizontal,
+            itemCount: pages.length,
+            separatorBuilder: (_, _) => const SizedBox(width: _gap),
+            itemBuilder: (context, index) {
+              final src = pages[index].displaySource!;
+              return SizedBox(
+                width: tile,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: GestureDetector(
+                    onTap: () => _openPreview(context, pages, index),
                     child: CachedNetworkImageWithFallback(
-                      imageUrl: displayImageUrl(
-                            pages.first.displaySource!,
-                            width: 900,
-                          ) ??
-                          pages.first.displaySource!,
+                      imageUrl: displayImageUrl(src, width: 400) ?? src,
                       fit: BoxFit.cover,
                     ),
                   ),
-          ),
-        ),
-        if (multi) ...[
-          const Gap(8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (var i = 0; i < pages.length; i++)
-                Container(
-                  width: 6,
-                  height: 6,
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: i == _page
-                        ? theme.colors.primary
-                        : theme.colors.mutedForeground.withValues(alpha: 0.4),
-                  ),
                 ),
-            ],
+              );
+            },
           ),
-        ],
-      ],
+        );
+      },
     );
   }
 }

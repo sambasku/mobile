@@ -1,13 +1,20 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../entity_comments/entity_comment.dart';
 import '../span_lemma/span_lemma_exports.dart';
 import 'ugc_comment_lemma_client.dart';
 
-UgcCommentLemmaAnchor anchorForEntityCommentTarget(EntityCommentTarget target) {
+UgcCommentLemmaAnchor? anchorForEntityCommentTarget(
+  EntityCommentTarget target,
+) {
   switch (target) {
+    case EntityCommentTarget.word:
+      return UgcCommentLemmaAnchor.wordComment;
+    case EntityCommentTarget.article:
+      return UgcCommentLemmaAnchor.articleComment;
+    case EntityCommentTarget.jinye:
+      return null;
     case EntityCommentTarget.place:
       return UgcCommentLemmaAnchor.placeComment;
     case EntityCommentTarget.usaha:
@@ -16,6 +23,8 @@ UgcCommentLemmaAnchor anchorForEntityCommentTarget(EntityCommentTarget target) {
       return UgcCommentLemmaAnchor.cuisineComment;
     case EntityCommentTarget.event:
       return UgcCommentLemmaAnchor.eventComment;
+    case EntityCommentTarget.karya:
+      return UgcCommentLemmaAnchor.karyaComment;
   }
 }
 
@@ -56,19 +65,6 @@ Future<void> handleUgcCommentLemmaWordTap(
       onLinked?.call();
     },
   );
-  if (!context.mounted || result == null) return;
-  if (result == 'login') {
-    context.push('/login');
-    return;
-  }
-  const contributePrefix = 'contribute:';
-  if (result.startsWith(contributePrefix)) {
-    final lemma =
-        Uri.decodeComponent(result.substring(contributePrefix.length));
-    context.push(
-      '/contribute?lemma=${Uri.encodeQueryComponent(lemma)}',
-    );
-    return;
-  }
-  context.push('/words/$result');
+  if (!context.mounted) return;
+  handleJinyeWordMeaningSheetResult(context, result);
 }

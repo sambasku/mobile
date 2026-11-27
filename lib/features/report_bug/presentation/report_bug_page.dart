@@ -12,6 +12,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../shared/widgets/attachment_images_field.dart';
+import '../../../shared/widgets/cover_hero.dart';
+import '../../user_profile/presentation/widgets/profile_activity_section.dart'
+    show OverlapAboveBox, ProfileBarClearanceHeader;
+import '../../../shared/widgets/profile_hero_shell.dart';
+import '../../../shared/widgets/profile_identity_header.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/utils/error_bottom_sheet.dart';
 import '../../../core/services/analytics_service.dart';
@@ -20,12 +25,17 @@ import '../../auth/presentation/providers/auth_status_providers.dart';
 import '../data/bug_report_providers.dart';
 import '../domain/bug_report_models.dart';
 
+enum ReportBugMode { bug, feedback }
+
 class ReportBugPage extends HookConsumerWidget {
-  const ReportBugPage({super.key});
+  const ReportBugPage({super.key, this.mode = ReportBugMode.bug});
+
+  final ReportBugMode mode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final isFeedback = mode == ReportBugMode.feedback;
     final description = useTextEditingController();
     useListenable(description);
     final images = useState<List<AttachmentImageSlot>>(const []);
@@ -123,6 +133,7 @@ class ReportBugPage extends HookConsumerWidget {
         AnalyticsService.instance.log(
           AnalyticsEvents.reportBugSubmit,
           params: {
+            'mode': mode.name,
             'has_word': 0,
             'has_comment': 0,
             'has_images': ready.isEmpty ? 0 : 1,
@@ -130,7 +141,10 @@ class ReportBugPage extends HookConsumerWidget {
         );
 
         if (!context.mounted) return;
-        showFToast(context: context, title: Text(l10n.reportBugThanks));
+        showFToast(
+          context: context,
+          title: Text(isFeedback ? l10n.feedbackThanks : l10n.reportBugThanks),
+        );
         context.pop();
       } on DioException catch (e) {
         if (context.mounted) {
@@ -145,6 +159,223 @@ class ReportBugPage extends HookConsumerWidget {
       }
     }
 
+    final footer = SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+        child: FButton(
+          onPress: canSubmit ? () => submit() : null,
+          prefix: submitting.value ? const FCircularProgress() : null,
+          child: Text(
+            submitting.value
+                ? (isFeedback
+                      ? l10n.feedbackSubmitting
+                      : l10n.reportBugSubmitting)
+                : (isFeedback ? l10n.feedbackSubmit : l10n.reportBugSubmit),
+          ),
+        ),
+      ),
+    );
+
+    final formChildren = <Widget>[
+      if (isGuest) ...[
+        FAlert(
+          title: Text(
+            isFeedback
+                ? l10n.feedbackGuestAnonymous
+                : l10n.reportBugGuestAnonymous,
+          ),
+        ),
+        const Gap(4),
+        Text(
+          isFeedback
+              ? l10n.feedbackGuestLoginHint
+              : l10n.reportBugGuestLoginHint,
+          style: context.theme.typography.body.sm.copyWith(
+            color: context.theme.colors.mutedForeground,
+          ),
+        ),
+        const Gap(12),
+      ],
+      FTextField(
+        control: FTextFieldControl.managed(controller: description),
+        enabled: !submitting.value,
+        label: Text(
+          isFeedback
+              ? l10n.feedbackDescriptionLabel
+              : l10n.reportBugDescriptionLabel,
+        ),
+        hint: isFeedback
+            ? l10n.feedbackDescriptionHint
+            : l10n.reportBugDescriptionHint,
+        keyboardType: TextInputType.multiline,
+        textInputAction: TextInputAction.newline,
+        minLines: 5,
+        maxLines: 10,
+      ),
+      Align(
+        alignment: Alignment.centerRight,
+        child: Text(
+          '${formatRibuan(trimmed.length)}/${formatRibuan(2000)}',
+          style: context.theme.typography.body.sm.copyWith(
+            color: context.theme.colors.mutedForeground,
+          ),
+        ),
+      ),
+      if (attachmentsEnabled.value && !isGuest) ...[
+        const Gap(8),
+        Text(
+          l10n.reportBugAttachmentsLabel,
+          style: context.theme.typography.body.sm.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const Gap(8),
+        AttachmentImagesField(
+          enabled: !submitting.value,
+          maxImages: 4,
+          maxSizeMb: 5,
+          images: images.value,
+          onChanged: (next) => images.value = next,
+          onUnavailable: () {
+            attachmentsEnabled.value = false;
+            images.value = const [];
+            // Soft-fail: tawarkan kirim tanpa gambar jika sudah ada teks.
+            if (trimmed.length >= 10) {
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                if (!context.mounted) return;
+                final sendText = await showModalBottomSheet<bool>(
+                  context: context,
+                  useRootNavigator: true,
+                  isScrollControlled: true,
+                  barrierColor: Colors.black54,
+                  builder: (sheetContext) => Padding(
+                    padding: MediaQuery.of(sheetContext).viewInsets,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FTileGroup(
+                          children: [
+                            FTile(
+                              title: Text(l10n.reportBugImagesUnavailableTitle),
+                              subtitle: Text(
+                                l10n.reportBugImagesUnavailableBody,
+                              ),
+                            ),
+                            FTile(
+                              title: const Text(''),
+                              suffix: FButton(
+                                variant: FButtonVariant.destructive,
+                                onPress: () =>
+                                    Navigator.of(sheetContext).pop(true),
+                                child: Text(l10n.reportBugSendWithoutImages),
+                              ),
+                            ),
+                            FTile(
+                              title: const Text(''),
+                              suffix: FButton(
+                                onPress: () =>
+                                    Navigator.of(sheetContext).pop(false),
+                                child: Text(l10n.reportBugCancel),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+                if (sendText == true && context.mounted) {
+                  await submit(skipImages: true);
+                }
+              });
+            }
+          },
+          upload: (File file, {required bool isPrimary}) async {
+            final uploader = ref.read(reportImageUploadServiceProvider);
+            try {
+              final refImg = await uploader.upload(file);
+              return Either.right(
+                AttachmentUploadedImage(
+                  url: refImg.url,
+                  providerFileId: refImg.providerFileId,
+                  isPrimary: isPrimary,
+                ),
+              );
+            } on ImageUploadUnavailable {
+              return Either.left(
+                const AttachmentUploadFailure(
+                  'Penyimpanan gambar belum tersedia',
+                  errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
+                ),
+              );
+            } on DioException catch (e) {
+              if (e.response?.statusCode == 503) {
+                return Either.left(
+                  const AttachmentUploadFailure(
+                    'Penyimpanan gambar belum tersedia',
+                    errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
+                  ),
+                );
+              }
+              return Either.left(
+                const AttachmentUploadFailure('Satu gambar gagal diunggah'),
+              );
+            } catch (_) {
+              return Either.left(
+                const AttachmentUploadFailure('Satu gambar gagal diunggah'),
+              );
+            }
+          },
+        ),
+      ],
+      const Gap(16),
+    ];
+
+    if (isFeedback) {
+      final barOffset =
+          MediaQuery.paddingOf(context).top + ProfileHeroShell.barHeight;
+      return FScaffold(
+        childPad: false,
+        footer: footer,
+        child: ProfileHeroShell(
+          showBack: true,
+          onBack: () =>
+              context.canPop() ? context.pop() : context.go('/explore'),
+          backLabel: l10n.commonBack,
+          coverHeight: ProfileIdentityHeader.coverHeightOf(
+            ProfileHeaderVariant.compact,
+            MediaQuery.sizeOf(context).width,
+          ),
+          title: l10n.feedbackTitle,
+          compactActions: true,
+          scrollView: CustomScrollView(
+            slivers: [
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: ProfileBarClearanceHeader(height: barOffset),
+              ),
+              SliverToBoxAdapter(
+                child: OverlapAboveBox(
+                  overlap: barOffset,
+                  child: CoverHero(
+                    asset: 'assets/images/feedback_hero.webp',
+                    title: l10n.feedbackTitle,
+                    subtitle: l10n.feedbackIntro,
+                    semanticLabel: l10n.feedbackHeroSemantics,
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                sliver: SliverList.list(children: formChildren),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
@@ -156,161 +387,10 @@ class ReportBugPage extends HookConsumerWidget {
           ),
         ],
       ),
+      footer: footer,
       child: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        children: [
-          if (isGuest) ...[
-            FAlert(title: Text(l10n.reportBugGuestAnonymous)),
-            const Gap(4),
-            Text(
-              l10n.reportBugGuestLoginHint,
-              style: context.theme.typography.body.sm.copyWith(
-                color: context.theme.colors.mutedForeground,
-              ),
-            ),
-            const Gap(12),
-          ],
-          FTextField(
-            control: FTextFieldControl.managed(controller: description),
-            enabled: !submitting.value,
-            label: Text(l10n.reportBugDescriptionLabel),
-            hint: l10n.reportBugDescriptionHint,
-            keyboardType: TextInputType.multiline,
-            textInputAction: TextInputAction.newline,
-            minLines: 5,
-            maxLines: 10,
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              '${formatRibuan(trimmed.length)}/${formatRibuan(2000)}',
-              style: context.theme.typography.body.sm.copyWith(
-                color: context.theme.colors.mutedForeground,
-              ),
-            ),
-          ),
-          if (attachmentsEnabled.value && !isGuest) ...[
-            const Gap(8),
-            Text(
-              l10n.reportBugAttachmentsLabel,
-              style: context.theme.typography.body.sm.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const Gap(8),
-            AttachmentImagesField(
-              enabled: !submitting.value,
-              maxImages: 4,
-              maxSizeMb: 5,
-              images: images.value,
-              onChanged: (next) => images.value = next,
-              onUnavailable: () {
-                attachmentsEnabled.value = false;
-                images.value = const [];
-                // Soft-fail: tawarkan kirim tanpa gambar jika sudah ada teks.
-                if (trimmed.length >= 10) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                    if (!context.mounted) return;
-                    final sendText = await showModalBottomSheet<bool>(
-                      context: context,
-                      useRootNavigator: true,
-                      isScrollControlled: true,
-                      barrierColor: Colors.black54,
-                      builder: (sheetContext) => Padding(
-                        padding: MediaQuery.of(sheetContext).viewInsets,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            FTileGroup(
-                              children: [
-                                FTile(
-                                  title: Text(
-                                    l10n.reportBugImagesUnavailableTitle,
-                                  ),
-                                  subtitle: Text(
-                                    l10n.reportBugImagesUnavailableBody,
-                                  ),
-                                ),
-                                FTile(
-                                  title: const Text(''),
-                                  suffix: FButton(
-                                    variant: FButtonVariant.destructive,
-                                    onPress: () =>
-                                        Navigator.of(sheetContext).pop(true),
-                                    child: Text(
-                                      l10n.reportBugSendWithoutImages,
-                                    ),
-                                  ),
-                                ),
-                                FTile(
-                                  title: const Text(''),
-                                  suffix: FButton(
-                                    onPress: () =>
-                                        Navigator.of(sheetContext).pop(false),
-                                    child: Text(l10n.reportBugCancel),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                    if (sendText == true && context.mounted) {
-                      await submit(skipImages: true);
-                    }
-                  });
-                }
-              },
-              upload: (File file, {required bool isPrimary}) async {
-                final uploader = ref.read(reportImageUploadServiceProvider);
-                try {
-                  final refImg = await uploader.upload(file);
-                  return Either.right(
-                    AttachmentUploadedImage(
-                      url: refImg.url,
-                      providerFileId: refImg.providerFileId,
-                      isPrimary: isPrimary,
-                    ),
-                  );
-                } on ImageUploadUnavailable {
-                  return Either.left(
-                    const AttachmentUploadFailure(
-                      'Penyimpanan gambar belum tersedia',
-                      errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
-                    ),
-                  );
-                } on DioException catch (e) {
-                  if (e.response?.statusCode == 503) {
-                    return Either.left(
-                      const AttachmentUploadFailure(
-                        'Penyimpanan gambar belum tersedia',
-                        errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
-                      ),
-                    );
-                  }
-                  return Either.left(
-                    const AttachmentUploadFailure('Satu gambar gagal diunggah'),
-                  );
-                } catch (_) {
-                  return Either.left(
-                    const AttachmentUploadFailure('Satu gambar gagal diunggah'),
-                  );
-                }
-              },
-            ),
-          ],
-          const Gap(16),
-          FButton(
-            onPress: canSubmit ? () => submit() : null,
-            prefix: submitting.value ? const FCircularProgress() : null,
-            child: Text(
-              submitting.value
-                  ? l10n.reportBugSubmitting
-                  : l10n.reportBugSubmit,
-            ),
-          ),
-        ],
+        children: formChildren,
       ),
     );
   }

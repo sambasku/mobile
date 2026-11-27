@@ -5,7 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart' show RefreshIndicator;
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../domain/baleho_models.dart';
 import '../providers/weekly_leaderboard_provider.dart';
 import '../widgets/weekly_leaderboard_list.dart';
@@ -24,16 +23,6 @@ class BalehoWeeklyLeaderboardHistoryPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final async = ref.watch(weeklyLeaderboardHistoryProvider(weekId));
-
-    ref.listen(weeklyLeaderboardHistoryProvider(weekId), (prev, next) {
-      if (next.hasError && context.mounted) {
-        final err = next.error;
-        final message = err is Exception
-            ? err.toString()
-            : l10n.balehoLeaderboardLoadFailed;
-        showAppErrorSheet(context, message: message);
-      }
-    });
 
     return FScaffold(
       childPad: true,

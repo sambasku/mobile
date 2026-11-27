@@ -7,8 +7,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker_android/image_picker_android.dart';
-import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,6 +27,7 @@ import 'core/services/crashlytics_service.dart';
 import 'core/theme/forui_palette_controller.dart';
 import 'core/theme/font_scale_controller.dart';
 import 'core/theme/theme_mode_controller.dart';
+import 'core/utils/android_photo_picker_config.dart';
 import 'core/utils/tabfreeze_log.dart';
 import 'features/device/data/datasources/device_remote_datasource.dart';
 import 'features/device/data/repositories/device_repository_impl.dart';
@@ -61,11 +60,10 @@ Future<void> main() async {
   // inset ditangani SafeArea internal FHeader/FBottomNavigationBar (Forui).
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  // Photo Picker di semua API (default hanya API 33+). Tanpa READ_MEDIA_*.
-  final imagePickerImplementation = ImagePickerPlatform.instance;
-  if (imagePickerImplementation is ImagePickerAndroid) {
-    imagePickerImplementation.useAndroidPhotoPicker = true;
-  }
+  // Issue mobile#385: aktifkan Photo Picker hanya di Android 13+ yang punya
+  // handler ACTION_PICK_IMAGES. Android <= 12 memakai ACTION_GET_CONTENT
+  // (tetap tanpa READ_MEDIA_*).
+  await configureAndroidPhotoPicker();
 
   // TextureView di Android - lebih andal saat map berdampingan dengan scroll.
   MapLibreMap.useHybridComposition = true;

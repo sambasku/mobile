@@ -7,7 +7,7 @@ import '../../domain/entities/usaha.dart';
 import '../models/usaha_dto.dart';
 
 /// Ukuran halaman daftar usaha. Batas API 500; 40 cukup untuk layar ponsel.
-const usahasPageSize = 40;
+const usahasPageSize = 20;
 
 /// Pagar kalau server mengulang cursor.
 const usahasMaxPages = 20;

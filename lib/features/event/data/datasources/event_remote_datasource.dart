@@ -12,7 +12,7 @@ import '../../../../core/i18n/l10n.dart';
 
 /// Ukuran halaman daftar acara. Batas API 500; 50 cukup untuk layar
 /// ponsel dan sisanya lewat `next_cursor`.
-const eventsPageSize = 50;
+const eventsPageSize = 20;
 
 /// Pagar kalau server mengulang cursor.
 const eventsMaxPages = 20;

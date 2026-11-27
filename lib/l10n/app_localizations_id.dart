@@ -60,6 +60,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get onboardingSpeakerLearner => 'Sedang belajar';
 
   @override
+  String get onboardingSpeakerPickRequired =>
+      'Pilih dulu penutur asli atau sedang belajar.';
+
+  @override
   String get profileSpeakerNative => 'Penutur Sambas';
 
   @override
@@ -124,8 +128,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoInternalSlide => 'Di aplikasi';
 
   @override
-  String get balehoFooterPromoNote =>
-      'Area Media Promosi · Ruang publikasi dan promosi SambasKu.';
+  String get balehoFooterPromoNote => 'Ruang publikasi dan promosi SambasKu';
 
   @override
   String get balehoSlidePromoCaption => 'Ingin tampil di sini?';
@@ -140,8 +143,43 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get balehoPricingStartFrom => 'Mulai dari';
+
+  @override
+  String balehoPricingCurrencyValue(String amount) {
+    return 'Rp $amount';
+  }
+
+  @override
+  String get balehoPricingPerUnit => '/ sel 1x1 / hari / slide';
+
+  @override
+  String get balehoPricingPointSize =>
+      'Pilih 1 sel atau tarik beberapa sel sesuai kebutuhan kamu';
+
+  @override
+  String balehoPricingPointExample(String amount) {
+    return 'Contoh: 1x1 selama 7 hari = Rp $amount';
+  }
+
+  @override
+  String get balehoPricingBadge => 'Tarif transparan';
+
+  @override
+  String get balehoPricingEstimateHeading => 'Simulasi 1 sel (1x1)';
+
+  @override
+  String balehoPricingDaysShort(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String get balehoPricingPointReach =>
+      'Pesanan akan ditayangkan setelah proses verifikasi dan pembayaran selesai.';
+
+  @override
   String balehoQuoteEstimate(String amount, int cells, int days, int slides) {
-    return 'Estimasi: Rp $amount ($cells sel x $days hari x $slides slide)';
+    return 'Estimasi: Rp $amount ($cells sel × $days hari × $slides slide)';
   }
 
   @override
@@ -192,7 +230,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get balehoQuoteFormulaHint =>
-      'Hitungan: jumlah sel x hari x tarif x slide';
+      'Biaya dihitung dari ukuran sel, durasi, dan jumlah slide';
 
   @override
   String balehoQuoteFooterTotal(String amount) {
@@ -201,7 +239,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String balehoQuoteFooterBreakdown(int cells, int days, int slides) {
-    return '$cells sel x $days hari x $slides slide';
+    return '$cells sel × $days hari × $slides slide';
   }
 
   @override
@@ -214,12 +252,43 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoWeeklyLeaderboardTitle => 'Peringkat Mingguan';
 
   @override
+  String get balehoWeeklyLeaderboardHeroSemantics =>
+      'Ilustrasi warga di podium peringkat mingguan';
+
+  @override
   String get balehoWeeklyLeaderboardCta =>
       'Siapa kontributor teratas minggu ini?';
 
   @override
   String get balehoWeeklyLeaderboardComingSoonBody =>
       'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.';
+
+  @override
+  String get balehoKosakataTotal => 'Total kata';
+
+  @override
+  String get balehoKosakataVerified => 'Diverifikasi';
+
+  @override
+  String get balehoKosakataQueue => 'Antrian';
+
+  @override
+  String get balehoKosakataRejected => 'Ditolak';
+
+  @override
+  String get balehoKosakataTotalShort => 'Kata';
+
+  @override
+  String get balehoKosakataVerifiedShort => 'Verif';
+
+  @override
+  String get balehoKosakataQueueShort => 'Antri';
+
+  @override
+  String get balehoKosakataRejectedShort => 'Tolak';
+
+  @override
+  String get balehoKosakataStatsTitle => 'Kosakata';
 
   @override
   String get balehoLeaderboardTabCurrent => 'Minggu ini';
@@ -264,15 +333,15 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String balehoLeaderboardScoreCombined(int score) {
+  String balehoLeaderboardScoreCombined(String score) {
     return '$score poin';
   }
 
   @override
   String balehoLeaderboardScoreBreakdown(
-    int submitted,
-    int approved,
-    int verif,
+    String submitted,
+    String approved,
+    String verif,
   ) {
     return '+$submitted usul · +$approved acc · +$verif verif';
   }
@@ -318,6 +387,117 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get balehoLeaderboardHistoryLoadMore => 'Lihat minggu sebelumnya';
+
+  @override
+  String get balehoPointsGuideTitle => 'Cara dapat poin';
+
+  @override
+  String get balehoPointsGuideHeroTitle => 'Bantu kamus, kumpulkan poin';
+
+  @override
+  String get balehoPointsGuideHeroBody => 'Empat cara poin masuk tiap minggu.';
+
+  @override
+  String get balehoPointsGuideHeroSemantics =>
+      'Ilustrasi warga mengumpulkan poin kontribusi';
+
+  @override
+  String get balehoPointsGuideEntrySubtitle =>
+      'Lihat tabel poin dan aturan biar peringkat adil';
+
+  @override
+  String get balehoPointsGuideOpenSemantics => 'Buka cara dapat poin';
+
+  @override
+  String get balehoPointsGuideIntro =>
+      'Semua kontributor dihitung dengan aturan yang sama. Ini rincian poin yang kamu kumpulkan tiap minggu.';
+
+  @override
+  String get balehoPointsGuideTableTitle => 'Tabel poin';
+
+  @override
+  String get balehoPointsGuideCreateTitle => 'Usul kata baru';
+
+  @override
+  String get balehoPointsGuideCreateWhen => 'Dihitung saat usulan dikirim';
+
+  @override
+  String get balehoPointsGuideEditTitle => 'Usul perbaikan kata';
+
+  @override
+  String get balehoPointsGuideEditWhen => 'Dihitung saat usulan dikirim';
+
+  @override
+  String get balehoPointsGuideApprovedTitle => 'Usulan kamu diterima';
+
+  @override
+  String get balehoPointsGuideApprovedWhen =>
+      'Bonus saat usulan disetujui atau dikoreksi verifikator';
+
+  @override
+  String get balehoPointsGuideVerifyTitle => 'Verifikasi usul kata orang lain';
+
+  @override
+  String get balehoPointsGuideVerifyWhen =>
+      'Khusus verifikator, dihitung tiap keputusan terima atau tolak';
+
+  @override
+  String balehoPointsGuidePoints(int points) {
+    return '+$points';
+  }
+
+  @override
+  String get balehoPointsGuideFairTitle => 'Biar adil';
+
+  @override
+  String get balehoPointsGuideRuleRejected =>
+      'Usulan yang ditolak tidak dapat poin. Kalau usulan ditolak, poin usulnya ikut dicabut.';
+
+  @override
+  String get balehoPointsGuideRuleBonus =>
+      'Bonus +2 cuma diberikan kalau usulan disetujui atau dikoreksi.';
+
+  @override
+  String get balehoPointsGuideRuleSelfVerify =>
+      'Memverifikasi usulan sendiri tidak dapat poin.';
+
+  @override
+  String get balehoPointsGuideRuleExcluded =>
+      'Akun sistem dan akun yang dikecualikan admin tidak ikut peringkat.';
+
+  @override
+  String get balehoPointsGuideRuleReset =>
+      'Skor di-reset tiap Senin 00:00 WIB. Minggu yang sudah lewat dibekukan di tab Riwayat.';
+
+  @override
+  String get balehoPointsGuideRuleShare =>
+      'Peringkat 1-25 bisa membagikan posisinya ke feed.';
+
+  @override
+  String get balehoPointsGuideExampleTitle => 'Contoh hitungan';
+
+  @override
+  String get balehoLeaderboardShareCta => 'Bagikan posisiku ke feed';
+
+  @override
+  String get balehoLeaderboardShareBusy => 'Membagikan...';
+
+  @override
+  String balehoLeaderboardShareSuccess(int rank) {
+    return 'Posisi #$rank kamu sudah dibagikan ke feed';
+  }
+
+  @override
+  String get balehoLeaderboardShareNotInTop =>
+      'Posisi kamu belum masuk peringkat 1-25 minggu ini. Terus berkontribusi, lalu coba lagi.';
+
+  @override
+  String get balehoLeaderboardShareFailed =>
+      'Gagal membagikan posisi. Coba lagi sebentar lagi.';
+
+  @override
+  String get balehoLeaderboardShareLoginRequired =>
+      'Masuk dulu untuk membagikan posisimu ke feed.';
 
   @override
   String get balehoSlotAvailable => 'Tersedia';
@@ -412,6 +592,36 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get balehoReferralHint => 'Username yang mengajakmu';
+
+  @override
+  String get balehoReferralDescription =>
+      'Orang yang mengajak kamu memakai SambasKu sebagai media promosi.';
+
+  @override
+  String get balehoReferralPickTitle => 'Cari username teman';
+
+  @override
+  String get balehoReferralSelectedHint => 'Ketuk untuk ganti';
+
+  @override
+  String get balehoReferralClearSemantics => 'Hapus kode teman';
+
+  @override
+  String get balehoReferralSearchTitle => 'Cari teman';
+
+  @override
+  String get balehoReferralSearchHint => 'Ketik username...';
+
+  @override
+  String get balehoReferralSearchPrompt =>
+      'Ketik username orang yang mengajak kamu.';
+
+  @override
+  String get balehoReferralSearchEmpty => 'Username tidak ditemukan.';
+
+  @override
+  String get balehoReferralSearchFailed =>
+      'Gagal memuat pencarian. Coba lagi ya.';
 
   @override
   String get balehoDaysLabel => 'Berapa hari tayang?';
@@ -767,20 +977,29 @@ class AppLocalizationsId extends AppLocalizations {
       'Pilih area kosong di papan, lalu aktifkan ulang creative lama.';
 
   @override
+  String get balehoHistoryPerfTitle => 'Performa';
+
+  @override
   String get balehoHistoryStatsTitle => 'Biaya';
+
+  @override
+  String get balehoHistoryDailyTitle => '7 hari terakhir';
+
+  @override
+  String get balehoHistoryDailyEmpty => 'Belum ada data harian.';
 
   @override
   String get balehoHistoryCostEmpty =>
       'Belum ada ringkasan biaya untuk pesanan ini.';
 
   @override
-  String get balehoHistoryStatImpressions => 'Tayang';
+  String get balehoHistoryStatImpressions => 'Dilihat';
 
   @override
-  String get balehoHistoryStatTaps => 'Buka detail';
+  String get balehoHistoryStatTaps => 'Open';
 
   @override
-  String get balehoHistoryStatActions => 'Klik tombol';
+  String get balehoHistoryStatActions => 'Tap CTA';
 
   @override
   String balehoHistoryStatCtr(String percent) {
@@ -1074,7 +1293,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get aboutTitle => 'Tentang';
 
   @override
-  String get aboutTagline => 'Kamus Digital Sambas-Indonesia';
+  String get aboutTagline => 'Platform digital bahasa dan budaya Sambas';
 
   @override
   String aboutVersion(String version) {
@@ -1097,14 +1316,14 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get aboutWhatBody =>
-      'Kamus digital Melayu Sambas-Indonesia yang dirawat bersama warga. Kamu bisa mencari arti kata, membaca contoh kalimat, menyimpan kata, mengusulkan kata baru, dan membagikan kartu kata. Usulan dari akun yang sudah masuk langsung tayang dengan label Menunggu pengecekan, lalu diperiksa verifikator.';
+      'Platform digital untuk belajar bahasa dan budaya Sambas. Kamu bisa mengenal dan mengeksplorasi Sambas lewat kosakata, tempat, kuliner, acara, komunitas, dan konten yang dirawat bersama warga.';
 
   @override
   String get aboutSponsorTitle => 'Sponsor & Tim Kami';
 
   @override
   String get aboutSponsorBody =>
-      'Para pendukung operasional dan orang-orang yang merawat kamus ini.';
+      'Para pendukung operasional dan orang-orang yang merawat platform ini.';
 
   @override
   String get aboutSponsorAction => 'Lihat Sponsor & Tim Kami';
@@ -1114,10 +1333,32 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get aboutSourceBody =>
-      'SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten kamus dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.';
+      'SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.';
 
   @override
   String get aboutSourceAction => 'Buka di GitHub';
+
+  @override
+  String get aboutOssTitle => 'Pustaka sumber terbuka';
+
+  @override
+  String get aboutOssBody =>
+      'Daftar pustaka langsung di pubspec.yaml beserta lisensi sumber terbukanya.';
+
+  @override
+  String get aboutOssAction => 'Lihat daftar pustaka';
+
+  @override
+  String get aboutOssListTitle => 'Pustaka sumber terbuka';
+
+  @override
+  String get aboutOssEmpty => 'Daftar pustaka belum tersedia.';
+
+  @override
+  String get aboutOssLoading => 'Memuat daftar pustaka';
+
+  @override
+  String get aboutOssUnknown => 'Lisensi sumber terbuka';
 
   @override
   String get aboutSponsorshipTitle => 'Sponsor & Tim Kami';
@@ -1127,6 +1368,30 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get aboutTabTeam => 'Tim Kami';
+
+  @override
+  String get aboutChipTeam => 'Tim';
+
+  @override
+  String get aboutChipVerifiers => 'Verifikator';
+
+  @override
+  String get aboutChipContributors => 'Warga';
+
+  @override
+  String get aboutTeamChipEmpty => 'Belum ada data di sini.';
+
+  @override
+  String get aboutTeamSectionBody =>
+      'Anggota yang merawat SambasKu - produk, data, dan komunitas.';
+
+  @override
+  String get aboutVerifiersSectionBody =>
+      'Memeriksa usulan warga supaya konten tetap akurat dan layak tayang.';
+
+  @override
+  String get aboutContributorsSectionBody =>
+      'Mengusulkan kata, perbaikan, dan rekaman suara. Entri tayang setelah diverifikasi.';
 
   @override
   String get aboutSupportTitle => 'Ingin ikut mendukung?';
@@ -1140,20 +1405,20 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get aboutTogetherBody =>
-      'Kamus ini dirawat orang-orang yang mengusulkan kata, memeriksa entri, dan merekam pelafalan.';
+      'Platform ini dirawat orang-orang yang mengusulkan konten, memeriksa entri, dan merekam pelafalan.';
 
   @override
-  String get aboutContributorsTitle => 'Kontributor';
+  String get aboutContributorsTitle => 'Warga';
 
   @override
   String get aboutContributorsBody =>
-      'Mengirim kata baru atau perbaikan, dan merekam cara mengucapkan kata agar bisa didengar. Entri tayang setelah verifikasi.';
+      'Mengusulkan kata, perbaikan, dan merekam cara mengucapkan supaya bisa didengar. Entri tayang setelah verifikasi.';
 
   @override
   String get aboutVerifiersTitle => 'Verifikator';
 
   @override
-  String get aboutVerifiersBody => 'Memeriksa usulan sebelum masuk kamus.';
+  String get aboutVerifiersBody => 'Memeriksa usulan sebelum tayang.';
 
   @override
   String get aboutSponsorsSectionTitle => 'Sponsor & Mitra';
@@ -2042,14 +2307,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get suggestCategoryChangeExampleDesc =>
-      'Perbaiki typo atau arti contoh yang sudah ada';
+      'Perbaiki typo atau arti contoh';
 
   @override
   String get suggestCategoryChangePronunciation => 'Ubah pelafalan';
 
   @override
-  String get suggestCategoryChangePronunciationDesc =>
-      'Perbaiki notasi IPA yang sudah ada';
+  String get suggestCategoryChangePronunciationDesc => 'Perbaiki notasi IPA';
 
   @override
   String get suggestPickPronunciation => 'Pilih pelafalan yang mau diperbaiki';
@@ -2092,49 +2356,48 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get suggestCategoryVariantOfDesc =>
-      'Kata ini entri sendiri, variasi dari lemma lain (bukan ejaan)';
+      'Entri sendiri, variasi dari lemma lain';
 
   @override
   String get suggestCategoryNonstandardOf => 'Bentuk tidak baku';
 
   @override
   String get suggestCategoryNonstandardOfDesc =>
-      'Kata ini entri sendiri, bentuk tidak baku dari lemma baku';
+      'Entri sendiri, bentuk tidak baku dari lemma baku';
 
   @override
   String get suggestCategoryDerivedFrom => 'Kata turunan';
 
   @override
-  String get suggestCategoryDerivedFromDesc =>
-      'Kata ini diturunkan dari akar kata (isi akarnya)';
+  String get suggestCategoryDerivedFromDesc => 'Diturunkan dari kata akar';
 
   @override
   String get suggestCategoryMeaningGroup => 'Kelompok makna';
 
   @override
   String get suggestCategoryMeaningGroupDesc =>
-      'Gabungkan kata bermakna sama dalam satu kelompok';
+      'Kelompokkan kata yang bermakna sama';
 
   @override
   String get suggestCategorySpellingVariant => 'Variasi penulisan';
 
   @override
   String get suggestCategorySpellingVariantDesc =>
-      'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
+      'Ejaan lain, tetap di lemma ini';
 
   @override
-  String get suggestCategoryChangeCategories => 'Ubah kategori topik';
+  String get suggestCategoryChangeCategories => 'Ubah kategori';
 
   @override
   String get suggestCategoryChangeCategoriesDesc =>
-      'Tambah atau lepas kategori topik di lemma ini';
+      'Tambah atau hapus kategori topik';
 
   @override
   String get suggestCategoryChangeUsageLabels => 'Label register & peringatan';
 
   @override
   String get suggestCategoryChangeUsageLabelsDesc =>
-      'Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.';
+      'Tandai kata kasar, seksual, atau diskriminatif. Memengaruhi beranda dan daftar A-Z.';
 
   @override
   String get suggestUsageLabelsSectionInfo =>
@@ -2168,7 +2431,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get suggestPreSubmitVerifierBanner =>
-      'Ubah yang perlu saja. Perubahan langsung diterapkan, tanpa antrean.';
+      'Ubah seperlunya. Perubahan langsung tayang.';
 
   @override
   String get suggestPreSubmitVerifierCta => 'Simpan perubahan';
@@ -2178,7 +2441,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get suggestPreSubmitContributorBanner =>
-      'Ubah yang perlu saja. Admin mereview sebelum tayang.';
+      'Ubah seperlunya. Admin meninjau sebelum tayang.';
 
   @override
   String get suggestPreSubmitContributorCta => 'Kirim Usulan';
@@ -2592,6 +2855,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get historyFieldWordType => 'Jenis kata';
+
+  @override
+  String get historyFieldWordClass => 'Kelas kata';
 
   @override
   String get historyFieldLanguage => 'Bahasa';
@@ -3821,9 +4087,6 @@ class AppLocalizationsId extends AppLocalizations {
       'Halus dan Kasar tidak bisa dipilih bersamaan';
 
   @override
-  String get reviewCorrectWordNotes => 'Catatan kata';
-
-  @override
   String get reviewCorrectRegister => 'Register';
 
   @override
@@ -3978,6 +4241,20 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get reviewRepoSuggestionRejectFailed => 'Gagal menolak usulan';
+
+  @override
+  String get reviewSuggestionCorrectButton => 'Koreksi';
+
+  @override
+  String get reviewSuggestionCorrectCta => 'Simpan koreksi';
+
+  @override
+  String get reviewSuggestionCorrectedToast =>
+      'Koreksi disimpan dan diterapkan';
+
+  @override
+  String get reviewRepoSuggestionCorrectFailed =>
+      'Gagal menyimpan koreksi usulan';
 
   @override
   String get reviewExploreLoadFailed => 'Gagal memuat usulan eksplorasi';
@@ -4365,16 +4642,24 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictSearchHint => 'Cari kata Sambas...';
 
   @override
-  String get dictSearchChip => 'Cari';
+  String get dictSearchChip => 'Cari\nKata';
 
   @override
-  String get dictAZ => 'A-Z';
+  String get dictAZ => 'Indeks\nA-Z';
 
   @override
-  String get dictProposeChip => 'Usul';
+  String get dictProposeChip => 'Tambah\nKata';
 
   @override
-  String get dictDiscussionChip => 'Diskusi';
+  String get dictDiscussionChip => 'Ruang\nDiskusi';
+
+  @override
+  String get dictDiscussionUnreadSemantics => 'Diskusi, ada chat baru';
+
+  @override
+  String dictDiscussionMentionSemantics(int count) {
+    return 'Diskusi, $count pesan untukmu';
+  }
 
   @override
   String get dictProposeWord => 'Usul kata baru';
@@ -4832,20 +5117,20 @@ class AppLocalizationsId extends AppLocalizations {
   String get hotTopicsTitle => 'Sorotan hari ini';
 
   @override
-  String get hotTopicsTabSearched => 'Dicari';
+  String get hotTopicsTabSearched => 'Dicari warga';
 
   @override
   String get hotTopicsTabProposed => 'Usulan';
 
   @override
-  String get hotTopicsTabNearThreshold => 'Hits';
+  String get hotTopicsTabNearThreshold => 'Terpopuler';
 
   @override
   String get hotTopicsTabEmpty => 'Belum ada data';
 
   @override
   String get hotTopicsTabEmptySearchedBody =>
-      'Belum ada pencarian kosong yang menonjol hari ini.';
+      'Belum ada kata yang dicari warga tapi belum ada di kamus.';
 
   @override
   String get hotTopicsTabEmptyProposedBody =>
@@ -4853,14 +5138,64 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get hotTopicsTabEmptyNearBody =>
-      'Belum ada hits dalam 2 hari terakhir.';
+      'Belum ada kata terpopuler dalam 2 hari terakhir.';
 
   @override
-  String get hotTopicsTabCheck => 'Cek';
+  String get hotTopicsTabCheck => 'Perlu dicek';
+
+  @override
+  String get hotTopicsTabHits => 'Terpopuler';
+
+  @override
+  String get hotTopicsTabHitsBlurb =>
+      'Halaman kata yang paling sering dibuka warga';
+
+  @override
+  String get hotTopicsTabEmptyViewedBody =>
+      'Belum ada kata terpopuler dalam 2 hari terakhir.';
+
+  @override
+  String get hotTopicsTabProposedBlurb => 'Usulan kata menunggu peninjauan';
+
+  @override
+  String get hotTopicsTabSearchedBlurb => 'Dicari warga dan belum ada di kamus';
+
+  @override
+  String get hotTopicsTabCheckBlurb => 'Makna yang dapat downvote dari warga';
+
+  @override
+  String get hotTopicsTabVerified => 'Baru';
+
+  @override
+  String get hotTopicsTabVerifiedBlurb => 'Baru diverifikasi - 10 terbaru';
+
+  @override
+  String get hotTopicsTabEmptyVerifiedBody =>
+      'Belum ada kata yang baru diverifikasi.';
+
+  @override
+  String get hotTopicsTabCommented => 'Dikomentari';
+
+  @override
+  String get hotTopicsTabCommentedBlurb => 'Lemma yang baru dikomentari';
+
+  @override
+  String get hotTopicsTabEmptyCommentedBody =>
+      'Belum ada lemma yang baru dikomentari.';
+
+  @override
+  String hotTopicsVerifiedMeta(String when) {
+    return 'diverifikasi $when';
+  }
+
+  @override
+  String hotTopicsCommentedMeta(String count, String when) {
+    return '$count komentar · $when';
+  }
 
   @override
   String get hotTopicsTabEmptyCheckBody =>
-      'Belum ada makna yang perlu dicek hari ini.';
+      'Belum ada makna yang dapat downvote dari warga.';
 
   @override
   String get hotTopicsBackfillHint => 'Sebagian dari 7 hari terakhir.';
@@ -5563,6 +5898,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get feedKindEvent => 'Acara';
 
   @override
+  String get feedKindKarya => 'Karya';
+
+  @override
   String get feedKindUsaha => 'Usaha';
 
   @override
@@ -5623,6 +5961,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get feedCtaSeeCard => 'Lihat kartu';
 
   @override
+  String get feedKindLeaderboard => 'Peringkat';
+
+  @override
+  String get feedCtaSeeLeaderboard => 'Lihat peringkat';
+
+  @override
   String get feedCtaSeeSuggestion => 'Lihat usulan';
 
   @override
@@ -5636,6 +5980,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedCtaSeeEvent => 'Lihat acara';
+
+  @override
+  String get feedCtaSeeKarya => 'Lihat karya';
 
   @override
   String get feedCtaSeeUsaha => 'Lihat usaha';
@@ -5747,6 +6094,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedContributePeriksaKata => 'Periksa kata';
+
+  @override
+  String get periksaKataHeroSubtitle =>
+      'Bantu pastikan makna di kamus sudah tepat.';
 
   @override
   String get feedPeriksaKataStubBody =>
@@ -6315,6 +6666,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get notificationTypeJinyeComment => 'Balasan Jinye';
 
   @override
+  String get notificationTypeChatMention => 'Sebutan di chat';
+
+  @override
   String get notificationTypePantunReply => 'Balasan pantun';
 
   @override
@@ -6328,6 +6682,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get notificationTypeVote => 'Vote';
+
+  @override
+  String get notificationTypeClap => 'Clap';
 
   @override
   String get notificationTypeExample => 'Contoh';
@@ -7457,6 +7814,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get karyaAccessKindWatch => 'Tonton';
 
   @override
+  String get karyaAccessKindTrailer => 'Trailer';
+
+  @override
   String get karyaAccessKindBuy => 'Beli';
 
   @override
@@ -7870,6 +8230,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get karyaFormYearHint => 'Contoh 2019';
 
   @override
+  String get karyaFormRemoveSambas => 'Hapus kaitan Sambas';
+
+  @override
+  String get karyaFormRemoveCredit => 'Hapus kredit';
+
+  @override
+  String get karyaFormRemoveAccess => 'Hapus tautan akses';
+
+  @override
   String get karyaFormAddSambas => 'Tambah kaitan Sambas';
 
   @override
@@ -7898,6 +8267,34 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get karyaFormAccessUrlHint => 'Tautan sumber asli (https)';
+
+  @override
+  String get karyaFormCoverMusic => 'Cover lagu';
+
+  @override
+  String get karyaFormCoverFilm => 'Poster film';
+
+  @override
+  String get karyaFormCoverHintMusic =>
+      'Opsional - tampil di daftar dan detail lagu';
+
+  @override
+  String get karyaFormCoverHintFilm =>
+      'Opsional - tampil di daftar dan detail film';
+
+  @override
+  String get karyaFormTrailerUrl => 'URL trailer';
+
+  @override
+  String get karyaFormTrailerUrlHint =>
+      'Opsional - tautan https trailer (YouTube, dll)';
+
+  @override
+  String get karyaFormWaitUpload => 'Tunggu upload cover selesai';
+
+  @override
+  String get karyaFormRemoveFailedPhoto =>
+      'Hapus cover yang gagal diunggah dulu';
 
   @override
   String get karyaFormAddAccess => 'Tambah tautan akses';
@@ -7937,6 +8334,41 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get karyaCreditRoleOther => 'Lainnya';
+
+  @override
+  String get karyaMusicReleaseSingle => 'Single';
+
+  @override
+  String get karyaMusicReleaseAlbumTrack => 'Lagu album';
+
+  @override
+  String get karyaMusicReleaseOther => 'Lainnya';
+
+  @override
+  String get karyaMusicIsCoverBadge => 'Cover';
+
+  @override
+  String get karyaMusicListenEmpty => 'Belum ada tautan dengar';
+
+  @override
+  String get karyaFilmTypeFeature => 'Film panjang';
+
+  @override
+  String get karyaFilmTypeShort => 'Film pendek';
+
+  @override
+  String get karyaFilmTypeDocumentary => 'Dokumenter';
+
+  @override
+  String get karyaFilmTypeOther => 'Lainnya';
+
+  @override
+  String karyaFilmRuntimeMinutes(int minutes) {
+    return '$minutes mnt';
+  }
+
+  @override
+  String get karyaFilmWatchEmpty => 'Belum ada tautan tonton';
 
   @override
   String get exploreCategoryAcara => 'Acara';
@@ -8483,6 +8915,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get regionDesaComingSoon =>
       'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.';
+
+  @override
+  String get regionKecamatanComingSoon =>
+      'Info kecamatan ini sedang kami siapkan. Nanti kamu bisa lihat isinya di sini ya.';
 
   @override
   String regionAgendaDesa(String name) {
@@ -9224,7 +9660,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get wilayahSeeArea => 'Lihat area';
 
   @override
-  String get wilayahKecamatanProfile => 'Profil kecamatan';
+  String get wilayahKecamatanProfile => 'Lihat Kecamatan';
 
   @override
   String get wilayahScrollDown => 'Gulir ke bawah';
@@ -10024,6 +10460,9 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get discussionSentPending =>
       'Permintaan terkirim, menunggu pengecekan';
+
+  @override
+  String get discussionSentPublished => 'Diskusi tayang';
 
   @override
   String get discussionStorageUnavailable =>
@@ -11791,6 +12230,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get pantunListSubtitle => 'Berbalas pantun bersama warga sambas';
 
   @override
+  String get pantunHeroSemantics =>
+      'Ilustrasi warga berbalas pantun di tepi sungai';
+
+  @override
   String get pantunComingSoon => 'Segera';
 
   @override
@@ -12188,6 +12631,10 @@ class AppLocalizationsId extends AppLocalizations {
       'Suntingan dikirim - menunggu tinjauan lagi';
 
   @override
+  String get discussionEditPublished =>
+      'Suntingan tersimpan - diskusi tetap tayang';
+
+  @override
   String get discussionEditHistoryTitle => 'Riwayat sunting diskusi';
 
   @override
@@ -12275,29 +12722,38 @@ class AppLocalizationsId extends AppLocalizations {
   String get jinyeProfileJikuLabel => 'Jiku';
 
   @override
+  String get jinyeProfileJikuActionsSemantics => 'Jiku, ketuk untuk opsi';
+
+  @override
+  String get jinyeSheetViewJiku => 'Lihat jiku';
+
+  @override
+  String get jinyeSheetEditJiku => 'Edit jiku';
+
+  @override
   String get jinyeSheetReply => 'Balas';
 
   @override
   String get jinyeSheetViewDiscussion => 'Lihat diskusi';
 
   @override
-  String get jinyeSheetCreateNew => 'Buat jinye baru';
+  String get jinyeSheetCreateNew => 'Jiku baru';
 
   @override
-  String get jinyeSheetClear => 'Kosongkan jinye';
+  String get jinyeSheetClear => 'Kosongkan jiku';
 
   @override
-  String get jinyeSheetClearConfirmTitle => 'Kosongkan jinye?';
+  String get jinyeSheetClearConfirmTitle => 'Kosongkan jiku?';
 
   @override
   String get jinyeSheetClearConfirmBody =>
-      'Status di profil kamu hilang. Jinye tetap tersimpan di arsip.';
+      'Jiku di profil kamu hilang. Jinye tetap tersimpan di arsip.';
 
   @override
   String get jinyeSheetClearConfirmAction => 'Kosongkan';
 
   @override
-  String get jinyeClearedSuccess => 'Jinye dikosongkan';
+  String get jinyeClearedSuccess => 'Jiku dikosongkan';
 
   @override
   String get jinyeDiscussionEmpty =>
@@ -12586,6 +13042,28 @@ class AppLocalizationsId extends AppLocalizations {
   String get jinyePromoteFailed => 'Gagal mengajukan jadi contoh';
 
   @override
+  String get jinyePromoteImageAction => 'Jadikan foto lemma';
+
+  @override
+  String get jinyePromoteImagePickTitle => 'Pilih foto';
+
+  @override
+  String get jinyePromoteImagePickConfirm => 'Lanjut pilih lemma';
+
+  @override
+  String get jinyePromoteImagePending =>
+      'Foto terkirim, menunggu dicek verifikator ya';
+
+  @override
+  String get jinyePromoteImageDone => 'Foto sudah jadi foto lemma';
+
+  @override
+  String get jinyePromoteImageFailed => 'Gagal mengajukan jadi foto lemma';
+
+  @override
+  String get jinyePromoteImageSourceLabel => 'Foto dari Jinye';
+
+  @override
   String get jinyeTranslateAction => 'Usul terjemahan';
 
   @override
@@ -12742,13 +13220,28 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventDetailOrganizerLabel => 'Penyelenggara';
 
   @override
-  String get eventGoingAction => 'Aku hadir';
+  String get eventGoingActionPlan => 'Berencana hadir';
 
   @override
-  String get eventGoingCancel => 'Batal hadir';
+  String get eventGoingCancelPlan => 'Batal rencana';
 
   @override
-  String eventGoingCount(int count) {
+  String eventGoingCountPlan(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang berencana hadir';
+  }
+
+  @override
+  String get eventGoingActionAttend => 'Hadir';
+
+  @override
+  String get eventGoingCancelAttend => 'Batal hadir';
+
+  @override
+  String eventGoingCountAttend(int count) {
     final intl.NumberFormat countNumberFormat =
         intl.NumberFormat.decimalPattern(localeName);
     final String countString = countNumberFormat.format(count);
@@ -12822,6 +13315,15 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get eventCommentHint => 'Tulis komentar tentang acara ini';
+
+  @override
+  String get karyaCommentsTitle => 'Komentar';
+
+  @override
+  String get karyaCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get karyaCommentHint => 'Tulis komentar';
 
   @override
   String eventMorePhotos(int count) {
@@ -13328,7 +13830,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get expHistoryEmpty => 'Belum ada riwayat mingguan yang tercatat.';
 
   @override
-  String expHistoryWeeklyPoints(int points) {
+  String expHistoryWeeklyPoints(String points) {
     return '+$points poin minggu ini';
   }
 
@@ -13373,6 +13875,605 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get discussionReplyLemmaHint =>
       'Tap kata di balasan untuk tautkan ke kamus.';
+
+  @override
+  String get communityCategoryAll => 'Semua';
+
+  @override
+  String get communityCategorySeni => 'Seni & Budaya';
+
+  @override
+  String get communityCategoryBahasa => 'Bahasa';
+
+  @override
+  String get communityCategoryPendidikan => 'Pendidikan';
+
+  @override
+  String get communityCategoryUkm => 'UKM';
+
+  @override
+  String get communityCategoryLain => 'Lainnya';
+
+  @override
+  String get communitySearchHint => 'Cari nama komunitas…';
+
+  @override
+  String get communityOrgEmpty => 'Belum ada komunitas terdaftar';
+
+  @override
+  String get communityOrgEmptyHint =>
+      'Punya komunitas atau tahu komunitas di Sambas? Boleh kamu usulkan.';
+
+  @override
+  String get communityOrgEmptyQuery => 'Belum ada komunitas yang cocok';
+
+  @override
+  String get communityOrgEmptyQueryHint => 'Coba kata atau kategori lain ya.';
+
+  @override
+  String get communityLoadFailedBody => 'Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get communityOrgContact => 'Hubungi';
+
+  @override
+  String get communityContributeTitle => 'Usul Komunitas';
+
+  @override
+  String get communityContributeName => 'Nama Komunitas';
+
+  @override
+  String get communityContributeNameHint => 'cth: Komunitas Melayu Sambas';
+
+  @override
+  String get communityContributeNameRequired =>
+      'Nama komunitas minimal 2 huruf ya';
+
+  @override
+  String get communityContributeLogoHint => 'Logo (opsional, menyusul)';
+
+  @override
+  String get communityContributeNote =>
+      'Usulanmu akan ditinjau tim sebelum tampil di daftar komunitas.';
+
+  @override
+  String get communityContributeSubmit => 'Kirim Usulan';
+
+  @override
+  String get communityProposalsTitle => 'Usulan Saya';
+
+  @override
+  String get communityProposalsLoginGate =>
+      'Masuk dulu untuk lihat usulan komunitasmu';
+
+  @override
+  String get communityProposalsEmpty => 'Belum ada usulan komunitas';
+
+  @override
+  String get communityProposalsEmptyHint =>
+      'Usulan yang kamu kirim akan tampil di sini setelah ditinjau.';
+
+  @override
+  String get communityProposalsEmptyCta => 'Usul Komunitas';
+
+  @override
+  String get communityContributeSuccess => 'Usulan terkirim, terima kasih!';
+
+  @override
+  String get communityBadgeOfficialPartner => 'Mitra Resmi';
+
+  @override
+  String get communityDetailCategory => 'Kategori';
+
+  @override
+  String get communityDetailDistrict => 'Kecamatan';
+
+  @override
+  String get communityListSubtitle =>
+      'Komunitas, organisasi, dan perkumpulan di Sambas';
+
+  @override
+  String get communityFeaturedSection => 'Sorotan';
+
+  @override
+  String get communityContributeCategory => 'Kategori';
+
+  @override
+  String get communityContributeDesc => 'Deskripsi';
+
+  @override
+  String get communityContributeDescHint =>
+      'Ceritakan singkat tentang komunitas ini';
+
+  @override
+  String get communityContributeDescRequired => 'Deskripsi minimal 10 huruf ya';
+
+  @override
+  String get communityContributePickLogo => 'Ganti Logo';
+
+  @override
+  String get communityLoadFailed => 'Komunitas belum bisa dimuat. Coba lagi ya';
+
+  @override
+  String get communitySaveFailed =>
+      'Usulan komunitas belum bisa disimpan. Coba lagi ya';
+
+  @override
+  String get communityUploadLogoFailed =>
+      'Logo belum bisa diunggah. Coba pilih gambar lain ya';
+
+  @override
+  String get communityContributeFailed => 'Usulan belum terkirim';
+
+  @override
+  String get communityContributeSubmitting => 'Mengirim usulan';
+
+  @override
+  String get communityContributeLoginGate =>
+      'Masuk dulu untuk mengusulkan komunitas';
+
+  @override
+  String get communityProposalsLoadFailed =>
+      'Usulan komunitasmu belum bisa dimuat. Coba lagi ya';
+
+  @override
+  String get communityProposalCancelTitle => 'Batalkan usulan ini?';
+
+  @override
+  String get communityProposalCancelBody =>
+      'Usulan yang dibatalkan tidak akan masuk antrean tinjauan tim.';
+
+  @override
+  String get communityProposalCancelAction => 'Batalkan';
+
+  @override
+  String get communityProposalCancelKeepTitle => 'Biarkan tetap antre';
+
+  @override
+  String get communityProposalCancelKeepAction => 'Tidak jadi';
+
+  @override
+  String get communityProposalCancelFailed => 'Usulan belum bisa dibatalkan';
+
+  @override
+  String get communityProposalStatusPending => 'Menunggu';
+
+  @override
+  String get communityProposalStatusApproved => 'Disetujui';
+
+  @override
+  String get communityProposalStatusRejected => 'Ditolak';
+
+  @override
+  String get communityProposalStatusCancelled => 'Dibatalkan';
+
+  @override
+  String get balehoPointsGuideExampleIntro =>
+      'Ini simulasi sederhana: kamu bantu lengkapi kamus selama satu minggu.';
+
+  @override
+  String get balehoPointsGuideExampleLine1 => 'Kamu mengusulkan 1 kata baru';
+
+  @override
+  String get balehoPointsGuideExampleLine1Detail =>
+      'Begitu dikirim, poin usul langsung masuk.';
+
+  @override
+  String get balehoPointsGuideExampleLine2 =>
+      'Usulan kata itu disetujui verifikator';
+
+  @override
+  String get balehoPointsGuideExampleLine2Detail =>
+      'Kamu dapat bonus karena usulan kamu lolos.';
+
+  @override
+  String get balehoPointsGuideExampleLine3 =>
+      'Kamu mengusulkan 1 perbaikan makna kata';
+
+  @override
+  String get balehoPointsGuideExampleLine3Detail =>
+      'Poin usul perbaikan masuk saat dikirim.';
+
+  @override
+  String get balehoPointsGuideExampleLine4 =>
+      'Kamu memverifikasi 2 usulan orang lain';
+
+  @override
+  String get balehoPointsGuideExampleLine4Detail =>
+      'Setiap keputusan verifikasi = 2 poin (bukan usulan sendiri).';
+
+  @override
+  String balehoPointsGuideExampleSubtotalWords(String subtotal) {
+    return 'Dari usul kamu (kata baru, bonus, perbaikan): $subtotal poin';
+  }
+
+  @override
+  String balehoPointsGuideExampleSubtotalVerify(String subtotal, int count) {
+    return 'Dari verifikasi: $subtotal poin ($count × 2)';
+  }
+
+  @override
+  String get balehoPointsGuideExampleTotalLabel => 'Total poin minggu ini';
+
+  @override
+  String balehoPointsGuideExampleTotal(String total) {
+    return '$total poin';
+  }
+
+  @override
+  String get lemmaMergeCancel => 'Batal';
+
+  @override
+  String get lemmaMergeContinue => 'Lanjut';
+
+  @override
+  String lemmaMergeSelectedCount(int count) {
+    return '$count terpilih';
+  }
+
+  @override
+  String get lemmaMergeSheetTitle => 'Gabung kata';
+
+  @override
+  String get lemmaMergePickPrimary =>
+      'Pilih lemma utama. Sisanya jadi variasi penulisan.';
+
+  @override
+  String get lemmaMergeReasonHint => 'Kenapa ini satu kata?';
+
+  @override
+  String get lemmaMergeReasonTooShort => 'Alasan min 10 karakter';
+
+  @override
+  String get lemmaMergeSubmit => 'Kirim';
+
+  @override
+  String get lemmaMergeNeedLogin => 'Login dulu untuk gabung kata.';
+
+  @override
+  String lemmaMergeHoldHint(String lemma) {
+    return 'Tahan untuk gabung: $lemma';
+  }
+
+  @override
+  String get stickerTabFavorites => 'Favorit';
+
+  @override
+  String get stickerTabMine => 'Milikku';
+
+  @override
+  String get stickerFavoritesEmpty =>
+      'Belum ada stiker favorit. Ketuk stiker di chat atau komentar untuk menambahkannya.';
+
+  @override
+  String get stickerFavoritesLoginHint =>
+      'Masuk dulu untuk menyimpan dan melihat stiker favorit kamu.';
+
+  @override
+  String get stickerMineEmpty =>
+      'Belum ada stiker buatan kamu. Buat stiker sendiri dari galeri.';
+
+  @override
+  String get stickerMineLoginHint =>
+      'Masuk dulu untuk membuat dan mengelola stiker buatan kamu.';
+
+  @override
+  String get stickerAddToFavorites => 'Tambah ke favorit';
+
+  @override
+  String get stickerRemoveFromFavorites => 'Hapus dari favorit';
+
+  @override
+  String get stickerAddedToFavorites => 'Stiker ditambahkan ke favorit';
+
+  @override
+  String get stickerRemovedFromFavorites => 'Stiker dihapus dari favorit';
+
+  @override
+  String get stickerFavoriteLimitReached =>
+      'Favorit stiker kamu sudah penuh (maksimal 50). Hapus beberapa dulu ya.';
+
+  @override
+  String get stickerFavoriteActionFailed =>
+      'Gagal memperbarui favorit stiker. Coba lagi ya.';
+
+  @override
+  String get stickerSendNow => 'Kirim stiker ini';
+
+  @override
+  String get stickerCreateButton => 'Buat stiker';
+
+  @override
+  String get stickerCreateTitle => 'Buat stiker sendiri';
+
+  @override
+  String get stickerCreateSubtitle =>
+      'Hanya tampil di deck kamu. Pengguna lain bisa memfavoritkannya saat kamu kirim.';
+
+  @override
+  String get stickerCreatePickImage => 'Pilih gambar atau GIF';
+
+  @override
+  String get stickerCreateChangeImage => 'Ganti gambar';
+
+  @override
+  String get stickerCreateNameLabel => 'Nama stiker (opsional)';
+
+  @override
+  String get stickerCreateNameHint => 'Contoh: Kopi pagi';
+
+  @override
+  String get stickerCreateSubmit => 'Simpan stiker';
+
+  @override
+  String get stickerCreateSubmitting => 'Menyimpan...';
+
+  @override
+  String get stickerCreateSuccess => 'Stiker kamu berhasil dibuat';
+
+  @override
+  String get stickerCreateImageRequired => 'Pilih gambar atau GIF dulu ya';
+
+  @override
+  String get stickerCreateGifTooLarge => 'Ukuran GIF maksimal 2 MB';
+
+  @override
+  String get stickerCreateLimitReached =>
+      'Custom stiker kamu sudah penuh (maksimal 20). Hapus stiker lama dulu ya.';
+
+  @override
+  String get stickerCreateFailed => 'Gagal membuat stiker. Coba lagi ya.';
+
+  @override
+  String get stickerDeleteMineTitle => 'Hapus stiker ini?';
+
+  @override
+  String get stickerDeleteMineBody =>
+      'Stiker akan dihapus dari deck kamu dan tidak bisa dikirim lagi.';
+
+  @override
+  String get stickerDeleteMineConfirm => 'Hapus stiker';
+
+  @override
+  String get stickerDeleteMineSuccess => 'Stiker berhasil dihapus';
+
+  @override
+  String get stickerDeleteMineFailed => 'Gagal menghapus stiker. Coba lagi ya.';
+
+  @override
+  String get stickerCustomBadge => 'Custom';
+
+  @override
+  String get stickerLoginAction => 'Masuk';
+
+  @override
+  String get dictAddMeaningCta => 'Usulkan makna baru';
+
+  @override
+  String get dictMeaningsSection => 'Makna';
+
+  @override
+  String dictMeaningsSectionCount(int count) {
+    return 'Makna ($count)';
+  }
+
+  @override
+  String get historyLoadMore => 'Muat lebih banyak';
+
+  @override
+  String historyShowMoreChanges(int count) {
+    return 'Lihat $count perubahan lain';
+  }
+
+  @override
+  String get historyShowLess => 'Tampilkan lebih sedikit';
+
+  @override
+  String historySuggestedBy(String name) {
+    return 'Usulan dari $name';
+  }
+
+  @override
+  String historyReasonLine(String reason) {
+    return 'Alasan: $reason';
+  }
+
+  @override
+  String historyReviewerNoteLine(String note) {
+    return 'Catatan reviewer: $note';
+  }
+
+  @override
+  String get historyEntityNotFound => 'Data tidak ditemukan';
+
+  @override
+  String get historyEmptyHintEntity =>
+      'Perubahan yang terjadi mulai sekarang akan muncul di sini.';
+
+  @override
+  String get placeHistoryBody =>
+      'Lihat apa saja yang berubah di data wisata ini.';
+
+  @override
+  String get cuisineHistoryBody =>
+      'Lihat apa saja yang berubah di data kuliner ini.';
+
+  @override
+  String get usahaHistoryBody =>
+      'Lihat apa saja yang berubah di data usaha ini.';
+
+  @override
+  String get eventHistoryBody =>
+      'Lihat apa saja yang berubah di data acara ini.';
+
+  @override
+  String get karyaHistoryBody =>
+      'Lihat apa saja yang berubah di data karya ini.';
+
+  @override
+  String get layananHistoryBody =>
+      'Lihat apa saja yang berubah di data layanan ini.';
+
+  @override
+  String get communityHistoryBody =>
+      'Lihat apa saja yang berubah di data komunitas ini.';
+
+  @override
+  String get periksaKataGuideOpenTooltip => 'Panduan Periksa Kata';
+
+  @override
+  String get periksaKataGuideTitle => 'Cara kerja Periksa Kata';
+
+  @override
+  String get periksaKataGuideHeroTitle => 'Jaga mutu kamus bersama';
+
+  @override
+  String get periksaKataGuideHeroBody =>
+      'Cara kerja Periksa Kata dan simulasi Voting Warga.';
+
+  @override
+  String get periksaKataGuideHeroSemantics =>
+      'Ilustrasi warga memeriksa makna bersama';
+
+  @override
+  String get periksaKataGuideStepsTitle => 'Cara memeriksa kata';
+
+  @override
+  String get periksaKataGuideStep1Title => 'Baca makna secara utuh';
+
+  @override
+  String get periksaKataGuideStep1Body =>
+      'Cek lemma, terjemahan, dan definisinya. Ketuk kartu untuk melihat detail kata.';
+
+  @override
+  String get periksaKataGuideStep2Title => 'Beri voting';
+
+  @override
+  String get periksaKataGuideStep2Body =>
+      'Pilih Sudah pas atau Perlu dicek ulang. Satu akun satu voting - ketuk lagi untuk batal.';
+
+  @override
+  String get periksaKataGuideStep3Title => 'Lewati jika ragu';
+
+  @override
+  String get periksaKataGuideStep3Body =>
+      'Geser kartu ke kiri untuk melewati tanpa memilih.';
+
+  @override
+  String get periksaKataGuideRulesTitle => 'Aturan keputusan';
+
+  @override
+  String get periksaKataGuideRuleVerifyTitle => 'Terverifikasi otomatis';
+
+  @override
+  String get periksaKataGuideRuleVerifyBody =>
+      'Selisih voting Sudah pas minimal +5 dari sedikitnya 5 pemilih.';
+
+  @override
+  String get periksaKataGuideRuleRejectTitle => 'Ditolak otomatis';
+
+  @override
+  String get periksaKataGuideRuleRejectBody =>
+      'Selisih voting Perlu dicek ulang minimal -5 dari sedikitnya 5 pemilih.';
+
+  @override
+  String get periksaKataGuideRuleWaitTitle => 'Tetap menunggu';
+
+  @override
+  String get periksaKataGuideRuleWaitBody =>
+      'Pemilih < 5 atau selisih -4 sampai +4. Voting terbanyak tampil teratas agar cepat selesai.';
+
+  @override
+  String get periksaKataGuideSimTitle => 'Simulasi Voting Warga';
+
+  @override
+  String get periksaKataGuideSimBody =>
+      'Ketuk kartu atau tombol di bawah untuk lihat perubahan status di ambang +5 / -5. Tidak mengubah data asli.';
+
+  @override
+  String get periksaKataGuideSimAgree => '+1 Sudah pas';
+
+  @override
+  String get periksaKataGuideSimDisagree => '+1 Perlu dicek ulang';
+
+  @override
+  String get periksaKataGuideSimReset => 'Ulangi simulasi';
+
+  @override
+  String get periksaKataGuideSimVerified => 'Terverifikasi otomatis';
+
+  @override
+  String get periksaKataGuideSimRejected => 'Ditolak otomatis';
+
+  @override
+  String periksaKataGuideSimWaiting(int voters, int threshold, int net) {
+    return 'Masih menunggu. $voters pemilih, selisih $net. Ambang +$threshold atau -$threshold.';
+  }
+
+  @override
+  String get periksaKataGuideBannerText =>
+      'Pahami cara kerja & coba simulasi voting';
+
+  @override
+  String get periksaKataGuideBannerAction => 'Lihat panduan';
+
+  @override
+  String get periksaKataGuideBannerDismiss => 'Tutup';
+
+  @override
+  String get periksaKataGuideSampleLemma => 'lestari';
+
+  @override
+  String get periksaKataGuideSampleTranslation => 'sustainable';
+
+  @override
+  String get periksaKataGuideSampleDefinition =>
+      'tetap terjaga dan bisa bertahan lama';
+
+  @override
+  String get periksaKataGuideIntro =>
+      'Setiap kosakata atau makna dari usulan warga akan masuk ke area voting terlebih dahulu sebelum terverifikasi. Lewat voting bersama, makna yang tepat segera disahkan dan yang keliru cepat tersaring.';
+
+  @override
+  String get exploreFeedbackCtaTitle => 'Punya kritik atau saran?';
+
+  @override
+  String get exploreFeedbackCtaSubtitle =>
+      'Bantu kami membuat pengalaman menggunakan SambasKu jadi lebih nyaman untukmu!';
+
+  @override
+  String get feedbackTitle => 'Kritik & Saran';
+
+  @override
+  String get feedbackHeroSemantics =>
+      'Ilustrasi kirim kritik dan saran untuk SambasKu';
+
+  @override
+  String get feedbackIntro =>
+      'Punya ide fitur, masukan, atau hal yang kurang pas? Ceritakan di sini ya.';
+
+  @override
+  String get feedbackGuestAnonymous => 'Masukan kamu dikirim sebagai Anonim';
+
+  @override
+  String get feedbackGuestLoginHint =>
+      'Login kalau mau melampirkan gambar pendukung';
+
+  @override
+  String get feedbackDescriptionLabel => 'Kritik atau saran';
+
+  @override
+  String get feedbackDescriptionHint =>
+      'Tulis ide, saran perbaikan, atau hal yang kamu harapkan di SambasKu';
+
+  @override
+  String get feedbackSubmit => 'Kirim Masukan';
+
+  @override
+  String get feedbackSubmitting => 'Mengirim...';
+
+  @override
+  String get feedbackThanks => 'Terima kasih, masukan kamu sudah kami terima';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -13428,6 +14529,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get onboardingSpeakerLearner => 'Sedang belajar';
+
+  @override
+  String get onboardingSpeakerPickRequired =>
+      'Pilih dulu penutur asli atau sedang belajar.';
 
   @override
   String get profileSpeakerNative => 'Penutur Sambas';
@@ -13494,8 +14599,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoInternalSlide => 'Di aplikasi';
 
   @override
-  String get balehoFooterPromoNote =>
-      'Area Media Promosi · Ruang publikasi dan promosi SambasKu.';
+  String get balehoFooterPromoNote => 'Ruang publikasi dan promosi SambasKu';
 
   @override
   String get balehoSlidePromoCaption => 'Ingin tampil di sini?';
@@ -13510,8 +14614,43 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
+  String get balehoPricingStartFrom => 'Mulai dari';
+
+  @override
+  String balehoPricingCurrencyValue(String amount) {
+    return 'Rp $amount';
+  }
+
+  @override
+  String get balehoPricingPerUnit => '/ sel 1x1 / hari / slide';
+
+  @override
+  String get balehoPricingPointSize =>
+      'Pilih 1 sel atau tarik beberapa sel sesuai kebutuhan kamu';
+
+  @override
+  String balehoPricingPointExample(String amount) {
+    return 'Contoh: 1x1 selama 7 hari = Rp $amount';
+  }
+
+  @override
+  String get balehoPricingBadge => 'Tarif transparan';
+
+  @override
+  String get balehoPricingEstimateHeading => 'Simulasi 1 sel (1x1)';
+
+  @override
+  String balehoPricingDaysShort(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String get balehoPricingPointReach =>
+      'Pesanan akan ditayangkan setelah proses verifikasi dan pembayaran selesai.';
+
+  @override
   String balehoQuoteEstimate(String amount, int cells, int days, int slides) {
-    return 'Estimasi: Rp $amount ($cells sel x $days hari x $slides slide)';
+    return 'Estimasi: Rp $amount ($cells sel × $days hari × $slides slide)';
   }
 
   @override
@@ -13562,7 +14701,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoQuoteFormulaHint =>
-      'Hitungan: jumlah sel x hari x tarif x slide';
+      'Biaya dihitung dari ukuran sel, durasi, dan jumlah slide';
 
   @override
   String balehoQuoteFooterTotal(String amount) {
@@ -13571,7 +14710,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String balehoQuoteFooterBreakdown(int cells, int days, int slides) {
-    return '$cells sel x $days hari x $slides slide';
+    return '$cells sel × $days hari × $slides slide';
   }
 
   @override
@@ -13584,12 +14723,43 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoWeeklyLeaderboardTitle => 'Peringkat Mingguan';
 
   @override
+  String get balehoWeeklyLeaderboardHeroSemantics =>
+      'Ilustrasi warga di podium peringkat mingguan';
+
+  @override
   String get balehoWeeklyLeaderboardCta =>
       'Siapa kontributor teratas minggu ini?';
 
   @override
   String get balehoWeeklyLeaderboardComingSoonBody =>
       'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.';
+
+  @override
+  String get balehoKosakataTotal => 'Total kata';
+
+  @override
+  String get balehoKosakataVerified => 'Diverifikasi';
+
+  @override
+  String get balehoKosakataQueue => 'Antrian';
+
+  @override
+  String get balehoKosakataRejected => 'Ditolak';
+
+  @override
+  String get balehoKosakataTotalShort => 'Kata';
+
+  @override
+  String get balehoKosakataVerifiedShort => 'Verif';
+
+  @override
+  String get balehoKosakataQueueShort => 'Antri';
+
+  @override
+  String get balehoKosakataRejectedShort => 'Tolak';
+
+  @override
+  String get balehoKosakataStatsTitle => 'Kosakata';
 
   @override
   String get balehoLeaderboardTabCurrent => 'Minggu ini';
@@ -13634,15 +14804,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
-  String balehoLeaderboardScoreCombined(int score) {
+  String balehoLeaderboardScoreCombined(String score) {
     return '$score poin';
   }
 
   @override
   String balehoLeaderboardScoreBreakdown(
-    int submitted,
-    int approved,
-    int verif,
+    String submitted,
+    String approved,
+    String verif,
   ) {
     return '+$submitted usul · +$approved acc · +$verif verif';
   }
@@ -13688,6 +14858,117 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoLeaderboardHistoryLoadMore => 'Lihat minggu sebelumnya';
+
+  @override
+  String get balehoPointsGuideTitle => 'Cara dapat poin';
+
+  @override
+  String get balehoPointsGuideHeroTitle => 'Bantu kamus, kumpulkan poin';
+
+  @override
+  String get balehoPointsGuideHeroBody => 'Empat cara poin masuk tiap minggu.';
+
+  @override
+  String get balehoPointsGuideHeroSemantics =>
+      'Ilustrasi warga mengumpulkan poin kontribusi';
+
+  @override
+  String get balehoPointsGuideEntrySubtitle =>
+      'Lihat tabel poin dan aturan biar peringkat adil';
+
+  @override
+  String get balehoPointsGuideOpenSemantics => 'Buka cara dapat poin';
+
+  @override
+  String get balehoPointsGuideIntro =>
+      'Semua kontributor dihitung dengan aturan yang sama. Ini rincian poin yang kamu kumpulkan tiap minggu.';
+
+  @override
+  String get balehoPointsGuideTableTitle => 'Tabel poin';
+
+  @override
+  String get balehoPointsGuideCreateTitle => 'Usul kata baru';
+
+  @override
+  String get balehoPointsGuideCreateWhen => 'Dihitung saat usulan dikirim';
+
+  @override
+  String get balehoPointsGuideEditTitle => 'Usul perbaikan kata';
+
+  @override
+  String get balehoPointsGuideEditWhen => 'Dihitung saat usulan dikirim';
+
+  @override
+  String get balehoPointsGuideApprovedTitle => 'Usulan kamu diterima';
+
+  @override
+  String get balehoPointsGuideApprovedWhen =>
+      'Bonus saat usulan disetujui atau dikoreksi verifikator';
+
+  @override
+  String get balehoPointsGuideVerifyTitle => 'Verifikasi usul kata orang lain';
+
+  @override
+  String get balehoPointsGuideVerifyWhen =>
+      'Khusus verifikator, dihitung tiap keputusan terima atau tolak';
+
+  @override
+  String balehoPointsGuidePoints(int points) {
+    return '+$points';
+  }
+
+  @override
+  String get balehoPointsGuideFairTitle => 'Biar adil';
+
+  @override
+  String get balehoPointsGuideRuleRejected =>
+      'Usulan yang ditolak tidak dapat poin. Kalau usulan ditolak, poin usulnya ikut dicabut.';
+
+  @override
+  String get balehoPointsGuideRuleBonus =>
+      'Bonus +2 cuma diberikan kalau usulan disetujui atau dikoreksi.';
+
+  @override
+  String get balehoPointsGuideRuleSelfVerify =>
+      'Memverifikasi usulan sendiri tidak dapat poin.';
+
+  @override
+  String get balehoPointsGuideRuleExcluded =>
+      'Akun sistem dan akun yang dikecualikan admin tidak ikut peringkat.';
+
+  @override
+  String get balehoPointsGuideRuleReset =>
+      'Skor di-reset tiap Senin 00:00 WIB. Minggu yang sudah lewat dibekukan di tab Riwayat.';
+
+  @override
+  String get balehoPointsGuideRuleShare =>
+      'Peringkat 1-25 bisa membagikan posisinya ke feed.';
+
+  @override
+  String get balehoPointsGuideExampleTitle => 'Contoh hitungan';
+
+  @override
+  String get balehoLeaderboardShareCta => 'Bagikan posisiku ke feed';
+
+  @override
+  String get balehoLeaderboardShareBusy => 'Membagikan...';
+
+  @override
+  String balehoLeaderboardShareSuccess(int rank) {
+    return 'Posisi #$rank kamu sudah dibagikan ke feed';
+  }
+
+  @override
+  String get balehoLeaderboardShareNotInTop =>
+      'Posisi kamu belum masuk peringkat 1-25 minggu ini. Terus berkontribusi, lalu coba lagi.';
+
+  @override
+  String get balehoLeaderboardShareFailed =>
+      'Gagal membagikan posisi. Coba lagi sebentar lagi.';
+
+  @override
+  String get balehoLeaderboardShareLoginRequired =>
+      'Masuk dulu untuk membagikan posisimu ke feed.';
 
   @override
   String get balehoSlotAvailable => 'Tersedia';
@@ -13782,6 +15063,36 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoReferralHint => 'Username yang mengajakmu';
+
+  @override
+  String get balehoReferralDescription =>
+      'Orang yang mengajak kamu memakai SambasKu sebagai media promosi.';
+
+  @override
+  String get balehoReferralPickTitle => 'Cari username teman';
+
+  @override
+  String get balehoReferralSelectedHint => 'Ketuk untuk ganti';
+
+  @override
+  String get balehoReferralClearSemantics => 'Hapus kode teman';
+
+  @override
+  String get balehoReferralSearchTitle => 'Cari teman';
+
+  @override
+  String get balehoReferralSearchHint => 'Ketik username...';
+
+  @override
+  String get balehoReferralSearchPrompt =>
+      'Ketik username orang yang mengajak kamu.';
+
+  @override
+  String get balehoReferralSearchEmpty => 'Username tidak ditemukan.';
+
+  @override
+  String get balehoReferralSearchFailed =>
+      'Gagal memuat pencarian. Coba lagi ya.';
 
   @override
   String get balehoDaysLabel => 'Berapa hari tayang?';
@@ -14137,20 +15448,29 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Pilih area kosong di papan, lalu aktifkan ulang creative lama.';
 
   @override
+  String get balehoHistoryPerfTitle => 'Performa';
+
+  @override
   String get balehoHistoryStatsTitle => 'Biaya';
+
+  @override
+  String get balehoHistoryDailyTitle => '7 hari terakhir';
+
+  @override
+  String get balehoHistoryDailyEmpty => 'Belum ada data harian.';
 
   @override
   String get balehoHistoryCostEmpty =>
       'Belum ada ringkasan biaya untuk pesanan ini.';
 
   @override
-  String get balehoHistoryStatImpressions => 'Tayang';
+  String get balehoHistoryStatImpressions => 'Dilihat';
 
   @override
-  String get balehoHistoryStatTaps => 'Buka detail';
+  String get balehoHistoryStatTaps => 'Open';
 
   @override
-  String get balehoHistoryStatActions => 'Klik tombol';
+  String get balehoHistoryStatActions => 'Tap CTA';
 
   @override
   String balehoHistoryStatCtr(String percent) {
@@ -14444,7 +15764,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get aboutTitle => 'Tentang';
 
   @override
-  String get aboutTagline => 'Kamus Digital Sambas-Indonesia';
+  String get aboutTagline => 'Platform digital bahasa dan budaya Sambas';
 
   @override
   String aboutVersion(String version) {
@@ -14467,14 +15787,14 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get aboutWhatBody =>
-      'Kamus digital Melayu Sambas-Indonesia yang dirawat bersama warga. Kamu bisa mencari arti kata, membaca contoh kalimat, menyimpan kata, mengusulkan kata baru, dan membagikan kartu kata. Usulan dari akun yang sudah masuk langsung tayang dengan label Menunggu pengecekan, lalu diperiksa verifikator.';
+      'Platform digital untuk belajar bahasa dan budaya Sambas. Kamu bisa mengenal dan mengeksplorasi Sambas lewat kosakata, tempat, kuliner, acara, komunitas, dan konten yang dirawat bersama warga.';
 
   @override
   String get aboutSponsorTitle => 'Sponsor & Tim Kami';
 
   @override
   String get aboutSponsorBody =>
-      'Para pendukung operasional dan orang-orang yang merawat kamus ini.';
+      'Para pendukung operasional dan orang-orang yang merawat platform ini.';
 
   @override
   String get aboutSponsorAction => 'Lihat Sponsor & Tim Kami';
@@ -14484,10 +15804,32 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get aboutSourceBody =>
-      'SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten kamus dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.';
+      'SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.';
 
   @override
   String get aboutSourceAction => 'Buka di GitHub';
+
+  @override
+  String get aboutOssTitle => 'Pustaka sumber terbuka';
+
+  @override
+  String get aboutOssBody =>
+      'Daftar pustaka langsung di pubspec.yaml beserta lisensi sumber terbukanya.';
+
+  @override
+  String get aboutOssAction => 'Lihat daftar pustaka';
+
+  @override
+  String get aboutOssListTitle => 'Pustaka sumber terbuka';
+
+  @override
+  String get aboutOssEmpty => 'Daftar pustaka belum tersedia.';
+
+  @override
+  String get aboutOssLoading => 'Memuat daftar pustaka';
+
+  @override
+  String get aboutOssUnknown => 'Lisensi sumber terbuka';
 
   @override
   String get aboutSponsorshipTitle => 'Sponsor & Tim Kami';
@@ -14497,6 +15839,30 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get aboutTabTeam => 'Tim Kami';
+
+  @override
+  String get aboutChipTeam => 'Tim';
+
+  @override
+  String get aboutChipVerifiers => 'Verifikator';
+
+  @override
+  String get aboutChipContributors => 'Warga';
+
+  @override
+  String get aboutTeamChipEmpty => 'Belum ada data di sini.';
+
+  @override
+  String get aboutTeamSectionBody =>
+      'Anggota yang merawat SambasKu - produk, data, dan komunitas.';
+
+  @override
+  String get aboutVerifiersSectionBody =>
+      'Memeriksa usulan warga supaya konten tetap akurat dan layak tayang.';
+
+  @override
+  String get aboutContributorsSectionBody =>
+      'Mengusulkan kata, perbaikan, dan rekaman suara. Entri tayang setelah diverifikasi.';
 
   @override
   String get aboutSupportTitle => 'Ingin ikut mendukung?';
@@ -14510,20 +15876,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get aboutTogetherBody =>
-      'Kamus ini dirawat orang-orang yang mengusulkan kata, memeriksa entri, dan merekam pelafalan.';
+      'Platform ini dirawat orang-orang yang mengusulkan konten, memeriksa entri, dan merekam pelafalan.';
 
   @override
-  String get aboutContributorsTitle => 'Kontributor';
+  String get aboutContributorsTitle => 'Warga';
 
   @override
   String get aboutContributorsBody =>
-      'Mengirim kata baru atau perbaikan, dan merekam cara mengucapkan kata agar bisa didengar. Entri tayang setelah verifikasi.';
+      'Mengusulkan kata, perbaikan, dan merekam cara mengucapkan supaya bisa didengar. Entri tayang setelah verifikasi.';
 
   @override
   String get aboutVerifiersTitle => 'Verifikator';
 
   @override
-  String get aboutVerifiersBody => 'Memeriksa usulan sebelum masuk kamus.';
+  String get aboutVerifiersBody => 'Memeriksa usulan sebelum tayang.';
 
   @override
   String get aboutSponsorsSectionTitle => 'Sponsor & Mitra';
@@ -15412,14 +16778,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get suggestCategoryChangeExampleDesc =>
-      'Perbaiki typo atau arti contoh yang sudah ada';
+      'Perbaiki typo atau arti contoh';
 
   @override
   String get suggestCategoryChangePronunciation => 'Ubah pelafalan';
 
   @override
-  String get suggestCategoryChangePronunciationDesc =>
-      'Perbaiki notasi IPA yang sudah ada';
+  String get suggestCategoryChangePronunciationDesc => 'Perbaiki notasi IPA';
 
   @override
   String get suggestPickPronunciation => 'Pilih pelafalan yang mau diperbaiki';
@@ -15462,49 +16827,48 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get suggestCategoryVariantOfDesc =>
-      'Kata ini entri sendiri, variasi dari lemma lain (bukan ejaan)';
+      'Entri sendiri, variasi dari lemma lain';
 
   @override
   String get suggestCategoryNonstandardOf => 'Bentuk tidak baku';
 
   @override
   String get suggestCategoryNonstandardOfDesc =>
-      'Kata ini entri sendiri, bentuk tidak baku dari lemma baku';
+      'Entri sendiri, bentuk tidak baku dari lemma baku';
 
   @override
   String get suggestCategoryDerivedFrom => 'Kata turunan';
 
   @override
-  String get suggestCategoryDerivedFromDesc =>
-      'Kata ini diturunkan dari akar kata (isi akarnya)';
+  String get suggestCategoryDerivedFromDesc => 'Diturunkan dari kata akar';
 
   @override
   String get suggestCategoryMeaningGroup => 'Kelompok makna';
 
   @override
   String get suggestCategoryMeaningGroupDesc =>
-      'Gabungkan kata bermakna sama dalam satu kelompok';
+      'Kelompokkan kata yang bermakna sama';
 
   @override
   String get suggestCategorySpellingVariant => 'Variasi penulisan';
 
   @override
   String get suggestCategorySpellingVariantDesc =>
-      'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
+      'Ejaan lain, tetap di lemma ini';
 
   @override
-  String get suggestCategoryChangeCategories => 'Ubah kategori topik';
+  String get suggestCategoryChangeCategories => 'Ubah kategori';
 
   @override
   String get suggestCategoryChangeCategoriesDesc =>
-      'Tambah atau lepas kategori topik di lemma ini';
+      'Tambah atau hapus kategori topik';
 
   @override
   String get suggestCategoryChangeUsageLabels => 'Label register & peringatan';
 
   @override
   String get suggestCategoryChangeUsageLabelsDesc =>
-      'Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.';
+      'Tandai kata kasar, seksual, atau diskriminatif. Memengaruhi beranda dan daftar A-Z.';
 
   @override
   String get suggestUsageLabelsSectionInfo =>
@@ -15538,7 +16902,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get suggestPreSubmitVerifierBanner =>
-      'Ubah yang perlu saja. Perubahan langsung diterapkan, tanpa antrean.';
+      'Ubah seperlunya. Perubahan langsung tayang.';
 
   @override
   String get suggestPreSubmitVerifierCta => 'Simpan perubahan';
@@ -15548,7 +16912,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get suggestPreSubmitContributorBanner =>
-      'Ubah yang perlu saja. Admin mereview sebelum tayang.';
+      'Ubah seperlunya. Admin meninjau sebelum tayang.';
 
   @override
   String get suggestPreSubmitContributorCta => 'Kirim Usulan';
@@ -15962,6 +17326,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get historyFieldWordType => 'Jenis kata';
+
+  @override
+  String get historyFieldWordClass => 'Kelas kata';
 
   @override
   String get historyFieldLanguage => 'Bahasa';
@@ -17191,9 +18558,6 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Halus dan Kasar tidak bisa dipilih bersamaan';
 
   @override
-  String get reviewCorrectWordNotes => 'Catatan kata';
-
-  @override
   String get reviewCorrectRegister => 'Register';
 
   @override
@@ -17348,6 +18712,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get reviewRepoSuggestionRejectFailed => 'Gagal menolak usulan';
+
+  @override
+  String get reviewSuggestionCorrectButton => 'Koreksi';
+
+  @override
+  String get reviewSuggestionCorrectCta => 'Simpan koreksi';
+
+  @override
+  String get reviewSuggestionCorrectedToast =>
+      'Koreksi disimpan dan diterapkan';
+
+  @override
+  String get reviewRepoSuggestionCorrectFailed =>
+      'Gagal menyimpan koreksi usulan';
 
   @override
   String get reviewExploreLoadFailed => 'Gagal memuat usulan eksplorasi';
@@ -17735,16 +19113,24 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictSearchHint => 'Cari kata Sambas...';
 
   @override
-  String get dictSearchChip => 'Cari';
+  String get dictSearchChip => 'Cari\nKata';
 
   @override
-  String get dictAZ => 'A-Z';
+  String get dictAZ => 'Indeks\nA-Z';
 
   @override
-  String get dictProposeChip => 'Usul';
+  String get dictProposeChip => 'Tambah\nKata';
 
   @override
-  String get dictDiscussionChip => 'Diskusi';
+  String get dictDiscussionChip => 'Ruang\nDiskusi';
+
+  @override
+  String get dictDiscussionUnreadSemantics => 'Diskusi, ada chat baru';
+
+  @override
+  String dictDiscussionMentionSemantics(int count) {
+    return 'Diskusi, $count pesan untukmu';
+  }
 
   @override
   String get dictProposeWord => 'Usul kata baru';
@@ -18202,20 +19588,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get hotTopicsTitle => 'Sorotan hari ini';
 
   @override
-  String get hotTopicsTabSearched => 'Dicari';
+  String get hotTopicsTabSearched => 'Dicari warga';
 
   @override
   String get hotTopicsTabProposed => 'Usulan';
 
   @override
-  String get hotTopicsTabNearThreshold => 'Hits';
+  String get hotTopicsTabNearThreshold => 'Terpopuler';
 
   @override
   String get hotTopicsTabEmpty => 'Belum ada data';
 
   @override
   String get hotTopicsTabEmptySearchedBody =>
-      'Belum ada pencarian kosong yang menonjol hari ini.';
+      'Belum ada kata yang dicari warga tapi belum ada di kamus.';
 
   @override
   String get hotTopicsTabEmptyProposedBody =>
@@ -18223,14 +19609,64 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get hotTopicsTabEmptyNearBody =>
-      'Belum ada hits dalam 2 hari terakhir.';
+      'Belum ada kata terpopuler dalam 2 hari terakhir.';
 
   @override
-  String get hotTopicsTabCheck => 'Cek';
+  String get hotTopicsTabCheck => 'Perlu dicek';
+
+  @override
+  String get hotTopicsTabHits => 'Terpopuler';
+
+  @override
+  String get hotTopicsTabHitsBlurb =>
+      'Halaman kata yang paling sering dibuka warga';
+
+  @override
+  String get hotTopicsTabEmptyViewedBody =>
+      'Belum ada kata terpopuler dalam 2 hari terakhir.';
+
+  @override
+  String get hotTopicsTabProposedBlurb => 'Usulan kata menunggu peninjauan';
+
+  @override
+  String get hotTopicsTabSearchedBlurb => 'Dicari warga dan belum ada di kamus';
+
+  @override
+  String get hotTopicsTabCheckBlurb => 'Makna yang dapat downvote dari warga';
+
+  @override
+  String get hotTopicsTabVerified => 'Baru';
+
+  @override
+  String get hotTopicsTabVerifiedBlurb => 'Baru diverifikasi - 10 terbaru';
+
+  @override
+  String get hotTopicsTabEmptyVerifiedBody =>
+      'Belum ada kata yang baru diverifikasi.';
+
+  @override
+  String get hotTopicsTabCommented => 'Dikomentari';
+
+  @override
+  String get hotTopicsTabCommentedBlurb => 'Lemma yang baru dikomentari';
+
+  @override
+  String get hotTopicsTabEmptyCommentedBody =>
+      'Belum ada lemma yang baru dikomentari.';
+
+  @override
+  String hotTopicsVerifiedMeta(String when) {
+    return 'diverifikasi $when';
+  }
+
+  @override
+  String hotTopicsCommentedMeta(String count, String when) {
+    return '$count komentar · $when';
+  }
 
   @override
   String get hotTopicsTabEmptyCheckBody =>
-      'Belum ada makna yang perlu dicek hari ini.';
+      'Belum ada makna yang dapat downvote dari warga.';
 
   @override
   String get hotTopicsBackfillHint => 'Sebagian dari 7 hari terakhir.';
@@ -18849,6 +20285,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get feedKindEvent => 'Acara';
 
   @override
+  String get feedKindKarya => 'Karya';
+
+  @override
   String get feedKindUsaha => 'Usaha';
 
   @override
@@ -18909,6 +20348,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get feedCtaSeeCard => 'Lihat kartu';
 
   @override
+  String get feedKindLeaderboard => 'Peringkat';
+
+  @override
+  String get feedCtaSeeLeaderboard => 'Lihat peringkat';
+
+  @override
   String get feedCtaSeeSuggestion => 'Lihat usulan';
 
   @override
@@ -18922,6 +20367,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get feedCtaSeeEvent => 'Lihat acara';
+
+  @override
+  String get feedCtaSeeKarya => 'Lihat karya';
 
   @override
   String get feedCtaSeeUsaha => 'Lihat usaha';
@@ -19033,6 +20481,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get feedContributePeriksaKata => 'Periksa kata';
+
+  @override
+  String get periksaKataHeroSubtitle =>
+      'Bantu pastikan makna di kamus sudah tepat.';
 
   @override
   String get feedPeriksaKataStubBody =>
@@ -19601,6 +21053,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get notificationTypeJinyeComment => 'Balasan Jinye';
 
   @override
+  String get notificationTypeChatMention => 'Sebutan di chat';
+
+  @override
   String get notificationTypePantunReply => 'Balasan pantun';
 
   @override
@@ -19614,6 +21069,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get notificationTypeVote => 'Vote';
+
+  @override
+  String get notificationTypeClap => 'Clap';
 
   @override
   String get notificationTypeExample => 'Contoh';
@@ -20743,6 +22201,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get karyaAccessKindWatch => 'Tonton';
 
   @override
+  String get karyaAccessKindTrailer => 'Trailer';
+
+  @override
   String get karyaAccessKindBuy => 'Beli';
 
   @override
@@ -21156,6 +22617,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get karyaFormYearHint => 'Contoh 2019';
 
   @override
+  String get karyaFormRemoveSambas => 'Hapus kaitan Sambas';
+
+  @override
+  String get karyaFormRemoveCredit => 'Hapus kredit';
+
+  @override
+  String get karyaFormRemoveAccess => 'Hapus tautan akses';
+
+  @override
   String get karyaFormAddSambas => 'Tambah kaitan Sambas';
 
   @override
@@ -21184,6 +22654,34 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get karyaFormAccessUrlHint => 'Tautan sumber asli (https)';
+
+  @override
+  String get karyaFormCoverMusic => 'Cover lagu';
+
+  @override
+  String get karyaFormCoverFilm => 'Poster film';
+
+  @override
+  String get karyaFormCoverHintMusic =>
+      'Opsional - tampil di daftar dan detail lagu';
+
+  @override
+  String get karyaFormCoverHintFilm =>
+      'Opsional - tampil di daftar dan detail film';
+
+  @override
+  String get karyaFormTrailerUrl => 'URL trailer';
+
+  @override
+  String get karyaFormTrailerUrlHint =>
+      'Opsional - tautan https trailer (YouTube, dll)';
+
+  @override
+  String get karyaFormWaitUpload => 'Tunggu upload cover selesai';
+
+  @override
+  String get karyaFormRemoveFailedPhoto =>
+      'Hapus cover yang gagal diunggah dulu';
 
   @override
   String get karyaFormAddAccess => 'Tambah tautan akses';
@@ -21223,6 +22721,41 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get karyaCreditRoleOther => 'Lainnya';
+
+  @override
+  String get karyaMusicReleaseSingle => 'Single';
+
+  @override
+  String get karyaMusicReleaseAlbumTrack => 'Lagu album';
+
+  @override
+  String get karyaMusicReleaseOther => 'Lainnya';
+
+  @override
+  String get karyaMusicIsCoverBadge => 'Cover';
+
+  @override
+  String get karyaMusicListenEmpty => 'Belum ada tautan dengar';
+
+  @override
+  String get karyaFilmTypeFeature => 'Film panjang';
+
+  @override
+  String get karyaFilmTypeShort => 'Film pendek';
+
+  @override
+  String get karyaFilmTypeDocumentary => 'Dokumenter';
+
+  @override
+  String get karyaFilmTypeOther => 'Lainnya';
+
+  @override
+  String karyaFilmRuntimeMinutes(int minutes) {
+    return '$minutes mnt';
+  }
+
+  @override
+  String get karyaFilmWatchEmpty => 'Belum ada tautan tonton';
 
   @override
   String get exploreCategoryAcara => 'Acara';
@@ -21769,6 +23302,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get regionDesaComingSoon =>
       'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.';
+
+  @override
+  String get regionKecamatanComingSoon =>
+      'Info kecamatan ini sedang kami siapkan. Nanti kamu bisa lihat isinya di sini ya.';
 
   @override
   String regionAgendaDesa(String name) {
@@ -22510,7 +24047,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get wilayahSeeArea => 'Lihat area';
 
   @override
-  String get wilayahKecamatanProfile => 'Profil kecamatan';
+  String get wilayahKecamatanProfile => 'Lihat Kecamatan';
 
   @override
   String get wilayahScrollDown => 'Gulir ke bawah';
@@ -23310,6 +24847,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get discussionSentPending =>
       'Permintaan terkirim, menunggu pengecekan';
+
+  @override
+  String get discussionSentPublished => 'Diskusi tayang';
 
   @override
   String get discussionStorageUnavailable =>
@@ -25077,6 +26617,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get pantunListSubtitle => 'Berbalas pantun bersama warga sambas';
 
   @override
+  String get pantunHeroSemantics =>
+      'Ilustrasi warga berbalas pantun di tepi sungai';
+
+  @override
   String get pantunComingSoon => 'Segera';
 
   @override
@@ -25474,6 +27018,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Suntingan dikirim - menunggu tinjauan lagi';
 
   @override
+  String get discussionEditPublished =>
+      'Suntingan tersimpan - diskusi tetap tayang';
+
+  @override
   String get discussionEditHistoryTitle => 'Riwayat sunting diskusi';
 
   @override
@@ -25561,29 +27109,38 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get jinyeProfileJikuLabel => 'Jiku';
 
   @override
+  String get jinyeProfileJikuActionsSemantics => 'Jiku, ketuk untuk opsi';
+
+  @override
+  String get jinyeSheetViewJiku => 'Lihat jiku';
+
+  @override
+  String get jinyeSheetEditJiku => 'Edit jiku';
+
+  @override
   String get jinyeSheetReply => 'Balas';
 
   @override
   String get jinyeSheetViewDiscussion => 'Lihat diskusi';
 
   @override
-  String get jinyeSheetCreateNew => 'Buat jinye baru';
+  String get jinyeSheetCreateNew => 'Jiku baru';
 
   @override
-  String get jinyeSheetClear => 'Kosongkan jinye';
+  String get jinyeSheetClear => 'Kosongkan jiku';
 
   @override
-  String get jinyeSheetClearConfirmTitle => 'Kosongkan jinye?';
+  String get jinyeSheetClearConfirmTitle => 'Kosongkan jiku?';
 
   @override
   String get jinyeSheetClearConfirmBody =>
-      'Status di profil kamu hilang. Jinye tetap tersimpan di arsip.';
+      'Jiku di profil kamu hilang. Jinye tetap tersimpan di arsip.';
 
   @override
   String get jinyeSheetClearConfirmAction => 'Kosongkan';
 
   @override
-  String get jinyeClearedSuccess => 'Jinye dikosongkan';
+  String get jinyeClearedSuccess => 'Jiku dikosongkan';
 
   @override
   String get jinyeDiscussionEmpty =>
@@ -25872,6 +27429,28 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get jinyePromoteFailed => 'Gagal mengajukan jadi contoh';
 
   @override
+  String get jinyePromoteImageAction => 'Jadikan foto lemma';
+
+  @override
+  String get jinyePromoteImagePickTitle => 'Pilih foto';
+
+  @override
+  String get jinyePromoteImagePickConfirm => 'Lanjut pilih lemma';
+
+  @override
+  String get jinyePromoteImagePending =>
+      'Foto terkirim, menunggu dicek verifikator ya';
+
+  @override
+  String get jinyePromoteImageDone => 'Foto sudah jadi foto lemma';
+
+  @override
+  String get jinyePromoteImageFailed => 'Gagal mengajukan jadi foto lemma';
+
+  @override
+  String get jinyePromoteImageSourceLabel => 'Foto dari Jinye';
+
+  @override
   String get jinyeTranslateAction => 'Usul terjemahan';
 
   @override
@@ -26028,13 +27607,28 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventDetailOrganizerLabel => 'Penyelenggara';
 
   @override
-  String get eventGoingAction => 'Aku hadir';
+  String get eventGoingActionPlan => 'Berencana hadir';
 
   @override
-  String get eventGoingCancel => 'Batal hadir';
+  String get eventGoingCancelPlan => 'Batal rencana';
 
   @override
-  String eventGoingCount(int count) {
+  String eventGoingCountPlan(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang berencana hadir';
+  }
+
+  @override
+  String get eventGoingActionAttend => 'Hadir';
+
+  @override
+  String get eventGoingCancelAttend => 'Batal hadir';
+
+  @override
+  String eventGoingCountAttend(int count) {
     final intl.NumberFormat countNumberFormat =
         intl.NumberFormat.decimalPattern(localeName);
     final String countString = countNumberFormat.format(count);
@@ -26108,6 +27702,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get eventCommentHint => 'Tulis komentar tentang acara ini';
+
+  @override
+  String get karyaCommentsTitle => 'Komentar';
+
+  @override
+  String get karyaCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
+
+  @override
+  String get karyaCommentHint => 'Tulis komentar';
 
   @override
   String eventMorePhotos(int count) {
@@ -26614,7 +28217,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get expHistoryEmpty => 'Belum ade riwayat mingguan yang tacatat.';
 
   @override
-  String expHistoryWeeklyPoints(int points) {
+  String expHistoryWeeklyPoints(String points) {
     return '+$points poin minggu situk';
   }
 
@@ -26659,4 +28262,603 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get discussionReplyLemmaHint =>
       'Tap kata di balasan untuk tautkan ke kamus.';
+
+  @override
+  String get communityCategoryAll => 'Semua';
+
+  @override
+  String get communityCategorySeni => 'Seni & Budaya';
+
+  @override
+  String get communityCategoryBahasa => 'Bahasa';
+
+  @override
+  String get communityCategoryPendidikan => 'Pendidikan';
+
+  @override
+  String get communityCategoryUkm => 'UKM';
+
+  @override
+  String get communityCategoryLain => 'Lainnya';
+
+  @override
+  String get communitySearchHint => 'Cari nama komunitas…';
+
+  @override
+  String get communityOrgEmpty => 'Belum ada komunitas terdaftar';
+
+  @override
+  String get communityOrgEmptyHint =>
+      'Punya komunitas atau tahu komunitas di Sambas? Boleh kamu usulkan.';
+
+  @override
+  String get communityOrgEmptyQuery => 'Belum ada komunitas yang cocok';
+
+  @override
+  String get communityOrgEmptyQueryHint => 'Coba kata atau kategori lain ya.';
+
+  @override
+  String get communityLoadFailedBody => 'Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get communityOrgContact => 'Hubungi';
+
+  @override
+  String get communityContributeTitle => 'Usul Komunitas';
+
+  @override
+  String get communityContributeName => 'Nama Komunitas';
+
+  @override
+  String get communityContributeNameHint => 'cth: Komunitas Melayu Sambas';
+
+  @override
+  String get communityContributeNameRequired =>
+      'Nama komunitas minimal 2 huruf ya';
+
+  @override
+  String get communityContributeLogoHint => 'Logo (opsional, menyusul)';
+
+  @override
+  String get communityContributeNote =>
+      'Usulanmu akan ditinjau tim sebelum tampil di daftar komunitas.';
+
+  @override
+  String get communityContributeSubmit => 'Kirim Usulan';
+
+  @override
+  String get communityProposalsTitle => 'Usulan Saya';
+
+  @override
+  String get communityProposalsLoginGate =>
+      'Masuk dulu untuk lihat usulan komunitasmu';
+
+  @override
+  String get communityProposalsEmpty => 'Belum ada usulan komunitas';
+
+  @override
+  String get communityProposalsEmptyHint =>
+      'Usulan yang kamu kirim akan tampil di sini setelah ditinjau.';
+
+  @override
+  String get communityProposalsEmptyCta => 'Usul Komunitas';
+
+  @override
+  String get communityContributeSuccess => 'Usulan terkirim, terima kasih!';
+
+  @override
+  String get communityBadgeOfficialPartner => 'Mitra Resmi';
+
+  @override
+  String get communityDetailCategory => 'Kategori';
+
+  @override
+  String get communityDetailDistrict => 'Kecamatan';
+
+  @override
+  String get communityListSubtitle =>
+      'Komunitas, organisasi, dan perkumpulan di Sambas';
+
+  @override
+  String get communityFeaturedSection => 'Sorotan';
+
+  @override
+  String get communityContributeCategory => 'Kategori';
+
+  @override
+  String get communityContributeDesc => 'Deskripsi';
+
+  @override
+  String get communityContributeDescHint =>
+      'Ceritakan singkat tentang komunitas ini';
+
+  @override
+  String get communityContributeDescRequired => 'Deskripsi minimal 10 huruf ya';
+
+  @override
+  String get communityContributePickLogo => 'Ganti Logo';
+
+  @override
+  String get communityLoadFailed => 'Komunitas belum bisa dimuat. Coba lagi ya';
+
+  @override
+  String get communitySaveFailed =>
+      'Usulan komunitas belum bisa disimpan. Coba lagi ya';
+
+  @override
+  String get communityUploadLogoFailed =>
+      'Logo belum bisa diunggah. Coba pilih gambar lain ya';
+
+  @override
+  String get communityContributeFailed => 'Usulan belum terkirim';
+
+  @override
+  String get communityContributeSubmitting => 'Mengirim usulan';
+
+  @override
+  String get communityContributeLoginGate =>
+      'Masuk dulu untuk mengusulkan komunitas';
+
+  @override
+  String get communityProposalsLoadFailed =>
+      'Usulan komunitasmu belum bisa dimuat. Coba lagi ya';
+
+  @override
+  String get communityProposalCancelTitle => 'Batalkan usulan ini?';
+
+  @override
+  String get communityProposalCancelBody =>
+      'Usulan yang dibatalkan tidak akan masuk antrean tinjauan tim.';
+
+  @override
+  String get communityProposalCancelAction => 'Batalkan';
+
+  @override
+  String get communityProposalCancelKeepTitle => 'Biarkan tetap antre';
+
+  @override
+  String get communityProposalCancelKeepAction => 'Tidak jadi';
+
+  @override
+  String get communityProposalCancelFailed => 'Usulan belum bisa dibatalkan';
+
+  @override
+  String get communityProposalStatusPending => 'Menunggu';
+
+  @override
+  String get communityProposalStatusApproved => 'Disetujui';
+
+  @override
+  String get communityProposalStatusRejected => 'Ditolak';
+
+  @override
+  String get communityProposalStatusCancelled => 'Dibatalkan';
+
+  @override
+  String get balehoPointsGuideExampleIntro =>
+      'Ini simulasi sederhana: kamu bantu lengkapi kamus selama satu minggu.';
+
+  @override
+  String get balehoPointsGuideExampleLine1 => 'Kamu mengusulkan 1 kata baru';
+
+  @override
+  String get balehoPointsGuideExampleLine1Detail =>
+      'Begitu dikirim, poin usul langsung masuk.';
+
+  @override
+  String get balehoPointsGuideExampleLine2 =>
+      'Usulan kata itu disetujui verifikator';
+
+  @override
+  String get balehoPointsGuideExampleLine2Detail =>
+      'Kamu dapat bonus karena usulan kamu lolos.';
+
+  @override
+  String get balehoPointsGuideExampleLine3 =>
+      'Kamu mengusulkan 1 perbaikan makna kata';
+
+  @override
+  String get balehoPointsGuideExampleLine3Detail =>
+      'Poin usul perbaikan masuk saat dikirim.';
+
+  @override
+  String get balehoPointsGuideExampleLine4 =>
+      'Kamu memverifikasi 2 usulan orang lain';
+
+  @override
+  String get balehoPointsGuideExampleLine4Detail =>
+      'Setiap keputusan verifikasi = 2 poin (bukan usulan sendiri).';
+
+  @override
+  String balehoPointsGuideExampleSubtotalWords(String subtotal) {
+    return 'Dari usul kamu (kata baru, bonus, perbaikan): $subtotal poin';
+  }
+
+  @override
+  String balehoPointsGuideExampleSubtotalVerify(String subtotal, int count) {
+    return 'Dari verifikasi: $subtotal poin ($count × 2)';
+  }
+
+  @override
+  String get balehoPointsGuideExampleTotalLabel => 'Total poin minggu ini';
+
+  @override
+  String balehoPointsGuideExampleTotal(String total) {
+    return '$total poin';
+  }
+
+  @override
+  String get lemmaMergeCancel => 'Batal';
+
+  @override
+  String get lemmaMergeContinue => 'Lanjut';
+
+  @override
+  String lemmaMergeSelectedCount(int count) {
+    return '$count terpilih';
+  }
+
+  @override
+  String get lemmaMergeSheetTitle => 'Gabung kata';
+
+  @override
+  String get lemmaMergePickPrimary =>
+      'Pilih lemma utama. Sisanya jadi variasi penulisan.';
+
+  @override
+  String get lemmaMergeReasonHint => 'Kenapa ini satu kata?';
+
+  @override
+  String get lemmaMergeReasonTooShort => 'Alasan min 10 karakter';
+
+  @override
+  String get lemmaMergeSubmit => 'Kirim';
+
+  @override
+  String get lemmaMergeNeedLogin => 'Login dulu untuk gabung kata.';
+
+  @override
+  String lemmaMergeHoldHint(String lemma) {
+    return 'Tahan untuk gabung: $lemma';
+  }
+
+  @override
+  String get stickerTabFavorites => 'Favorit';
+
+  @override
+  String get stickerTabMine => 'Milikku';
+
+  @override
+  String get stickerFavoritesEmpty =>
+      'Belum ada stiker favorit. Ketuk stiker di chat atau komentar untuk menambahkannya.';
+
+  @override
+  String get stickerFavoritesLoginHint =>
+      'Masuk dulu untuk menyimpan dan melihat stiker favorit kamu.';
+
+  @override
+  String get stickerMineEmpty =>
+      'Belum ada stiker buatan kamu. Buat stiker sendiri dari galeri.';
+
+  @override
+  String get stickerMineLoginHint =>
+      'Masuk dulu untuk membuat dan mengelola stiker buatan kamu.';
+
+  @override
+  String get stickerAddToFavorites => 'Tambah ke favorit';
+
+  @override
+  String get stickerRemoveFromFavorites => 'Hapus dari favorit';
+
+  @override
+  String get stickerAddedToFavorites => 'Stiker ditambahkan ke favorit';
+
+  @override
+  String get stickerRemovedFromFavorites => 'Stiker dihapus dari favorit';
+
+  @override
+  String get stickerFavoriteLimitReached =>
+      'Favorit stiker kamu sudah penuh (maksimal 50). Hapus beberapa dulu ya.';
+
+  @override
+  String get stickerFavoriteActionFailed =>
+      'Gagal memperbarui favorit stiker. Coba lagi ya.';
+
+  @override
+  String get stickerSendNow => 'Kirim stiker ini';
+
+  @override
+  String get stickerCreateButton => 'Buat stiker';
+
+  @override
+  String get stickerCreateTitle => 'Buat stiker sendiri';
+
+  @override
+  String get stickerCreateSubtitle =>
+      'Hanya tampil di deck kamu. Pengguna lain bisa memfavoritkannya saat kamu kirim.';
+
+  @override
+  String get stickerCreatePickImage => 'Pilih gambar atau GIF';
+
+  @override
+  String get stickerCreateChangeImage => 'Ganti gambar';
+
+  @override
+  String get stickerCreateNameLabel => 'Nama stiker (opsional)';
+
+  @override
+  String get stickerCreateNameHint => 'Contoh: Kopi pagi';
+
+  @override
+  String get stickerCreateSubmit => 'Simpan stiker';
+
+  @override
+  String get stickerCreateSubmitting => 'Menyimpan...';
+
+  @override
+  String get stickerCreateSuccess => 'Stiker kamu berhasil dibuat';
+
+  @override
+  String get stickerCreateImageRequired => 'Pilih gambar atau GIF dulu ya';
+
+  @override
+  String get stickerCreateGifTooLarge => 'Ukuran GIF maksimal 2 MB';
+
+  @override
+  String get stickerCreateLimitReached =>
+      'Custom stiker kamu sudah penuh (maksimal 20). Hapus stiker lama dulu ya.';
+
+  @override
+  String get stickerCreateFailed => 'Gagal membuat stiker. Coba lagi ya.';
+
+  @override
+  String get stickerDeleteMineTitle => 'Hapus stiker ini?';
+
+  @override
+  String get stickerDeleteMineBody =>
+      'Stiker akan dihapus dari deck kamu dan tidak bisa dikirim lagi.';
+
+  @override
+  String get stickerDeleteMineConfirm => 'Hapus stiker';
+
+  @override
+  String get stickerDeleteMineSuccess => 'Stiker berhasil dihapus';
+
+  @override
+  String get stickerDeleteMineFailed => 'Gagal menghapus stiker. Coba lagi ya.';
+
+  @override
+  String get stickerCustomBadge => 'Custom';
+
+  @override
+  String get stickerLoginAction => 'Masuk';
+
+  @override
+  String get dictAddMeaningCta => 'Usulkan makna baru';
+
+  @override
+  String get dictMeaningsSection => 'Makna';
+
+  @override
+  String dictMeaningsSectionCount(int count) {
+    return 'Makna ($count)';
+  }
+
+  @override
+  String get historyLoadMore => 'Muat lebih banyak';
+
+  @override
+  String historyShowMoreChanges(int count) {
+    return 'Lihat $count perubahan lain';
+  }
+
+  @override
+  String get historyShowLess => 'Tampilkan lebih sedikit';
+
+  @override
+  String historySuggestedBy(String name) {
+    return 'Usulan dari $name';
+  }
+
+  @override
+  String historyReasonLine(String reason) {
+    return 'Alasan: $reason';
+  }
+
+  @override
+  String historyReviewerNoteLine(String note) {
+    return 'Catatan reviewer: $note';
+  }
+
+  @override
+  String get historyEntityNotFound => 'Data tidak ditemukan';
+
+  @override
+  String get historyEmptyHintEntity =>
+      'Perubahan yang terjadi mulai sekarang akan muncul di sini.';
+
+  @override
+  String get placeHistoryBody =>
+      'Lihat apa saja yang berubah di data wisata ini.';
+
+  @override
+  String get cuisineHistoryBody =>
+      'Lihat apa saja yang berubah di data kuliner ini.';
+
+  @override
+  String get usahaHistoryBody =>
+      'Lihat apa saja yang berubah di data usaha ini.';
+
+  @override
+  String get eventHistoryBody =>
+      'Lihat apa saja yang berubah di data acara ini.';
+
+  @override
+  String get karyaHistoryBody =>
+      'Lihat apa saja yang berubah di data karya ini.';
+
+  @override
+  String get layananHistoryBody =>
+      'Lihat apa saja yang berubah di data layanan ini.';
+
+  @override
+  String get communityHistoryBody =>
+      'Lihat apa saja yang berubah di data komunitas ini.';
+
+  @override
+  String get periksaKataGuideOpenTooltip => 'Panduan Periksa Kata';
+
+  @override
+  String get periksaKataGuideTitle => 'Cara kerja Periksa Kata';
+
+  @override
+  String get periksaKataGuideHeroTitle => 'Jaga mutu kamus bersama';
+
+  @override
+  String get periksaKataGuideHeroBody =>
+      'Cara kerja Periksa Kata dan simulasi Voting Warga.';
+
+  @override
+  String get periksaKataGuideHeroSemantics =>
+      'Ilustrasi warga memeriksa makna bersama';
+
+  @override
+  String get periksaKataGuideStepsTitle => 'Cara memeriksa kata';
+
+  @override
+  String get periksaKataGuideStep1Title => 'Baca makna secara utuh';
+
+  @override
+  String get periksaKataGuideStep1Body =>
+      'Cek lemma, terjemahan, dan definisinya. Ketuk kartu untuk melihat detail kata.';
+
+  @override
+  String get periksaKataGuideStep2Title => 'Beri voting';
+
+  @override
+  String get periksaKataGuideStep2Body =>
+      'Pilih Sudah pas atau Perlu dicek ulang. Satu akun satu voting - ketuk lagi untuk batal.';
+
+  @override
+  String get periksaKataGuideStep3Title => 'Lewati jika ragu';
+
+  @override
+  String get periksaKataGuideStep3Body =>
+      'Geser kartu ke kiri untuk melewati tanpa memilih.';
+
+  @override
+  String get periksaKataGuideRulesTitle => 'Aturan keputusan';
+
+  @override
+  String get periksaKataGuideRuleVerifyTitle => 'Terverifikasi otomatis';
+
+  @override
+  String get periksaKataGuideRuleVerifyBody =>
+      'Selisih voting Sudah pas minimal +5 dari sedikitnya 5 pemilih.';
+
+  @override
+  String get periksaKataGuideRuleRejectTitle => 'Ditolak otomatis';
+
+  @override
+  String get periksaKataGuideRuleRejectBody =>
+      'Selisih voting Perlu dicek ulang minimal -5 dari sedikitnya 5 pemilih.';
+
+  @override
+  String get periksaKataGuideRuleWaitTitle => 'Tetap menunggu';
+
+  @override
+  String get periksaKataGuideRuleWaitBody =>
+      'Pemilih < 5 atau selisih -4 sampai +4. Voting terbanyak tampil teratas agar cepat selesai.';
+
+  @override
+  String get periksaKataGuideSimTitle => 'Simulasi Voting Warga';
+
+  @override
+  String get periksaKataGuideSimBody =>
+      'Ketuk kartu atau tombol di bawah untuk lihat perubahan status di ambang +5 / -5. Tidak mengubah data asli.';
+
+  @override
+  String get periksaKataGuideSimAgree => '+1 Sudah pas';
+
+  @override
+  String get periksaKataGuideSimDisagree => '+1 Perlu dicek ulang';
+
+  @override
+  String get periksaKataGuideSimReset => 'Ulangi simulasi';
+
+  @override
+  String get periksaKataGuideSimVerified => 'Terverifikasi otomatis';
+
+  @override
+  String get periksaKataGuideSimRejected => 'Ditolak otomatis';
+
+  @override
+  String periksaKataGuideSimWaiting(int voters, int threshold, int net) {
+    return 'Masih menunggu. $voters pemilih, selisih $net. Ambang +$threshold atau -$threshold.';
+  }
+
+  @override
+  String get periksaKataGuideBannerText =>
+      'Pahami cara kerja & coba simulasi voting';
+
+  @override
+  String get periksaKataGuideBannerAction => 'Lihat panduan';
+
+  @override
+  String get periksaKataGuideBannerDismiss => 'Tutup';
+
+  @override
+  String get periksaKataGuideSampleLemma => 'lestari';
+
+  @override
+  String get periksaKataGuideSampleTranslation => 'sustainable';
+
+  @override
+  String get periksaKataGuideSampleDefinition =>
+      'tetap terjaga dan bisa bertahan lama';
+
+  @override
+  String get periksaKataGuideIntro =>
+      'Setiap kosakata atau makna dari usulan warga akan masuk ke area voting terlebih dahulu sebelum terverifikasi. Lewat voting bersama, makna yang tepat segera disahkan dan yang keliru cepat tersaring.';
+
+  @override
+  String get exploreFeedbackCtaTitle => 'Punya kritik atau saran?';
+
+  @override
+  String get exploreFeedbackCtaSubtitle =>
+      'Bantu kami membuat pengalaman menggunakan SambasKu jadi lebih nyaman untukmu!';
+
+  @override
+  String get feedbackTitle => 'Kritik & Saran';
+
+  @override
+  String get feedbackHeroSemantics =>
+      'Ilustrasi kirim kritik dan saran untuk SambasKu';
+
+  @override
+  String get feedbackIntro =>
+      'Punya ide fitur, masukan, atau hal yang kurang pas? Ceritakan di sini ya.';
+
+  @override
+  String get feedbackGuestAnonymous => 'Masukan kamu dikirim sebagai Anonim';
+
+  @override
+  String get feedbackGuestLoginHint =>
+      'Login kalau mau melampirkan gambar pendukung';
+
+  @override
+  String get feedbackDescriptionLabel => 'Kritik atau saran';
+
+  @override
+  String get feedbackDescriptionHint =>
+      'Tulis ide, saran perbaikan, atau hal yang kamu harapkan di SambasKu';
+
+  @override
+  String get feedbackSubmit => 'Kirim Masukan';
+
+  @override
+  String get feedbackSubmitting => 'Mengirim...';
+
+  @override
+  String get feedbackThanks => 'Terima kasih, masukan kamu sudah kami terima';
 }

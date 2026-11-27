@@ -13,6 +13,9 @@ import '../../../explore/explore_router.dart';
 import '../../karya_router.dart';
 import '../../domain/karya.dart';
 import '../karya_providers.dart';
+import '../widgets/karya_film_poster_tile.dart';
+import '../widgets/karya_media_frame.dart';
+import '../widgets/karya_music_track_tile.dart';
 
 class KaryaListPage extends ConsumerStatefulWidget {
   const KaryaListPage({super.key});
@@ -183,10 +186,19 @@ class _KaryaListPageState extends ConsumerState<KaryaListPage> {
                     itemCount: items.length,
                     separatorBuilder: (context, _) =>
                         const PublicBrowseListDivider(),
-                    itemBuilder: (context, i) => _KaryaListTile(
-                      item: items[i],
-                      showKind: _kind == null,
-                    ),
+                    itemBuilder: (context, i) {
+                      final item = items[i];
+                      if (_kind == 'music' && item.isMusic) {
+                        return KaryaMusicTrackTile(item: item);
+                      }
+                      if (_kind == 'film' && item.isFilm) {
+                        return KaryaFilmPosterTile(item: item);
+                      }
+                      return _KaryaListTile(
+                        item: item,
+                        showKind: _kind == null,
+                      );
+                    },
                   ),
                 );
               },
@@ -226,10 +238,19 @@ class _KaryaListTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              item.isMusic ? FLucideIcons.music : FLucideIcons.clapperboard,
-              size: 28,
-              color: theme.colors.primary,
+            KaryaMediaFrame(
+              width: 40,
+              height: 40,
+              borderRadius: 8,
+              child: Center(
+                child: Icon(
+                  item.isMusic
+                      ? FLucideIcons.disc3
+                      : FLucideIcons.clapperboard,
+                  size: 18,
+                  color: theme.colors.primary,
+                ),
+              ),
             ),
             const Gap(12),
             Expanded(
@@ -240,7 +261,7 @@ class _KaryaListTile extends StatelessWidget {
                     item.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.body.md.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -249,7 +270,7 @@ class _KaryaListTile extends StatelessWidget {
                     subtitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.body.sm.copyWith(
+                    style: theme.typography.body.xs.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
@@ -354,7 +375,7 @@ class _EmptyBody extends StatelessWidget {
           Text(
             hasFilter ? l10n.karyaEmptyFilter : l10n.karyaEmpty,
             textAlign: TextAlign.center,
-            style: theme.typography.body.md.copyWith(
+            style: theme.typography.body.sm.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -362,7 +383,7 @@ class _EmptyBody extends StatelessWidget {
           Text(
             hasFilter ? l10n.karyaEmptyFilterHint : l10n.karyaEmptyHint,
             textAlign: TextAlign.center,
-            style: theme.typography.body.sm.copyWith(
+            style: theme.typography.body.xs.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),

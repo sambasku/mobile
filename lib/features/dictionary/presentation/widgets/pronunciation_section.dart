@@ -57,13 +57,18 @@ class PronunciationSection extends ConsumerWidget {
         d.id: d.name,
     };
 
+    final l10n = AppLocalizations.of(context);
+    final isExample = exampleId != null;
+    final recordLabel = isExample
+        ? l10n.dictRecordExampleAudio
+        : l10n.dictRecordPronunciation;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (!compact) ...[
           Text(
-            sectionLabel ??
-                AppLocalizations.of(context).dictPronunciationSection,
+            sectionLabel ?? l10n.dictPronunciationSection,
             style: context.theme.typography.body.sm.copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: 0.06,
@@ -101,35 +106,18 @@ class PronunciationSection extends ConsumerWidget {
           ),
         ] else if (!compact) ...[
           Text(
-            AppLocalizations.of(context).dictNoPronunciationAudio,
+            l10n.dictNoPronunciationAudio,
             style: context.theme.typography.body.sm.copyWith(
               color: context.theme.colors.mutedForeground,
             ),
           ),
           const Gap(6),
         ],
-        if (canRecord) ...[
-          if (sorted.isNotEmpty) const Gap(2),
-          FButton(
-            // Kosong + section kata: CTA utama. Sudah ada audio: aksi sekunder.
-            variant: emptyAudios && !compact
-                ? FButtonVariant.primary
-                : FButtonVariant.ghost,
-            onPress: () => _openRecord(context, ref),
-            prefix: Icon(
-              FLucideIcons.mic,
-              size: 16,
-              color: emptyAudios && !compact
-                  ? null
-                  : context.theme.colors.primary,
-            ),
-            child: Text(
-              compact
-                  ? AppLocalizations.of(context).dictRecordExampleAudio
-                  : AppLocalizations.of(context).dictRecordPronunciation,
-            ),
+        if (canRecord)
+          _RecordPronunciationTile(
+            label: recordLabel,
+            onTap: () => _openRecord(context, ref),
           ),
-        ],
       ],
     );
   }
@@ -160,6 +148,60 @@ class PronunciationSection extends ConsumerWidget {
       defaultSpeakerName: displayPublicAccountLabel(
         displayName: auth.displayName,
         username: auth.username,
+      ),
+    );
+  }
+}
+
+/// Tile CTA rekam pelafalan dengan gaya permukaan identik [AudioPlayerSurface].
+class _RecordPronunciationTile extends StatelessWidget {
+  const _RecordPronunciationTile({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Semantics(
+      button: true,
+      label: label,
+      child: Material(
+        color: theme.colors.secondary.withValues(alpha: 0.4),
+        borderRadius: BorderRadius.circular(8),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: Center(
+                    child: Icon(
+                      FLucideIcons.mic,
+                      size: 18,
+                      color: theme.colors.primary,
+                    ),
+                  ),
+                ),
+                const Gap(6),
+                Expanded(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.typography.body.xs.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

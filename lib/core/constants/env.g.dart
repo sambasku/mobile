@@ -25,6 +25,12 @@ final class _Env {
   static const String? googleWebClientIdProduction =
       '497143924506-embip2d0er5te84t6cind855tlmsm0i1.apps.googleusercontent.com';
 
+  static const String? googleIosClientIdStaging =
+      '497143924506-irkhbpsceva3imn6bss7qobdflehdrhc.apps.googleusercontent.com';
+
+  static const String? googleIosClientIdProduction =
+      '497143924506-ll24s7q1h84jhi8b0bf9s7jsesf7ca1e.apps.googleusercontent.com';
+
   static const String? facebookAppIdStaging = '1381737407319537';
 
   static const String? facebookAppIdProduction = '2004759406907006';

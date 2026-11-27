@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/models/image_attribution.dart';
+import '../../core/utils/display_image_url.dart';
 import '../../core/utils/format_number.dart';
 import '../../core/widgets/image_preview.dart';
 import '../../l10n/app_localizations.dart';
@@ -562,7 +563,10 @@ class _Thumb extends StatelessWidget {
                           )
                         : (networkUrl != null && networkUrl.isNotEmpty)
                         ? CachedNetworkImageWithFallback(
-                            imageUrl: networkUrl,
+                            imageUrl:
+                                displayImageUrl(networkUrl, width: 256) ??
+                                networkUrl,
+                            fallbackUrl: networkUrl,
                             fit: BoxFit.cover,
                           )
                         : ColoredBox(

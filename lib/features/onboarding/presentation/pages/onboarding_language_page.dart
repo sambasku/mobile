@@ -45,20 +45,20 @@ class OnboardingLanguagePage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Gap(40),
-              const Center(child: BrandMark(size: 140)),
-              const Gap(24),
+              const Gap(16),
+              const Center(child: BrandMark(size: kBrandMarkHeroSize)),
+              const Gap(28),
               Text(
                 l10n.onboardingLanguageTitle,
-                style: theme.typography.body.xl.copyWith(
+                style: theme.typography.body.lg.copyWith(
                   fontWeight: FontWeight.w700,
-                  height: 1.2,
+                  height: 1.25,
                 ),
               ),
-              const Gap(14),
+              const Gap(10),
               Text(
                 l10n.onboardingLanguageBody,
-                style: theme.typography.body.md.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                   height: 1.45,
                 ),

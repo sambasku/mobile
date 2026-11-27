@@ -343,12 +343,16 @@ class WordImage {
     this.isVerified = true,
     this.contentWarnings = const [],
     this.attribution,
+    this.sourceJinyeId,
   });
 
   final String id;
   final String url;
   final String? altText;
   final bool isPrimary;
+
+  /// Id Jinye sumber (foto hasil promote Jinye); null = bukan dari Jinye.
+  final String? sourceJinyeId;
 
   /// Kredit foto stock Media Explorer; null = upload / data lama.
   final ImageAttribution? attribution;

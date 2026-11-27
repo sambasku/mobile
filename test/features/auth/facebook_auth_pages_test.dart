@@ -157,6 +157,47 @@ Future<void> _pumpUi(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 200));
 }
 
+void _tallRegisterViewport(WidgetTester tester) {
+  tester.view.physicalSize = const Size(800, 1600);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+}
+
+Future<void> _waitRegisterLegalReady(WidgetTester tester) async {
+  final checkbox = find.byType(FCheckbox);
+  for (var i = 0; i < 30; i++) {
+    await tester.pump(const Duration(milliseconds: 50));
+    final widget = tester.widget<FCheckbox>(checkbox);
+    if (widget.enabled) return;
+  }
+  fail('GET /legal/current tidak selesai di test register');
+}
+
+Future<void> _acceptRegisterLegal(WidgetTester tester) async {
+  await _waitRegisterLegalReady(tester);
+  final checkbox = find.byType(FCheckbox);
+  await tester.ensureVisible(checkbox);
+  await tester.tap(checkbox, warnIfMissed: false);
+  await _pumpUi(tester);
+}
+
+Future<void> _pumpUntilText(WidgetTester tester, Finder finder) async {
+  for (var i = 0; i < 40; i++) {
+    await tester.pump(const Duration(milliseconds: 50));
+    if (finder.evaluate().isNotEmpty) return;
+  }
+}
+
+Future<void> _dismissErrorSheet(WidgetTester tester) async {
+  final ok = find.text('Mengerti');
+  if (ok.evaluate().isEmpty) return;
+  await tester.ensureVisible(ok);
+  await tester.pump(const Duration(milliseconds: 100));
+  await tester.tap(ok);
+  await tester.pump(const Duration(milliseconds: 400));
+}
+
 void main() {
   setUp(() {
     F.appFlavor = Flavor.staging;
@@ -215,6 +256,7 @@ void main() {
       ),
       _StubSignIn(),
     );
+    _tallRegisterViewport(tester);
     await tester.pumpWidget(
       _harness(
         child: const LoginPage(),
@@ -228,8 +270,9 @@ void main() {
     final facebook = find.text('Masuk dengan Facebook');
     await tester.ensureVisible(facebook);
     await tester.tap(facebook);
-    await _pumpUi(tester);
+    await _pumpUntilText(tester, find.textContaining('Email sudah terdaftar'));
     expect(find.textContaining('Email sudah terdaftar'), findsOneWidget);
+    await _dismissErrorSheet(tester);
   });
 
   testWidgets('409 → FAlert berisi Email sudah terdaftar (register)', (
@@ -246,6 +289,7 @@ void main() {
       ),
       _StubSignIn(),
     );
+    _tallRegisterViewport(tester);
     await tester.pumpWidget(
       _harness(
         child: const RegisterPage(),
@@ -256,18 +300,12 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    // Register mengunci tombol sosial sampai checkbox legal dicentang.
-    await tester.tap(find.byType(FCheckbox));
-    await _pumpUi(tester);
-    // Register mengunci tombol sosial sampai checkbox legal dicentang.
-    // Checkbox di bawah viewport - scroll dulu.
-    await tester.ensureVisible(find.byType(FCheckbox));
-    await _pumpUi(tester);
-    await tester.tap(find.byType(FCheckbox));
-    await _pumpUi(tester);
-    await tester.ensureVisible(find.text('Daftar dengan Facebook'));
-    await tester.tap(find.text('Daftar dengan Facebook'));
-    await _pumpUi(tester);
+    await _acceptRegisterLegal(tester);
+    final facebook = find.text('Daftar dengan Facebook');
+    await tester.ensureVisible(facebook);
+    await tester.tap(facebook);
+    await _pumpUntilText(tester, find.textContaining('Email sudah terdaftar'));
     expect(find.textContaining('Email sudah terdaftar'), findsOneWidget);
+    await _pumpUi(tester);
   });
 }

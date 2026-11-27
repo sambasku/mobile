@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../suggest_edit/domain/suggest_category.dart';
 import '../../domain/entities/word_suggestion_review.dart';
 import '../../domain/failures/review_failure.dart';
 import '../providers/review_suggestions_providers.dart';
@@ -259,6 +260,18 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
                 ),
               ),
             ),
+          if (reviewCorrectableCategory(detail.reasonCode) != null) ...[
+            FButton(
+              variant: FButtonVariant.outline,
+              onPress: _busy
+                  ? null
+                  : () => context.push(
+                      '/suggest-edit/${detail.wordId}?review=${detail.id}',
+                    ),
+              child: Text(AppLocalizations.of(context).reviewSuggestionCorrectButton),
+            ),
+            const Gap(8),
+          ],
           FButton(
             variant: FButtonVariant.outline,
             onPress: _busy ? null : _reject,

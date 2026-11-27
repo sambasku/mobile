@@ -22,6 +22,7 @@ import '../../../../shared/widgets/contributor_appreciation.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/data/providers/contribution_data_providers.dart';
+import '../../../karya/presentation/widgets/karya_media_frame.dart';
 import '../../domain/entities/usaha.dart';
 import '../../usaha_router.dart';
 import '../providers/usaha_providers.dart';
@@ -43,9 +44,7 @@ class UsahaDetailPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       // EntryBar sudah punya top border - jangan dobel dengan footerDecoration.
-      scaffoldStyle: .delta(
-        footerDecoration: .value(const BoxDecoration()),
-      ),
+      scaffoldStyle: .delta(footerDecoration: .value(const BoxDecoration())),
       header: FHeader.nested(
         title: Text(l10n.usahaTitle),
         prefixes: [
@@ -236,9 +235,7 @@ class _BodyState extends ConsumerState<_Body> {
 
   Future<void> _recordView() async {
     try {
-      await ref
-          .read(usahaRepositoryProvider)
-          .recordView(widget.usaha.slug);
+      await ref.read(usahaRepositoryProvider).recordView(widget.usaha.slug);
     } catch (_) {
       // best-effort
     }
@@ -287,8 +284,7 @@ class _BodyState extends ConsumerState<_Body> {
           title: Text(l10n.usahaLocationVillage),
           subtitle: Text(village.name),
         ),
-      if (usaha.addressText case final address?
-          when address.trim().isNotEmpty)
+      if (usaha.addressText case final address? when address.trim().isNotEmpty)
         FTile(
           prefix: const Icon(FLucideIcons.house, size: 18),
           title: Text(l10n.usahaLocationAddress),
@@ -299,51 +295,68 @@ class _BodyState extends ConsumerState<_Body> {
     return ListView(
       padding: const EdgeInsets.only(bottom: 32),
       children: [
-        if (cover != null && cover.isNotEmpty) ...[
-          GestureDetector(
-            onTap: () => showImagePreview(context, urls: [cover]),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: AspectRatio(
-                aspectRatio: 16 / 10,
-                child: CachedNetworkImageWithFallback(
-                  imageUrl: displayImageUrl(cover, width: 900) ?? cover,
-                  fallbackUrl: cover,
-                  fit: BoxFit.cover,
+        // Identitas atas: pola karya (foto kiri 80px + nama/badge kanan).
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (cover != null && cover.isNotEmpty) ...[
+              Semantics(
+                button: true,
+                label: usaha.name,
+                child: GestureDetector(
+                  onTap: () => showImagePreview(context, urls: [cover]),
+                  child: KaryaMediaFrame(
+                    width: 80,
+                    height: 80,
+                    child: CachedNetworkImageWithFallback(
+                      imageUrl: displayImageUrl(cover, width: 256) ?? cover,
+                      fallbackUrl: cover,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          const Gap(12),
-        ],
-        Text(
-          usaha.name,
-          style: theme.typography.body.xl.copyWith(
-            fontWeight: FontWeight.w800,
-            height: 1.25,
-          ),
-        ),
-        const Gap(8),
-        Wrap(
-          spacing: 6,
-          runSpacing: 6,
-          children: [
-            ?badge,
-            ?usahaSponsorDetailBadge(l10n, usaha.sponsorTier),
-            if (usaha.category case final category?)
-              FBadge(
-                variant: FBadgeVariant.secondary,
-                child: Text(category.name),
+              const Gap(12),
+            ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    usaha.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w700,
+                      height: 1.25,
+                    ),
+                  ),
+                  const Gap(6),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      ?badge,
+                      ?usahaSponsorDetailBadge(l10n, usaha.sponsorTier),
+                      if (usaha.category case final category?)
+                        FBadge(
+                          variant: FBadgeVariant.secondary,
+                          child: Text(category.name),
+                        ),
+                      FBadge(
+                        variant: FBadgeVariant.outline,
+                        child: Text(usahaKindLabel(l10n, usaha.kind)),
+                      ),
+                      if (usaha.isManaged)
+                        FBadge(
+                          variant: FBadgeVariant.secondary,
+                          child: Text(l10n.usahaManagedByOwner),
+                        ),
+                    ],
+                  ),
+                ],
               ),
-            FBadge(
-              variant: FBadgeVariant.outline,
-              child: Text(usahaKindLabel(l10n, usaha.kind)),
             ),
-            if (usaha.isManaged)
-              FBadge(
-                variant: FBadgeVariant.secondary,
-                child: Text(l10n.usahaManagedByOwner),
-              ),
           ],
         ),
         if (usaha.description != null) ...[
@@ -433,14 +446,20 @@ class _BodyState extends ConsumerState<_Body> {
               prefix: const Icon(FLucideIcons.pencil, size: 18),
               title: Text(l10n.usahaActionSuggestEdit),
               suffix: const Icon(FLucideIcons.chevronRight, size: 16),
-              onPress: () =>
-                  context.push(UsahaRouter.editPath(usaha.slug)),
+              onPress: () => context.push(UsahaRouter.editPath(usaha.slug)),
             ),
             FTile(
               prefix: const Icon(FLucideIcons.keyRound, size: 18),
               title: Text(l10n.usahaFormClaim),
               subtitle: Text(l10n.usahaManageClaimBody),
               onPress: onClaim,
+            ),
+            FTile(
+              prefix: const Icon(FLucideIcons.history, size: 18),
+              title: Text(l10n.historyTitle),
+              subtitle: Text(l10n.usahaHistoryBody),
+              suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+              onPress: () => context.push(UsahaRouter.historyPath(usaha.slug)),
             ),
           ],
         ),
@@ -641,9 +660,7 @@ class _UsahaPhotoGrid extends StatelessWidget {
       children: [
         Text(
           l10n.usahaPhotosTitle,
-          style: theme.typography.body.md.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(4),
         GridView.builder(
@@ -799,10 +816,7 @@ class _ClaimSheetState extends ConsumerState<_ClaimSheet> {
                   }
                   Navigator.pop(context, [
                     for (final img in ready)
-                      {
-                        'url': img.url,
-                        'provider_file_id': img.providerFileId,
-                      },
+                      {'url': img.url, 'provider_file_id': img.providerFileId},
                   ]);
                 },
                 child: Text(l10n.usahaClaimSubmit),

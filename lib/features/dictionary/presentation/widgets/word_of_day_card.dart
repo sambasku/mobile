@@ -9,6 +9,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../shared/profile/profile_covers_provider.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../dictionary_router.dart';
 import '../../domain/entities/word_of_day.dart';
@@ -58,10 +59,12 @@ class _WordOfDayBody extends ConsumerWidget {
         ? 0.45
         : 0.30;
 
-    // Background dinamis dari CDN (home.json). Null → asset bundled.
+    // URL: API cover aktif (admin). Alignment: home.json. Offline: asset bundled.
+    final apiWotdUrl = ref.watch(profileCoversProvider).value?.wotdUrl;
     final config = ref.watch(cardImagesProvider).value;
     final wotdImage = config?.entryOf('wotd');
     final bgAlignment = wotdImage?.alignmentValue ?? Alignment.bottomCenter;
+    final networkUrl = apiWotdUrl;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -74,14 +77,15 @@ class _WordOfDayBody extends ConsumerWidget {
           children: [
             // 1. Background image (CDN config, fallback asset bundled)
             Positioned.fill(
-              child: wotdImage == null
+              child: networkUrl == null
                   ? Image.asset(
                       'assets/images/wotd_cover.webp',
                       fit: BoxFit.cover,
                       alignment: bgAlignment,
                     )
                   : Image.network(
-                      wotdImage.imageUrl,
+                      networkUrl,
+                      key: ValueKey(networkUrl),
                       fit: BoxFit.cover,
                       alignment: bgAlignment,
                       errorBuilder: (_, _, _) => Image.asset(
