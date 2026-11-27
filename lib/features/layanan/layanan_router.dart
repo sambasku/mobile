@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/route_definer.dart';
+import '../../shared/change_history/change_history_controller.dart';
+import '../../shared/change_history/entity_change_history_page.dart';
 import 'presentation/layanan_contribute_page.dart';
 import 'presentation/layanan_detail_page.dart';
 import 'presentation/layanan_proposals_page.dart';
@@ -22,6 +24,15 @@ class LayananRouter {
     path: '/layanan/:slug',
     name: 'LayananRouter.detail',
   );
+
+  /// Timeline riwayat perubahan (publik).
+  static const history = RouteDefiner(
+    path: '/layanan/:slug/riwayat',
+    name: 'LayananRouter.history',
+  );
+
+  static String historyPath(String slug) =>
+      history.path.replaceFirst(':slug', Uri.encodeComponent(slug));
 
   static String detailPath(String slug) =>
       detail.path.replaceFirst(':slug', Uri.encodeComponent(slug));
@@ -51,6 +62,17 @@ class LayananRouter {
       path: proposals.path,
       name: proposals.name,
       builder: (context, state) => const LayananProposalsPage(),
+    ),
+    GoRoute(
+      path: history.path,
+      name: history.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['slug'] ?? '';
+        return EntityChangeHistoryPage(
+          path: layananChangeHistoryPath(slug),
+          fallbackLocation: detailPath(slug),
+        );
+      },
     ),
     GoRoute(
       path: detail.path,

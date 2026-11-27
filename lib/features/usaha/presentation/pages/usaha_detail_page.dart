@@ -442,6 +442,13 @@ class _BodyState extends ConsumerState<_Body> {
               subtitle: Text(l10n.usahaManageClaimBody),
               onPress: onClaim,
             ),
+            FTile(
+              prefix: const Icon(FLucideIcons.history, size: 18),
+              title: Text(l10n.historyTitle),
+              subtitle: Text(l10n.usahaHistoryBody),
+              suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+              onPress: () => context.push(UsahaRouter.historyPath(usaha.slug)),
+            ),
           ],
         ),
         if (usaha.items.isNotEmpty) ...[

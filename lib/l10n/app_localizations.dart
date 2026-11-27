@@ -24986,6 +24986,36 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat apa saja yang berubah di data kuliner ini.'**
   String get cuisineHistoryBody;
+
+  /// No description provided for @usahaHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data usaha ini.'**
+  String get usahaHistoryBody;
+
+  /// No description provided for @eventHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data acara ini.'**
+  String get eventHistoryBody;
+
+  /// No description provided for @karyaHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data karya ini.'**
+  String get karyaHistoryBody;
+
+  /// No description provided for @layananHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data layanan ini.'**
+  String get layananHistoryBody;
+
+  /// No description provided for @communityHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data komunitas ini.'**
+  String get communityHistoryBody;
 }
 
 class _AppLocalizationsDelegate

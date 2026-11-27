@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/route_definer.dart';
+import '../../shared/change_history/change_history_controller.dart';
+import '../../shared/change_history/entity_change_history_page.dart';
 import 'presentation/pages/karya_contribute_page.dart';
 import 'presentation/pages/karya_detail_page.dart';
 import 'presentation/pages/karya_excerpt_page.dart';
@@ -34,6 +36,15 @@ class KaryaRouter {
     path: '/kreator/:slug',
     name: 'KaryaRouter.kreator',
   );
+
+  /// Timeline riwayat perubahan (publik).
+  static const history = RouteDefiner(
+    path: '/karya/:slug/riwayat',
+    name: 'KaryaRouter.history',
+  );
+
+  static String historyPath(String slug) =>
+      history.path.replaceFirst(':slug', Uri.encodeComponent(slug));
 
   static String detailPath(String slug) =>
       detail.path.replaceFirst(':slug', Uri.encodeComponent(slug));
@@ -94,6 +105,17 @@ class KaryaRouter {
       path: proposals.path,
       name: proposals.name,
       builder: (context, state) => const KaryaProposalsPage(),
+    ),
+    GoRoute(
+      path: history.path,
+      name: history.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['slug'] ?? '';
+        return EntityChangeHistoryPage(
+          path: karyaChangeHistoryPath(slug),
+          fallbackLocation: detailPath(slug),
+        );
+      },
     ),
     GoRoute(
       path: detail.path,

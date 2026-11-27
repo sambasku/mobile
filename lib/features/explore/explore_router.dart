@@ -119,6 +119,15 @@ class ExploreRouter {
     name: 'ExploreRouter.communityDetail',
   );
 
+  /// Timeline riwayat perubahan satu komunitas (`orgId` = slug).
+  static const communityHistory = RouteDefiner(
+    path: '/explore/komunitas/:orgId/riwayat',
+    name: 'ExploreRouter.communityHistory',
+  );
+
+  static String communityHistoryPath(String slug) =>
+      communityHistory.path.replaceFirst(':orgId', Uri.encodeComponent(slug));
+
   static String cuisineDetailPath(String slug) =>
       cuisineDetail.path.replaceFirst(':slug', slug);
 
@@ -283,6 +292,20 @@ class ExploreRouter {
         path: cuisineChangeHistoryPath(state.pathParameters['slug'] ?? ''),
         fallbackLocation: cuisineDetailPath(state.pathParameters['slug'] ?? ''),
       ),
+    ),
+    GoRoute(
+      path: communityHistory.path,
+      name: communityHistory.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['orgId'] ?? '';
+        return EntityChangeHistoryPage(
+          path: communityChangeHistoryPath(slug),
+          fallbackLocation: communityDetail.path.replaceFirst(
+            ':orgId',
+            Uri.encodeComponent(slug),
+          ),
+        );
+      },
     ),
     GoRoute(
       path: placeHistory.path,

@@ -223,6 +223,13 @@ FTileGroup(
                             );
                           },
                         ),
+                        FTile(
+                          prefix: const Icon(FLucideIcons.history, size: 18),
+                          title: Text(l10n.historyTitle),
+                          subtitle: Text(l10n.layananHistoryBody),
+                          suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+                          onPress: () => context.push(LayananRouter.historyPath(item.slug)),
+                        ),
                       ],
                     ),
                   ],

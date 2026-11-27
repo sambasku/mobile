@@ -14223,6 +14223,26 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get cuisineHistoryBody =>
       'Lihat apa saja yang berubah di data kuliner ini.';
+
+  @override
+  String get usahaHistoryBody =>
+      'Lihat apa saja yang berubah di data usaha ini.';
+
+  @override
+  String get eventHistoryBody =>
+      'Lihat apa saja yang berubah di data acara ini.';
+
+  @override
+  String get karyaHistoryBody =>
+      'Lihat apa saja yang berubah di data karya ini.';
+
+  @override
+  String get layananHistoryBody =>
+      'Lihat apa saja yang berubah di data layanan ini.';
+
+  @override
+  String get communityHistoryBody =>
+      'Lihat apa saja yang berubah di data komunitas ini.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -28359,4 +28379,24 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get cuisineHistoryBody =>
       'Lihat apa saja yang berubah di data kuliner ini.';
+
+  @override
+  String get usahaHistoryBody =>
+      'Lihat apa saja yang berubah di data usaha ini.';
+
+  @override
+  String get eventHistoryBody =>
+      'Lihat apa saja yang berubah di data acara ini.';
+
+  @override
+  String get karyaHistoryBody =>
+      'Lihat apa saja yang berubah di data karya ini.';
+
+  @override
+  String get layananHistoryBody =>
+      'Lihat apa saja yang berubah di data layanan ini.';
+
+  @override
+  String get communityHistoryBody =>
+      'Lihat apa saja yang berubah di data komunitas ini.';
 }

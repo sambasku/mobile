@@ -463,6 +463,13 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
                 ),
                 onPress: () => _openContribute(context),
               ),
+              FTile(
+                prefix: const Icon(FLucideIcons.history, size: 18),
+                title: Text(l10n.historyTitle),
+                subtitle: Text(l10n.karyaHistoryBody),
+                suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+                onPress: () => context.push(KaryaRouter.historyPath(widget.slug)),
+              ),
             ],
           ),
         ],

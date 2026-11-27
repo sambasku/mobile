@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/route_definer.dart';
+import '../../shared/change_history/change_history_controller.dart';
+import '../../shared/change_history/entity_change_history_page.dart';
 import 'presentation/pages/event_contribute_page.dart';
 import 'presentation/pages/event_detail_page.dart';
 import 'presentation/pages/event_list_page.dart';
@@ -44,6 +46,15 @@ class EventRouter {
     name: 'EventRouter.photoAdd',
   );
 
+  /// Timeline riwayat perubahan (publik).
+  static const history = RouteDefiner(
+    path: '/acara/:slug/riwayat',
+    name: 'EventRouter.history',
+  );
+
+  static String historyPath(String slug) =>
+      history.path.replaceFirst(':slug', Uri.encodeComponent(slug));
+
   static String detailPath(String slug) =>
       detail.path.replaceFirst(':slug', Uri.encodeComponent(slug));
 
@@ -86,6 +97,17 @@ class EventRouter {
       path: list.path,
       name: list.name,
       builder: (context, state) => const EventListPage(),
+    ),
+    GoRoute(
+      path: history.path,
+      name: history.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['slug'] ?? '';
+        return EntityChangeHistoryPage(
+          path: eventChangeHistoryPath(slug),
+          fallbackLocation: detailPath(slug),
+        );
+      },
     ),
     GoRoute(
       path: detail.path,

@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/route_definer.dart';
+import '../../shared/change_history/change_history_controller.dart';
+import '../../shared/change_history/entity_change_history_page.dart';
 import 'presentation/pages/usaha_contribute_page.dart';
 import 'presentation/pages/usaha_claims_page.dart';
 import 'presentation/pages/usaha_detail_page.dart';
@@ -21,6 +23,15 @@ class UsahaRouter {
     path: '/usaha/:slug',
     name: 'UsahaRouter.detail',
   );
+
+  /// Timeline riwayat perubahan (publik).
+  static const history = RouteDefiner(
+    path: '/usaha/:slug/riwayat',
+    name: 'UsahaRouter.history',
+  );
+
+  static String historyPath(String slug) =>
+      history.path.replaceFirst(':slug', Uri.encodeComponent(slug));
 
   /// Peta internal satu pin usaha.
   static const map = RouteDefiner(
@@ -128,6 +139,17 @@ class UsahaRouter {
       builder: (context, state) {
         final slug = state.pathParameters['slug'] ?? '';
         return UsahaPhotosPage(slug: slug);
+      },
+    ),
+    GoRoute(
+      path: history.path,
+      name: history.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['slug'] ?? '';
+        return EntityChangeHistoryPage(
+          path: usahaChangeHistoryPath(slug),
+          fallbackLocation: detailPath(slug),
+        );
       },
     ),
     GoRoute(

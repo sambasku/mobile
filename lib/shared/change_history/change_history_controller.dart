@@ -12,6 +12,21 @@ String placeChangeHistoryPath(String slug) =>
 String cuisineChangeHistoryPath(String slug) =>
     '/api/v1/culinary/cuisines/${Uri.encodeComponent(slug)}/change-history';
 
+String usahaChangeHistoryPath(String slug) =>
+    '/api/v1/usaha/${Uri.encodeComponent(slug)}/change-history';
+
+String eventChangeHistoryPath(String slug) =>
+    '/api/v1/events/${Uri.encodeComponent(slug)}/change-history';
+
+String karyaChangeHistoryPath(String slug) =>
+    '/api/v1/karya/${Uri.encodeComponent(slug)}/change-history';
+
+String layananChangeHistoryPath(String slug) =>
+    '/api/v1/layanan/${Uri.encodeComponent(slug)}/change-history';
+
+String communityChangeHistoryPath(String slug) =>
+    '/api/v1/community/orgs/${Uri.encodeComponent(slug)}/change-history';
+
 class ChangeHistoryListState {
   const ChangeHistoryListState({
     required this.items,

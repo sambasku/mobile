@@ -478,6 +478,13 @@ class _InfoGroup extends ConsumerWidget {
                   : AuthRouter.login.path,
             ),
           ),
+          FTile(
+            prefix: const Icon(FLucideIcons.history, size: 18),
+            title: Text(l10n.historyTitle),
+            subtitle: Text(l10n.eventHistoryBody),
+            suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+            onPress: () => context.push(EventRouter.historyPath(event.slug)),
+          ),
       ],
     );
   }

@@ -11,6 +11,7 @@ import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
 import '../../../user_profile/presentation/widgets/profile_activity_section.dart'
     show OverlapAboveBox, ProfileBarClearanceHeader;
+import '../../../explore/explore_router.dart';
 import '../../domain/community_org.dart';
 import '../providers/community_providers.dart';
 
@@ -204,6 +205,18 @@ class _OrgDetailBody extends StatelessWidget {
                           prefix: const Icon(FLucideIcons.alignLeft, size: 18),
                           title: Text(l10n.communityContributeDesc),
                           subtitle: Text(org.description),
+                        ),
+                        FTile(
+                          prefix: const Icon(FLucideIcons.history, size: 18),
+                          title: Text(l10n.historyTitle),
+                          subtitle: Text(l10n.communityHistoryBody),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
+                          onPress: () => context.push(
+                            ExploreRouter.communityHistoryPath(org.slug),
+                          ),
                         ),
                       ],
                     ),
