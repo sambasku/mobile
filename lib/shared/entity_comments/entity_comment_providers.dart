@@ -42,6 +42,15 @@ class EntityCommentListState {
   final bool isLoadingMore;
   final bool isSubmitting;
 
+  /// Total komentar termasuk balasan 1 level yang sudah dimuat.
+  int get totalLoadedCount {
+    var count = items.length;
+    for (final item in items) {
+      count += item.replies.length;
+    }
+    return count;
+  }
+
   EntityCommentListState copyWith({
     List<EntityComment>? items,
     String? nextCursor,
@@ -92,6 +101,7 @@ class EntityCommentListController
 
   Future<String?> create(
     String body, {
+    String? parentId,
     CommentImageStaging? image,
     String? stickerId,
   }) async {
@@ -108,6 +118,7 @@ class EntityCommentListController
             key.target,
             key.entityId,
             body: trimmed,
+            parentId: parentId,
             image: image,
             stickerId: hasSticker ? sticker : null,
           );
@@ -125,6 +136,7 @@ class EntityCommentListController
     required File audioFile,
     required int durationMs,
     String? body,
+    String? parentId,
   }) async {
     final current = state.value;
     if (current == null || current.isSubmitting) return null;
@@ -136,6 +148,7 @@ class EntityCommentListController
             audioFile: audioFile,
             durationMs: durationMs,
             body: body,
+            parentId: parentId,
           );
       if (!ref.mounted) return null;
       ref.invalidateSelf();
@@ -155,13 +168,24 @@ class EntityCommentListController
     try {
       final updated = await ref.read(entityCommentApiProvider).update(
             key.target,
+            key.entityId,
             comment.id,
             trimmed,
           );
       if (!ref.mounted) return null;
       final items = [
         for (final item in current.items)
-          if (item.id == comment.id) updated else item,
+          if (item.id == comment.id)
+            updated.copyWith(replies: item.replies)
+          else if (item.replies.any((r) => r.id == comment.id))
+            item.copyWith(
+              replies: [
+                for (final r in item.replies)
+                  if (r.id == comment.id) updated else r,
+              ],
+            )
+          else
+            item,
       ];
       state = AsyncData(current.copyWith(items: items));
       return null;
@@ -174,13 +198,21 @@ class EntityCommentListController
     final current = state.value;
     if (current == null) return 'failed';
     try {
-      await ref.read(entityCommentApiProvider).delete(key.target, comment.id);
+      await ref
+          .read(entityCommentApiProvider)
+          .delete(key.target, key.entityId, comment.id);
       if (!ref.mounted) return null;
       ref.invalidateSelf();
       return null;
     } catch (_) {
       return 'failed';
     }
+  }
+
+  Future<EntityCommentEditHistory> getEditHistory(EntityComment comment) {
+    return ref
+        .read(entityCommentApiProvider)
+        .getEditHistory(key.target, key.entityId, comment.id);
   }
 
   Future<void> loadMore() async {

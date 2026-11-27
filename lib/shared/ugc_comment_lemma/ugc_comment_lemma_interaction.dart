@@ -5,8 +5,16 @@ import '../entity_comments/entity_comment.dart';
 import '../span_lemma/span_lemma_exports.dart';
 import 'ugc_comment_lemma_client.dart';
 
-UgcCommentLemmaAnchor anchorForEntityCommentTarget(EntityCommentTarget target) {
+UgcCommentLemmaAnchor? anchorForEntityCommentTarget(
+  EntityCommentTarget target,
+) {
   switch (target) {
+    case EntityCommentTarget.word:
+      return UgcCommentLemmaAnchor.wordComment;
+    case EntityCommentTarget.article:
+      return UgcCommentLemmaAnchor.articleComment;
+    case EntityCommentTarget.jinye:
+      return null;
     case EntityCommentTarget.place:
       return UgcCommentLemmaAnchor.placeComment;
     case EntityCommentTarget.usaha:

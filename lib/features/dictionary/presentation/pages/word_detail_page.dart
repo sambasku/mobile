@@ -20,7 +20,8 @@ import '../../../review/presentation/providers/review_submit_queue.dart';
 import '../../../review/presentation/widgets/reject_reason_sheet.dart';
 import '../../../bookmark/presentation/providers/bookmark_providers.dart';
 import '../../../bookmark/presentation/widgets/bookmark_button.dart';
-import '../../../comment/presentation/widgets/word_comments_section.dart';
+import '../../../../shared/entity_comments/entity_comment.dart';
+import '../../../../shared/entity_comments/entity_comments_section.dart';
 import '../../../comment/presentation/providers/comment_providers.dart';
 import '../../../jinye/jinye_router.dart';
 import '../../../jinye/presentation/widgets/jinye_used_in_word_section.dart';
@@ -1035,7 +1036,7 @@ class _DetailBody extends HookConsumerWidget {
           ),
         ),
         if (!_lemmaUsesLocalCorpus(ref))
-          WordCommentEntryBar(wordId: wordId)
+          EntityCommentEntryBar(target: EntityCommentTarget.word, entityId: wordId)
         else
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),

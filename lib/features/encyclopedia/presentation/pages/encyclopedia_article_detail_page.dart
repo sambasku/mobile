@@ -21,7 +21,8 @@ import '../utils/encyclopedia_auth.dart';
 import '../utils/encyclopedia_back.dart';
 import '../widgets/encyclopedia_article_hero.dart';
 import '../widgets/encyclopedia_clap_button.dart';
-import '../widgets/encyclopedia_comments_section.dart';
+import '../../../../shared/entity_comments/entity_comment.dart';
+import '../../../../shared/entity_comments/entity_comments_section.dart';
 
 /// Ruang di atas gesture bar supaya tombol back-to-top tidak tertutup footer komentar.
 const _kBackToTopAboveFooter = 72.0;
@@ -232,7 +233,7 @@ class _EncyclopediaArticleDetailPageState
 
     return FScaffold(
       childPad: false,
-      footer: EncyclopediaCommentEntryBar(articleId: article.id),
+      footer: EntityCommentEntryBar(target: EntityCommentTarget.article, entityId: article.id),
       child: ProfileHeroShell(
         showBack: true,
         onBack: () => encyclopediaPopOrGoExplore(context),

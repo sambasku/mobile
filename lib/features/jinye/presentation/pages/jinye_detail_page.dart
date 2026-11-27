@@ -29,7 +29,8 @@ import '../../domain/jinye_models.dart';
 import '../../jinye_router.dart';
 import '../utils/jinye_quota_message.dart';
 import '../widgets/jinye_promote_image_sheet.dart';
-import '../widgets/jinye_comments_section.dart';
+import '../../../../shared/entity_comments/entity_comment.dart';
+import '../../../../shared/entity_comments/entity_comments_section.dart';
 import '../widgets/jinye_lemma_body.dart';
 import '../widgets/jinye_link_lemma_sheet.dart';
 import '../widgets/jinye_report_sheet.dart';
@@ -87,7 +88,7 @@ class JinyeDetailPage extends ConsumerWidget {
               ),
           ],
         ),
-        footer: JinyeCommentEntryBar(jinyeId: id),
+        footer: EntityCommentEntryBar(target: EntityCommentTarget.jinye, entityId: id),
         child: async.when(
           loading: () => Skeletonizer(
             enabled: true,
