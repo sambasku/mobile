@@ -85,10 +85,10 @@ void main() {
     expect(tester.getSize(collapsible).height, greaterThan(80));
 
       expect(find.text('Tambah\nKata'), findsOneWidget);
-      // #193: tile "Dicari warga" pindah ke chips kategori feed; menu
-      // header jadi baris chips horizontal (Cari Kata / Indeks A-Z /
-      // Tambah Kata / Ruang Diskusi).
-      expect(find.text('Dicari warga'), findsNothing);
+      // Home dan tab Kontribusi memakai baris aksi yang sama (ActionChipsRow):
+      // Cari Kata / Indeks A-Z / Tambah Kata / Ruang Diskusi / Dicari warga /
+      // Periksa Kata.
+      expect(find.text('Dicari warga'), findsOneWidget);
       expect(find.text('Ruang\nDiskusi'), findsOneWidget);
       expect(find.text('Pantun'), findsNothing);
       expect(find.text('Ensiklopedia'), findsNothing);
