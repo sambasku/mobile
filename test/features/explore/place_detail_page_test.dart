@@ -111,6 +111,20 @@ void main() {
     expect(find.text('Sumber'), findsWidgets);
     expect(find.text('Wisata lain di kecamatan ini'), findsOneWidget);
     expect(find.text('Masjid Jami'), findsOneWidget);
+    // Tanpa foto: kartu "Wisata lain" menampilkan placeholder ikon, bukan
+    // kotak kosong.
+    expect(
+      find.descendant(
+        of: find
+            .ancestor(
+              of: find.text('Masjid Jami'),
+              matching: find.byType(GestureDetector),
+            )
+            .first,
+        matching: find.byIcon(FLucideIcons.landmark),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Pantai Jauh'), findsNothing);
     expect(find.text('Bubur Pedas'), findsNothing);
 
