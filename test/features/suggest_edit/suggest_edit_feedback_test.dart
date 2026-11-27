@@ -34,7 +34,7 @@ void main() {
         final copy = suggestEditPreSubmitCopy(role, l10n);
         expect(copy.cta, 'Simpan perubahan');
         expect(copy.ctaBusy, 'Menyimpan...');
-        expect(copy.banner, contains('langsung diterapkan'));
+        expect(copy.banner, contains('langsung tayang'));
         expect(copy.banner, isNot(contains('mereview')));
       }
     });
@@ -43,7 +43,7 @@ void main() {
       final copy = suggestEditPreSubmitCopy('contributor', l10n);
       expect(copy.cta, 'Kirim Usulan');
       expect(copy.ctaBusy, 'Mengirim...');
-      expect(copy.banner, contains('mereview sebelum tayang'));
+      expect(copy.banner, contains('meninjau sebelum tayang'));
     });
   });
 

@@ -1360,12 +1360,12 @@
   "@suggestCategoryChangeExample": {
     "description": "Kategori usulan #244: perbaiki contoh kalimat yang sudah tayang"
   },
-  "suggestCategoryChangeExampleDesc": "Perbaiki typo atau arti contoh yang sudah ada",
+  "suggestCategoryChangeExampleDesc": "Perbaiki typo atau arti contoh",
   "suggestCategoryChangePronunciation": "Ubah pelafalan",
   "@suggestCategoryChangePronunciation": {
     "description": "Kategori usulan: perbaiki notasi pelafalan yang sudah tayang"
   },
-  "suggestCategoryChangePronunciationDesc": "Perbaiki notasi IPA yang sudah ada",
+  "suggestCategoryChangePronunciationDesc": "Perbaiki notasi IPA",
   "suggestPickPronunciation": "Pilih pelafalan yang mau diperbaiki",
   "@suggestPickPronunciation": {
     "description": "Caption daftar pelafalan di form Ubah pelafalan"
@@ -1404,25 +1404,25 @@
   "suggestCategoryAntonym": "Antonim",
   "suggestCategoryAntonymDesc": "Kata yang artinya berlawanan",
   "suggestCategoryVariantOf": "Variasi bentuk",
-  "suggestCategoryVariantOfDesc": "Kata ini entri sendiri, variasi dari lemma lain (bukan ejaan)",
+  "suggestCategoryVariantOfDesc": "Entri sendiri, variasi dari lemma lain",
   "suggestCategoryNonstandardOf": "Bentuk tidak baku",
-  "suggestCategoryNonstandardOfDesc": "Kata ini entri sendiri, bentuk tidak baku dari lemma baku",
+  "suggestCategoryNonstandardOfDesc": "Entri sendiri, bentuk tidak baku dari lemma baku",
   "suggestCategoryDerivedFrom": "Kata turunan",
-  "suggestCategoryDerivedFromDesc": "Kata ini diturunkan dari akar kata (isi akarnya)",
+  "suggestCategoryDerivedFromDesc": "Diturunkan dari kata akar",
   "suggestCategoryMeaningGroup": "Kelompok makna",
-  "suggestCategoryMeaningGroupDesc": "Gabungkan kata bermakna sama dalam satu kelompok",
+  "suggestCategoryMeaningGroupDesc": "Kelompokkan kata yang bermakna sama",
   "suggestCategorySpellingVariant": "Variasi penulisan",
-  "suggestCategorySpellingVariantDesc": "Ejaan lain tanpa entri sendiri (tetap di lemma ini)",
+  "suggestCategorySpellingVariantDesc": "Ejaan lain, tetap di lemma ini",
   "suggestCategoryChangeCategories": "Ubah kategori",
   "@suggestCategoryChangeCategories": {
     "description": "Kategori usulan: tag topik lemma (chip)"
   },
-  "suggestCategoryChangeCategoriesDesc": "Tambah atau lepas kategori topik di lemma ini",
+  "suggestCategoryChangeCategoriesDesc": "Tambah atau hapus kategori topik",
   "suggestCategoryChangeUsageLabels": "Label register & peringatan",
   "@suggestCategoryChangeUsageLabels": {
     "description": "Kategori usulan: ubah usage_labels pada kata existing"
   },
-  "suggestCategoryChangeUsageLabelsDesc": "Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.",
+  "suggestCategoryChangeUsageLabelsDesc": "Tandai kata kasar, seksual, atau diskriminatif. Memengaruhi beranda dan daftar A-Z.",
   "@suggestCategoryChangeUsageLabelsDesc": {
     "description": "Subjudul tile usul perubahan untuk usage_labels"
   },
@@ -1438,10 +1438,10 @@
   "suggestEntryTileVerifierSubtitle": "Tambah makna, relasi, contoh, pelafalan - langsung terbit",
   "suggestEntryTileContributorTitle": "Usulkan perubahan",
   "suggestEntryTileContributorSubtitle": "Perbaikan kata yang sudah tayang menunggu persetujuan admin",
-  "suggestPreSubmitVerifierBanner": "Ubah yang perlu saja. Perubahan langsung diterapkan, tanpa antrean.",
+  "suggestPreSubmitVerifierBanner": "Ubah seperlunya. Perubahan langsung tayang.",
   "suggestPreSubmitVerifierCta": "Simpan perubahan",
   "suggestPreSubmitVerifierCtaBusy": "Menyimpan...",
-  "suggestPreSubmitContributorBanner": "Ubah yang perlu saja. Admin mereview sebelum tayang.",
+  "suggestPreSubmitContributorBanner": "Ubah seperlunya. Admin meninjau sebelum tayang.",
   "suggestPreSubmitContributorCta": "Kirim Usulan",
   "suggestPreSubmitContributorCtaBusy": "Mengirim...",
   "suggestSuccessThisWord": "kata ini",
@@ -1584,6 +1584,7 @@
   "historyFieldImage": "Gambar",
   "historyFieldPronunciation": "Pengucapan",
   "historyFieldWordType": "Jenis kata",
+  "historyFieldWordClass": "Kelas kata",
   "historyFieldLanguage": "Bahasa",
   "historyFieldVerificationStatus": "Status verifikasi",
   "historyFieldStatus": "Status",

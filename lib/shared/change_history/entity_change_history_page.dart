@@ -28,9 +28,8 @@ class EntityChangeHistoryPage extends StatelessWidget {
         title: Text(l10n.historyTitle),
         prefixes: [
           FHeaderAction.back(
-            onPress: () => context.canPop()
-                ? context.pop()
-                : context.go(fallbackLocation),
+            onPress: () =>
+                context.canPop() ? context.pop() : context.go(fallbackLocation),
           ),
         ],
       ),

@@ -7,6 +7,7 @@ import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
+import 'package:sambasku_mobile/core/utils/format_datetime.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:sambasku_mobile/shared/change_history/change_history_models.dart';
@@ -50,10 +51,10 @@ Map<String, dynamic> _entry(
   List<Map<String, dynamic>> changes = const [],
   Map<String, dynamic>? source,
   String type = '',
+  DateTime? at,
 }) => {
   'id': id,
-  'timestamp': DateTime.now()
-      .subtract(const Duration(hours: 2))
+  'timestamp': (at ?? DateTime.now().subtract(const Duration(hours: 2)))
       .toUtc()
       .toIso8601String(),
   'actor': {'user_id': 'u1', 'username': 'budiaja', 'display_name': 'Budi'},
@@ -104,6 +105,11 @@ ProviderContainer _container(_PagedAdapter adapter) => ProviderContainer(
   ],
 );
 
+String _dateLabel(DateTime value) {
+  final parts = formatDateTime(value).split(' ');
+  return '${parts[0]} ${parts[1]} ${parts[2]}';
+}
+
 void main() {
   group('ChangeHistoryEntry.fromJson', () {
     test('bentuk kata: type, source usulan, label field kosong', () {
@@ -116,7 +122,12 @@ void main() {
         'action': 'create',
         'action_label': 'Arti ditambahkan',
         'changes': [
-          {'entity': 'meaning', 'field': 'definition', 'display_old': '-', 'display_new': 'makan'},
+          {
+            'entity': 'meaning',
+            'field': 'definition',
+            'display_old': '-',
+            'display_new': 'makan',
+          },
         ],
         'source': {
           'suggested_by': {'username': 'sariaja', 'display_name': 'Sari'},
@@ -179,9 +190,12 @@ void main() {
     await tester.pumpWidget(_app(container));
     await tester.pumpAndSettle();
 
+    final when = DateTime.now().subtract(const Duration(hours: 2));
+
     expect(find.text('Data diperbarui'), findsOneWidget);
     expect(find.text('Wisata ditambahkan'), findsOneWidget);
-    expect(find.text('Oleh Budi · 2 jam lalu'), findsNWidgets(2));
+    expect(find.text(_dateLabel(when)), findsNWidgets(2));
+    expect(find.text('Oleh Budi'), findsNWidgets(2));
     expect(find.text('Nama'), findsOneWidget);
     expect(find.text('Sebelum: Pantai Lama'), findsOneWidget);
     expect(find.text('Sesudah: Pantai Baru'), findsOneWidget);
@@ -218,6 +232,62 @@ void main() {
     expect(find.text('Dari usulan'), findsOneWidget);
   });
 
+  testWidgets('alasan kategori disembunyikan kalau diff kelas kata ada', (
+    tester,
+  ) async {
+    final adapter = _PagedAdapter(
+      _page([
+        _entry(
+          'e1',
+          source: {'contribution_id': 'c1', 'reason': 'Ubah kelas kata'},
+          changes: [
+            {
+              'field': 'word_class',
+              'display_old': 'Nomina',
+              'display_new': 'Verba',
+            },
+          ],
+        ),
+      ]),
+      null,
+    );
+    final container = _container(adapter);
+    addTearDown(container.dispose);
+    await tester.pumpWidget(_app(container));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Kelas kata'), findsOneWidget);
+    expect(find.text('Sebelum: Nomina'), findsOneWidget);
+    expect(find.text('Sesudah: Verba'), findsOneWidget);
+    expect(find.textContaining('Alasan'), findsNothing);
+  });
+
+  testWidgets('tiap kejadian menampilkan tanggal di kiri', (tester) async {
+    final now = DateTime.now();
+    final start = DateTime(now.year, now.month, now.day);
+    final yesterday = start.subtract(const Duration(hours: 3));
+    final older = start.subtract(const Duration(days: 3, hours: 2));
+    final adapter = _PagedAdapter(
+      _page([
+        _entry('e1', at: yesterday, actionLabel: 'Data diperbarui'),
+        _entry(
+          'e2',
+          at: older,
+          actionLabel: 'Wisata ditambahkan',
+          action: 'create',
+        ),
+      ]),
+      null,
+    );
+    final container = _container(adapter);
+    addTearDown(container.dispose);
+    await tester.pumpWidget(_app(container));
+    await tester.pumpAndSettle();
+
+    expect(find.text(_dateLabel(yesterday)), findsOneWidget);
+    expect(find.text(_dateLabel(older)), findsOneWidget);
+  });
+
   testWidgets('lebih dari 3 field: ringkas, bisa dibuka', (tester) async {
     List<Map<String, dynamic>> fields = [
       for (var i = 1; i <= 5; i++)
@@ -228,10 +298,7 @@ void main() {
           'display_new': 'baru $i',
         },
     ];
-    final adapter = _PagedAdapter(
-      _page([_entry('e1', changes: fields)]),
-      null,
-    );
+    final adapter = _PagedAdapter(_page([_entry('e1', changes: fields)]), null);
     final container = _container(adapter);
     addTearDown(container.dispose);
     await tester.pumpWidget(_app(container));

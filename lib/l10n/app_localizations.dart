@@ -4104,7 +4104,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryChangeExampleDesc.
   ///
   /// In id, this message translates to:
-  /// **'Perbaiki typo atau arti contoh yang sudah ada'**
+  /// **'Perbaiki typo atau arti contoh'**
   String get suggestCategoryChangeExampleDesc;
 
   /// Kategori usulan: perbaiki notasi pelafalan yang sudah tayang
@@ -4116,7 +4116,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryChangePronunciationDesc.
   ///
   /// In id, this message translates to:
-  /// **'Perbaiki notasi IPA yang sudah ada'**
+  /// **'Perbaiki notasi IPA'**
   String get suggestCategoryChangePronunciationDesc;
 
   /// Caption daftar pelafalan di form Ubah pelafalan
@@ -4194,7 +4194,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryVariantOfDesc.
   ///
   /// In id, this message translates to:
-  /// **'Kata ini entri sendiri, variasi dari lemma lain (bukan ejaan)'**
+  /// **'Entri sendiri, variasi dari lemma lain'**
   String get suggestCategoryVariantOfDesc;
 
   /// No description provided for @suggestCategoryNonstandardOf.
@@ -4206,7 +4206,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryNonstandardOfDesc.
   ///
   /// In id, this message translates to:
-  /// **'Kata ini entri sendiri, bentuk tidak baku dari lemma baku'**
+  /// **'Entri sendiri, bentuk tidak baku dari lemma baku'**
   String get suggestCategoryNonstandardOfDesc;
 
   /// No description provided for @suggestCategoryDerivedFrom.
@@ -4218,7 +4218,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryDerivedFromDesc.
   ///
   /// In id, this message translates to:
-  /// **'Kata ini diturunkan dari akar kata (isi akarnya)'**
+  /// **'Diturunkan dari kata akar'**
   String get suggestCategoryDerivedFromDesc;
 
   /// No description provided for @suggestCategoryMeaningGroup.
@@ -4230,7 +4230,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryMeaningGroupDesc.
   ///
   /// In id, this message translates to:
-  /// **'Gabungkan kata bermakna sama dalam satu kelompok'**
+  /// **'Kelompokkan kata yang bermakna sama'**
   String get suggestCategoryMeaningGroupDesc;
 
   /// No description provided for @suggestCategorySpellingVariant.
@@ -4242,7 +4242,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategorySpellingVariantDesc.
   ///
   /// In id, this message translates to:
-  /// **'Ejaan lain tanpa entri sendiri (tetap di lemma ini)'**
+  /// **'Ejaan lain, tetap di lemma ini'**
   String get suggestCategorySpellingVariantDesc;
 
   /// Kategori usulan: tag topik lemma (chip)
@@ -4254,7 +4254,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryChangeCategoriesDesc.
   ///
   /// In id, this message translates to:
-  /// **'Tambah atau lepas kategori topik di lemma ini'**
+  /// **'Tambah atau hapus kategori topik'**
   String get suggestCategoryChangeCategoriesDesc;
 
   /// Kategori usulan: ubah usage_labels pada kata existing
@@ -4266,7 +4266,7 @@ abstract class AppLocalizations {
   /// Subjudul tile usul perubahan untuk usage_labels
   ///
   /// In id, this message translates to:
-  /// **'Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.'**
+  /// **'Tandai kata kasar, seksual, atau diskriminatif. Memengaruhi beranda dan daftar A-Z.'**
   String get suggestCategoryChangeUsageLabelsDesc;
 
   /// Info di form usul perubahan untuk usage_labels
@@ -4326,7 +4326,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestPreSubmitVerifierBanner.
   ///
   /// In id, this message translates to:
-  /// **'Ubah yang perlu saja. Perubahan langsung diterapkan, tanpa antrean.'**
+  /// **'Ubah seperlunya. Perubahan langsung tayang.'**
   String get suggestPreSubmitVerifierBanner;
 
   /// No description provided for @suggestPreSubmitVerifierCta.
@@ -4344,7 +4344,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestPreSubmitContributorBanner.
   ///
   /// In id, this message translates to:
-  /// **'Ubah yang perlu saja. Admin mereview sebelum tayang.'**
+  /// **'Ubah seperlunya. Admin meninjau sebelum tayang.'**
   String get suggestPreSubmitContributorBanner;
 
   /// No description provided for @suggestPreSubmitContributorCta.
@@ -5060,6 +5060,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Jenis kata'**
   String get historyFieldWordType;
+
+  /// No description provided for @historyFieldWordClass.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelas kata'**
+  String get historyFieldWordClass;
 
   /// No description provided for @historyFieldLanguage.
   ///

@@ -10,8 +10,8 @@ import 'change_history_controller.dart';
 import 'change_history_models.dart';
 import 'change_history_values.dart';
 
-/// Timeline riwayat perubahan (dot + garis + kartu isi) untuk data apa pun
-/// yang punya endpoint `change-history`. Tidak scroll sendiri: taruh di dalam
+/// Timeline riwayat perubahan: lingkaran bercentang di kiri, tanggal lalu
+/// judul lalu keterangan di kanan. Tidak scroll sendiri: taruh di dalam
 /// `ListView` halaman.
 class ChangeHistoryTimeline extends ConsumerWidget {
   const ChangeHistoryTimeline({
@@ -75,6 +75,7 @@ class ChangeHistoryTimeline extends ConsumerWidget {
               _TimelineRow(
                 key: ValueKey(state.items[i].id),
                 entry: state.items[i],
+                isFirst: i == 0,
                 isLast: i == state.items.length - 1 && !state.hasMore,
               ),
             if (state.hasMore)
@@ -101,9 +102,15 @@ class ChangeHistoryTimeline extends ConsumerWidget {
 const _maxInlineFields = 3;
 
 class _TimelineRow extends StatefulWidget {
-  const _TimelineRow({super.key, required this.entry, required this.isLast});
+  const _TimelineRow({
+    super.key,
+    required this.entry,
+    required this.isFirst,
+    required this.isLast,
+  });
 
   final ChangeHistoryEntry entry;
+  final bool isFirst;
   final bool isLast;
 
   @override
@@ -118,18 +125,11 @@ class _TimelineRowState extends State<_TimelineRow> {
     final theme = context.theme;
     final l10n = AppLocalizations.of(context);
     final entry = widget.entry;
-    final visual = _visualFor(entry);
     final fields = _visibleFields(entry, l10n);
     final shown = _expanded ? fields : fields.take(_maxInlineFields).toList();
     final hidden = fields.length - shown.length;
 
     final actor = entry.actorLabel ?? l10n.historySystem;
-    final ago = formatRelativeAgo(entry.when);
-    final meta = [
-      l10n.historyByActor(actor),
-      if (ago.isNotEmpty) ago else formatDateTimeIso(entry.timestamp),
-    ].join(' · ');
-
     final title = entry.actionLabel.isNotEmpty
         ? entry.actionLabel
         : _fallbackTitle(entry, l10n);
@@ -139,60 +139,30 @@ class _TimelineRowState extends State<_TimelineRow> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-            width: 32,
-            child: Column(
-              children: [
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: visual.destructive
-                        ? theme.colors.destructive.withValues(alpha: 0.12)
-                        : theme.colors.secondary,
-                  ),
-                  child: SizedBox(
-                    width: 28,
-                    height: 28,
-                    child: Icon(
-                      visual.icon,
-                      size: 14,
-                      color: visual.destructive
-                          ? theme.colors.destructive
-                          : theme.colors.secondaryForeground,
-                    ),
-                  ),
-                ),
-                if (!widget.isLast)
-                  Expanded(
-                    child: Center(
-                      child: SizedBox(
-                        width: 2,
-                        child: ColoredBox(color: theme.colors.border),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const Gap(8),
+          _Rail(isFirst: widget.isFirst, isLast: widget.isLast),
+          const Gap(12),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
+              padding: EdgeInsets.only(bottom: widget.isLast ? 0 : 22),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      title,
-                      style: theme.typography.body.md.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  Text(
+                    _timelineDate(entry.when),
+                    style: theme.typography.body.sm.copyWith(
+                      color: theme.colors.mutedForeground,
                     ),
                   ),
                   const Gap(2),
                   Text(
-                    meta,
+                    title,
+                    style: theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const Gap(2),
+                  Text(
+                    l10n.historyByActor(actor),
                     style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
@@ -208,7 +178,7 @@ class _TimelineRowState extends State<_TimelineRow> {
                       ),
                     ),
                   ],
-                  if (entry.reason != null) ...[
+                  if (_showReason(entry.reason, fields.isNotEmpty)) ...[
                     const Gap(8),
                     Text(
                       l10n.historyReasonLine(entry.reason!),
@@ -284,6 +254,69 @@ class _TimelineRowState extends State<_TimelineRow> {
   }
 }
 
+/// Alasan yang hanya judul kategori ("Ubah kelas kata") tidak ditampilkan
+/// kalau diff sebelum/sesudah sudah ada. Detail setelah titik dua tetap tampil.
+bool _showReason(String? reason, bool hasDiff) {
+  if (reason == null || reason.trim().isEmpty) return false;
+  if (!hasDiff) return true;
+  return reason.contains(':');
+}
+
+/// `27 Nov 2026` dari `formatDateTime` (`27 Nov 2026 09:14`).
+String _timelineDate(DateTime? when) {
+  if (when == null) return '-';
+  final parts = formatDateTime(when).split(' ');
+  if (parts.length < 3) return formatDateTime(when);
+  return '${parts[0]} ${parts[1]} ${parts[2]}';
+}
+
+class _Rail extends StatelessWidget {
+  const _Rail({required this.isFirst, required this.isLast});
+
+  final bool isFirst;
+  final bool isLast;
+
+  static const _dot = 22.0;
+  static const _top = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final ink = theme.colors.foreground;
+    return SizedBox(
+      width: _dot,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          if (!(isFirst && isLast))
+            Positioned(
+              top: isFirst ? _top + _dot / 2 : 0,
+              bottom: isLast ? null : 0,
+              height: isLast ? _top + _dot / 2 : null,
+              width: 2,
+              child: ColoredBox(color: ink),
+            ),
+          Padding(
+            padding: const EdgeInsets.only(top: _top),
+            child: DecoratedBox(
+              decoration: BoxDecoration(shape: BoxShape.circle, color: ink),
+              child: SizedBox(
+                width: _dot,
+                height: _dot,
+                child: Icon(
+                  FLucideIcons.check,
+                  size: 13,
+                  color: theme.colors.background,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _ResolvedField {
   const _ResolvedField({
     required this.label,
@@ -309,91 +342,44 @@ class _FieldDiff extends StatelessWidget {
     final oldValue = field.oldValue;
     final newValue = field.newValue;
     return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: theme.colors.secondary,
-          borderRadius: theme.style.borderRadius.md,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                field.label,
-                style: theme.typography.body.xs.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-              if (oldValue != null) ...[
-                const Gap(4),
-                Text(
-                  l10n.historyBefore(oldValue),
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.typography.body.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                    decoration: TextDecoration.lineThrough,
-                  ),
-                ),
-              ],
-              if (newValue != null) ...[
-                const Gap(4),
-                Text(
-                  // Data baru / dukungan duplikat: nilai apa adanya, tanpa "Sesudah".
-                  oldValue == null || entry.isDuplicateVote
-                      ? newValue
-                      : l10n.historyAfter(newValue),
-                  maxLines: 6,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.typography.body.sm,
-                ),
-              ],
-            ],
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            field.label,
+            style: theme.typography.body.xs.copyWith(
+              fontWeight: FontWeight.w600,
+              color: theme.colors.mutedForeground,
+            ),
           ),
-        ),
+          if (oldValue != null) ...[
+            const Gap(4),
+            Text(
+              l10n.historyBefore(oldValue),
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+              style: theme.typography.body.sm.copyWith(
+                color: theme.colors.mutedForeground,
+                decoration: TextDecoration.lineThrough,
+              ),
+            ),
+          ],
+          if (newValue != null) ...[
+            const Gap(4),
+            Text(
+              // Data baru / dukungan duplikat: nilai apa adanya, tanpa "Sesudah".
+              oldValue == null || entry.isDuplicateVote
+                  ? newValue
+                  : l10n.historyAfter(newValue),
+              maxLines: 6,
+              overflow: TextOverflow.ellipsis,
+              style: theme.typography.body.sm,
+            ),
+          ],
+        ],
       ),
     );
-  }
-}
-
-class _Visual {
-  const _Visual(this.icon, {this.destructive = false});
-
-  final IconData icon;
-  final bool destructive;
-}
-
-_Visual _visualFor(ChangeHistoryEntry entry) {
-  switch (entry.action) {
-    case 'create':
-      return switch (entry.entity) {
-        'word_image' => const _Visual(FLucideIcons.imagePlus),
-        'word_audio' || 'pronunciation' => const _Visual(FLucideIcons.mic),
-        _ => const _Visual(FLucideIcons.plus),
-      };
-    case 'publish':
-    case 'restore':
-      return const _Visual(FLucideIcons.circleCheck);
-    case 'verify':
-      return const _Visual(FLucideIcons.badgeCheck);
-    case 'photo_add':
-      return const _Visual(FLucideIcons.imagePlus);
-    case 'unpublish':
-      return const _Visual(FLucideIcons.eyeOff, destructive: true);
-    case 'unverify':
-    case 'unverify_by_vote_quorum':
-    case 'reject':
-      return const _Visual(FLucideIcons.circleX, destructive: true);
-    case 'photo_remove':
-      return const _Visual(FLucideIcons.image, destructive: true);
-    case 'takedown':
-    case 'delete':
-      return const _Visual(FLucideIcons.trash2, destructive: true);
-    default:
-      return const _Visual(FLucideIcons.pencil);
   }
 }
 

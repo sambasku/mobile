@@ -2266,14 +2266,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get suggestCategoryChangeExampleDesc =>
-      'Perbaiki typo atau arti contoh yang sudah ada';
+      'Perbaiki typo atau arti contoh';
 
   @override
   String get suggestCategoryChangePronunciation => 'Ubah pelafalan';
 
   @override
-  String get suggestCategoryChangePronunciationDesc =>
-      'Perbaiki notasi IPA yang sudah ada';
+  String get suggestCategoryChangePronunciationDesc => 'Perbaiki notasi IPA';
 
   @override
   String get suggestPickPronunciation => 'Pilih pelafalan yang mau diperbaiki';
@@ -2316,49 +2315,48 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get suggestCategoryVariantOfDesc =>
-      'Kata ini entri sendiri, variasi dari lemma lain (bukan ejaan)';
+      'Entri sendiri, variasi dari lemma lain';
 
   @override
   String get suggestCategoryNonstandardOf => 'Bentuk tidak baku';
 
   @override
   String get suggestCategoryNonstandardOfDesc =>
-      'Kata ini entri sendiri, bentuk tidak baku dari lemma baku';
+      'Entri sendiri, bentuk tidak baku dari lemma baku';
 
   @override
   String get suggestCategoryDerivedFrom => 'Kata turunan';
 
   @override
-  String get suggestCategoryDerivedFromDesc =>
-      'Kata ini diturunkan dari akar kata (isi akarnya)';
+  String get suggestCategoryDerivedFromDesc => 'Diturunkan dari kata akar';
 
   @override
   String get suggestCategoryMeaningGroup => 'Kelompok makna';
 
   @override
   String get suggestCategoryMeaningGroupDesc =>
-      'Gabungkan kata bermakna sama dalam satu kelompok';
+      'Kelompokkan kata yang bermakna sama';
 
   @override
   String get suggestCategorySpellingVariant => 'Variasi penulisan';
 
   @override
   String get suggestCategorySpellingVariantDesc =>
-      'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
+      'Ejaan lain, tetap di lemma ini';
 
   @override
   String get suggestCategoryChangeCategories => 'Ubah kategori';
 
   @override
   String get suggestCategoryChangeCategoriesDesc =>
-      'Tambah atau lepas kategori topik di lemma ini';
+      'Tambah atau hapus kategori topik';
 
   @override
   String get suggestCategoryChangeUsageLabels => 'Label register & peringatan';
 
   @override
   String get suggestCategoryChangeUsageLabelsDesc =>
-      'Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.';
+      'Tandai kata kasar, seksual, atau diskriminatif. Memengaruhi beranda dan daftar A-Z.';
 
   @override
   String get suggestUsageLabelsSectionInfo =>
@@ -2392,7 +2390,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get suggestPreSubmitVerifierBanner =>
-      'Ubah yang perlu saja. Perubahan langsung diterapkan, tanpa antrean.';
+      'Ubah seperlunya. Perubahan langsung tayang.';
 
   @override
   String get suggestPreSubmitVerifierCta => 'Simpan perubahan';
@@ -2402,7 +2400,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get suggestPreSubmitContributorBanner =>
-      'Ubah yang perlu saja. Admin mereview sebelum tayang.';
+      'Ubah seperlunya. Admin meninjau sebelum tayang.';
 
   @override
   String get suggestPreSubmitContributorCta => 'Kirim Usulan';
@@ -2816,6 +2814,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get historyFieldWordType => 'Jenis kata';
+
+  @override
+  String get historyFieldWordClass => 'Kelas kata';
 
   @override
   String get historyFieldLanguage => 'Bahasa';
@@ -16506,14 +16507,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get suggestCategoryChangeExampleDesc =>
-      'Perbaiki typo atau arti contoh yang sudah ada';
+      'Perbaiki typo atau arti contoh';
 
   @override
   String get suggestCategoryChangePronunciation => 'Ubah pelafalan';
 
   @override
-  String get suggestCategoryChangePronunciationDesc =>
-      'Perbaiki notasi IPA yang sudah ada';
+  String get suggestCategoryChangePronunciationDesc => 'Perbaiki notasi IPA';
 
   @override
   String get suggestPickPronunciation => 'Pilih pelafalan yang mau diperbaiki';
@@ -16556,49 +16556,48 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get suggestCategoryVariantOfDesc =>
-      'Kata ini entri sendiri, variasi dari lemma lain (bukan ejaan)';
+      'Entri sendiri, variasi dari lemma lain';
 
   @override
   String get suggestCategoryNonstandardOf => 'Bentuk tidak baku';
 
   @override
   String get suggestCategoryNonstandardOfDesc =>
-      'Kata ini entri sendiri, bentuk tidak baku dari lemma baku';
+      'Entri sendiri, bentuk tidak baku dari lemma baku';
 
   @override
   String get suggestCategoryDerivedFrom => 'Kata turunan';
 
   @override
-  String get suggestCategoryDerivedFromDesc =>
-      'Kata ini diturunkan dari akar kata (isi akarnya)';
+  String get suggestCategoryDerivedFromDesc => 'Diturunkan dari kata akar';
 
   @override
   String get suggestCategoryMeaningGroup => 'Kelompok makna';
 
   @override
   String get suggestCategoryMeaningGroupDesc =>
-      'Gabungkan kata bermakna sama dalam satu kelompok';
+      'Kelompokkan kata yang bermakna sama';
 
   @override
   String get suggestCategorySpellingVariant => 'Variasi penulisan';
 
   @override
   String get suggestCategorySpellingVariantDesc =>
-      'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
+      'Ejaan lain, tetap di lemma ini';
 
   @override
   String get suggestCategoryChangeCategories => 'Ubah kategori';
 
   @override
   String get suggestCategoryChangeCategoriesDesc =>
-      'Tambah atau lepas kategori topik di lemma ini';
+      'Tambah atau hapus kategori topik';
 
   @override
   String get suggestCategoryChangeUsageLabels => 'Label register & peringatan';
 
   @override
   String get suggestCategoryChangeUsageLabelsDesc =>
-      'Tandai kata kasar, seksual, atau diskriminatif. Label sensitif bisa mempengaruhi tampilan di beranda dan daftar A-Z.';
+      'Tandai kata kasar, seksual, atau diskriminatif. Memengaruhi beranda dan daftar A-Z.';
 
   @override
   String get suggestUsageLabelsSectionInfo =>
@@ -16632,7 +16631,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get suggestPreSubmitVerifierBanner =>
-      'Ubah yang perlu saja. Perubahan langsung diterapkan, tanpa antrean.';
+      'Ubah seperlunya. Perubahan langsung tayang.';
 
   @override
   String get suggestPreSubmitVerifierCta => 'Simpan perubahan';
@@ -16642,7 +16641,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get suggestPreSubmitContributorBanner =>
-      'Ubah yang perlu saja. Admin mereview sebelum tayang.';
+      'Ubah seperlunya. Admin meninjau sebelum tayang.';
 
   @override
   String get suggestPreSubmitContributorCta => 'Kirim Usulan';
@@ -17056,6 +17055,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get historyFieldWordType => 'Jenis kata';
+
+  @override
+  String get historyFieldWordClass => 'Kelas kata';
 
   @override
   String get historyFieldLanguage => 'Bahasa';
