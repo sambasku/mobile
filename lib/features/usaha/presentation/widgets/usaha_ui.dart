@@ -72,9 +72,9 @@ FBadge? usahaSponsorListBadge(AppLocalizations l10n, String? tier) {
   return FBadge(
     variant: FBadgeVariant.primary,
     style: const FBadgeStyleDelta.delta(
-      labelTextStyle: TextStyleDelta.delta(fontSize: 10, height: 1.2),
+      labelTextStyle: TextStyleDelta.delta(fontSize: 8, height: 1.1),
       padding: EdgeInsetsGeometryDelta.value(
-        EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        EdgeInsets.symmetric(horizontal: 4, vertical: 1),
       ),
     ),
     child: Text(l10n.usahaSponsorBadge),
