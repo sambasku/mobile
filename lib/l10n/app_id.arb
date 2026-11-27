@@ -11311,5 +11311,43 @@
         "type": "int"
       }
     }
-  }
+  },
+  "historyLoadMore": "Muat lebih banyak",
+  "historyShowMoreChanges": "Lihat {count} perubahan lain",
+  "@historyShowMoreChanges": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "historyShowLess": "Tampilkan lebih sedikit",
+  "historySuggestedBy": "Usulan dari {name}",
+  "@historySuggestedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "historyReasonLine": "Alasan: {reason}",
+  "@historyReasonLine": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "historyReviewerNoteLine": "Catatan reviewer: {note}",
+  "@historyReviewerNoteLine": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "historyEntityNotFound": "Data tidak ditemukan",
+  "historyEmptyHintEntity": "Perubahan yang terjadi mulai sekarang akan muncul di sini.",
+  "placeHistoryBody": "Lihat apa saja yang berubah di data wisata ini.",
+  "cuisineHistoryBody": "Lihat apa saja yang berubah di data kuliner ini."
 }

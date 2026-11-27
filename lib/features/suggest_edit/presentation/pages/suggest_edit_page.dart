@@ -31,7 +31,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/suggest_edit_feedback.dart';
 import '../suggest_edit_labels.dart';
 import '../widgets/lemma_picker_field.dart';
-import '../widgets/word_change_history_section.dart';
+import '../../../../shared/change_history/change_history_controller.dart';
 
 /// Form usul perubahan: pilih kategori dulu, lalu isi field kategori itu saja.
 /// Draft tiap kategori tetap di memori selama halaman terbuka.
@@ -638,7 +638,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       // Issue #159: flush L1 + Riverpod, kalau tidak detail refetch data basi.
       await invalidateWordDetailCaches(ref, widget.wordId, detail.lemma);
       if (!mounted) return;
-      ref.invalidate(changeHistoryProvider(widget.wordId));
+      ref.invalidate(
+        changeHistoryControllerProvider(wordChangeHistoryPath(widget.wordId)),
+      );
       // #264: ganti form di stack (bukan pop+push) supaya back tidak
       // membuka lagi form usulan yang sudah terkirim.
       if (!selfApplied) {

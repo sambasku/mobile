@@ -386,6 +386,18 @@ class _BodyState extends ConsumerState<_Body> {
                                   : AuthRouter.login.path,
                             ),
                           ),
+                          FTile(
+                            prefix: const Icon(FLucideIcons.history, size: 18),
+                            title: Text(l10n.historyTitle),
+                            subtitle: Text(l10n.placeHistoryBody),
+                            suffix: const Icon(
+                              FLucideIcons.chevronRight,
+                              size: 16,
+                            ),
+                            onPress: () => context.push(
+                              ExploreRouter.placeHistoryPath(place.slug),
+                            ),
+                          ),
                         ],
                       ),
                     ],

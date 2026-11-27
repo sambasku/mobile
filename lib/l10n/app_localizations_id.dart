@@ -14182,6 +14182,47 @@ class AppLocalizationsId extends AppLocalizations {
   String dictMeaningsSectionCount(int count) {
     return 'Makna ($count)';
   }
+
+  @override
+  String get historyLoadMore => 'Muat lebih banyak';
+
+  @override
+  String historyShowMoreChanges(int count) {
+    return 'Lihat $count perubahan lain';
+  }
+
+  @override
+  String get historyShowLess => 'Tampilkan lebih sedikit';
+
+  @override
+  String historySuggestedBy(String name) {
+    return 'Usulan dari $name';
+  }
+
+  @override
+  String historyReasonLine(String reason) {
+    return 'Alasan: $reason';
+  }
+
+  @override
+  String historyReviewerNoteLine(String note) {
+    return 'Catatan reviewer: $note';
+  }
+
+  @override
+  String get historyEntityNotFound => 'Data tidak ditemukan';
+
+  @override
+  String get historyEmptyHintEntity =>
+      'Perubahan yang terjadi mulai sekarang akan muncul di sini.';
+
+  @override
+  String get placeHistoryBody =>
+      'Lihat apa saja yang berubah di data wisata ini.';
+
+  @override
+  String get cuisineHistoryBody =>
+      'Lihat apa saja yang berubah di data kuliner ini.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -28277,4 +28318,45 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String dictMeaningsSectionCount(int count) {
     return 'Makna ($count)';
   }
+
+  @override
+  String get historyLoadMore => 'Muat lebih banyak';
+
+  @override
+  String historyShowMoreChanges(int count) {
+    return 'Lihat $count perubahan lain';
+  }
+
+  @override
+  String get historyShowLess => 'Tampilkan lebih sedikit';
+
+  @override
+  String historySuggestedBy(String name) {
+    return 'Usulan dari $name';
+  }
+
+  @override
+  String historyReasonLine(String reason) {
+    return 'Alasan: $reason';
+  }
+
+  @override
+  String historyReviewerNoteLine(String note) {
+    return 'Catatan reviewer: $note';
+  }
+
+  @override
+  String get historyEntityNotFound => 'Data tidak ditemukan';
+
+  @override
+  String get historyEmptyHintEntity =>
+      'Perubahan yang terjadi mulai sekarang akan muncul di sini.';
+
+  @override
+  String get placeHistoryBody =>
+      'Lihat apa saja yang berubah di data wisata ini.';
+
+  @override
+  String get cuisineHistoryBody =>
+      'Lihat apa saja yang berubah di data kuliner ini.';
 }

@@ -24926,6 +24926,66 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Makna ({count})'**
   String dictMeaningsSectionCount(int count);
+
+  /// No description provided for @historyLoadMore.
+  ///
+  /// In id, this message translates to:
+  /// **'Muat lebih banyak'**
+  String get historyLoadMore;
+
+  /// No description provided for @historyShowMoreChanges.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat {count} perubahan lain'**
+  String historyShowMoreChanges(int count);
+
+  /// No description provided for @historyShowLess.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan lebih sedikit'**
+  String get historyShowLess;
+
+  /// No description provided for @historySuggestedBy.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan dari {name}'**
+  String historySuggestedBy(String name);
+
+  /// No description provided for @historyReasonLine.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan: {reason}'**
+  String historyReasonLine(String reason);
+
+  /// No description provided for @historyReviewerNoteLine.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan reviewer: {note}'**
+  String historyReviewerNoteLine(String note);
+
+  /// No description provided for @historyEntityNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Data tidak ditemukan'**
+  String get historyEntityNotFound;
+
+  /// No description provided for @historyEmptyHintEntity.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan yang terjadi mulai sekarang akan muncul di sini.'**
+  String get historyEmptyHintEntity;
+
+  /// No description provided for @placeHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data wisata ini.'**
+  String get placeHistoryBody;
+
+  /// No description provided for @cuisineHistoryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat apa saja yang berubah di data kuliner ini.'**
+  String get cuisineHistoryBody;
 }
 
 class _AppLocalizationsDelegate

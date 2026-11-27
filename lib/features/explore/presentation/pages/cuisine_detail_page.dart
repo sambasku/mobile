@@ -326,6 +326,18 @@ class _BodyState extends ConsumerState<_Body> {
                           },
                         ),
                         FTile(
+                          prefix: const Icon(FLucideIcons.history, size: 18),
+                          title: Text(l10n.historyTitle),
+                          subtitle: Text(l10n.cuisineHistoryBody),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
+                          onPress: () => context.push(
+                            ExploreRouter.cuisineHistoryPath(item.slug),
+                          ),
+                        ),
+                        FTile(
                           prefix: const Icon(FLucideIcons.flag, size: 18),
                           title: Text(l10n.usahaReportTitle),
                           subtitle: Text(l10n.cuisineDetailReportBody),

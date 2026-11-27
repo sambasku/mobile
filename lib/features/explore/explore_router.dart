@@ -2,6 +2,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/router/route_definer.dart';
 import 'presentation/pages/explore_category_page.dart';
+import '../../shared/change_history/change_history_controller.dart';
+import '../../shared/change_history/entity_change_history_page.dart';
 import 'presentation/pages/cuisine_add_photo_page.dart';
 import 'presentation/pages/cuisine_detail_page.dart';
 import 'presentation/pages/cuisine_list_page.dart';
@@ -42,6 +44,24 @@ class ExploreRouter {
 
   static String placePhotosPath(String slug) =>
       placePhotos.path.replaceFirst(':slug', slug);
+
+  /// Timeline riwayat perubahan satu tempat.
+  static const placeHistory = RouteDefiner(
+    path: '/explore/place/:slug/riwayat',
+    name: 'ExploreRouter.placeHistory',
+  );
+
+  static String placeHistoryPath(String slug) =>
+      placeHistory.path.replaceFirst(':slug', slug);
+
+  /// Timeline riwayat perubahan satu kuliner.
+  static const cuisineHistory = RouteDefiner(
+    path: '/explore/cuisine/:slug/riwayat',
+    name: 'ExploreRouter.cuisineHistory',
+  );
+
+  static String cuisineHistoryPath(String slug) =>
+      cuisineHistory.path.replaceFirst(':slug', slug);
 
   /// Daftar + detail Cuisine (cuisines.json, bukan places.json).
   static const cuisineList = RouteDefiner(
@@ -255,6 +275,25 @@ class ExploreRouter {
         final slug = state.pathParameters['slug'] ?? '';
         return CuisineDetailPage(slug: slug);
       },
+    ),
+    GoRoute(
+      path: cuisineHistory.path,
+      name: cuisineHistory.name,
+      builder: (context, state) => EntityChangeHistoryPage(
+        path: cuisineChangeHistoryPath(state.pathParameters['slug'] ?? ''),
+        fallbackLocation: cuisineDetailPath(state.pathParameters['slug'] ?? ''),
+      ),
+    ),
+    GoRoute(
+      path: placeHistory.path,
+      name: placeHistory.name,
+      builder: (context, state) => EntityChangeHistoryPage(
+        path: placeChangeHistoryPath(state.pathParameters['slug'] ?? ''),
+        fallbackLocation: place.path.replaceFirst(
+          ':slug',
+          state.pathParameters['slug'] ?? '',
+        ),
+      ),
     ),
     GoRoute(
       path: placePhotos.path,
