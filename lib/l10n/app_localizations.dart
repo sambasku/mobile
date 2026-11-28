@@ -23384,7 +23384,7 @@ abstract class AppLocalizations {
   /// No description provided for @placeCommentsTitle.
   ///
   /// In id, this message translates to:
-  /// **'Komentar wisata'**
+  /// **'Komentar'**
   String get placeCommentsTitle;
 
   /// No description provided for @placeCommentsEmpty.
@@ -23402,7 +23402,7 @@ abstract class AppLocalizations {
   /// No description provided for @usahaCommentsTitle.
   ///
   /// In id, this message translates to:
-  /// **'Komentar usaha'**
+  /// **'Komentar'**
   String get usahaCommentsTitle;
 
   /// No description provided for @usahaCommentsEmpty.
@@ -23420,7 +23420,7 @@ abstract class AppLocalizations {
   /// No description provided for @cuisineCommentsTitle.
   ///
   /// In id, this message translates to:
-  /// **'Komentar kuliner'**
+  /// **'Komentar'**
   String get cuisineCommentsTitle;
 
   /// No description provided for @cuisineCommentsEmpty.
@@ -23438,7 +23438,7 @@ abstract class AppLocalizations {
   /// No description provided for @eventCommentsTitle.
   ///
   /// In id, this message translates to:
-  /// **'Komentar acara'**
+  /// **'Komentar'**
   String get eventCommentsTitle;
 
   /// No description provided for @eventCommentsEmpty.

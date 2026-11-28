@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sambasku_mobile/l10n/app_localizations_id.dart';
 import 'package:sambasku_mobile/shared/entity_comments/entity_comment.dart';
 import 'package:sambasku_mobile/shared/entity_comments/entity_comment_providers.dart';
+import 'package:sambasku_mobile/shared/entity_comments/entity_comments_section.dart';
 import 'package:sambasku_mobile/shared/ugc_comment_lemma/ugc_comment_lemma_interaction.dart';
 
 void main() {
@@ -94,6 +96,28 @@ void main() {
         'https://example.com/a.jpg',
         'https://example.com/b.jpg',
       ]);
+    });
+
+    test('#394 explore comment titles show plain "Komentar" without module suffix', () {
+      final locales = [AppLocalizationsId(), AppLocalizationsIdSbs()];
+      const exploreTargets = [
+        EntityCommentTarget.word,
+        EntityCommentTarget.article,
+        EntityCommentTarget.place,
+        EntityCommentTarget.usaha,
+        EntityCommentTarget.cuisine,
+        EntityCommentTarget.event,
+        EntityCommentTarget.karya,
+      ];
+      for (final l10n in locales) {
+        for (final target in exploreTargets) {
+          expect(
+            entityCommentCopy(l10n, target).title(0),
+            'Komentar',
+            reason: 'Expected plain "Komentar" for $target in ${l10n.localeName}',
+          );
+        }
+      }
     });
   });
 }

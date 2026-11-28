@@ -27,6 +27,8 @@ class ChatComposer extends HookWidget {
     required this.onOpenStickers,
     required this.onRecordVoice,
     required this.onLoginPrompt,
+    this.suggestBuilder,
+    this.horizontalPadding = 0,
   });
 
   final TextEditingController controller;
@@ -39,6 +41,8 @@ class ChatComposer extends HookWidget {
   final VoidCallback onOpenStickers;
   final VoidCallback onRecordVoice;
   final VoidCallback onLoginPrompt;
+  final Widget Function(BuildContext)? suggestBuilder;
+  final double horizontalPadding;
 
   void _guarded(VoidCallback action) {
     if (!enabled) {
@@ -66,11 +70,20 @@ class ChatComposer extends HookWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
+          padding: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            6,
+            horizontalPadding,
+            6,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (suggestBuilder != null) ...[
+                suggestBuilder!(context),
+                const Gap(4),
+              ],
               AnimatedSize(
                 duration: MediaQuery.disableAnimationsOf(context)
                     ? Duration.zero

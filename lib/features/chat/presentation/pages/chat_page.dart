@@ -14,6 +14,8 @@ import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../../shared/widgets/slide_fade_in.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../comment/presentation/providers/mention_suggest_providers.dart';
+import '../../../comment/presentation/widgets/mention_suggest_overlay.dart';
 import '../../domain/chat_models.dart';
 import '../providers/chat_messages_provider.dart';
 import '../providers/chat_presence_provider.dart';
@@ -289,6 +291,12 @@ class ChatPage extends HookConsumerWidget {
     useEffect(() {
       void onText() {
         if (!isAuth || myUserId == null) return;
+        ref
+            .read(mentionSuggestControllerProvider.notifier)
+            .onTextChanged(
+              textController.text,
+              textController.selection.baseOffset,
+            );
         final auth = ref.read(authStatusProvider).value;
         final name = (auth?.displayName?.trim().isNotEmpty == true)
             ? auth!.displayName!.trim()
@@ -305,7 +313,10 @@ class ChatPage extends HookConsumerWidget {
       }
 
       textController.addListener(onText);
-      return () => textController.removeListener(onText);
+      return () {
+        textController.removeListener(onText);
+        ref.read(mentionSuggestControllerProvider.notifier).dismiss();
+      };
     }, [isAuth, myUserId, textController]);
 
     useEffect(() {
@@ -443,6 +454,7 @@ class ChatPage extends HookConsumerWidget {
       pinnedBottom.value = true;
       final reply = replyTarget.value;
       textController.clear();
+      ref.read(mentionSuggestControllerProvider.notifier).dismiss();
       replyMentionPrefix.value = null;
       replyTarget.value = null;
       if (myUserId != null) {
@@ -863,6 +875,13 @@ class ChatPage extends HookConsumerWidget {
               onOpenStickers: sendSticker,
               onRecordVoice: recordVoice,
               onLoginPrompt: promptLogin,
+              horizontalPadding: embeddedInSheet ? 16 : 0,
+              suggestBuilder: isAuth
+                  ? (_) => MentionSuggestOverlay(
+                        onSelect: (username) =>
+                            insertIntoComposer(textController, username),
+                      )
+                  : null,
             ),
           ],
         ),

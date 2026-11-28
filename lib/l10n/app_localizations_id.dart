@@ -13280,7 +13280,7 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get placeCommentsTitle => 'Komentar wisata';
+  String get placeCommentsTitle => 'Komentar';
 
   @override
   String get placeCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
@@ -13289,7 +13289,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get placeCommentHint => 'Tulis komentar tentang tempat ini';
 
   @override
-  String get usahaCommentsTitle => 'Komentar usaha';
+  String get usahaCommentsTitle => 'Komentar';
 
   @override
   String get usahaCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
@@ -13298,7 +13298,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get usahaCommentHint => 'Tulis komentar tentang usaha ini';
 
   @override
-  String get cuisineCommentsTitle => 'Komentar kuliner';
+  String get cuisineCommentsTitle => 'Komentar';
 
   @override
   String get cuisineCommentsEmpty =>
@@ -13308,7 +13308,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get cuisineCommentHint => 'Tulis komentar tentang kuliner ini';
 
   @override
-  String get eventCommentsTitle => 'Komentar acara';
+  String get eventCommentsTitle => 'Komentar';
 
   @override
   String get eventCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
@@ -27667,7 +27667,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
-  String get placeCommentsTitle => 'Komentar wisata';
+  String get placeCommentsTitle => 'Komentar';
 
   @override
   String get placeCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
@@ -27676,7 +27676,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get placeCommentHint => 'Tulis komentar tentang tempat ini';
 
   @override
-  String get usahaCommentsTitle => 'Komentar usaha';
+  String get usahaCommentsTitle => 'Komentar';
 
   @override
   String get usahaCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
@@ -27685,7 +27685,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get usahaCommentHint => 'Tulis komentar tentang usaha ini';
 
   @override
-  String get cuisineCommentsTitle => 'Komentar kuliner';
+  String get cuisineCommentsTitle => 'Komentar';
 
   @override
   String get cuisineCommentsEmpty =>
@@ -27695,7 +27695,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get cuisineCommentHint => 'Tulis komentar tentang kuliner ini';
 
   @override
-  String get eventCommentsTitle => 'Komentar acara';
+  String get eventCommentsTitle => 'Komentar';
 
   @override
   String get eventCommentsEmpty => 'Belum ada komentar. Jadi yang pertama ya.';
