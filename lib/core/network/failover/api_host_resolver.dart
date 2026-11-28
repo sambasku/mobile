@@ -27,12 +27,16 @@ const _prefKeyPreferredTier = 'preferredApiTier';
 
 /// Label manusiawi tiap tier untuk UI user. Cocokkan lewat host supaya tahan
 /// kalau urutan env berubah; host tak dikenal dikembalikan apa adanya.
-String apiTierLabelForHost(String host) {
-  final h = Uri.tryParse(host)?.host ?? host;
+String apiTierLabelForHost(String host, {String? primaryLabel}) {
+  final parsed = Uri.tryParse(host)?.host;
+  final h = (parsed != null && parsed.isNotEmpty ? parsed : host).toLowerCase();
+  if (h.contains('cloudflare')) return 'Cloudflare';
   if (h.contains('deno')) return 'Deno Deploy';
   if (h.contains('render')) return 'Render';
-  if (h.contains('sambasku.com')) return 'Cloudflare';
   if (h.contains('staging')) return 'Staging';
+  if (h == 'api.sambasku.com' || h.contains('sambasku.com')) {
+    return primaryLabel ?? 'Server Utama';
+  }
   return h;
 }
 

@@ -7,6 +7,7 @@ class CatalogSticker {
     this.categorySlug,
     this.displayName,
     this.isCustom = false,
+    this.sourceStickerId,
   });
 
   final String id;
@@ -15,6 +16,9 @@ class CatalogSticker {
   final String? categorySlug;
   final String? displayName;
   final bool isCustom;
+
+  /// Asal salinan hasil fork favorit; null = stiker asli.
+  final String? sourceStickerId;
 
   String get label {
     final n = displayName?.trim();
@@ -25,7 +29,9 @@ class CatalogSticker {
   factory CatalogSticker.fromJson(Map<String, dynamic> json) {
     final rawCat = json['category_slug']?.toString().trim();
     final rawName = json['display_name']?.toString().trim();
+    final rawSource = json['source_sticker_id']?.toString().trim();
     return CatalogSticker(
+      sourceStickerId: (rawSource == null || rawSource.isEmpty) ? null : rawSource,
       id: json['id']?.toString() ?? '',
       imageUrl: json['image_url']?.toString() ?? '',
       playOnce: json['play_once'] == true,
@@ -42,6 +48,7 @@ class CatalogSticker {
         'category_slug': categorySlug,
         'display_name': displayName,
         'is_custom': isCustom,
+        'source_sticker_id': sourceStickerId,
       };
 }
 

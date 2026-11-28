@@ -161,3 +161,8 @@ flutter:
     - assets/sounds/
     # Sample logo PNG transparan untuk DevTool splash sponsor.
     - assets/dev/splash_sponsors/
+  # Font teks meme stiker (SIL OFL, lisensi di assets/fonts/OFL.txt).
+  fonts:
+    - family: Anton
+      fonts:
+        - asset: assets/fonts/Anton-Regular.ttf

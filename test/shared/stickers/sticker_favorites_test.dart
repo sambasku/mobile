@@ -53,6 +53,21 @@ class _FakeStickerRepository extends StickerRepository {
   }
 }
 
+class _ForkStickerRepository extends _FakeStickerRepository {
+  @override
+  Future<CatalogSticker> addFavorite(String stickerId) async {
+    addCalls++;
+    final copy = CatalogSticker(
+      id: 'copy-$stickerId',
+      imageUrl: 'https://cdn.example/$stickerId.webp',
+      isCustom: true,
+      sourceStickerId: stickerId,
+    );
+    serverFavs.insert(0, copy);
+    return copy;
+  }
+}
+
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
@@ -112,6 +127,55 @@ void main() {
     expect(limitRes.ok, isFalse);
     expect(limitRes.errorCode, 'STICKER_FAVORITE_LIMIT_REACHED');
     expect(container.read(stickerFavoritesProvider).contains('cheer'), isFalse);
+  });
+
+  test('favorit stiker orang lain disimpan sebagai salinan dan dikenali lewat asal', () async {
+    final repo = _ForkStickerRepository();
+    final container = ProviderContainer(
+      overrides: [
+        stickerRepositoryProvider.overrideWithValue(repo),
+        authStatusProvider.overrideWith(
+          () => _StaticAuthStatus(
+            const AuthStatusState(isAuth: true, userId: 'user-1'),
+          ),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await container.read(authStatusProvider.future);
+    await container.read(stickerFavoritesProvider.notifier).load(force: true);
+    const foreign = CatalogSticker(
+      id: 'kopi-01jabcdefghjkmnpqrstvwxyz1',
+      imageUrl: 'https://cdn.example/kopi.webp',
+      isCustom: true,
+    );
+    final notifier = container.read(stickerFavoritesProvider.notifier);
+
+    final addRes = await notifier.toggle(foreign);
+    expect(addRes.isFavorite, isTrue);
+    final afterAdd = container.read(stickerFavoritesProvider);
+    expect(afterAdd.items.map((s) => s.id), ['copy-${foreign.id}']);
+    expect(afterAdd.contains(foreign.id), isTrue);
+
+    final remRes = await notifier.toggle(foreign);
+    expect(remRes.isFavorite, isFalse);
+    expect(repo.serverFavs, isEmpty);
+    expect(container.read(stickerFavoritesProvider).contains(foreign.id), isFalse);
+  });
+
+  test('CatalogSticker membaca source_sticker_id dari salinan fork', () {
+    final s = CatalogSticker.fromJson({
+      'id': 'copy-1',
+      'image_url': 'https://ik.imagekit.io/demo/kopi.webp',
+      'play_once': false,
+      'category_slug': null,
+      'display_name': null,
+      'is_custom': true,
+      'source_sticker_id': 'kopi-01jabcdefghjkmnpqrstvwxyz1',
+    });
+    expect(s.sourceStickerId, 'kopi-01jabcdefghjkmnpqrstvwxyz1');
+    expect(s.toJson()['source_sticker_id'], 'kopi-01jabcdefghjkmnpqrstvwxyz1');
   });
 
   test('Guest cannot toggle favorite and gets UNAUTHORIZED', () async {

@@ -19,6 +19,7 @@ void main() {
     resolver.configure(
       primaryHost: 'https://api.sambasku.com',
       fallbackHosts: const [
+        'https://cloudflare.sambasku.com',
         'https://deno.sambasku.com',
         'https://render.sambasku.com',
       ],
@@ -64,12 +65,12 @@ void main() {
   testWidgets('mode terkunci - label menunjukkan host terpilih', (
     tester,
   ) async {
-    await resolver.setForcedTier(2);
+    await resolver.setForcedTier(3);
     await pumpTile(tester);
     expect(find.text('Render'), findsOneWidget);
   });
 
-  testWidgets('tap tile membuka sheet berisi 3 host + Otomatis', (
+  testWidgets('tap tile membuka sheet berisi 4 host + Otomatis', (
     tester,
   ) async {
     await pumpTile(tester);
@@ -77,6 +78,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Pilih Server'), findsOneWidget);
+    expect(find.text('Server Utama'), findsOneWidget);
     expect(find.text('Cloudflare'), findsOneWidget);
     expect(find.text('Deno Deploy'), findsOneWidget);
     expect(find.text('Render'), findsOneWidget);
@@ -84,11 +86,12 @@ void main() {
     expect(find.text('Ping'), findsOneWidget);
     // Sebelum ping: subtitle tiap tier menampilkan host.
     expect(find.text('https://api.sambasku.com'), findsOneWidget);
+    expect(find.text('https://cloudflare.sambasku.com'), findsOneWidget);
     expect(find.text('https://deno.sambasku.com'), findsOneWidget);
     expect(find.text('https://render.sambasku.com'), findsOneWidget);
   });
 
-  testWidgets('pilih Render di sheet → resolver terkunci ke tier 3', (
+  testWidgets('pilih Render di sheet → resolver terkunci ke tier 4', (
     tester,
   ) async {
     await pumpTile(tester);
@@ -98,7 +101,7 @@ void main() {
     await tester.tap(find.text('Render').last);
     await tester.pumpAndSettle();
 
-    expect(resolver.forcedTierIndex, 2);
+    expect(resolver.forcedTierIndex, 3);
     expect(resolver.activeHost, 'https://render.sambasku.com');
   });
 }

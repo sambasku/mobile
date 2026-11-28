@@ -156,6 +156,17 @@ class StickerFavoriteToggleResult {
   bool get ok => errorCode == null;
 }
 
+/// Favorit bisa berupa stiker asli atau salinan fork milik user (sourceStickerId = asal).
+bool _matchesSticker(CatalogSticker s, String stickerId) =>
+    s.id == stickerId || s.sourceStickerId == stickerId;
+
+CatalogSticker? _favoriteFor(List<CatalogSticker> items, String stickerId) {
+  for (final s in items) {
+    if (_matchesSticker(s, stickerId)) return s;
+  }
+  return null;
+}
+
 class StickerFavoritesState {
   const StickerFavoritesState({
     this.items = const [],
@@ -169,7 +180,8 @@ class StickerFavoritesState {
   final bool loaded;
   final Set<String> inFlight;
 
-  bool contains(String stickerId) => items.any((s) => s.id == stickerId);
+  bool contains(String stickerId) =>
+      items.any((s) => _matchesSticker(s, stickerId));
   bool isBusy(String stickerId) => inFlight.contains(stickerId);
 
   StickerFavoritesState copyWith({
@@ -242,11 +254,14 @@ class StickerFavoritesController extends Notifier<StickerFavoritesState> {
     if (state.isBusy(sticker.id)) {
       return StickerFavoriteToggleResult(isFavorite: state.contains(sticker.id));
     }
-    final wasFav = state.contains(sticker.id);
+    final existing = _favoriteFor(state.items, sticker.id);
+    final wasFav = existing != null;
     final prevItems = state.items;
     final nextItems = wasFav
-        ? prevItems.where((s) => s.id != sticker.id).toList(growable: false)
-        : [sticker, ...prevItems.where((s) => s.id != sticker.id)];
+        ? prevItems
+            .where((s) => !_matchesSticker(s, sticker.id))
+            .toList(growable: false)
+        : [sticker, ...prevItems.where((s) => !_matchesSticker(s, sticker.id))];
 
     state = state.copyWith(
       items: nextItems,
@@ -255,14 +270,16 @@ class StickerFavoritesController extends Notifier<StickerFavoritesState> {
 
     final repo = ref.read(stickerRepositoryProvider);
     try {
-      if (wasFav) {
-        await repo.removeFavorite(sticker.id);
+      if (existing != null) {
+        await repo.removeFavorite(existing.id);
       } else {
         final saved = await repo.addFavorite(sticker.id);
         if (ref.mounted && _activeUserId == userId) {
           final merged = [
             saved,
-            ...state.items.where((s) => s.id != saved.id),
+            ...state.items.where(
+              (s) => s.id != saved.id && !_matchesSticker(s, sticker.id),
+            ),
           ];
           state = state.copyWith(items: merged);
         }

@@ -1208,6 +1208,10 @@
   "appearanceScaleHuge": "Sangat Besar",
   "serverTileTitle": "Server",
   "serverAuto": "Otomatis",
+  "serverPrimary": "Server Utama",
+  "@serverPrimary": {
+    "description": "Label untuk server API utama (api.sambasku.com)"
+  },
   "serverPickTitle": "Pilih Server",
   "serverPing": "Ping",
   "serverPinging": "Ping...",
@@ -4724,7 +4728,7 @@
   "@profileUsernameLabel": {
     "description": "Label kolom username"
   },
-  "profileUsernameHint": "a-z, 0-9, titik, underscore (6-30; tanpa beruntun)",
+  "profileUsernameHint": "a-z, A-Z, 0-9, titik, underscore (6-30; tanpa beruntun)",
   "@profileUsernameHint": {
     "description": "Aturan penulisan username"
   },
@@ -4744,7 +4748,7 @@
   "@profileUsernameReserved": {
     "description": "Label username reserved"
   },
-  "profileUsernameInvalid": "Username belum memenuhi aturan (6-30, a-z/0-9/titik/underscore, tanpa beruntun)",
+  "profileUsernameInvalid": "Username belum memenuhi aturan (6-30, a-z/A-Z/0-9/titik/underscore, tanpa beruntun)",
   "@profileUsernameInvalid": {
     "description": "Label username format salah"
   },
@@ -11338,6 +11342,58 @@
   "stickerCreateGifTooLarge": "Ukuran GIF maksimal 2 MB",
   "@stickerCreateGifTooLarge": {
     "description": "Validasi saat ukuran file GIF melebihi 2 MB"
+  },
+  "stickerMemeTextButton": "Teks meme",
+  "@stickerMemeTextButton": {
+    "description": "Tombol untuk membuka editor teks meme di form buat stiker"
+  },
+  "stickerMemeEditorTitle": "Teks meme",
+  "@stickerMemeEditorTitle": {
+    "description": "Judul sheet editor teks meme"
+  },
+  "stickerMemeTopLabel": "Teks atas",
+  "@stickerMemeTopLabel": {
+    "description": "Label field teks di bagian atas gambar"
+  },
+  "stickerMemeBottomLabel": "Teks bawah",
+  "@stickerMemeBottomLabel": {
+    "description": "Label field teks di bagian bawah gambar"
+  },
+  "stickerMemeInputHint": "Kosongkan kalau tidak perlu",
+  "@stickerMemeInputHint": {
+    "description": "Hint untuk field teks meme yang boleh dikosongkan"
+  },
+  "stickerMemeApply": "Pakai teks",
+  "@stickerMemeApply": {
+    "description": "Tombol simpan teks meme ke gambar stiker"
+  },
+  "stickerMemeTextColorLabel": "Warna teks",
+  "@stickerMemeTextColorLabel": {
+    "description": "Label baris pilihan warna teks meme"
+  },
+  "stickerMemeBorderColorLabel": "Warna border",
+  "@stickerMemeBorderColorLabel": {
+    "description": "Label baris pilihan warna border (outline) teks meme"
+  },
+  "stickerMemeColorWhite": "Putih",
+  "@stickerMemeColorWhite": {
+    "description": "Nama warna putih untuk pilihan teks meme"
+  },
+  "stickerMemeColorBlack": "Hitam",
+  "@stickerMemeColorBlack": {
+    "description": "Nama warna hitam untuk pilihan teks meme"
+  },
+  "stickerMemeColorYellow": "Kuning",
+  "@stickerMemeColorYellow": {
+    "description": "Nama warna kuning untuk pilihan teks meme"
+  },
+  "stickerMemeColorRed": "Merah",
+  "@stickerMemeColorRed": {
+    "description": "Nama warna merah untuk pilihan teks meme"
+  },
+  "stickerMemeColorBlue": "Biru",
+  "@stickerMemeColorBlue": {
+    "description": "Nama warna biru untuk pilihan teks meme"
   },
   "stickerCreateLimitReached": "Custom stiker kamu sudah penuh (maksimal 20). Hapus stiker lama dulu ya.",
   "@stickerCreateLimitReached": {

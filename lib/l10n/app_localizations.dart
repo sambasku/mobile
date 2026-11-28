@@ -2181,6 +2181,12 @@ abstract class AppLocalizations {
   /// **'Otomatis'**
   String get serverAuto;
 
+  /// Label untuk server API utama (api.sambasku.com)
+  ///
+  /// In id, this message translates to:
+  /// **'Server Utama'**
+  String get serverPrimary;
+
   /// No description provided for @serverPickTitle.
   ///
   /// In id, this message translates to:
@@ -10978,7 +10984,7 @@ abstract class AppLocalizations {
   /// Aturan penulisan username
   ///
   /// In id, this message translates to:
-  /// **'a-z, 0-9, titik, underscore (6-30; tanpa beruntun)'**
+  /// **'a-z, A-Z, 0-9, titik, underscore (6-30; tanpa beruntun)'**
   String get profileUsernameHint;
 
   /// Label saat cek username sedang jalan
@@ -11008,7 +11014,7 @@ abstract class AppLocalizations {
   /// Label username format salah
   ///
   /// In id, this message translates to:
-  /// **'Username belum memenuhi aturan (6-30, a-z/0-9/titik/underscore, tanpa beruntun)'**
+  /// **'Username belum memenuhi aturan (6-30, a-z/A-Z/0-9/titik/underscore, tanpa beruntun)'**
   String get profileUsernameInvalid;
 
   /// Error saat GET username-availability gagal
@@ -24992,6 +24998,84 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Ukuran GIF maksimal 2 MB'**
   String get stickerCreateGifTooLarge;
+
+  /// Tombol untuk membuka editor teks meme di form buat stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Teks meme'**
+  String get stickerMemeTextButton;
+
+  /// Judul sheet editor teks meme
+  ///
+  /// In id, this message translates to:
+  /// **'Teks meme'**
+  String get stickerMemeEditorTitle;
+
+  /// Label field teks di bagian atas gambar
+  ///
+  /// In id, this message translates to:
+  /// **'Teks atas'**
+  String get stickerMemeTopLabel;
+
+  /// Label field teks di bagian bawah gambar
+  ///
+  /// In id, this message translates to:
+  /// **'Teks bawah'**
+  String get stickerMemeBottomLabel;
+
+  /// Hint untuk field teks meme yang boleh dikosongkan
+  ///
+  /// In id, this message translates to:
+  /// **'Kosongkan kalau tidak perlu'**
+  String get stickerMemeInputHint;
+
+  /// Tombol simpan teks meme ke gambar stiker
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai teks'**
+  String get stickerMemeApply;
+
+  /// Label baris pilihan warna teks meme
+  ///
+  /// In id, this message translates to:
+  /// **'Warna teks'**
+  String get stickerMemeTextColorLabel;
+
+  /// Label baris pilihan warna border (outline) teks meme
+  ///
+  /// In id, this message translates to:
+  /// **'Warna border'**
+  String get stickerMemeBorderColorLabel;
+
+  /// Nama warna putih untuk pilihan teks meme
+  ///
+  /// In id, this message translates to:
+  /// **'Putih'**
+  String get stickerMemeColorWhite;
+
+  /// Nama warna hitam untuk pilihan teks meme
+  ///
+  /// In id, this message translates to:
+  /// **'Hitam'**
+  String get stickerMemeColorBlack;
+
+  /// Nama warna kuning untuk pilihan teks meme
+  ///
+  /// In id, this message translates to:
+  /// **'Kuning'**
+  String get stickerMemeColorYellow;
+
+  /// Nama warna merah untuk pilihan teks meme
+  ///
+  /// In id, this message translates to:
+  /// **'Merah'**
+  String get stickerMemeColorRed;
+
+  /// Nama warna biru untuk pilihan teks meme
+  ///
+  /// In id, this message translates to:
+  /// **'Biru'**
+  String get stickerMemeColorBlue;
 
   /// Pesan saat kuota custom stiker penuh
   ///

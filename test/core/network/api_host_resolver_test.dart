@@ -108,7 +108,11 @@ void main() {
 
   group('label tier untuk UI user', () {
     test('host dikenali jadi label ramah', () {
-      expect(apiTierLabelForHost('https://api.sambasku.com'), 'Cloudflare');
+      expect(apiTierLabelForHost('https://api.sambasku.com'), 'Server Utama');
+      expect(
+        apiTierLabelForHost('https://cloudflare.sambasku.com'),
+        'Cloudflare',
+      );
       expect(apiTierLabelForHost('https://deno.sambasku.com'), 'Deno Deploy');
       expect(apiTierLabelForHost('https://render.sambasku.com'), 'Render');
     });

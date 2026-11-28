@@ -127,7 +127,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
       return;
     }
 
-    if (trimmed.toLowerCase() == initial.toLowerCase()) {
+    if (trimmed == initial) {
       state = state.copyWith(
         usernameStatus: UsernameAvailabilityStatus.current,
       );
@@ -217,7 +217,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
       ref.invalidate(publicActivityProvider(previousUsername));
     }
     if (profile.username.isNotEmpty &&
-        profile.username.toLowerCase() != previousUsername?.toLowerCase()) {
+        profile.username != previousUsername) {
       ref.invalidate(publicProfileProvider(profile.username));
       ref.invalidate(publicActivityProvider(profile.username));
     }
@@ -240,9 +240,9 @@ class EditProfileNotifier extends _$EditProfileNotifier {
 }
 
 bool _isValidUsernameFormat(String value) {
-  // Selaras USERNAME_HANDLE_REGEX API: 6-30, mulai/akhir alfanumerik,
-  // tanpa separator beruntun (`..` `__` `._` `_.`). Angka saja boleh.
+  // Selaras USERNAME_HANDLE_REGEX API: 6-30, a-z/A-Z/0-9/titik/underscore,
+  // mulai/akhir alfanumerik, tanpa separator beruntun (`..` `__` `._` `_.`).
   return RegExp(
-    r'^(?=.{6,30}$)(?!.*[._]{2})[a-z0-9][a-z0-9._]*[a-z0-9]$',
+    r'^(?=.{6,30}$)(?!.*[._]{2})[a-zA-Z0-9][a-zA-Z0-9._]*[a-zA-Z0-9]$',
   ).hasMatch(value);
 }

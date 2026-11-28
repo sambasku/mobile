@@ -48,7 +48,10 @@ class _ActiveHostLabel extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          apiTierLabelForHost(resolver.tiers[forced].host),
+          apiTierLabelForHost(
+            resolver.tiers[forced].host,
+            primaryLabel: AppLocalizations.of(context).serverPrimary,
+          ),
           style: TextStyle(
             fontSize: 13,
             color: context.theme.colors.mutedForeground,
@@ -225,7 +228,14 @@ class _ApiHostSheetState extends State<_ApiHostSheet> {
                 ),
                 for (var i = 0; i < tiers.length; i++)
                   FTile(
-                    title: Text(apiTierLabelForHost(tiers[i].host)),
+                    title: Text(
+                      apiTierLabelForHost(
+                        tiers[i].host,
+                        primaryLabel: AppLocalizations.of(
+                          context,
+                        ).serverPrimary,
+                      ),
+                    ),
                     subtitle: _ProbeStatus(
                       host: tiers[i].host,
                       outcome: _probeResults[tiers[i].host],

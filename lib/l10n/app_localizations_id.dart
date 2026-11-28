@@ -1198,6 +1198,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get serverAuto => 'Otomatis';
 
   @override
+  String get serverPrimary => 'Server Utama';
+
+  @override
   String get serverPickTitle => 'Pilih Server';
 
   @override
@@ -6252,7 +6255,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get profileUsernameHint =>
-      'a-z, 0-9, titik, underscore (6-30; tanpa beruntun)';
+      'a-z, A-Z, 0-9, titik, underscore (6-30; tanpa beruntun)';
 
   @override
   String get profileUsernameChecking => 'Memeriksa ketersediaan…';
@@ -6268,7 +6271,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get profileUsernameInvalid =>
-      'Username belum memenuhi aturan (6-30, a-z/0-9/titik/underscore, tanpa beruntun)';
+      'Username belum memenuhi aturan (6-30, a-z/A-Z/0-9/titik/underscore, tanpa beruntun)';
 
   @override
   String get profileUsernameCheckFailed => 'Gagal memeriksa username';
@@ -14218,6 +14221,45 @@ class AppLocalizationsId extends AppLocalizations {
   String get stickerCreateGifTooLarge => 'Ukuran GIF maksimal 2 MB';
 
   @override
+  String get stickerMemeTextButton => 'Teks meme';
+
+  @override
+  String get stickerMemeEditorTitle => 'Teks meme';
+
+  @override
+  String get stickerMemeTopLabel => 'Teks atas';
+
+  @override
+  String get stickerMemeBottomLabel => 'Teks bawah';
+
+  @override
+  String get stickerMemeInputHint => 'Kosongkan kalau tidak perlu';
+
+  @override
+  String get stickerMemeApply => 'Pakai teks';
+
+  @override
+  String get stickerMemeTextColorLabel => 'Warna teks';
+
+  @override
+  String get stickerMemeBorderColorLabel => 'Warna border';
+
+  @override
+  String get stickerMemeColorWhite => 'Putih';
+
+  @override
+  String get stickerMemeColorBlack => 'Hitam';
+
+  @override
+  String get stickerMemeColorYellow => 'Kuning';
+
+  @override
+  String get stickerMemeColorRed => 'Merah';
+
+  @override
+  String get stickerMemeColorBlue => 'Biru';
+
+  @override
   String get stickerCreateLimitReached =>
       'Custom stiker kamu sudah penuh (maksimal 20). Hapus stiker lama dulu ya.';
 
@@ -15667,6 +15709,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get serverAuto => 'Otomatis';
+
+  @override
+  String get serverPrimary => 'Server Utama';
 
   @override
   String get serverPickTitle => 'Pilih Server';
@@ -20639,7 +20684,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get profileUsernameHint =>
-      'a-z, 0-9, titik, underscore (6-30; tanpa beruntun)';
+      'a-z, A-Z, 0-9, titik, underscore (6-30; tanpa beruntun)';
 
   @override
   String get profileUsernameChecking => 'Memeriksa ketersediaan…';
@@ -20655,7 +20700,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get profileUsernameInvalid =>
-      'Username belum memenuhi aturan (6-30, a-z/0-9/titik/underscore, tanpa beruntun)';
+      'Username belum memenuhi aturan (6-30, a-z/A-Z/0-9/titik/underscore, tanpa beruntun)';
 
   @override
   String get profileUsernameCheckFailed => 'Gagal memeriksa username';
@@ -28603,6 +28648,45 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get stickerCreateGifTooLarge => 'Ukuran GIF maksimal 2 MB';
+
+  @override
+  String get stickerMemeTextButton => 'Teks meme';
+
+  @override
+  String get stickerMemeEditorTitle => 'Teks meme';
+
+  @override
+  String get stickerMemeTopLabel => 'Teks atas';
+
+  @override
+  String get stickerMemeBottomLabel => 'Teks bawah';
+
+  @override
+  String get stickerMemeInputHint => 'Kosongkan kalau tidak perlu';
+
+  @override
+  String get stickerMemeApply => 'Pakai teks';
+
+  @override
+  String get stickerMemeTextColorLabel => 'Warna teks';
+
+  @override
+  String get stickerMemeBorderColorLabel => 'Warna border';
+
+  @override
+  String get stickerMemeColorWhite => 'Putih';
+
+  @override
+  String get stickerMemeColorBlack => 'Hitam';
+
+  @override
+  String get stickerMemeColorYellow => 'Kuning';
+
+  @override
+  String get stickerMemeColorRed => 'Merah';
+
+  @override
+  String get stickerMemeColorBlue => 'Biru';
 
   @override
   String get stickerCreateLimitReached =>

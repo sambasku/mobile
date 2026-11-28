@@ -13,6 +13,9 @@ import '../../features/contribution/data/models/upload_credentials_dto.dart';
 import '../../l10n/app_localizations.dart';
 import '../utils/error_bottom_sheet.dart';
 import '../utils/image_sheet_drawer.dart';
+import '../widgets/image_crop_page.dart';
+import 'meme_text_editor_sheet.dart';
+import 'meme_text_renderer.dart';
 import 'sticker_models.dart';
 import 'sticker_providers.dart';
 
@@ -43,6 +46,12 @@ class _CreateCustomStickerSheetBodyState
   final _nameCtrl = TextEditingController();
   final _picker = ImagePicker();
   File? _pickedFile;
+  // Hasil crop 1:1 sebelum teks meme. Null untuk GIF (tanpa crop/teks).
+  File? _baseFile;
+  var _memeTop = '';
+  var _memeBottom = '';
+  var _memeTextColor = MemeColor.white;
+  var _memeBorderColor = MemeColor.black;
   var _isGif = false;
   var _picking = false;
   var _submitting = false;
@@ -73,9 +82,29 @@ class _CreateCustomStickerSheetBodyState
           return;
         }
       }
+      if (isGif) {
+        setState(() {
+          _pickedFile = file;
+          _baseFile = null;
+          _isGif = true;
+          _memeTop = '';
+          _memeBottom = '';
+        });
+        return;
+      }
+      // Stiker berbentuk persegi: crop dikunci 1:1. Batal crop = pilihan lama tetap.
+      final cropped = await cropImage(
+        context,
+        file.path,
+        lockedAspectRatio: kCropAspectRatioSquare,
+      );
+      if (cropped == null || !mounted) return;
       setState(() {
-        _pickedFile = file;
-        _isGif = isGif;
+        _pickedFile = cropped;
+        _baseFile = cropped;
+        _isGif = false;
+        _memeTop = '';
+        _memeBottom = '';
       });
     } catch (e, st) {
       debugPrint('[CustomSticker] pick image failed: $e\n$st');
@@ -86,6 +115,61 @@ class _CreateCustomStickerSheetBodyState
       );
     } finally {
       _picking = false;
+    }
+  }
+
+  Future<void> _openMemeEditor() async {
+    final base = _baseFile;
+    if (base == null || _submitting) return;
+    final result = await showMemeTextEditorSheet(
+      context,
+      baseFile: base,
+      initial: (
+        top: _memeTop,
+        bottom: _memeBottom,
+        textColor: _memeTextColor,
+        borderColor: _memeBorderColor,
+      ),
+    );
+    if (result == null || !mounted) return;
+    if (result.top.isEmpty && result.bottom.isEmpty) {
+      setState(() {
+        _pickedFile = base;
+        _memeTop = '';
+        _memeBottom = '';
+        _memeTextColor = result.textColor;
+        _memeBorderColor = result.borderColor;
+      });
+      return;
+    }
+    try {
+      final dir = await getTemporaryDirectory();
+      final outFile = File(
+        '${dir.path}/meme_sticker_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
+      final rendered = await renderMemeImage(
+        baseFile: base,
+        topText: result.top,
+        bottomText: result.bottom,
+        outFile: outFile,
+        textColor: result.textColor,
+        borderColor: result.borderColor,
+      );
+      if (!mounted) return;
+      setState(() {
+        _pickedFile = rendered;
+        _memeTop = result.top;
+        _memeBottom = result.bottom;
+        _memeTextColor = result.textColor;
+        _memeBorderColor = result.borderColor;
+      });
+    } catch (e, st) {
+      debugPrint('[CustomSticker] render meme failed: $e\n$st');
+      if (!mounted) return;
+      showFToast(
+        context: context,
+        title: Text(AppLocalizations.of(context).stickerCreateFailed),
+      );
     }
   }
 
@@ -247,6 +331,16 @@ class _CreateCustomStickerSheetBodyState
                   variant: FButtonVariant.ghost,
                   onPress: _submitting ? null : _pickImage,
                   child: Text(l10n.stickerCreateChangeImage),
+                ),
+              ),
+            ],
+            if (_baseFile != null) ...[
+              const Gap(4),
+              Center(
+                child: FButton(
+                  variant: FButtonVariant.ghost,
+                  onPress: _submitting ? null : _openMemeEditor,
+                  child: Text(l10n.stickerMemeTextButton),
                 ),
               ),
             ],
